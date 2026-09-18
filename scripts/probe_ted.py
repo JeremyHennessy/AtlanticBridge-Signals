@@ -7,7 +7,8 @@ from urllib.request import Request, urlopen
 URL = "https://api.ted.europa.eu/v3/notices/search"
 BODY = {
     "query": (
-        "publication-date = (20260910 <> 20260918) "
+        "publication-date = 20240125 "
+        "AND notice-type IN (can-standard can-social can-desg can-tran) "
         "AND winner-selection-status IN (selec-w)"
     ),
     "fields": [
