@@ -15,7 +15,7 @@ Status values:
 | GLEIF API / Golden Copy | Global | Candidate legal-entity resolution and ownership links | Golden Copy updated multiple times daily | **IMPLEMENTED — candidate layer** |
 | TED Search API v3 | EU | Commercial maturity, contract awards, winner identity evidence, CPV sectors | Continuous | **IMPLEMENTED** |
 | CIPO live Canadian Trademarks Database | Canada | Current trademark ownership and filed-date evidence | Live database | **IMPLEMENTED — targeted owner search** |
-| CanadaBuys open procurement data | Canada | Canadian tenders, awards, suppliers | Frequent/open data | **NEXT** |
+| CanadaBuys award notices | Canada | Federal award, supplier, value, category and geography evidence | Current fiscal file updated daily | **IMPLEMENTED** |
 | Statistics Canada trade data | Canada | Sector/country/province context | Monthly | **NEXT** |
 | Canadian Importers Database | Canada | Potential distributor/importer mapping by product/origin | Periodic | **LATER** |
 | Nova Scotia procurement | Nova Scotia | Local buyer/award signals | Ongoing | **LATER** |
@@ -189,3 +189,41 @@ Detail pages are the identity/evidence layer. They expose filed date, registrati
 Detail enrichment is explicitly bounded and reports whether coverage is partial or complete. Partial enrichment must never be interpreted as a complete trademark history.
 
 CIPO trademark evidence remains an unweighted candidate pre-entry signal until historical predictive testing is complete.
+
+
+## CanadaBuys award-notice contract
+
+The current 2026–27 CanadaBuys award-notice CSV was probed live on 2026-09-18 before implementation.
+
+The official public file endpoint returned HTTP 403 to a cold programmatic request from a standard GitHub runner. Establishing a normal public session through the CanadaBuys procurement-data page and then downloading the published file with the same session succeeded with HTTP 200. Production retrieval follows that public session-backed path and does not bypass authentication or TLS.
+
+Observed live source:
+
+- compressed/download bytes: **14,079,894**
+- SHA-256 at probe time: `2912c321aed256b9a47122771b726dfecbd69f649ddfdc6c6f69e0c2e52986cd`
+- columns: **80**
+- records: **3,925**
+- unique `(referenceNumber, amendmentNumber)` keys: **3,925**
+- duplicate source keys: **0**
+
+The collector validates the full observed 80-column schema and fails closed on a duplicate source key.
+
+High-value extracted fields include:
+
+- reference/amendment/solicitation/contract numbers
+- publication, award, amendment, start and end dates
+- contract amount, total value and currency
+- award status and instrument/amendment type
+- GSIN and UNSPSC
+- procurement category, notice type and procurement method
+- selection criteria and limited-tendering reason
+- trade agreements and delivery regions
+- supplier legal name/address/country
+- contracting entity
+- award description
+
+All 80 source fields are also preserved as canonical row JSON.
+
+Supplier-country values are normalized conservatively because the live file mixes ISO codes and names. The EU-27 flag is derived from that normalized country, while the raw source country remains stored unchanged.
+
+A CanadaBuys federal award is direct evidence of Canadian commercial activity. It is not automatically treated as a pre-entry signal or scored until the historical model distinguishes awards that precede an Investment Canada entry from awards occurring after an established Canadian presence.

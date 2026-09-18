@@ -8,7 +8,7 @@ The first releases intentionally prioritize source proof over UI. The core quest
 
 > Can public signals identify European companies before they enter Canada?
 
-The first outcome source is the **Investment Canada Act Decisions and Notification Index**, which provides explicit historical `Notification - new business` labels. Forward-looking evidence now includes daily **Corporations Canada** change detection, the **CORDIS Horizon Europe** project graph linking Canadian organizations to European partners, a conservative **GLEIF candidate-resolution layer** for legal-entity identity, **TED** contract-award evidence for commercial maturity, and targeted **CIPO** trademark ownership/filing evidence.
+The first outcome source is the **Investment Canada Act Decisions and Notification Index**, which provides explicit historical `Notification - new business` labels. Forward-looking evidence now includes daily **Corporations Canada** change detection, the **CORDIS Horizon Europe** project graph linking Canadian organizations to European partners, a conservative **GLEIF candidate-resolution layer** for legal-entity identity, **TED** contract-award evidence for commercial maturity, targeted **CIPO** trademark ownership/filing evidence, and **CanadaBuys** federal award/supplier evidence.
 
 ### Principles
 
@@ -75,6 +75,13 @@ python -m atlanticbridge ingest-cipo-owner \
 
 python -m atlanticbridge summarize-cipo \
   --db data/atlanticbridge.sqlite
+
+# Current CanadaBuys fiscal-year federal award notices
+python -m atlanticbridge ingest-canadabuys-awards \
+  --db data/atlanticbridge.sqlite
+
+python -m atlanticbridge summarize-canadabuys \
+  --db data/atlanticbridge.sqlite
 ```
 
 ## Implemented
@@ -89,6 +96,7 @@ python -m atlanticbridge summarize-cipo \
 - GLEIF legal-entity candidate search with explicit ambiguous/review-ready states
 - TED contract-award notices with conservative winner alignment
 - CIPO current-owner trademark search with explicit detail-enrichment coverage
+- CanadaBuys federal award notices with normalized EU-27 supplier evidence
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
@@ -96,8 +104,8 @@ python -m atlanticbridge summarize-cipo \
 ## Next source sequence
 
 1. Confirm GLEIF candidate identities and materialize direct/ultimate parent links
-2. CanadaBuys — Canadian procurement activity
-3. Statistics Canada trade — sector/geography context
-4. Historical CIPO bulk backfill once secure bulk transport is available
+2. Statistics Canada trade — sector/geography context
+3. Historical CIPO bulk backfill once secure bulk transport is available
+4. Historical cross-source predictive analysis before any score weights
 
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).
