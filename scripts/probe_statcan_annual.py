@@ -48,12 +48,11 @@ with tempfile.TemporaryDirectory(prefix="atlanticbridge-statcan-annual-") as tem
 
             total_rows = 0
             latest_ref = ""
-            country_field = next(
-                (field for field in header if "country" in field.casefold()),
-                None,
-            )
-            if not country_field:
-                raise RuntimeError(f"No country field in header: {header!r}")
+            country_field = "Trading partner"
+            if country_field not in header:
+                raise RuntimeError(
+                    f"Expected StatsCan Trading partner field; received {header!r}"
+                )
 
             provinces = Counter()
             countries = Counter()
