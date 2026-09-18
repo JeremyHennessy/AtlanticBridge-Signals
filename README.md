@@ -8,7 +8,7 @@ The first releases intentionally prioritize source proof over UI. The core quest
 
 > Can public signals identify European companies before they enter Canada?
 
-The first outcome source is the **Investment Canada Act Decisions and Notification Index**, which provides explicit historical `Notification - new business` labels. The first forward-looking source is the daily **Corporations Canada active CBCA dataset**, tracked as a baseline plus appeared/changed events.
+The first outcome source is the **Investment Canada Act Decisions and Notification Index**, which provides explicit historical `Notification - new business` labels. Forward-looking evidence now includes daily **Corporations Canada** change detection and the **CORDIS Horizon Europe** project graph linking Canadian organizations to European partners.
 
 ### Principles
 
@@ -43,6 +43,12 @@ python -m atlanticbridge ingest-corporations-canada \
 python -m atlanticbridge ingest-corporations-canada \
   --db data/atlanticbridge.sqlite \
   --mode diff
+
+# Monthly EU-Canada Horizon relationship snapshot
+python -m atlanticbridge ingest-cordis \
+  --db data/atlanticbridge.sqlite
+python -m atlanticbridge summarize-cordis \
+  --db data/atlanticbridge.sqlite
 ```
 
 ## Implemented
@@ -52,17 +58,18 @@ python -m atlanticbridge ingest-corporations-canada \
 - EU-27 normalization
 - Corporations Canada daily active-business streaming collector
 - Corporations Canada baseline/diff event detection
+- CORDIS Horizon project/participation relationship graph
+- Canada ↔ EU-27 shared-project coverage summaries
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
 
 ## Next source sequence
 
-1. CORDIS — EU company ↔ Canadian research/innovation relationships
-2. GLEIF — legal-entity and parent-company resolution
-3. TED — EU procurement/commercial maturity
-4. CIPO trademarks — pre-entry Canadian market intent
-5. CanadaBuys — Canadian procurement activity
-6. Statistics Canada trade — sector/geography context
+1. GLEIF — legal-entity and parent-company resolution
+2. TED — EU procurement/commercial maturity
+3. CIPO trademarks — pre-entry Canadian market intent
+4. CanadaBuys — Canadian procurement activity
+5. Statistics Canada trade — sector/geography context
 
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).

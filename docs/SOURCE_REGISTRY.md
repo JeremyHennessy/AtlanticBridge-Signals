@@ -11,7 +11,7 @@ Status values:
 |---|---|---|---|---|
 | Investment Canada Act Decisions & Notification Index | Canada | Historical entry/acquisition outcomes | Monthly/public index | **IMPLEMENTED** |
 | Corporations Canada active CBCA open data | Canada | New federal corporations and registered-office/status changes | Typically daily | **IMPLEMENTED** |
-| CORDIS Horizon Europe open data | EU | Company/research relationships with Canadian organizations | Open datasets | **NEXT** |
+| CORDIS Horizon Europe open data | EU | EU-Canada project/organization relationships and funding context | Monthly bulk archive | **IMPLEMENTED** |
 | GLEIF LEI + relationship data | Global | Entity resolution, parent/child identity | Frequent | **NEXT** |
 | TED procurement data/API | EU | Commercial maturity, awards, geography, CPV sectors | Continuous | **NEXT** |
 | CIPO IP Horizons — trademarks | Canada | Pre-entry brand/market intent | Weekly XML / quarterly research data | **NEXT** |
@@ -59,3 +59,26 @@ The source is approximately 100 MB and is streamed to disk. The first run is a *
 - `CORPORATION_CHANGED`
 
 The collector deliberately does **not** infer a disappearance from absence in the active file. A disappearance signal will only be added after a source-completeness gate and inactive-corporation reconciliation exist.
+
+
+## CORDIS Horizon contract
+
+The live Horizon archive was probed before implementation on 2026-09-18. The collector requires the observed exact schemas for:
+
+- \`project.csv\` — 22 fields
+- \`organization.csv\` — 25 fields
+
+The archive is handled as a full monthly snapshot. Projects and participations are rebuilt inside one transaction, so a parser, foreign-key, or completeness failure rolls back to the previous complete snapshot.
+
+CORDIS \`organisationID\` is treated as a **source-local identifier only**. It is not promoted to a global company/legal-entity identity. VAT numbers, names, addresses, organization URLs and future GLEIF evidence will be used for entity resolution.
+
+Activity-type codes such as \`PRC\`, \`HES\`, \`REC\`, \`PUB\` and \`OTH\` are preserved as raw source codes in this phase. Business semantics are not inferred from the code without an authoritative mapping.
+
+The relationship summary derives only direct evidence:
+
+- Canadian participation rows/projects/organizations
+- EU-27 participation rows on projects that contain a Canadian participant
+- distinct EU-27 source-local organization IDs on those projects
+- raw activity-type and country distributions
+
+A shared Horizon project is a relationship signal, not proof of commercial expansion.

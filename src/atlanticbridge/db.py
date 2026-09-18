@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .sources.corporations_canada import CorporationCanadaRecord
+from .sources.cordis import CordisParticipationRecord, CordisProjectRecord, EU27_ISO2
 from .sources.investment_canada import InvestmentCanadaRecord
 
 SCHEMA = """
@@ -99,6 +100,80 @@ ON corporations_canada_events(observed_at);
 
 CREATE INDEX IF NOT EXISTS idx_corp_events_type
 ON corporations_canada_events(event_type);
+
+CREATE TABLE IF NOT EXISTS cordis_projects (
+    project_id TEXT PRIMARY KEY,
+    acronym TEXT NOT NULL,
+    status TEXT NOT NULL,
+    title TEXT NOT NULL,
+    start_date TEXT NOT NULL,
+    end_date TEXT NOT NULL,
+    total_cost TEXT NOT NULL,
+    ec_max_contribution TEXT NOT NULL,
+    topics TEXT NOT NULL,
+    ec_signature_date TEXT NOT NULL,
+    framework_programme TEXT NOT NULL,
+    master_call TEXT NOT NULL,
+    sub_call TEXT NOT NULL,
+    funding_scheme TEXT NOT NULL,
+    nature TEXT NOT NULL,
+    objective TEXT NOT NULL,
+    content_update_date TEXT NOT NULL,
+    rcn TEXT NOT NULL,
+    grant_doi TEXT NOT NULL,
+    keywords TEXT NOT NULL,
+    human_validated TEXT NOT NULL,
+    legal_basis TEXT NOT NULL,
+    source_url TEXT NOT NULL,
+    observed_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS cordis_participations (
+    participation_id TEXT PRIMARY KEY,
+    project_id TEXT NOT NULL,
+    project_acronym TEXT NOT NULL,
+    organisation_id TEXT NOT NULL,
+    vat_number TEXT NOT NULL,
+    name TEXT NOT NULL,
+    short_name TEXT NOT NULL,
+    sme TEXT NOT NULL,
+    activity_type TEXT NOT NULL,
+    street TEXT NOT NULL,
+    post_code TEXT NOT NULL,
+    city TEXT NOT NULL,
+    country TEXT NOT NULL,
+    nuts_code TEXT NOT NULL,
+    geolocation TEXT NOT NULL,
+    organization_url TEXT NOT NULL,
+    contact_form TEXT NOT NULL,
+    content_update_date TEXT NOT NULL,
+    rcn TEXT NOT NULL,
+    source_order TEXT NOT NULL,
+    role TEXT NOT NULL,
+    ec_contribution TEXT NOT NULL,
+    net_ec_contribution TEXT NOT NULL,
+    total_cost TEXT NOT NULL,
+    end_of_participation TEXT NOT NULL,
+    active TEXT NOT NULL,
+    record_hash TEXT NOT NULL,
+    record_json TEXT NOT NULL,
+    source_url TEXT NOT NULL,
+    observed_at TEXT NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES cordis_projects(project_id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_cordis_part_project
+ON cordis_participations(project_id);
+
+CREATE INDEX IF NOT EXISTS idx_cordis_part_org
+ON cordis_participations(organisation_id);
+
+CREATE INDEX IF NOT EXISTS idx_cordis_part_country
+ON cordis_participations(country);
+
+CREATE INDEX IF NOT EXISTS idx_cordis_part_activity
+ON cordis_participations(activity_type);
+
 """
 
 
@@ -530,4 +605,189 @@ def corporations_canada_summary(conn: sqlite3.Connection) -> dict[str, object]:
         "last_observed_at": current["last_observed_at"],
         "events": events,
         "top_provinces": provinces,
+    }
+
+
+_PROJECT_INSERT = """
+INSERT INTO cordis_projects (
+    project_id, acronym, status, title, start_date, end_date, total_cost,
+    ec_max_contribution, topics, ec_signature_date, framework_programme,
+    master_call, sub_call, funding_scheme, nature, objective,
+    content_update_date, rcn, grant_doi, keywords, human_validated,
+    legal_basis, source_url, observed_at
+) VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+)
+"""
+
+_PARTICIPATION_INSERT = """
+INSERT INTO cordis_participations (
+    participation_id, project_id, project_acronym, organisation_id, vat_number,
+    name, short_name, sme, activity_type, street, post_code, city, country,
+    nuts_code, geolocation, organization_url, contact_form, content_update_date,
+    rcn, source_order, role, ec_contribution, net_ec_contribution, total_cost,
+    end_of_participation, active, record_hash, record_json, source_url, observed_at
+) VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    ?, ?, ?, ?, ?
+)
+"""
+
+
+def _batched_insert(
+    conn: sqlite3.Connection,
+    sql: str,
+    records,
+    *,
+    observed_at: str,
+    batch_size: int = 5000,
+) -> int:
+    batch = []
+    count = 0
+    for record in records:
+        batch.append((*record.db_tuple(), observed_at))
+        if len(batch) >= batch_size:
+            conn.executemany(sql, batch)
+            count += len(batch)
+            batch.clear()
+    if batch:
+        conn.executemany(sql, batch)
+        count += len(batch)
+    return count
+
+
+def ingest_cordis_snapshot(
+    conn: sqlite3.Connection,
+    projects: Iterable[CordisProjectRecord],
+    participations: Iterable[CordisParticipationRecord],
+    *,
+    observed_at: str | None = None,
+) -> dict[str, int]:
+    observed_at = observed_at or datetime.now(timezone.utc).isoformat()
+
+    conn.execute("BEGIN")
+    try:
+        conn.execute("DELETE FROM cordis_participations")
+        conn.execute("DELETE FROM cordis_projects")
+
+        project_count = _batched_insert(
+            conn,
+            _PROJECT_INSERT,
+            projects,
+            observed_at=observed_at,
+        )
+        if project_count == 0:
+            raise ValueError("CORDIS snapshot contained zero projects")
+
+        participation_count = _batched_insert(
+            conn,
+            _PARTICIPATION_INSERT,
+            participations,
+            observed_at=observed_at,
+        )
+        if participation_count == 0:
+            raise ValueError("CORDIS snapshot contained zero participations")
+
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+
+    return {
+        "projects": project_count,
+        "participations": participation_count,
+    }
+
+
+def cordis_summary(conn: sqlite3.Connection) -> dict[str, object]:
+    placeholders = ",".join("?" for _ in EU27_ISO2)
+    eu_codes = tuple(sorted(EU27_ISO2))
+
+    totals = conn.execute(
+        """
+        SELECT
+            (SELECT COUNT(*) FROM cordis_projects) AS projects,
+            (SELECT COUNT(*) FROM cordis_participations) AS participations,
+            COUNT(*) AS canada_participation_rows,
+            COUNT(DISTINCT NULLIF(organisation_id, '')) AS canada_unique_organizations,
+            COUNT(DISTINCT project_id) AS canada_unique_projects
+        FROM cordis_participations
+        WHERE country = 'CA'
+        """
+    ).fetchone()
+
+    eu_on_canada = conn.execute(
+        f"""
+        WITH canada_projects AS (
+            SELECT DISTINCT project_id
+            FROM cordis_participations
+            WHERE country = 'CA'
+        )
+        SELECT
+            COUNT(*) AS eu_participation_rows,
+            COUNT(DISTINCT NULLIF(p.organisation_id, '')) AS eu_unique_organizations,
+            COUNT(DISTINCT CASE
+                WHEN p.activity_type = 'PRC' THEN NULLIF(p.organisation_id, '')
+            END) AS eu_prc_activity_code_unique_organizations,
+            COUNT(DISTINCT p.project_id) AS shared_projects
+        FROM cordis_participations p
+        JOIN canada_projects c ON c.project_id = p.project_id
+        WHERE p.country IN ({placeholders})
+        """,
+        eu_codes,
+    ).fetchone()
+
+    eu_countries = [
+        dict(row)
+        for row in conn.execute(
+            f"""
+            WITH canada_projects AS (
+                SELECT DISTINCT project_id
+                FROM cordis_participations
+                WHERE country = 'CA'
+            )
+            SELECT p.country, COUNT(*) AS participation_rows
+            FROM cordis_participations p
+            JOIN canada_projects c ON c.project_id = p.project_id
+            WHERE p.country IN ({placeholders})
+            GROUP BY p.country
+            ORDER BY participation_rows DESC, p.country ASC
+            """,
+            eu_codes,
+        )
+    ]
+
+    eu_activity_types = [
+        dict(row)
+        for row in conn.execute(
+            f"""
+            WITH canada_projects AS (
+                SELECT DISTINCT project_id
+                FROM cordis_participations
+                WHERE country = 'CA'
+            )
+            SELECT p.activity_type, COUNT(*) AS participation_rows
+            FROM cordis_participations p
+            JOIN canada_projects c ON c.project_id = p.project_id
+            WHERE p.country IN ({placeholders})
+            GROUP BY p.activity_type
+            ORDER BY participation_rows DESC, p.activity_type ASC
+            """,
+            eu_codes,
+        )
+    ]
+
+    return {
+        "projects": totals["projects"] or 0,
+        "participations": totals["participations"] or 0,
+        "canada_participation_rows": totals["canada_participation_rows"] or 0,
+        "canada_unique_organizations": totals["canada_unique_organizations"] or 0,
+        "canada_unique_projects": totals["canada_unique_projects"] or 0,
+        "eu_participation_rows_on_canada_projects": eu_on_canada["eu_participation_rows"] or 0,
+        "eu_unique_organizations_on_canada_projects": eu_on_canada["eu_unique_organizations"] or 0,
+        "eu_prc_activity_code_unique_organizations_on_canada_projects":
+            eu_on_canada["eu_prc_activity_code_unique_organizations"] or 0,
+        "canada_eu_shared_projects": eu_on_canada["shared_projects"] or 0,
+        "eu_countries_on_canada_projects": eu_countries,
+        "eu_activity_types_on_canada_projects": eu_activity_types,
     }
