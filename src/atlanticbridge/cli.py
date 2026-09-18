@@ -10,11 +10,21 @@ from pathlib import Path
 
 from .db import (
     connect,
+    cordis_summary,
     corporations_canada_summary,
+    ingest_cordis_snapshot,
     ingest_corporations_canada_snapshot,
     insert_investment_canada_records,
     insert_source_snapshot,
     investment_canada_summary,
+)
+from .sources.cordis import (
+    HORIZON_ARCHIVE_URL,
+    SOURCE_BUCKET as CORDIS_SOURCE_BUCKET,
+    SOURCE_NAME as CORDIS_SOURCE_NAME,
+    download_horizon_archive,
+    iter_participations,
+    iter_projects,
 )
 from .sources.corporations_canada import (
     ACTIVE_BUSINESS_URL,
@@ -75,6 +85,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit current Corporations Canada coverage and event counts as JSON",
     )
     corp_summary.add_argument("--db", required=True)
+
+    cordis = subparsers.add_parser(
+        "ingest-cordis",
+        help="Replace the local CORDIS Horizon project/participation snapshot",
+    )
+    cordis.add_argument("--db", required=True)
+    cordis.add_argument("--source-url", default=HORIZON_ARCHIVE_URL)
+
+    cordis_summary_parser = subparsers.add_parser(
+        "summarize-cordis",
+        help="Emit Canada-EU Horizon relationship coverage as JSON",
+    )
+    cordis_summary_parser.add_argument("--db", required=True)
 
     return parser
 
@@ -172,6 +195,52 @@ def _ingest_corporations_canada(
     return 0
 
 
+def _ingest_cordis(
+    db_path: str,
+    *,
+    source_url: str,
+) -> int:
+    retrieved_at = datetime.now(timezone.utc).isoformat()
+    conn = connect(db_path)
+
+    with tempfile.TemporaryDirectory(prefix="atlanticbridge-cordis-") as temp_dir:
+        archive_path = Path(temp_dir) / "cordis-HORIZONprojects-csv.zip"
+        download = download_horizon_archive(
+            archive_path,
+            source_url=source_url,
+        )
+        result = ingest_cordis_snapshot(
+            conn,
+            iter_projects(download.path, source_url=source_url),
+            iter_participations(download.path, source_url=source_url),
+            observed_at=retrieved_at,
+        )
+        insert_source_snapshot(
+            conn,
+            source_name=CORDIS_SOURCE_NAME,
+            source_url=source_url,
+            source_bucket=CORDIS_SOURCE_BUCKET,
+            retrieved_at=retrieved_at,
+            sha256=download.sha256,
+            record_count=result["projects"] + result["participations"],
+        )
+
+    print(
+        json.dumps(
+            {
+                "source": CORDIS_SOURCE_NAME,
+                "retrieved_at": retrieved_at,
+                "source_bytes": download.byte_count,
+                "source_sha256": download.sha256,
+                **result,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
@@ -205,6 +274,18 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "summarize-corporations-canada":
         conn = connect(args.db)
         print(json.dumps(corporations_canada_summary(conn), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "ingest-cordis":
+        try:
+            return _ingest_cordis(args.db, source_url=args.source_url)
+        except Exception as exc:
+            print(f"CORDIS ingestion failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "summarize-cordis":
+        conn = connect(args.db)
+        print(json.dumps(cordis_summary(conn), indent=2, sort_keys=True))
         return 0
 
     return 2
