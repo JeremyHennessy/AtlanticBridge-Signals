@@ -1,0 +1,21 @@
+name: Probe CIPO Trademark CSV
+
+on:
+  push:
+    branches:
+      - "feature/cipo-006"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Probe CIPO quarterly trademark schemas
+        run: python scripts/probe_cipo.py
