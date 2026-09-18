@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import hashlib
 import re
+import time
 from dataclasses import dataclass
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -66,7 +68,18 @@ def source_url(bucket: str) -> str:
     return f"{BASE_URL}/{bucket}"
 
 
-def fetch_bucket(bucket: str, timeout: int = 45) -> tuple[str, str]:
+def fetch_bucket(
+    bucket: str,
+    timeout: int = 45,
+    *,
+    attempts: int = 3,
+    backoff_seconds: float = 1.0,
+) -> tuple[str, str]:
+    if attempts < 1:
+        raise ValueError("attempts must be at least 1")
+    if backoff_seconds < 0:
+        raise ValueError("backoff_seconds must be non-negative")
+
     url = source_url(bucket)
     request = Request(
         url,
@@ -77,9 +90,18 @@ def fetch_bucket(bucket: str, timeout: int = 45) -> tuple[str, str]:
             )
         },
     )
-    with urlopen(request, timeout=timeout) as response:
-        charset = response.headers.get_content_charset() or "utf-8"
-        return url, response.read().decode(charset, errors="replace")
+
+    for attempt in range(1, attempts + 1):
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                charset = response.headers.get_content_charset() or "utf-8"
+                return url, response.read().decode(charset, errors="replace")
+        except (TimeoutError, URLError):
+            if attempt >= attempts:
+                raise
+            time.sleep(backoff_seconds * (2 ** (attempt - 1)))
+
+    raise AssertionError("unreachable")
 
 
 def parse_index_html(
