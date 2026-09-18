@@ -1,0 +1,21 @@
+name: Probe Corporations Canada
+
+on:
+  push:
+    branches:
+      - "feature/corporations-canada-002"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect current active-CBCA CSV schema
+        run: python scripts/probe_corporations_canada.py
