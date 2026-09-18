@@ -30,7 +30,7 @@ BODY = {
     "page": 1,
     "limit": 5,
     "scope": "ALL",
-    "checkQuerySyntax": True,
+    "checkQuerySyntax": False,
     "paginationMode": "PAGE_NUMBER",
     "onlyLatestVersions": False,
 }
