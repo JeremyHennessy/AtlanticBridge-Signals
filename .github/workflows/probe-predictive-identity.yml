@@ -1,9 +1,6 @@
 name: Probe Predictive Identity Feasibility
 
 on:
-  push:
-    branches:
-      - "feature/predictive-feasibility-010"
   workflow_dispatch:
 
 permissions:
