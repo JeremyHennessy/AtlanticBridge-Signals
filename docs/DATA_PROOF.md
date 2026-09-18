@@ -18,7 +18,7 @@ Acquisitions are retained but treated as a separate outcome class.
 
 ## First analysis design
 
-1. Ingest historical Investment Canada records.
+1. Ingest the complete paginated Investment Canada historical index and deduplicate source views using stable source node IDs.
 2. Isolate EU-27 investors and classify new-business vs acquisition outcomes.
 3. Resolve investors to durable company identities.
 4. For each positive company, reconstruct signals available 3, 6, 12 and 24 months before the outcome month.

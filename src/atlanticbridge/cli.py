@@ -17,6 +17,7 @@ from .db import (
     insert_investment_canada_records,
     insert_source_snapshot,
     investment_canada_summary,
+    replace_investment_canada_history,
 )
 from .gleif_resolution import gleif_resolution_summary, resolve_cordis_targets
 from .sources.cordis import (
@@ -36,6 +37,7 @@ from .sources.corporations_canada import (
 )
 from .sources.investment_canada import (
     SOURCE_NAME,
+    crawl_investment_canada_history,
     fetch_bucket,
     parse_index_html,
 )
@@ -82,7 +84,18 @@ def build_parser() -> argparse.ArgumentParser:
         "--buckets",
         type=_split_buckets,
         default=["all"],
-        help="Comma-separated index buckets; default: all",
+        help="Comma-separated first-page index buckets; default: all",
+    )
+    ingest.add_argument(
+        "--history",
+        action="store_true",
+        help="Fetch the complete paginated historical index across all alphanumeric buckets",
+    )
+    ingest.add_argument(
+        "--workers",
+        type=int,
+        default=4,
+        help="Concurrent bucket workers for --history; default: 4",
     )
 
     summary = subparsers.add_parser(
@@ -210,12 +223,45 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _ingest_investment_canada(db_path: str, buckets: list[str]) -> int:
+def _ingest_investment_canada(
+    db_path: str,
+    buckets: list[str],
+    *,
+    history: bool,
+    workers: int,
+) -> int:
     conn = connect(db_path)
     retrieved_at = datetime.now(timezone.utc).isoformat()
+
+    if history:
+        crawl = crawl_investment_canada_history(workers=workers)
+        stored = replace_investment_canada_history(
+            conn,
+            crawl.records,
+            crawl.page_snapshots,
+            observed_at=retrieved_at,
+        )
+        print(
+            json.dumps(
+                {
+                    "source": SOURCE_NAME,
+                    "mode": "history",
+                    "retrieved_at": retrieved_at,
+                    "bucket_count": crawl.bucket_count,
+                    "page_count": crawl.page_count,
+                    "records_seen": crawl.appearances,
+                    "duplicate_appearances": crawl.duplicate_appearances,
+                    "unique_records": crawl.unique_records,
+                    **stored,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
     total_seen = 0
     total_inserted = 0
-
     for bucket in buckets:
         url, html = fetch_bucket(bucket)
         records = parse_index_html(
@@ -243,6 +289,7 @@ def _ingest_investment_canada(db_path: str, buckets: list[str]) -> int:
         json.dumps(
             {
                 "source": SOURCE_NAME,
+                "mode": "first-page",
                 "buckets": buckets,
                 "records_seen": total_seen,
                 "records_inserted": total_inserted,
@@ -253,7 +300,6 @@ def _ingest_investment_canada(db_path: str, buckets: list[str]) -> int:
         )
     )
     return 0
-
 
 def _ingest_corporations_canada(
     db_path: str,
@@ -452,7 +498,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "ingest-investment-canada":
         try:
-            return _ingest_investment_canada(args.db, args.buckets)
+            return _ingest_investment_canada(
+                args.db,
+                args.buckets,
+                history=args.history,
+                workers=args.workers,
+            )
         except Exception as exc:
             print(f"Investment Canada ingestion failed: {exc}", file=sys.stderr)
             return 1
