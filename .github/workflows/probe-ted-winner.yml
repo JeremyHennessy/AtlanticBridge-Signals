@@ -1,9 +1,6 @@
 name: Probe TED Winner Name Query
 
 on:
-  push:
-    branches:
-      - "feature/predictive-feasibility-010"
   workflow_dispatch:
 
 permissions:
