@@ -1,9 +1,6 @@
 name: Probe Historical Outcome Cohort
 
 on:
-  push:
-    branches:
-      - "feature/historical-feasibility-009"
   workflow_dispatch:
 
 permissions:
