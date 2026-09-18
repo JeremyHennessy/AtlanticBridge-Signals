@@ -3,6 +3,7 @@ from __future__ import annotations
 import collections
 import hashlib
 import json
+import os
 import re
 import time
 from urllib.parse import parse_qs, urlparse
@@ -16,7 +17,17 @@ BASE = (
     "https://ised-isde.canada.ca/site/investment-canada-act/en/"
     "search/decisions-and-notification-index"
 )
-BUCKETS = [str(x) for x in range(10)] + [chr(code) for code in range(ord("a"), ord("z") + 1)]
+DEFAULT_BUCKETS = [str(x) for x in range(10)] + [chr(code) for code in range(ord("a"), ord("z") + 1)]
+BUCKETS = [
+    item.strip().lower()
+    for item in os.environ.get(
+        "ATLANTICBRIDGE_BUCKETS",
+        ",".join(DEFAULT_BUCKETS),
+    ).split(",")
+    if item.strip()
+]
+if not BUCKETS:
+    raise RuntimeError("ATLANTICBRIDGE_BUCKETS resolved to an empty bucket list")
 UA = (
     "AtlanticBridge-Signals/0.1 "
     "(public-data research; https://github.com/JeremyHennessy/AtlanticBridge-Signals)"
@@ -186,6 +197,7 @@ for key in duplicate_raw[:20]:
 print(
     json.dumps(
         {
+            "requested_buckets": BUCKETS,
             "bucket_summary": bucket_summary,
             "total_records": len(all_records),
             "earliest_month": min((r["month"] for r in all_records), default=None),
