@@ -40,6 +40,14 @@ from .sources.investment_canada import (
     parse_index_html,
 )
 from .cipo_store import cipo_summary, run_owner_search
+from .canadabuys_store import canadabuys_summary, ingest_awards
+from .sources.canadabuys import (
+    CURRENT_AWARDS_URL,
+    SOURCE_BUCKET as CANADABUYS_SOURCE_BUCKET,
+    SOURCE_NAME as CANADABUYS_SOURCE_NAME,
+    download_awards_csv,
+    iter_awards_csv,
+)
 from .sources.ted import search_awards
 from .ted_store import ingest_ted_search_result, ted_summary
 
@@ -158,6 +166,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit CIPO owner-search and detail-enrichment coverage",
     )
     cipo_summary_parser.add_argument("--db", required=True)
+
+    canadabuys = subparsers.add_parser(
+        "ingest-canadabuys-awards",
+        help="Ingest the current CanadaBuys fiscal-year award notice CSV",
+    )
+    canadabuys.add_argument("--db", required=True)
+    canadabuys.add_argument("--source-url", default=CURRENT_AWARDS_URL)
+
+    canadabuys_summary_parser = subparsers.add_parser(
+        "summarize-canadabuys",
+        help="Emit current CanadaBuys award coverage and EU-27 supplier evidence",
+    )
+    canadabuys_summary_parser.add_argument("--db", required=True)
 
     return parser
 
@@ -301,6 +322,52 @@ def _ingest_cordis(
     return 0
 
 
+
+
+def _ingest_canadabuys(
+    db_path: str,
+    *,
+    source_url: str,
+) -> int:
+    retrieved_at = datetime.now(timezone.utc).isoformat()
+    conn = connect(db_path)
+
+    with tempfile.TemporaryDirectory(prefix="atlanticbridge-canadabuys-") as temp_dir:
+        csv_path = Path(temp_dir) / "award-notices.csv"
+        download = download_awards_csv(csv_path, source_url=source_url)
+        result = ingest_awards(
+            conn,
+            iter_awards_csv(download.path, source_url=source_url),
+            source_sha256=download.sha256,
+            source_url=source_url,
+            source_bytes=download.byte_count,
+            observed_at=retrieved_at,
+        )
+        insert_source_snapshot(
+            conn,
+            source_name=CANADABUYS_SOURCE_NAME,
+            source_url=source_url,
+            source_bucket=CANADABUYS_SOURCE_BUCKET,
+            retrieved_at=retrieved_at,
+            sha256=download.sha256,
+            record_count=int(result["records"]),
+        )
+
+    print(
+        json.dumps(
+            {
+                "source": CANADABUYS_SOURCE_NAME,
+                "source_bucket": CANADABUYS_SOURCE_BUCKET,
+                "retrieved_at": retrieved_at,
+                **result,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
@@ -422,6 +489,18 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "summarize-cipo":
         conn = connect(args.db)
         print(json.dumps(cipo_summary(conn), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "ingest-canadabuys-awards":
+        try:
+            return _ingest_canadabuys(args.db, source_url=args.source_url)
+        except Exception as exc:
+            print(f"CanadaBuys award ingestion failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "summarize-canadabuys":
+        conn = connect(args.db)
+        print(json.dumps(canadabuys_summary(conn), indent=2, sort_keys=True))
         return 0
 
     return 2
