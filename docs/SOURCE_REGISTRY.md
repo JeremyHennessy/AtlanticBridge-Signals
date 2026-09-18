@@ -12,7 +12,7 @@ Status values:
 | Investment Canada Act Decisions & Notification Index | Canada | Historical entry/acquisition outcomes | Monthly/public index | **IMPLEMENTED** |
 | Corporations Canada active CBCA open data | Canada | New federal corporations and registered-office/status changes | Typically daily | **IMPLEMENTED** |
 | CORDIS Horizon Europe open data | EU | EU-Canada project/organization relationships and funding context | Monthly bulk archive | **IMPLEMENTED** |
-| GLEIF LEI + relationship data | Global | Entity resolution, parent/child identity | Frequent | **NEXT** |
+| GLEIF API / Golden Copy | Global | Candidate legal-entity resolution and ownership links | Golden Copy updated multiple times daily | **IMPLEMENTED — candidate layer** |
 | TED procurement data/API | EU | Commercial maturity, awards, geography, CPV sectors | Continuous | **NEXT** |
 | CIPO IP Horizons — trademarks | Canada | Pre-entry brand/market intent | Weekly XML / quarterly research data | **NEXT** |
 | CanadaBuys open procurement data | Canada | Canadian tenders, awards, suppliers | Frequent/open data | **NEXT** |
@@ -82,3 +82,36 @@ The relationship summary derives only direct evidence:
 - raw activity-type and country distributions
 
 A shared Horizon project is a relationship signal, not proof of commercial expansion.
+
+
+## GLEIF candidate-resolution contract
+
+The GLEIF API search contract and ownership endpoints were probed live on 2026-09-18 before implementation.
+
+AtlanticBridge uses the API's legal-name search against the GLEIF Golden Copy and stores:
+
+- source system/entity ID, original name, country and VAT evidence
+- GLEIF Golden Copy publish timestamp
+- query URL and total result count
+- returned LEI, legal name and legal jurisdiction
+- entity status/category
+- registration authority and registered-as identifier
+- legal/headquarters city and country
+- API rank
+- conservative normalized-name similarity diagnostics
+- GLEIF relationship links and complete returned candidate JSON
+
+Candidate matching is deliberately **not** an identity decision.
+
+Resolution states are:
+
+- `NO_RESULTS`
+- `UNRESOLVED`
+- `REVIEW_READY` — exactly one returned candidate has an exact normalized legal-name + jurisdiction match
+- `AMBIGUOUS` — more than one exact-name + jurisdiction candidate
+- `CONFIRMED` — reserved for an explicit later decision workflow
+- `REJECTED` — reserved for an explicit later decision workflow
+
+A `REVIEW_READY` result is not automatically confirmed. Refreshes also do not overwrite a future explicit `CONFIRMED` or `REJECTED` decision.
+
+The GLEIF API exposes direct-parent, ultimate-parent and child relationship links. AtlanticBridge preserves those links now; parent/child graph materialization will occur only after source identities have been confirmed, so ownership is not attached to the wrong candidate.

@@ -18,6 +18,7 @@ from .db import (
     insert_source_snapshot,
     investment_canada_summary,
 )
+from .gleif_resolution import gleif_resolution_summary, resolve_cordis_targets
 from .sources.cordis import (
     HORIZON_ARCHIVE_URL,
     SOURCE_BUCKET as CORDIS_SOURCE_BUCKET,
@@ -98,6 +99,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit Canada-EU Horizon relationship coverage as JSON",
     )
     cordis_summary_parser.add_argument("--db", required=True)
+
+    gleif = subparsers.add_parser(
+        "resolve-cordis-gleif",
+        help="Query GLEIF for candidate LEIs for EU CORDIS organizations on Canadian projects",
+    )
+    gleif.add_argument("--db", required=True)
+    gleif.add_argument("--limit", type=int, default=50)
+    gleif.add_argument("--offset", type=int, default=0)
+    gleif.add_argument("--page-size", type=int, default=5)
+    gleif.add_argument("--delay-seconds", type=float, default=0.1)
+
+    gleif_summary_parser = subparsers.add_parser(
+        "summarize-gleif",
+        help="Emit GLEIF candidate-resolution coverage without auto-confirming identities",
+    )
+    gleif_summary_parser.add_argument("--db", required=True)
 
     return parser
 
@@ -286,6 +303,27 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "summarize-cordis":
         conn = connect(args.db)
         print(json.dumps(cordis_summary(conn), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "resolve-cordis-gleif":
+        try:
+            conn = connect(args.db)
+            result = resolve_cordis_targets(
+                conn,
+                limit=args.limit,
+                offset=args.offset,
+                page_size=args.page_size,
+                delay_seconds=args.delay_seconds,
+            )
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        except Exception as exc:
+            print(f"GLEIF resolution failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "summarize-gleif":
+        conn = connect(args.db)
+        print(json.dumps(gleif_resolution_summary(conn), indent=2, sort_keys=True))
         return 0
 
     return 2
