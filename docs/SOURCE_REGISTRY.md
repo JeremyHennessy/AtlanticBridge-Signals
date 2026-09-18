@@ -14,7 +14,7 @@ Status values:
 | CORDIS Horizon Europe open data | EU | EU-Canada project/organization relationships and funding context | Monthly bulk archive | **IMPLEMENTED** |
 | GLEIF API / Golden Copy | Global | Candidate legal-entity resolution and ownership links | Golden Copy updated multiple times daily | **IMPLEMENTED — candidate layer** |
 | TED Search API v3 | EU | Commercial maturity, contract awards, winner identity evidence, CPV sectors | Continuous | **IMPLEMENTED** |
-| CIPO IP Horizons — trademarks | Canada | Pre-entry brand/market intent | Weekly XML / quarterly research data | **NEXT** |
+| CIPO live Canadian Trademarks Database | Canada | Current trademark ownership and filed-date evidence | Live database | **IMPLEMENTED — targeted owner search** |
 | CanadaBuys open procurement data | Canada | Canadian tenders, awards, suppliers | Frequent/open data | **NEXT** |
 | Statistics Canada trade data | Canada | Sector/country/province context | Monthly | **NEXT** |
 | Canadian Importers Database | Canada | Potential distributor/importer mapping by product/origin | Periodic | **LATER** |
@@ -148,3 +148,44 @@ TED winner arrays are not assumed to be positionally aligned with multilingual w
 A normalized winner mention is marked `SINGLE_WINNER_ALIGNED` only when the notice has exactly one unique winner name and at most one country, identifier and decision date. Otherwise the names are stored as `NAME_ONLY_UNALIGNED` with the raw arrays retained at notice level.
 
 A TED award is evidence of commercial maturity. It is not, by itself, evidence of Canadian expansion and does not receive an Expansion Likelihood weight until historical predictive analysis is performed.
+
+
+## CIPO trademark contract
+
+AtlanticBridge tested three official CIPO delivery paths on 2026-09-18.
+
+### Bulk IP Horizons web download
+
+The quarterly research ZIPs and weekly ST.96 archives are published from `opic-cipo.ca`. Standard GitHub Linux runners could not establish a trusted TLS chain to that host:
+
+`SSL certificate problem: unable to get local issuer certificate`
+
+Both Python/OpenSSL and system `curl` failed certificate validation. AtlanticBridge does **not** disable TLS verification.
+
+CIPO also documents an SFTP delivery path, but credentials are issued by CIPO. Historical bulk backfill therefore remains blocked until either the HTTPS certificate chain is corrected or SFTP credentials are available.
+
+### Secure live database
+
+The current Canadian Trademarks Database at `ised-isde.canada.ca` is securely reachable and exposes the same JSON endpoint used by CIPO's own public UI.
+
+The source contract observed from CIPO's own `search.js` is:
+
+- establish a public search session
+- POST JSON to `/cipo/trademark-search/srch`
+- current-owner field: `searchfield1 = "ownname"`
+- response fields include `numFound`, `numReturned`, and `docs`
+- result detail route: `/cipo/trademark-search/{id}?lang=eng`
+
+The public UI supports a maximum returned-result setting of 5,000. Production owner searches therefore request 5,000 and **fail closed** if:
+
+- `numFound > 5000`
+- `numReturned != len(docs)`
+- `numReturned != numFound`
+
+The owner-search endpoint is not an exact-name identity lookup. A live search for `Siemens Aktiengesellschaft` returned 671 records; quoting the name still returned 668. Search hits are therefore candidates only.
+
+Detail pages are the identity/evidence layer. They expose filed date, registration data, owner/applicant information, priority claims and action history. A detail record is marked `EXACT_DETAIL_OWNER` only when the normalized detail-page owner exactly matches the query owner.
+
+Detail enrichment is explicitly bounded and reports whether coverage is partial or complete. Partial enrichment must never be interpreted as a complete trademark history.
+
+CIPO trademark evidence remains an unweighted candidate pre-entry signal until historical predictive testing is complete.
