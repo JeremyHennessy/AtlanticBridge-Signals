@@ -39,6 +39,7 @@ from .sources.investment_canada import (
     fetch_bucket,
     parse_index_html,
 )
+from .cipo_store import cipo_summary, run_owner_search
 from .sources.ted import search_awards
 from .ted_store import ingest_ted_search_result, ted_summary
 
@@ -138,6 +139,25 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit TED award/winner coverage without assuming multi-winner alignment",
     )
     ted_summary_parser.add_argument("--db", required=True)
+
+    cipo = subparsers.add_parser(
+        "ingest-cipo-owner",
+        help=(
+            "Search the live CIPO database by current owner and optionally "
+            "enrich a bounded subset with detail pages"
+        ),
+    )
+    cipo.add_argument("--db", required=True)
+    cipo.add_argument("--owner", required=True)
+    cipo.add_argument("--detail-limit", type=int, default=10)
+    cipo.add_argument("--detail-offset", type=int, default=0)
+    cipo.add_argument("--detail-delay-seconds", type=float, default=0.2)
+
+    cipo_summary_parser = subparsers.add_parser(
+        "summarize-cipo",
+        help="Emit CIPO owner-search and detail-enrichment coverage",
+    )
+    cipo_summary_parser.add_argument("--db", required=True)
 
     return parser
 
@@ -381,6 +401,27 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "summarize-ted":
         conn = connect(args.db)
         print(json.dumps(ted_summary(conn), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "ingest-cipo-owner":
+        try:
+            conn = connect(args.db)
+            result = run_owner_search(
+                conn,
+                owner_name=args.owner,
+                detail_limit=args.detail_limit,
+                detail_offset=args.detail_offset,
+                detail_delay_seconds=args.detail_delay_seconds,
+            )
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        except Exception as exc:
+            print(f"CIPO owner ingestion failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "summarize-cipo":
+        conn = connect(args.db)
+        print(json.dumps(cipo_summary(conn), indent=2, sort_keys=True))
         return 0
 
     return 2
