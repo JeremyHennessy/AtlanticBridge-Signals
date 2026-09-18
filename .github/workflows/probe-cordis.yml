@@ -1,0 +1,21 @@
+name: Probe CORDIS
+
+on:
+  push:
+    branches:
+      - "feature/cordis-003"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect current CORDIS Horizon CSV archive
+        run: python scripts/probe_cordis.py
