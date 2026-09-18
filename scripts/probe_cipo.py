@@ -1,61 +1,68 @@
 from __future__ import annotations
 
+import http.cookiejar
 import json
 import re
-from urllib.request import Request, urlopen
+from urllib.parse import urljoin
+from urllib.request import HTTPCookieProcessor, Request, build_opener
 
 URL = "https://ised-isde.canada.ca/cipo/trademark-search/srch?lang=eng"
 
-request = Request(
-    URL,
-    headers={
-        "User-Agent": (
-            "AtlanticBridge-Signals/0.1 "
-            "(public-data research; https://github.com/JeremyHennessy/AtlanticBridge-Signals)"
-        )
-    },
-)
-with urlopen(request, timeout=60) as response:
+jar = http.cookiejar.CookieJar()
+opener = build_opener(HTTPCookieProcessor(jar))
+headers = {
+    "User-Agent": (
+        "AtlanticBridge-Signals/0.1 "
+        "(public-data research; https://github.com/JeremyHennessy/AtlanticBridge-Signals)"
+    )
+}
+
+with opener.open(Request(URL, headers=headers), timeout=60) as response:
     html = response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
 
+scripts = re.findall(r'<script[^>]+src=["\']([^"\']+)["\']', html, flags=re.IGNORECASE)
+search_script = next(
+    (urljoin(URL, src) for src in scripts if "/js/search.js" in src),
+    None,
+)
+if not search_script:
+    raise RuntimeError("CIPO search.js URL not found")
+
+with opener.open(Request(search_script, headers=headers), timeout=60) as response:
+    js = response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+
 patterns = [
-    "ownname",
+    "tm-search-form",
+    "serializeJSON",
+    "JSON.stringify",
+    "window.location",
+    "location.href",
+    "encodeURIComponent",
+    "/srch",
     "searchfield1",
-    "textfield1",
     "maxReturn",
-    "domIntlFilter",
-    "submitSearch",
-    "searchCriteria",
-    "query=",
+    "$.ajax",
 ]
 
 snippets = {}
 for pattern in patterns:
     matches = []
-    for match in re.finditer(re.escape(pattern), html, flags=re.IGNORECASE):
-        start = max(0, match.start() - 350)
-        end = min(len(html), match.end() + 700)
-        snippet = re.sub(r"\s+", " ", html[start:end]).strip()
+    for match in re.finditer(re.escape(pattern), js, flags=re.IGNORECASE):
+        start = max(0, match.start() - 650)
+        end = min(len(js), match.end() + 1100)
+        snippet = re.sub(r"\s+", " ", js[start:end]).strip()
         if snippet not in matches:
             matches.append(snippet)
-        if len(matches) >= 5:
+        if len(matches) >= 6:
             break
     snippets[pattern] = matches
-
-scripts = re.findall(r'<script[^>]+src=["\']([^"\']+)["\']', html, flags=re.IGNORECASE)
-forms = re.findall(
-    r'<form\b([^>]*)>',
-    html,
-    flags=re.IGNORECASE,
-)
 
 print(
     json.dumps(
         {
-            "url": URL,
-            "html_bytes": len(html.encode("utf-8")),
-            "scripts": scripts,
-            "form_tags": [re.sub(r"\s+", " ", item).strip() for item in forms],
+            "page_url": URL,
+            "search_script_url": search_script,
+            "search_script_bytes": len(js.encode("utf-8")),
             "snippets": snippets,
         },
         indent=2,
