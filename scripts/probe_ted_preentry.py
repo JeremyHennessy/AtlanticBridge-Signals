@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import collections
 import json
+import os
 import statistics
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -17,6 +18,16 @@ from atlanticbridge.sources.ted import (
 
 START = "2019-01"
 END = "2025-12"
+REQUESTED_YEARS = tuple(
+    year.strip()
+    for year in os.environ.get(
+        "ATLANTICBRIDGE_YEARS",
+        "2019,2020,2021,2022,2023,2024,2025",
+    ).split(",")
+    if year.strip()
+)
+if not REQUESTED_YEARS:
+    raise RuntimeError("ATLANTICBRIDGE_YEARS resolved to no years")
 WORKERS = 4
 PAGE_SIZE = 250
 
@@ -205,6 +216,7 @@ cohort = [
     if record.is_eu27
     and record.is_new_business
     and START <= record.certification_month <= END
+    and record.certification_month[:4] in REQUESTED_YEARS
 ]
 
 results: list[dict[str, object]] = []
@@ -269,6 +281,7 @@ signal_by_country = collections.Counter(
 
 output = {
     "window": {"start": START, "end": END},
+    "requested_years": list(REQUESTED_YEARS),
     "cohort_records": len(cohort),
     "cohort_by_year": dict(sorted(by_year.items())),
     "query_workers": WORKERS,
