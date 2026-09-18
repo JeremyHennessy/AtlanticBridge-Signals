@@ -8,7 +8,7 @@ The first releases intentionally prioritize source proof over UI. The core quest
 
 > Can public signals identify European companies before they enter Canada?
 
-The first outcome source is the **Investment Canada Act Decisions and Notification Index**, which provides explicit historical `Notification - new business` labels. Forward-looking evidence now includes daily **Corporations Canada** change detection, the **CORDIS Horizon Europe** project graph linking Canadian organizations to European partners, and a conservative **GLEIF candidate-resolution layer** for legal-entity identity.
+The first outcome source is the **Investment Canada Act Decisions and Notification Index**, which provides explicit historical `Notification - new business` labels. Forward-looking evidence now includes daily **Corporations Canada** change detection, the **CORDIS Horizon Europe** project graph linking Canadian organizations to European partners, a conservative **GLEIF candidate-resolution layer** for legal-entity identity, and **TED** contract-award evidence for commercial maturity.
 
 ### Principles
 
@@ -57,6 +57,15 @@ python -m atlanticbridge resolve-cordis-gleif \
 
 python -m atlanticbridge summarize-gleif \
   --db data/atlanticbridge.sqlite
+
+# EU contract-award evidence for a bounded publication window
+python -m atlanticbridge ingest-ted-awards \
+  --db data/atlanticbridge.sqlite \
+  --start-date 2024-01-25 \
+  --end-date 2024-01-25
+
+python -m atlanticbridge summarize-ted \
+  --db data/atlanticbridge.sqlite
 ```
 
 ## Implemented
@@ -69,6 +78,7 @@ python -m atlanticbridge summarize-gleif \
 - CORDIS Horizon project/participation relationship graph
 - Canada ↔ EU-27 shared-project coverage summaries
 - GLEIF legal-entity candidate search with explicit ambiguous/review-ready states
+- TED contract-award notices with conservative winner alignment
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
@@ -76,9 +86,8 @@ python -m atlanticbridge summarize-gleif \
 ## Next source sequence
 
 1. Confirm GLEIF candidate identities and materialize direct/ultimate parent links
-2. TED — EU procurement/commercial maturity
-3. CIPO trademarks — pre-entry Canadian market intent
-4. CanadaBuys — Canadian procurement activity
-5. Statistics Canada trade — sector/geography context
+2. CIPO trademarks — pre-entry Canadian market intent
+3. CanadaBuys — Canadian procurement activity
+4. Statistics Canada trade — sector/geography context
 
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).

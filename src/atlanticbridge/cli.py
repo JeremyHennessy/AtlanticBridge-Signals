@@ -39,6 +39,8 @@ from .sources.investment_canada import (
     fetch_bucket,
     parse_index_html,
 )
+from .sources.ted import search_awards
+from .ted_store import ingest_ted_search_result, ted_summary
 
 
 def _split_buckets(value: str) -> list[str]:
@@ -115,6 +117,27 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit GLEIF candidate-resolution coverage without auto-confirming identities",
     )
     gleif_summary_parser.add_argument("--db", required=True)
+
+    ted = subparsers.add_parser(
+        "ingest-ted-awards",
+        help="Ingest TED contract-award notices for a publication-date window",
+    )
+    ted.add_argument("--db", required=True)
+    ted.add_argument("--start-date", required=True)
+    ted.add_argument("--end-date", required=True)
+    ted.add_argument("--scope", choices=["ACTIVE", "ALL", "LATEST"], default="ALL")
+    ted.add_argument("--page-size", type=int, default=250)
+    ted.add_argument(
+        "--only-latest-versions",
+        action="store_true",
+        help="Ask TED to return only the latest version of each notice",
+    )
+
+    ted_summary_parser = subparsers.add_parser(
+        "summarize-ted",
+        help="Emit TED award/winner coverage without assuming multi-winner alignment",
+    )
+    ted_summary_parser.add_argument("--db", required=True)
 
     return parser
 
@@ -324,6 +347,40 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "summarize-gleif":
         conn = connect(args.db)
         print(json.dumps(gleif_resolution_summary(conn), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "ingest-ted-awards":
+        try:
+            conn = connect(args.db)
+            result = search_awards(
+                args.start_date,
+                args.end_date,
+                page_size=args.page_size,
+                scope=args.scope,
+                only_latest_versions=args.only_latest_versions,
+            )
+            stored = ingest_ted_search_result(conn, result)
+            print(
+                json.dumps(
+                    {
+                        "source": "ted_search_api_v3",
+                        "start_date": args.start_date,
+                        "end_date": args.end_date,
+                        "scope": args.scope,
+                        **stored,
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 0
+        except Exception as exc:
+            print(f"TED award ingestion failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "summarize-ted":
+        conn = connect(args.db)
+        print(json.dumps(ted_summary(conn), indent=2, sort_keys=True))
         return 0
 
     return 2
