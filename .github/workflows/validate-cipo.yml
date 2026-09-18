@@ -1,0 +1,53 @@
+name: Validate CIPO Production Ingest
+
+on:
+  push:
+    branches:
+      - "feature/cipo-006"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Run live CIPO owner search and bounded detail enrichment
+        run: |
+          DB="$RUNNER_TEMP/cipo-live.sqlite"
+          RESULT="$(python -m atlanticbridge ingest-cipo-owner \
+            --db "$DB" \
+            --owner "Siemens Aktiengesellschaft" \
+            --detail-limit 5 \
+            --detail-offset 0 \
+            --detail-delay-seconds 0.1)"
+          echo "$RESULT"
+          SUMMARY="$(python -m atlanticbridge summarize-cipo --db "$DB")"
+          echo "$SUMMARY"
+          RESULT="$RESULT" SUMMARY="$SUMMARY" python - <<'PY'
+          import json
+          import os
+
+          result = json.loads(os.environ["RESULT"])
+          summary = json.loads(os.environ["SUMMARY"])
+
+          assert result["num_found"] > 0, result
+          assert result["num_returned"] == result["num_found"], result
+          assert result["detail_requested"] == 5, result
+          assert result["detail_succeeded"] == 5, result
+          assert result["detail_failed"] == 0, result
+          assert result["total_detail_enriched"] == 5, result
+          assert result["detail_enrichment_complete"] is False, result
+          assert summary["search_runs"] == 1, summary
+          assert summary["search_records"] == result["num_found"], summary
+          assert summary["details"] == 5, summary
+          assert summary["fully_enriched_search_runs"] == 0, summary
+          assert summary["exact_detail_owner_matches"] > 0, summary
+          PY
