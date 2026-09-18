@@ -8,7 +8,7 @@ The first releases intentionally prioritize source proof over UI. The core quest
 
 > Can public signals identify European companies before they enter Canada?
 
-The first outcome source is the **Investment Canada Act Decisions and Notification Index**, which provides explicit historical `Notification - new business` labels. Forward-looking evidence now includes daily **Corporations Canada** change detection and the **CORDIS Horizon Europe** project graph linking Canadian organizations to European partners.
+The first outcome source is the **Investment Canada Act Decisions and Notification Index**, which provides explicit historical `Notification - new business` labels. Forward-looking evidence now includes daily **Corporations Canada** change detection, the **CORDIS Horizon Europe** project graph linking Canadian organizations to European partners, and a conservative **GLEIF candidate-resolution layer** for legal-entity identity.
 
 ### Principles
 
@@ -49,6 +49,14 @@ python -m atlanticbridge ingest-cordis \
   --db data/atlanticbridge.sqlite
 python -m atlanticbridge summarize-cordis \
   --db data/atlanticbridge.sqlite
+
+# Resolve a bounded batch of CORDIS source identities to GLEIF candidates
+python -m atlanticbridge resolve-cordis-gleif \
+  --db data/atlanticbridge.sqlite \
+  --limit 50
+
+python -m atlanticbridge summarize-gleif \
+  --db data/atlanticbridge.sqlite
 ```
 
 ## Implemented
@@ -60,13 +68,14 @@ python -m atlanticbridge summarize-cordis \
 - Corporations Canada baseline/diff event detection
 - CORDIS Horizon project/participation relationship graph
 - Canada ↔ EU-27 shared-project coverage summaries
+- GLEIF legal-entity candidate search with explicit ambiguous/review-ready states
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
 
 ## Next source sequence
 
-1. GLEIF — legal-entity and parent-company resolution
+1. Confirm GLEIF candidate identities and materialize direct/ultimate parent links
 2. TED — EU procurement/commercial maturity
 3. CIPO trademarks — pre-entry Canadian market intent
 4. CanadaBuys — Canadian procurement activity
