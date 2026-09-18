@@ -1,4 +1,4 @@
-name: Probe CIPO Trademark CSV
+name: Probe CIPO Trademark Search
 
 on:
   push:
@@ -17,9 +17,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Test system TLS trust against CIPO bulk host
-        run: |
-          curl --fail --show-error --silent --head --max-time 30             "https://opic-cipo.ca/cipo/client_downloads/TM_CSV_2025_01_28/TM_application_main_2025-01-28.zip"
-          curl --fail --show-error --silent --head --max-time 30             "https://opic-cipo.ca/cipo/client_downloads/TM_CSV_2025_01_28/TM_interested_party_2025-01-28.zip"
-      - name: Probe CIPO quarterly trademark schemas
+      - name: Probe current CIPO trademark search form contract
         run: python scripts/probe_cipo.py
