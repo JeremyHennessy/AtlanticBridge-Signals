@@ -6,6 +6,19 @@ Can public evidence detect European companies before they establish a Canadian b
 
 The project will not publish an Expansion Score until this is tested historically.
 
+## Historical outcome baseline
+
+The complete Investment Canada historical backfill was production-validated on 2026-09-18:
+
+- 681 paginated source pages across 36 index buckets;
+- 32,369 deduplicated historical outcome records;
+- coverage from 1984-04 through 2026-07;
+- 5,507 EU-27 records;
+- 1,706 deduplicated EU-27 new-business outcomes;
+- 100% investor source-node coverage in the accepted corpus.
+
+See [INVESTMENT_CANADA_HISTORY_VALIDATION.md](INVESTMENT_CANADA_HISTORY_VALIDATION.md).
+
 ## Outcome definition
 
 The initial positive outcome is:
@@ -18,7 +31,7 @@ Acquisitions are retained but treated as a separate outcome class.
 
 ## First analysis design
 
-1. Ingest historical Investment Canada records.
+1. Ingest the complete paginated Investment Canada historical index and deduplicate source views using stable source node IDs.
 2. Isolate EU-27 investors and classify new-business vs acquisition outcomes.
 3. Resolve investors to durable company identities.
 4. For each positive company, reconstruct signals available 3, 6, 12 and 24 months before the outcome month.

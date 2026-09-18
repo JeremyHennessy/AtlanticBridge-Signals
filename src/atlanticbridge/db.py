@@ -9,7 +9,11 @@ from pathlib import Path
 
 from .sources.corporations_canada import CorporationCanadaRecord
 from .sources.cordis import CordisParticipationRecord, CordisProjectRecord, EU27_ISO2
-from .sources.investment_canada import InvestmentCanadaRecord
+from .sources.investment_canada import (
+    SOURCE_NAME as INVESTMENT_CANADA_SOURCE_NAME,
+    InvestmentCanadaPageSnapshot,
+    InvestmentCanadaRecord,
+)
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -30,14 +34,22 @@ CREATE TABLE IF NOT EXISTS investment_canada_notifications (
     certification_month TEXT NOT NULL,
     notification_type TEXT NOT NULL,
     investor_text TEXT NOT NULL,
+    investor_name TEXT NOT NULL DEFAULT '',
+    investor_locality TEXT NOT NULL DEFAULT '',
+    investor_node_id TEXT NOT NULL DEFAULT '',
     country_of_ultimate_control TEXT NOT NULL,
     canadian_business_text TEXT NOT NULL,
+    canadian_businesses_json TEXT NOT NULL DEFAULT '[]',
+    canadian_business_node_ids_json TEXT NOT NULL DEFAULT '[]',
     is_new_business INTEGER NOT NULL CHECK (is_new_business IN (0, 1)),
     is_eu27 INTEGER NOT NULL CHECK (is_eu27 IN (0, 1)),
     source_url TEXT NOT NULL,
     source_bucket TEXT NOT NULL,
+    source_page INTEGER NOT NULL DEFAULT 0,
     raw_record_hash TEXT NOT NULL,
-    first_observed_at TEXT NOT NULL
+    record_json TEXT NOT NULL DEFAULT '{}',
+    first_observed_at TEXT NOT NULL,
+    last_observed_at TEXT NOT NULL DEFAULT ''
 );
 
 CREATE INDEX IF NOT EXISTS idx_ica_country
@@ -202,6 +214,32 @@ _CORP_COLUMNS = [
 ]
 
 
+_ICA_MIGRATION_COLUMNS = {
+    "investor_name": "TEXT NOT NULL DEFAULT ''",
+    "investor_locality": "TEXT NOT NULL DEFAULT ''",
+    "investor_node_id": "TEXT NOT NULL DEFAULT ''",
+    "canadian_businesses_json": "TEXT NOT NULL DEFAULT '[]'",
+    "canadian_business_node_ids_json": "TEXT NOT NULL DEFAULT '[]'",
+    "source_page": "INTEGER NOT NULL DEFAULT 0",
+    "record_json": "TEXT NOT NULL DEFAULT '{}'",
+    "last_observed_at": "TEXT NOT NULL DEFAULT ''",
+}
+
+
+def _ensure_investment_canada_columns(conn: sqlite3.Connection) -> None:
+    existing = {
+        row["name"]
+        for row in conn.execute("PRAGMA table_info(investment_canada_notifications)")
+    }
+    for column, declaration in _ICA_MIGRATION_COLUMNS.items():
+        if column not in existing:
+            conn.execute(
+                f"ALTER TABLE investment_canada_notifications "
+                f"ADD COLUMN {column} {declaration}"
+            )
+    conn.commit()
+
+
 def connect(path: str | Path) -> sqlite3.Connection:
     if str(path) != ":memory:":
         db_path = Path(path)
@@ -209,7 +247,63 @@ def connect(path: str | Path) -> sqlite3.Connection:
     conn = sqlite3.connect(str(path))
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    _ensure_investment_canada_columns(conn)
     return conn
+
+
+_ICA_INSERT_COLUMNS = (
+    "record_id",
+    "certification_month",
+    "notification_type",
+    "investor_text",
+    "investor_name",
+    "investor_locality",
+    "investor_node_id",
+    "country_of_ultimate_control",
+    "canadian_business_text",
+    "canadian_businesses_json",
+    "canadian_business_node_ids_json",
+    "is_new_business",
+    "is_eu27",
+    "source_url",
+    "source_bucket",
+    "source_page",
+    "raw_record_hash",
+    "record_json",
+    "first_observed_at",
+    "last_observed_at",
+)
+
+
+def _investment_canada_values(
+    record: InvestmentCanadaRecord,
+    observed_at: str,
+) -> tuple[object, ...]:
+    return (
+        record.record_id,
+        record.certification_month,
+        record.notification_type,
+        record.investor_text,
+        record.investor_name,
+        record.investor_locality,
+        record.investor_node_id,
+        record.country_of_ultimate_control,
+        record.canadian_business_text,
+        record.canadian_businesses_json,
+        json.dumps(
+            list(record.canadian_business_node_ids),
+            separators=(",", ":"),
+        ),
+        int(record.is_new_business),
+        int(record.is_eu27),
+        record.source_url,
+        record.source_bucket,
+        record.source_page,
+        record.raw_record_hash,
+        record.record_json,
+        observed_at,
+        observed_at,
+    )
 
 
 def insert_investment_canada_records(
@@ -219,44 +313,133 @@ def insert_investment_canada_records(
 ) -> int:
     observed_at = observed_at or datetime.now(timezone.utc).isoformat()
     before = conn.total_changes
+    placeholders = ", ".join("?" for _ in _ICA_INSERT_COLUMNS)
     conn.executemany(
-        """
+        f"""
         INSERT OR IGNORE INTO investment_canada_notifications (
-            record_id,
-            certification_month,
-            notification_type,
-            investor_text,
-            country_of_ultimate_control,
-            canadian_business_text,
-            is_new_business,
-            is_eu27,
-            source_url,
-            source_bucket,
-            raw_record_hash,
-            first_observed_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            {", ".join(_ICA_INSERT_COLUMNS)}
+        ) VALUES ({placeholders})
         """,
         [
-            (
-                record.record_id,
-                record.certification_month,
-                record.notification_type,
-                record.investor_text,
-                record.country_of_ultimate_control,
-                record.canadian_business_text,
-                int(record.is_new_business),
-                int(record.is_eu27),
-                record.source_url,
-                record.source_bucket,
-                record.raw_record_hash,
-                observed_at,
-            )
+            _investment_canada_values(record, observed_at)
             for record in records
         ],
     )
     conn.commit()
     return conn.total_changes - before
 
+
+def replace_investment_canada_history(
+    conn: sqlite3.Connection,
+    records: Iterable[InvestmentCanadaRecord],
+    page_snapshots: Iterable[InvestmentCanadaPageSnapshot],
+    *,
+    observed_at: str | None = None,
+) -> dict[str, int]:
+    observed_at = observed_at or datetime.now(timezone.utc).isoformat()
+    records = list(records)
+    page_snapshots = list(page_snapshots)
+
+    if not records:
+        raise ValueError("Investment Canada historical snapshot contained zero records")
+    if not page_snapshots:
+        raise ValueError("Investment Canada historical snapshot contained zero pages")
+
+    record_ids = [record.record_id for record in records]
+    if len(record_ids) != len(set(record_ids)):
+        raise ValueError("Investment Canada historical snapshot contains duplicate record IDs")
+
+    conn.execute("BEGIN")
+    try:
+        conn.execute("DROP TABLE IF EXISTS temp.investment_canada_history_keys")
+        conn.execute(
+            """
+            CREATE TEMP TABLE investment_canada_history_keys (
+                record_id TEXT PRIMARY KEY
+            )
+            """
+        )
+        conn.executemany(
+            "INSERT INTO investment_canada_history_keys (record_id) VALUES (?)",
+            [(record_id,) for record_id in record_ids],
+        )
+
+        placeholders = ", ".join("?" for _ in _ICA_INSERT_COLUMNS)
+        update_columns = [
+            column
+            for column in _ICA_INSERT_COLUMNS
+            if column not in {"record_id", "first_observed_at"}
+        ]
+        updates = ",\n                    ".join(
+            f"{column} = excluded.{column}"
+            for column in update_columns
+        )
+        conn.executemany(
+            f"""
+            INSERT INTO investment_canada_notifications (
+                {", ".join(_ICA_INSERT_COLUMNS)}
+            ) VALUES ({placeholders})
+            ON CONFLICT(record_id) DO UPDATE SET
+                {updates}
+            """,
+            [
+                _investment_canada_values(record, observed_at)
+                for record in records
+            ],
+        )
+
+        conn.execute(
+            """
+            DELETE FROM investment_canada_notifications
+            WHERE record_id NOT IN (
+                SELECT record_id
+                FROM investment_canada_history_keys
+            )
+            """
+        )
+
+        conn.executemany(
+            """
+            INSERT OR IGNORE INTO source_snapshots (
+                source_name,
+                source_url,
+                source_bucket,
+                retrieved_at,
+                sha256,
+                record_count
+            ) VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            [
+                (
+                    INVESTMENT_CANADA_SOURCE_NAME,
+                    snapshot.source_url,
+                    f"{snapshot.source_bucket}:page={snapshot.source_page}",
+                    observed_at,
+                    snapshot.sha256,
+                    snapshot.record_count,
+                )
+                for snapshot in page_snapshots
+            ],
+        )
+
+        current_records = conn.execute(
+            "SELECT COUNT(*) FROM investment_canada_notifications"
+        ).fetchone()[0]
+        if current_records != len(records):
+            raise ValueError(
+                "Investment Canada historical replacement count mismatch: "
+                f"expected={len(records)} stored={current_records}"
+            )
+
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+
+    return {
+        "records_stored": len(records),
+        "page_snapshots": len(page_snapshots),
+    }
 
 def insert_source_snapshot(
     conn: sqlite3.Connection,
@@ -287,6 +470,12 @@ def investment_canada_summary(conn: sqlite3.Connection) -> dict[str, object]:
             SUM(is_eu27) AS eu27_records,
             SUM(CASE WHEN is_eu27 = 1 AND is_new_business = 1 THEN 1 ELSE 0 END)
                 AS eu27_new_business_records,
+            COUNT(DISTINCT CASE
+                WHEN is_eu27 = 1 AND is_new_business = 1
+                THEN NULLIF(investor_node_id, '')
+            END) AS eu27_new_business_unique_investor_nodes,
+            SUM(CASE WHEN investor_node_id <> '' THEN 1 ELSE 0 END)
+                AS records_with_investor_node_id,
             MIN(certification_month) AS earliest_month,
             MAX(certification_month) AS latest_month
         FROM investment_canada_notifications
@@ -309,15 +498,34 @@ def investment_canada_summary(conn: sqlite3.Connection) -> dict[str, object]:
         )
     ]
 
+    new_business_by_year = [
+        dict(item)
+        for item in conn.execute(
+            """
+            SELECT
+                SUBSTR(certification_month, 1, 4) AS year,
+                COUNT(*) AS records
+            FROM investment_canada_notifications
+            WHERE is_eu27 = 1
+              AND is_new_business = 1
+            GROUP BY SUBSTR(certification_month, 1, 4)
+            ORDER BY year
+            """
+        )
+    ]
+
     return {
         "total_records": row["total_records"] or 0,
         "eu27_records": row["eu27_records"] or 0,
         "eu27_new_business_records": row["eu27_new_business_records"] or 0,
+        "eu27_new_business_unique_investor_nodes":
+            row["eu27_new_business_unique_investor_nodes"] or 0,
+        "records_with_investor_node_id": row["records_with_investor_node_id"] or 0,
         "earliest_month": row["earliest_month"],
         "latest_month": row["latest_month"],
         "eu27_by_country": by_country,
+        "eu27_new_business_by_year": new_business_by_year,
     }
-
 
 def _create_corporation_stage(conn: sqlite3.Connection) -> None:
     conn.execute("DROP TABLE IF EXISTS temp.corporations_canada_stage")

@@ -39,6 +39,24 @@ The collector preserves:
 
 The Canadian-business cell is intentionally not over-normalized in Data Proof 001. Historical variation must be inspected before reliable business-name, city and activity extraction is locked.
 
+## Investment Canada historical-pagination contract
+
+The first page of the public `/all` index contains only 50 current rows. It is not a historical corpus.
+
+Production historical ingestion now crawls the source's complete alphanumeric bucket index (`0-9`, `a-z`) with page-level completeness checks. The accepted live crawl on 2026-09-18 covered 681 pages and produced 33,106 row appearances.
+
+Because the public index can repeat a record across bucket/page views, page location and raw display text are not used as primary identity. Historical records are deduplicated by stable source structure:
+
+- certification month;
+- notification type;
+- investor Drupal node ID;
+- country of ultimate control; and
+- Canadian-business node IDs.
+
+The accepted crawl produced 32,369 unique records from 33,106 appearances. All unique rows had investor source node IDs. A structural duplicate with conflicting raw content causes a hard failure.
+
+The authoritative historical replacement is transactional and stores a SHA-256 snapshot for every fetched page.
+
 ## Corporations Canada contract
 
 The active-CBCA source schema was probed live on 2026-09-18 before implementation. The current English CSV contains 18 fields:

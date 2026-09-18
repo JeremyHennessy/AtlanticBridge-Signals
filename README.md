@@ -32,7 +32,7 @@ python -m atlanticbridge init-db --db data/atlanticbridge.sqlite
 # Historical outcome labels
 python -m atlanticbridge ingest-investment-canada \
   --db data/atlanticbridge.sqlite \
-  --buckets all
+  --history
 
 # First federal-corporation snapshot
 python -m atlanticbridge ingest-corporations-canada \
