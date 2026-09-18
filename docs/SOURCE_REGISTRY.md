@@ -16,7 +16,7 @@ Status values:
 | TED Search API v3 | EU | Commercial maturity, contract awards, winner identity evidence, CPV sectors | Continuous | **IMPLEMENTED** |
 | CIPO live Canadian Trademarks Database | Canada | Current trademark ownership and filed-date evidence | Live database | **IMPLEMENTED — targeted owner search** |
 | CanadaBuys award notices | Canada | Federal award, supplier, value, category and geography evidence | Current fiscal file updated daily | **IMPLEMENTED** |
-| Statistics Canada trade data | Canada | Sector/country/province context | Monthly | **NEXT** |
+| Statistics Canada tables 12-10-0175-01 / 12-10-0173-01 | Canada | Nova Scotia/Canada EU trade context by market and NAPCS section | Monthly major markets + annual full EU | **IMPLEMENTED** |
 | Canadian Importers Database | Canada | Potential distributor/importer mapping by product/origin | Periodic | **LATER** |
 | Nova Scotia procurement | Nova Scotia | Local buyer/award signals | Ongoing | **LATER** |
 | Nova Scotia Registry of Joint Stock Companies | Nova Scotia | Local incorporation verification | Public search | **VERIFY** |
@@ -227,3 +227,57 @@ All 80 source fields are also preserved as canonical row JSON.
 Supplier-country values are normalized conservatively because the live file mixes ISO codes and names. The EU-27 flag is derived from that normalized country, while the raw source country remains stored unchanged.
 
 A CanadaBuys federal award is direct evidence of Canadian commercial activity. It is not automatically treated as a pre-entry signal or scored until the historical model distinguishes awards that precede an Investment Canada entry from awards occurring after an established Canadian presence.
+
+
+## Statistics Canada trade-context contract
+
+AtlanticBridge uses two official Statistics Canada customs-basis merchandise-trade tables because no single table provides both monthly provincial timeliness and full EU-country breadth.
+
+### Monthly major-market context — table 12-10-0175-01
+
+PID: `12100175`
+
+The live source was probed on 2026-09-18 and contained:
+
+- **3,860,857** source rows
+- latest reference month: **2026-07**
+- 17 columns
+- province/territory geography
+- imports, domestic exports and re-exports
+- 12 NAPCS merchandise sections plus total merchandise
+- six EU countries among the principal trading partners:
+  Belgium, France, Germany, Italy, Netherlands and Spain
+
+For Nova Scotia in July 2026, the six EU markets produced 156 source rows across the current available trade/commodity combinations.
+
+### Annual full-EU context — table 12-10-0173-01
+
+PID: `12100173`
+
+The live source was probed on 2026-09-18 and contained:
+
+- **2,545,452** source rows
+- latest reference year: **2025**
+- 17 columns
+- province/territory geography
+- imports and exports
+- NAPCS merchandise sections plus all-sections total
+- all **27 EU countries**
+
+Nova Scotia had 702 EU-country rows in the latest 2025 annual source.
+
+### Storage and interpretation
+
+Production downloads the official full-table ZIP through Statistics Canada's WDS, validates the exact observed schema, hashes the archive, then stores only rows needed by AtlanticBridge:
+
+- geography: `Nova Scotia` and `Canada`
+- partner: the six named EU principal markets for the monthly table
+- partner: all EU-27 countries for the annual table
+
+The two cadences remain separate. Annual exports are not silently equated to monthly domestic exports.
+
+Values are stored exactly as published, including status/symbol/termination fields. The source uses a scalar factor of thousands for these dollar series; summaries expose both the published thousand-dollar value and a derived CAD value.
+
+Statistics Canada trade data is **aggregate market context only**. It does not prove that any individual company plans to enter Canada and cannot independently create an Expansion Likelihood signal.
+
+The broad NAPCS sections `Aircraft and other transportation equipment and parts [C21]` and `Special transactions trade [C23]` are preserved for source integrity but are excluded from any future AtlanticBridge scoring because they can contain mixed or non-commercially-comparable activity, including defence-related content.
