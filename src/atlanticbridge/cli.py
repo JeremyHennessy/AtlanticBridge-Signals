@@ -50,6 +50,13 @@ from .sources.canadabuys import (
 )
 from .sources.ted import search_awards
 from .ted_store import ingest_ted_search_result, ted_summary
+from .sources.statcan_trade import (
+    ANNUAL_CONFIG as STATCAN_ANNUAL_CONFIG,
+    MONTHLY_CONFIG as STATCAN_MONTHLY_CONFIG,
+    download_table as download_statcan_table,
+    iter_filtered_records as iter_statcan_records,
+)
+from .statcan_trade_store import ingest_statcan_snapshot, statcan_trade_summary
 
 
 def _split_buckets(value: str) -> list[str]:
@@ -179,6 +186,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit current CanadaBuys award coverage and EU-27 supplier evidence",
     )
     canadabuys_summary_parser.add_argument("--db", required=True)
+
+    statcan = subparsers.add_parser(
+        "ingest-statcan-trade",
+        help=(
+            "Ingest Statistics Canada Nova Scotia/Canada EU trade context "
+            "from monthly major-market and annual full-EU tables"
+        ),
+    )
+    statcan.add_argument("--db", required=True)
+    statcan.add_argument(
+        "--source",
+        choices=["both", "monthly", "annual"],
+        default="both",
+    )
+
+    statcan_summary_parser = subparsers.add_parser(
+        "summarize-statcan-trade",
+        help="Emit aggregate Nova Scotia EU trade context and year-over-year comparisons",
+    )
+    statcan_summary_parser.add_argument("--db", required=True)
 
     return parser
 
@@ -368,6 +395,54 @@ def _ingest_canadabuys(
     return 0
 
 
+
+def _ingest_statcan(
+    db_path: str,
+    *,
+    source: str,
+) -> int:
+    conn = connect(db_path)
+    retrieved_at = datetime.now(timezone.utc).isoformat()
+    configs = []
+    if source in {"both", "monthly"}:
+        configs.append(STATCAN_MONTHLY_CONFIG)
+    if source in {"both", "annual"}:
+        configs.append(STATCAN_ANNUAL_CONFIG)
+
+    results = []
+    with tempfile.TemporaryDirectory(prefix="atlanticbridge-statcan-") as temp_dir:
+        for config in configs:
+            download = download_statcan_table(config, temp_dir)
+            result = ingest_statcan_snapshot(
+                conn,
+                download,
+                iter_statcan_records(download),
+                observed_at=retrieved_at,
+            )
+            insert_source_snapshot(
+                conn,
+                source_name=config.source_name,
+                source_url=download.download_url,
+                source_bucket=config.source_bucket,
+                retrieved_at=retrieved_at,
+                sha256=download.archive_sha256,
+                record_count=int(result["filtered_records"]),
+            )
+            results.append(result)
+
+    print(
+        json.dumps(
+            {
+                "source": "statistics_canada_trade_context",
+                "retrieved_at": retrieved_at,
+                "tables": results,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
@@ -501,6 +576,18 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "summarize-canadabuys":
         conn = connect(args.db)
         print(json.dumps(canadabuys_summary(conn), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "ingest-statcan-trade":
+        try:
+            return _ingest_statcan(args.db, source=args.source)
+        except Exception as exc:
+            print(f"Statistics Canada trade ingestion failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "summarize-statcan-trade":
+        conn = connect(args.db)
+        print(json.dumps(statcan_trade_summary(conn), indent=2, sort_keys=True))
         return 0
 
     return 2
