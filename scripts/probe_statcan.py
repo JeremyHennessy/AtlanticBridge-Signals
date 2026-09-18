@@ -60,7 +60,7 @@ with tempfile.TemporaryDirectory(prefix="atlanticbridge-statcan-") as temp_dir:
                 total_rows += 1
                 ref = (row.get("REF_DATE") or "").strip()
                 province = (row.get("GEO") or "").strip()
-                partner = (row.get("Principal trading partner") or "").strip()
+                partner = (row.get("Principal trading partners") or "").strip()
                 trade = (row.get("Trade") or "").strip()
                 commodity = (
                     row.get("North American Product Classification System (NAPCS)") or ""
