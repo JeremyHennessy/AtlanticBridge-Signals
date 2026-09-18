@@ -10,7 +10,7 @@ Status values:
 | Source | Jurisdiction | Primary value | Cadence | Status |
 |---|---|---|---|---|
 | Investment Canada Act Decisions & Notification Index | Canada | Historical entry/acquisition outcomes | Monthly/public index | **IMPLEMENTED** |
-| Corporations Canada open data/API | Canada | New subsidiaries, offices, directors, status changes | Real-time API / open data | **NEXT** |
+| Corporations Canada active CBCA open data | Canada | New federal corporations and registered-office/status changes | Typically daily | **IMPLEMENTED** |
 | CORDIS Horizon Europe open data | EU | Company/research relationships with Canadian organizations | Open datasets | **NEXT** |
 | GLEIF LEI + relationship data | Global | Entity resolution, parent/child identity | Frequent | **NEXT** |
 | TED procurement data/API | EU | Commercial maturity, awards, geography, CPV sectors | Continuous | **NEXT** |
@@ -23,9 +23,9 @@ Status values:
 | Invest Nova Scotia disclosures | Nova Scotia | Historical expansion/incentive validation | Event driven | **LATER** |
 | Company careers/newsrooms | Company | Hiring/market-entry intent | Variable | **LATER** |
 
-## Current source contract: Investment Canada
+## Investment Canada contract
 
-The initial collector preserves:
+The collector preserves:
 
 - certification month
 - notification type
@@ -38,3 +38,24 @@ The initial collector preserves:
 - full-page snapshot hash
 
 The Canadian-business cell is intentionally not over-normalized in Data Proof 001. Historical variation must be inspected before reliable business-name, city and activity extraction is locked.
+
+## Corporations Canada contract
+
+The active-CBCA source schema was probed live on 2026-09-18 before implementation. The current English CSV contains 18 fields:
+
+- corporation number and business number
+- two corporate-name forms
+- governing legislation
+- status and status detail
+- anniversary date
+- year of last annual filing
+- date of last annual meeting
+- registered-office street, city, province/territory, country and postal code
+- minimum/maximum director counts
+
+The source is approximately 100 MB and is streamed to disk. The first run is a **baseline**. Later runs use **diff** mode and emit only:
+
+- `CORPORATION_APPEARED`
+- `CORPORATION_CHANGED`
+
+The collector deliberately does **not** infer a disappearance from absence in the active file. A disappearance signal will only be added after a source-completeness gate and inactive-corporation reconciliation exist.
