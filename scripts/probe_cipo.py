@@ -2,71 +2,71 @@ from __future__ import annotations
 
 import http.cookiejar
 import json
-import re
-from urllib.parse import urljoin
 from urllib.request import HTTPCookieProcessor, Request, build_opener
 
-URL = "https://ised-isde.canada.ca/cipo/trademark-search/srch?lang=eng"
+PAGE_URL = "https://ised-isde.canada.ca/cipo/trademark-search/srch?lang=eng"
+SEARCH_URL = "https://ised-isde.canada.ca/cipo/trademark-search/srch"
 
-jar = http.cookiejar.CookieJar()
-opener = build_opener(HTTPCookieProcessor(jar))
 headers = {
     "User-Agent": (
         "AtlanticBridge-Signals/0.1 "
         "(public-data research; https://github.com/JeremyHennessy/AtlanticBridge-Signals)"
     )
 }
+jar = http.cookiejar.CookieJar()
+opener = build_opener(HTTPCookieProcessor(jar))
 
-with opener.open(Request(URL, headers=headers), timeout=60) as response:
-    html = response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+# Establish the same session/context used by the public search UI.
+with opener.open(Request(PAGE_URL, headers=headers), timeout=60) as response:
+    page_status = response.status
+    response.read(1)
 
-scripts = re.findall(r'<script[^>]+src=["\']([^"\']+)["\']', html, flags=re.IGNORECASE)
-search_script = next(
-    (urljoin(URL, src) for src in scripts if "/js/search.js" in src),
-    None,
+payload = {
+    "domIntlFilter": "1",
+    "searchfield1": "ownname",
+    "textfield1": "Siemens",
+    "nicetextfield1": [],
+    "cipotextfield1": [],
+    "display": "list",
+    "maxReturn": "1000",
+}
+
+request = Request(
+    SEARCH_URL,
+    data=json.dumps(payload).encode("utf-8"),
+    method="POST",
+    headers={
+        **headers,
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Referer": PAGE_URL,
+    },
 )
-if not search_script:
-    raise RuntimeError("CIPO search.js URL not found")
+with opener.open(request, timeout=60) as response:
+    body = response.read()
+    content_type = response.headers.get_content_type()
+    response_status = response.status
 
-with opener.open(Request(search_script, headers=headers), timeout=60) as response:
-    js = response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+result = {
+    "page_status": page_status,
+    "search_status": response_status,
+    "content_type": content_type,
+    "response_bytes": len(body),
+    "cookies": [cookie.name for cookie in jar],
+}
 
-patterns = [
-    "tm-search-form",
-    "serializeJSON",
-    "JSON.stringify",
-    "window.location",
-    "location.href",
-    "encodeURIComponent",
-    "/srch",
-    "searchfield1",
-    "maxReturn",
-    "$.ajax",
-]
-
-snippets = {}
-for pattern in patterns:
-    matches = []
-    for match in re.finditer(re.escape(pattern), js, flags=re.IGNORECASE):
-        start = max(0, match.start() - 650)
-        end = min(len(js), match.end() + 1100)
-        snippet = re.sub(r"\s+", " ", js[start:end]).strip()
-        if snippet not in matches:
-            matches.append(snippet)
-        if len(matches) >= 6:
+if content_type == "application/json":
+    data = json.loads(body.decode("utf-8", errors="replace"))
+    result["top_level_keys"] = sorted(data.keys())
+    result["numFound"] = data.get("numFound")
+    for key in ("docs", "results", "documents", "trademarks"):
+        value = data.get(key)
+        if isinstance(value, list):
+            result["result_key"] = key
+            result["returned_count"] = len(value)
+            result["sample"] = value[:3]
             break
-    snippets[pattern] = matches
+else:
+    result["body_prefix"] = body[:1000].decode("utf-8", errors="replace")
 
-print(
-    json.dumps(
-        {
-            "page_url": URL,
-            "search_script_url": search_script,
-            "search_script_bytes": len(js.encode("utf-8")),
-            "snippets": snippets,
-        },
-        indent=2,
-        ensure_ascii=False,
-        sort_keys=True,
-    )
-)
+print(json.dumps(result, indent=2, ensure_ascii=False, sort_keys=True))
