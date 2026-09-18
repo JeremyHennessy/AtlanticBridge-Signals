@@ -29,8 +29,10 @@ BODY = {
     ],
     "page": 1,
     "limit": 5,
+    "scope": "ALL",
     "checkQuerySyntax": True,
     "paginationMode": "PAGE_NUMBER",
+    "onlyLatestVersions": False,
 }
 
 request = Request(
