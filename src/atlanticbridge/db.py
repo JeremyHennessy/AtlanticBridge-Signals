@@ -10,6 +10,7 @@ from pathlib import Path
 from .sources.corporations_canada import CorporationCanadaRecord
 from .sources.cordis import CordisParticipationRecord, CordisProjectRecord, EU27_ISO2
 from .sources.investment_canada import (
+    SOURCE_NAME as INVESTMENT_CANADA_SOURCE_NAME,
     InvestmentCanadaPageSnapshot,
     InvestmentCanadaRecord,
 )
@@ -410,7 +411,7 @@ def replace_investment_canada_history(
             """,
             [
                 (
-                    SOURCE_NAME,
+                    INVESTMENT_CANADA_SOURCE_NAME,
                     snapshot.source_url,
                     f"{snapshot.source_bucket}:page={snapshot.source_page}",
                     observed_at,
