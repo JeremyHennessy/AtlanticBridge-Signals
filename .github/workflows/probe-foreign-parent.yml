@@ -1,9 +1,6 @@
 name: Probe GLEIF Parent Relationships
 
 on:
-  push:
-    branches:
-      - "feature/foreign-parent-identity-012"
   workflow_dispatch:
 
 permissions:
