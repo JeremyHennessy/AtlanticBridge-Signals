@@ -10,7 +10,7 @@ Status values:
 | Source | Jurisdiction | Primary value | Cadence | Status |
 |---|---|---|---|---|
 | Investment Canada Act Decisions & Notification Index | Canada | Historical entry/acquisition outcomes | Monthly/public index | **IMPLEMENTED** |
-| Corporations Canada active CBCA open data | Canada | New federal corporations and registered-office/status changes | Typically daily | **IMPLEMENTED** |
+| Corporations Canada active + inactive CBCA open data / public JSON detail | Canada | Federal entry-entity identity, status, registered office and historical certificate timing | Typically daily / live detail | **IMPLEMENTED** |
 | CORDIS Horizon Europe open data | EU | EU-Canada project/organization relationships and funding context | Monthly bulk archive | **IMPLEMENTED** |
 | GLEIF API / Golden Copy | Global | Candidate legal-entity resolution and ownership links | Golden Copy updated multiple times daily | **IMPLEMENTED — candidate layer** |
 | TED Search API v3 | EU | Commercial maturity, contract awards, winner identity evidence, CPV sectors | Continuous | **IMPLEMENTED** |
@@ -299,3 +299,30 @@ Values are stored exactly as published, including status/symbol/termination fiel
 Statistics Canada trade data is **aggregate market context only**. It does not prove that any individual company plans to enter Canada and cannot independently create an Expansion Likelihood signal.
 
 The broad NAPCS sections `Aircraft and other transportation equipment and parts [C21]` and `Special transactions trade [C23]` are preserved for source integrity but are excluded from any future AtlanticBridge scoring because they can contain mixed or non-commercially-comparable activity, including defence-related content.
+
+
+## Federal entry-entity identity contract
+
+AtlanticBridge separates **Canadian entry entity identity** from **foreign parent identity**.
+
+For recent EU new-business Investment Canada outcomes, the entry-entity resolver:
+
+1. reads the structured Canadian-business names and locations already preserved from Investment Canada;
+2. downloads both active and inactive CBCA business-corporation datasets;
+3. performs conservative exact normalized legal-name matching only;
+4. uses registered-office province/city as corroborating evidence, not as a substitute for legal-name identity;
+5. verifies selected corporations against Corporations Canada's public JSON corporation detail endpoint;
+6. requires the matched Canadian business name to appear in the official current/historical corporate-name list before marking `FEDERAL_ENTITY_CONFIRMED`;
+7. extracts the first federal jurisdiction event (incorporation, amalgamation or continuance) and compares its date to the Investment Canada outcome month.
+
+The gold cohort contains only detail-confirmed federal entry entities. A confirmed Canadian corporation is **not** automatically treated as the European operating company or parent.
+
+Investor-role states preserve that boundary:
+
+- `CANADIAN_VEHICLE_CONFIRMED`
+- `CANADIAN_VEHICLE_LIKELY`
+- `DISTINCT_INVESTOR_REQUIRES_FOREIGN_RESOLUTION`
+
+Federal certificate timing is a candidate pre-entry signal. Same-month events remain separate because the Investment Canada source is month-granular and does not provide an exact notification day.
+
+The federal datasets do not cover provincially incorporated companies. `NO_FEDERAL_EXACT_MATCH` therefore means **unresolved at the federal layer**, not that no Canadian corporation exists.

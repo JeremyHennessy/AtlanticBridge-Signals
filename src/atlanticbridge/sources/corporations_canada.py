@@ -3,13 +3,28 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import time
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 ACTIVE_BUSINESS_URL = "https://d4bf66bykfyaf.cloudfront.net/corporations-active-cbca-en.csv"
+INACTIVE_BUSINESS_URL = (
+    "https://d4bf66bykfyaf.cloudfront.net/"
+    "corporations-inactive-or-dissolved-cbca-en.csv"
+)
+FEDERAL_CORPORATION_JSON_BASE = (
+    "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations"
+)
 SOURCE_NAME = "corporations_canada_active_business"
 SOURCE_BUCKET = "active-cbca"
+INACTIVE_SOURCE_NAME = "corporations_canada_inactive_business"
+INACTIVE_SOURCE_BUCKET = "inactive-cbca"
+USER_AGENT = (
+    "AtlanticBridge-Signals/0.1 "
+    "(public-data research; https://github.com/JeremyHennessy/AtlanticBridge-Signals)"
+)
 
 EXPECTED_HEADER = [
     "Corporation number",
@@ -60,6 +75,12 @@ class CorporationCanadaRecord:
     source_url: str = ACTIVE_BUSINESS_URL
 
     @property
+    def source_state(self) -> str:
+        if self.source_url == INACTIVE_BUSINESS_URL:
+            return "INACTIVE"
+        return "ACTIVE"
+
+    @property
     def payload(self) -> dict[str, str]:
         return {
             "corporation_number": self.corporation_number,
@@ -84,7 +105,12 @@ class CorporationCanadaRecord:
 
     @property
     def record_json(self) -> str:
-        return json.dumps(self.payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return json.dumps(
+            self.payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
 
     @property
     def record_hash(self) -> str:
@@ -124,54 +150,90 @@ class DownloadResult:
     source_url: str
 
 
+def download_business_csv(
+    destination: str | Path,
+    *,
+    source_url: str,
+    timeout: int = 180,
+    attempts: int = 3,
+    backoff_seconds: float = 1.0,
+) -> DownloadResult:
+    if attempts < 1:
+        raise ValueError("attempts must be at least 1")
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    request = Request(source_url, headers={"User-Agent": USER_AGENT})
+
+    for attempt in range(1, attempts + 1):
+        part = destination.with_suffix(destination.suffix + ".part")
+        try:
+            digest = hashlib.sha256()
+            byte_count = 0
+            with urlopen(request, timeout=timeout) as response, part.open("wb") as handle:
+                while True:
+                    chunk = response.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    digest.update(chunk)
+                    byte_count += len(chunk)
+                    handle.write(chunk)
+            part.replace(destination)
+            return DownloadResult(
+                path=destination,
+                sha256=digest.hexdigest(),
+                byte_count=byte_count,
+                source_url=source_url,
+            )
+        except HTTPError as exc:
+            part.unlink(missing_ok=True)
+            retryable = exc.code == 429 or 500 <= exc.code <= 599
+            if not retryable or attempt >= attempts:
+                raise
+        except (TimeoutError, URLError):
+            part.unlink(missing_ok=True)
+            if attempt >= attempts:
+                raise
+        time.sleep(backoff_seconds * (2 ** (attempt - 1)))
+
+    raise AssertionError("unreachable")
+
+
 def download_active_business_csv(
     destination: str | Path,
     *,
     source_url: str = ACTIVE_BUSINESS_URL,
     timeout: int = 120,
 ) -> DownloadResult:
-    destination = Path(destination)
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    request = Request(
-        source_url,
-        headers={
-            "User-Agent": (
-                "AtlanticBridge-Signals/0.1 "
-                "(public-data research; https://github.com/JeremyHennessy/AtlanticBridge-Signals)"
-            )
-        },
-    )
-
-    digest = hashlib.sha256()
-    byte_count = 0
-
-    with urlopen(request, timeout=timeout) as response, destination.open("wb") as handle:
-        while True:
-            chunk = response.read(1024 * 1024)
-            if not chunk:
-                break
-            digest.update(chunk)
-            byte_count += len(chunk)
-            handle.write(chunk)
-
-    return DownloadResult(
-        path=destination,
-        sha256=digest.hexdigest(),
-        byte_count=byte_count,
+    return download_business_csv(
+        destination,
         source_url=source_url,
+        timeout=timeout,
     )
 
 
-def iter_active_business_csv(
+def download_inactive_business_csv(
+    destination: str | Path,
+    *,
+    source_url: str = INACTIVE_BUSINESS_URL,
+    timeout: int = 180,
+) -> DownloadResult:
+    return download_business_csv(
+        destination,
+        source_url=source_url,
+        timeout=timeout,
+    )
+
+
+def iter_business_csv(
     path: str | Path,
     *,
-    source_url: str = ACTIVE_BUSINESS_URL,
+    source_url: str,
 ):
     with Path(path).open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         if reader.fieldnames != EXPECTED_HEADER:
             raise ValueError(
-                "Corporations Canada active-business schema changed. "
+                "Corporations Canada business schema changed. "
                 f"Expected {EXPECTED_HEADER!r}, received {reader.fieldnames!r}"
             )
 
@@ -201,3 +263,101 @@ def iter_active_business_csv(
                 maximum_number_of_directors=_clean(row["Maximum number of directors"]),
                 source_url=source_url,
             )
+
+
+def iter_active_business_csv(
+    path: str | Path,
+    *,
+    source_url: str = ACTIVE_BUSINESS_URL,
+):
+    yield from iter_business_csv(path, source_url=source_url)
+
+
+def iter_inactive_business_csv(
+    path: str | Path,
+    *,
+    source_url: str = INACTIVE_BUSINESS_URL,
+):
+    yield from iter_business_csv(path, source_url=source_url)
+
+
+def corporation_json_url(corporation_number: str) -> str:
+    identifier = "".join(ch for ch in corporation_number if ch.isdigit())
+    if not identifier:
+        raise ValueError("corporation_number must contain digits")
+    return f"{FEDERAL_CORPORATION_JSON_BASE}/{identifier}.json?lang=eng"
+
+
+def fetch_corporation_json(
+    corporation_number: str,
+    *,
+    timeout: int = 45,
+    attempts: int = 3,
+    backoff_seconds: float = 1.0,
+) -> tuple[str, dict]:
+    url = corporation_json_url(corporation_number)
+    request = Request(url, headers={"User-Agent": USER_AGENT})
+
+    for attempt in range(1, attempts + 1):
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                payload = json.load(response)
+            if not isinstance(payload, list) or not payload:
+                raise ValueError(
+                    f"Unexpected Corporations Canada JSON response for {corporation_number}"
+                )
+            english = payload[0]
+            if not isinstance(english, dict):
+                raise ValueError(
+                    f"Corporations Canada JSON did not return an English corporation "
+                    f"object for {corporation_number}: {payload!r}"
+                )
+            return url, english
+        except HTTPError as exc:
+            retryable = exc.code == 429 or 500 <= exc.code <= 599
+            if not retryable or attempt >= attempts:
+                raise
+        except (TimeoutError, URLError):
+            if attempt >= attempts:
+                raise
+        time.sleep(backoff_seconds * (2 ** (attempt - 1)))
+
+    raise AssertionError("unreachable")
+
+
+def detail_corporation_names(payload: dict) -> tuple[str, ...]:
+    names: list[str] = []
+    for wrapper in payload.get("corporationNames") or []:
+        if not isinstance(wrapper, dict):
+            continue
+        item = wrapper.get("CorporationName")
+        if not isinstance(item, dict):
+            continue
+        name = _clean(item.get("name"))
+        if name and name not in names:
+            names.append(name)
+    return tuple(names)
+
+
+def first_federal_jurisdiction_event(payload: dict) -> tuple[str, str]:
+    candidates: list[tuple[str, str]] = []
+    for wrapper in payload.get("activities") or []:
+        if not isinstance(wrapper, dict):
+            continue
+        item = wrapper.get("activity")
+        if not isinstance(item, dict):
+            continue
+        activity = _clean(item.get("activity"))
+        event_date = _clean(item.get("date"))
+        folded = activity.casefold()
+        if not event_date:
+            continue
+        if any(
+            token in folded
+            for token in ("incorporation", "amalgamation", "continuance")
+        ):
+            candidates.append((event_date, activity))
+    if not candidates:
+        return "", ""
+    event_date, activity = min(candidates, key=lambda item: item[0])
+    return activity, event_date

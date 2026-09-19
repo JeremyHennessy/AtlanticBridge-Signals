@@ -1,9 +1,6 @@
 name: Probe Entrant Entity Gold Cohort
 
 on:
-  push:
-    branches:
-      - "feature/entity-resolution-010"
   workflow_dispatch:
 
 permissions:
