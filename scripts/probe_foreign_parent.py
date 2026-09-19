@@ -8,10 +8,6 @@ LEIS = [
     "984500EFD2E94YM6IC47",
     "2138001R35G3IZJZZC68",
 ]
-RELATIONSHIPS = [
-    "direct-parent-relationship",
-    "ultimate-parent-relationship",
-]
 UA = (
     "AtlanticBridge-Signals/0.1 "
     "(source-backed commercial research; "
@@ -43,12 +39,21 @@ def get(url: str):
 
 out = {}
 for lei in LEIS:
-    out[lei] = {
-        "record": get(f"{BASE}/{lei}"),
-        "relationships": {
-            relationship: get(f"{BASE}/{lei}/{relationship}")
-            for relationship in RELATIONSHIPS
-        },
-    }
+    record = get(f"{BASE}/{lei}")
+    result = {"record": record, "followed_relationship_links": {}}
+    payload = record.get("payload") or {}
+    data = payload.get("data") or {}
+    relationships = data.get("relationships") or {}
+
+    for relationship_name in ("direct-parent", "ultimate-parent"):
+        relationship = relationships.get(relationship_name) or {}
+        links = relationship.get("links") or {}
+        for link_type in ("related", "reporting-exception"):
+            url = links.get(link_type)
+            if url:
+                result["followed_relationship_links"][
+                    f"{relationship_name}:{link_type}"
+                ] = get(url)
+    out[lei] = result
 
 print(json.dumps(out, indent=2, ensure_ascii=False, sort_keys=True))
