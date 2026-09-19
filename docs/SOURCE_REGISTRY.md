@@ -19,7 +19,7 @@ Status values:
 | Statistics Canada tables 12-10-0175-01 / 12-10-0173-01 | Canada | Nova Scotia/Canada EU trade context by market and NAPCS section | Monthly major markets + annual full EU | **IMPLEMENTED** |
 | Canadian Importers Database | Canada | Potential distributor/importer mapping by product/origin | Periodic | **LATER** |
 | Nova Scotia procurement | Nova Scotia | Local buyer/award signals | Ongoing | **LATER** |
-| Nova Scotia Registry of Joint Stock Companies | Nova Scotia | Local incorporation verification | Public search | **VERIFY** |
+| Provincial corporate registries | Provinces | Recover non-federal entry entities and registration timing | Varies | **ACCESS REVIEWED — authorization/licence required for broad production coverage** |
 | Invest Nova Scotia disclosures | Nova Scotia | Historical expansion/incentive validation | Event driven | **LATER** |
 | Company careers/newsrooms | Company | Hiring/market-entry intent | Variable | **LATER** |
 
@@ -326,3 +326,24 @@ Investor-role states preserve that boundary:
 Federal certificate timing is a candidate pre-entry signal. Same-month events remain separate because the Investment Canada source is month-granular and does not provide an exact notification day.
 
 The federal datasets do not cover provincially incorporated companies. `NO_FEDERAL_EXACT_MATCH` therefore means **unresolved at the federal layer**, not that no Canadian corporation exists.
+
+
+## Provincial registry access contract
+
+Provincial source feasibility was reviewed on 2026-09-19 after the federal entry-entity layer left 355 recent outcomes unresolved.
+
+AtlanticBridge does not equate public searchability with permission for automated commercial ingestion.
+
+Current decisions:
+
+- **Canada's Business Registries / MRAS:** automation prohibited by the service's own terms; do not collect programmatically.
+- **Quebec Registre des entreprises bulk data:** non-commercial licence; do not use in the commercial product without separate permission.
+- **BC OrgBook:** technically suitable API, but data are labelled Access Only; research-only until written reuse permission is obtained.
+- **BC Registry Search API:** supported production route, but requires an authorized Premium/API account, signed terms, API key, Account ID and applicable fees.
+- **Nova Scotia RJSC:** public search is available, but no full registry dataset under the Nova Scotia Open Government Licence was located; do not scrape the UI.
+- **Ontario Business Registry:** public basic search exists, but no supported reusable bulk/API contract has been established; do not scrape the UI.
+- **Alberta Corporate Registry:** use only through an authorized paid source consistent with its access agreement.
+
+See [PROVINCIAL_REGISTRY_ACCESS.md](PROVINCIAL_REGISTRY_ACCESS.md).
+
+A province that cannot currently be resolved is stored as an access/coverage limitation, not a negative identity or expansion signal.
