@@ -1,0 +1,21 @@
+name: Probe Provincial Business Registry Search
+
+on:
+  push:
+    branches:
+      - "feature/provincial-identity-011"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Probe official Canada Business Registries search contract
+        run: python scripts/probe_provincial_registry.py
