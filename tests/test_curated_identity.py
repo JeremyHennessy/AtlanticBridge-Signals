@@ -178,13 +178,15 @@ class CuratedIdentityTests(unittest.TestCase):
                 {
                     "evidence_type": "OTHER_REFERENCE",
                     "source_url": "https://example.test/reference",
-                    "legal_name": "No Match GmbH",
+                    "subject_type": "LEGAL_ENTITY",
+                    "subject_name": "No Match GmbH",
                     "jurisdiction": "DE",
                 }
             ],
             "decision": {
                 "state": "CONFIRMED",
-                "resolved_legal_name": "No Match GmbH",
+                "resolved_subject_type": "LEGAL_ENTITY",
+                "resolved_subject_name": "No Match GmbH",
                 "resolved_jurisdiction": "DE",
                 "basis": "Reference only",
             },
@@ -212,7 +214,8 @@ class CuratedIdentityTests(unittest.TestCase):
                         "source_url": "https://registry.example.test/entity/123",
                         "source_title": "Official company record",
                         "source_publisher": "Official Registry",
-                        "legal_name": "No Match GmbH",
+                        "subject_type": "LEGAL_ENTITY",
+                    "subject_name": "No Match GmbH",
                         "jurisdiction": "DE",
                         "identifier_type": "REGISTER_NUMBER",
                         "identifier_value": "HRB123",
@@ -221,7 +224,8 @@ class CuratedIdentityTests(unittest.TestCase):
                 ],
                 "decision": {
                     "state": "CONFIRMED",
-                    "resolved_legal_name": "No Match GmbH",
+                    "resolved_subject_type": "LEGAL_ENTITY",
+                "resolved_subject_name": "No Match GmbH",
                     "resolved_jurisdiction": "DE",
                     "resolved_identifier_type": "REGISTER_NUMBER",
                     "resolved_identifier_value": "HRB123",
@@ -233,6 +237,9 @@ class CuratedIdentityTests(unittest.TestCase):
         self.assertEqual(result["decisions_processed"], 1)
         summary = curated_identity_summary(conn)
         self.assertEqual(summary["confirmed_reviews"], 1)
+        self.assertEqual(summary["confirmed_legal_entities"], 1)
+        self.assertEqual(summary["confirmed_natural_persons"], 0)
+        self.assertEqual(summary["modeling_ready_curated_records"], 1)
         row = summary["queue"][0]
         self.assertEqual(row["review_status"], "CONFIRMED")
         self.assertEqual(row["primary_evidence_count"], 1)
@@ -257,13 +264,15 @@ class CuratedIdentityTests(unittest.TestCase):
                         "source_url": "https://company.example.test/legal",
                         "source_title": "Legal notice",
                         "source_publisher": "No Match GmbH",
-                        "legal_name": "No Match GmbH",
+                        "subject_type": "LEGAL_ENTITY",
+                    "subject_name": "No Match GmbH",
                         "jurisdiction": "DE",
                     }
                 ],
                 "decision": {
                     "state": "CONFIRMED",
-                    "resolved_legal_name": "No Match GmbH",
+                    "resolved_subject_type": "LEGAL_ENTITY",
+                "resolved_subject_name": "No Match GmbH",
                     "resolved_jurisdiction": "DE",
                     "basis": "Official legal notice.",
                 },
@@ -283,6 +292,51 @@ class CuratedIdentityTests(unittest.TestCase):
             (queue_id,),
         ).fetchone()[0]
         self.assertEqual(status, "CONFIRMED")
+
+
+    def test_primary_evidence_can_confirm_natural_person_without_modeling_promotion(self):
+        conn = _conn()
+        _insert_foreign_run(conn)
+        _insert_resolution(conn, "person", "NO_RESULTS", "Anastasios Lianos")
+        conn.commit()
+        seed_curated_identity_queue(conn)
+        queue_id = conn.execute(
+            "SELECT queue_id FROM curated_identity_queue"
+        ).fetchone()[0]
+
+        result = apply_curated_identity_review(
+            conn,
+            {
+                "queue_id": queue_id,
+                "evidence": [
+                    {
+                        "evidence_type": "OFFICIAL_GOVERNMENT_FILING",
+                        "source_url": "https://government.example.test/filing/123",
+                        "source_title": "Official filing",
+                        "source_publisher": "Government authority",
+                        "subject_type": "NATURAL_PERSON",
+                        "subject_name": "Anastasios Lianos",
+                        "evidence_note": "Named individual in official filing.",
+                    }
+                ],
+                "decision": {
+                    "state": "CONFIRMED",
+                    "resolved_subject_type": "NATURAL_PERSON",
+                    "resolved_subject_name": "Anastasios Lianos",
+                    "basis": "Official filing identifies the named investor as an individual.",
+                },
+            },
+            observed_at="2026-09-19T05:00:00+00:00",
+        )
+        self.assertEqual(result["decisions_processed"], 1)
+        summary = curated_identity_summary(conn)
+        self.assertEqual(summary["confirmed_reviews"], 1)
+        self.assertEqual(summary["confirmed_natural_persons"], 1)
+        self.assertEqual(summary["confirmed_legal_entities"], 0)
+        self.assertEqual(summary["modeling_ready_curated_records"], 0)
+        row = summary["queue"][0]
+        self.assertEqual(row["resolved_subject_type"], "NATURAL_PERSON")
+        self.assertEqual(row["resolved_subject_name"], "Anastasios Lianos")
 
 
 if __name__ == "__main__":
