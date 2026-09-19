@@ -49,7 +49,7 @@ Review states:
 - `REJECTED`
 - `RESOLVED_UPSTREAM`
 
-A `CONFIRMED` decision is rejected unless the queue has at least one primary-source evidence record and the decision contains a legal name and jurisdiction.
+A `CONFIRMED` decision is rejected unless the queue has at least one primary-source evidence record. The decision must explicitly classify the resolved subject as `LEGAL_ENTITY` or `NATURAL_PERSON`. Legal entities require a resolved name and jurisdiction; natural persons require a resolved name but are not promoted into the company-level modeling cohort.
 
 Rebuilding the queue never overwrites explicit reviewed decisions. A task that disappears from a newer foreign-identity run is marked `RESOLVED_UPSTREAM` rather than deleted.
 
@@ -64,18 +64,21 @@ Rebuilding the queue never overwrites explicit reviewed decisions. A task that d
       "source_url": "https://...",
       "source_title": "Official company record",
       "source_publisher": "Registry authority",
-      "legal_name": "Example GmbH",
+      "subject_type": "LEGAL_ENTITY",
+      "subject_name": "Example GmbH",
       "jurisdiction": "DE",
       "identifier_type": "REGISTER_NUMBER",
       "identifier_value": "HRB123",
       "relationship_type": "",
-      "related_legal_name": "",
+      "related_subject_type": "UNKNOWN",
+      "related_subject_name": "",
       "evidence_note": "Exact legal name and registered identifier."
     }
   ],
   "decision": {
     "state": "CONFIRMED",
-    "resolved_legal_name": "Example GmbH",
+    "resolved_subject_type": "LEGAL_ENTITY",
+    "resolved_subject_name": "Example GmbH",
     "resolved_jurisdiction": "DE",
     "resolved_identifier_type": "REGISTER_NUMBER",
     "resolved_identifier_value": "HRB123",
@@ -88,7 +91,7 @@ A file can contain either one object or a list of review objects.
 
 ## Modeling boundary
 
-Curated identity confirmation is an identity/evidence gate only. It does not create an Expansion Likelihood score.
+Curated identity confirmation is an identity/evidence gate only. It does not create an Expansion Likelihood score. Confirmed natural persons remain valid reviewed identities but do not count as modeling-ready company identities.
 
 Matched-control and event-time modeling should use only identities that are either:
 
