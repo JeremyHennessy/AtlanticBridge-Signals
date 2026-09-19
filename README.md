@@ -100,6 +100,13 @@ python -m atlanticbridge resolve-entry-identities \
 
 python -m atlanticbridge summarize-entry-identities \
   --db data/atlanticbridge.sqlite
+
+# Resolve named foreign investors and GLEIF accounting-parent evidence
+python -m atlanticbridge resolve-foreign-identities \
+  --db data/atlanticbridge.sqlite
+
+python -m atlanticbridge summarize-foreign-identities \
+  --db data/atlanticbridge.sqlite
 ```
 
 ## Implemented
@@ -118,15 +125,17 @@ python -m atlanticbridge summarize-entry-identities \
 - Statistics Canada monthly major-EU and annual full-EU trade context for Nova Scotia + Canada benchmarks
 - Federal entry-entity resolution using active + inactive Corporations Canada legal names
 - Official federal corporation detail verification and pre-entry certificate timing
-- Reviewable 100-record entry-entity gold cohort when source coverage permits
+- Reviewable federal entry-entity gold cohort
+- Foreign named-entity resolution requiring exact legal name + source locality
+- GLEIF direct/ultimate accounting-parent relationship or reporting-exception evidence
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
 
 ## Next source sequence
 
-1. Resolve foreign operating/parent identities for gold-cohort rows whose Investment Canada investor is a Canadian vehicle
-2. Extend historical incorporation coverage to provincial corporations where federal coverage is absent
+1. Resolve Canadian-vehicle parent identities through permitted primary-company/registry evidence
+2. Obtain authorized provincial registry access for unresolved non-federal entry entities
 3. Historical CIPO bulk backfill once secure bulk transport is available
 4. Build matched non-entrant controls and event-time backtests before any score weights
 
