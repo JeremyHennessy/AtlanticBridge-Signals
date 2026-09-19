@@ -1,4 +1,4 @@
-name: Probe Provincial Business Registry Search
+name: Probe BC OrgBook API
 
 on:
   push:
@@ -17,5 +17,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Probe official Canada Business Registries search contract
+      - name: Probe documented OrgBook v4 endpoints
         run: python scripts/probe_provincial_registry.py
