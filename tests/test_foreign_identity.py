@@ -7,6 +7,7 @@ from unittest.mock import patch
 from atlanticbridge.foreign_identity import (
     _locality_matches,
     _parent_evidence,
+    _resolved_named_status,
     classify_candidates,
 )
 from atlanticbridge.sources.gleif import GLEIFCandidate
@@ -104,6 +105,45 @@ class ForeignIdentityTests(unittest.TestCase):
             legal_city="Montréal",
         )
         self.assertTrue(_locality_matches(row, "Montreal"))
+
+
+
+    def test_confirmed_named_entity_is_not_foreign_when_gleif_entity_is_canadian(self):
+        row = GLEIFCandidate(
+            rank=1,
+            lei="CANADA-LEI",
+            legal_name="Example Holdings Inc.",
+            jurisdiction="CA-AB",
+            entity_status="ACTIVE",
+            entity_category="GENERAL",
+            registered_as="123",
+            registration_authority_id="RA-CA",
+            legal_address_city="Calgary",
+            legal_address_country="CA",
+            headquarters_city="Calgary",
+            headquarters_country="CA",
+            name_similarity=1.0,
+            exact_normalized_name=True,
+            jurisdiction_match=False,
+            match_class="EXACT_NAME",
+            relationship_links_json="{}",
+            record_json="{}",
+        )
+        self.assertEqual(
+            _resolved_named_status("CONFIRMED_NAMED_ENTITY", row),
+            "CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED",
+        )
+
+    def test_confirmed_named_entity_is_foreign_when_gleif_entity_is_non_canadian(self):
+        row = candidate(
+            lei="NL-LEI",
+            legal_name="Example B.V.",
+            legal_city="Amsterdam",
+        )
+        self.assertEqual(
+            _resolved_named_status("CONFIRMED_NAMED_ENTITY", row),
+            "CONFIRMED_FOREIGN_NAMED_ENTITY",
+        )
 
     @patch("atlanticbridge.foreign_identity.fetch_api_resource")
     @patch("atlanticbridge.foreign_identity.fetch_lei_record")
