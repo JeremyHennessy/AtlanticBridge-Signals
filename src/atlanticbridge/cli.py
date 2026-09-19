@@ -21,6 +21,11 @@ from .db import (
 )
 from .gleif_resolution import gleif_resolution_summary, resolve_cordis_targets
 from .foreign_identity import foreign_identity_summary, resolve_foreign_identities
+from .curated_identity import (
+    apply_curated_identity_review_file,
+    curated_identity_summary,
+    seed_curated_identity_queue,
+)
 from .entry_identity import entry_identity_summary, run_entry_identity_resolution
 from .sources.cordis import (
     HORIZON_ARCHIVE_URL,
@@ -258,6 +263,25 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit latest named foreign-entity and parent-resolution coverage",
     )
     foreign_summary.add_argument("--db", required=True)
+
+    curated_seed = subparsers.add_parser(
+        "build-curated-identity-queue",
+        help="Build/update the audited primary-evidence queue for unresolved identities",
+    )
+    curated_seed.add_argument("--db", required=True)
+
+    curated_apply = subparsers.add_parser(
+        "apply-curated-identity-review",
+        help="Import primary-source evidence and explicit identity decisions from JSON",
+    )
+    curated_apply.add_argument("--db", required=True)
+    curated_apply.add_argument("--file", required=True)
+
+    curated_summary_parser = subparsers.add_parser(
+        "summarize-curated-identity",
+        help="Emit unresolved/confirmed curated identity review coverage",
+    )
+    curated_summary_parser.add_argument("--db", required=True)
 
     return parser
 
@@ -723,6 +747,31 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "summarize-foreign-identities":
         conn = connect(args.db)
         print(json.dumps(foreign_identity_summary(conn), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "build-curated-identity-queue":
+        try:
+            conn = connect(args.db)
+            result = seed_curated_identity_queue(conn)
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        except Exception as exc:
+            print(f"Curated identity queue build failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "apply-curated-identity-review":
+        try:
+            conn = connect(args.db)
+            result = apply_curated_identity_review_file(conn, args.file)
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        except Exception as exc:
+            print(f"Curated identity review import failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "summarize-curated-identity":
+        conn = connect(args.db)
+        print(json.dumps(curated_identity_summary(conn), indent=2, sort_keys=True))
         return 0
 
     return 2

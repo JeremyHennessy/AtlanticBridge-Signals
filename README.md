@@ -107,6 +107,18 @@ python -m atlanticbridge resolve-foreign-identities \
 
 python -m atlanticbridge summarize-foreign-identities \
   --db data/atlanticbridge.sqlite
+
+# Build a stable audited queue for unresolved named investors / parents
+python -m atlanticbridge build-curated-identity-queue \
+  --db data/atlanticbridge.sqlite
+
+python -m atlanticbridge summarize-curated-identity \
+  --db data/atlanticbridge.sqlite
+
+# Apply reviewed primary-source evidence/decisions
+python -m atlanticbridge apply-curated-identity-review \
+  --db data/atlanticbridge.sqlite \
+  --file review.json
 ```
 
 ## Implemented
@@ -128,15 +140,16 @@ python -m atlanticbridge summarize-foreign-identities \
 - Reviewable federal entry-entity gold cohort
 - Named-investor legal-entity resolution requiring exact legal name + source locality, with Canadian and foreign entities separated
 - GLEIF direct/ultimate accounting-parent relationship or reporting-exception evidence
+- Persistent curated identity-review queue with primary-source evidence and audited decisions
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
 
 ## Next source sequence
 
-1. Resolve Canadian-vehicle parent identities through permitted primary-company/registry evidence
+1. Curate primary-source evidence for the unresolved identity queue
 2. Obtain authorized provincial registry access for unresolved non-federal entry entities
 3. Historical CIPO bulk backfill once secure bulk transport is available
-4. Build matched non-entrant controls and event-time backtests before any score weights
+4. Build matched non-entrant controls and event-time backtests on confirmed identities before any score weights
 
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).
