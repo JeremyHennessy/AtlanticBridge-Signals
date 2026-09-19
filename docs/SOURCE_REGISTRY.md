@@ -375,3 +375,15 @@ For a confirmed named entity, AtlanticBridge follows only the parent links adver
 GLEIF parent evidence represents direct/ultimate **accounting consolidating parent** relationships. It is not re-labelled as beneficial ownership.
 
 Source: GLEIF Level 2 Relationship Record data dictionary / API.
+
+
+### Named investor can still be Canadian
+
+Data Proof 012 live acceptance exposed an important distinction: an Investment Canada investor that is distinct from the newly listed Canadian business can itself still be a Canadian legal entity controlled from Europe.
+
+AtlanticBridge therefore classifies an exact name+locality GLEIF match as:
+
+- `CONFIRMED_FOREIGN_NAMED_ENTITY` only when the GLEIF legal entity is non-Canadian;
+- `CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED` when the named investor resolves to a Canadian legal entity.
+
+Country of ultimate control remains separate evidence and is never substituted for the named investor's legal jurisdiction.
