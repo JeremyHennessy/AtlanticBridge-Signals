@@ -1,0 +1,126 @@
+[
+  {
+    "queue_id": "bcb516a9e1e87935fbac0b1361beacf893fd5c1e7cb3894895abad32260cc0a1",
+    "evidence": [
+      {
+        "evidence_type": "OFFICIAL_GOVERNMENT_FILING",
+        "source_url": "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/13Sep2023_en.pdf?edition=09-13&year=2023",
+        "source_title": "Trademarks Journal Vol. 70 No. 3594 - Application 1,951,783",
+        "source_publisher": "Canadian Intellectual Property Office",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "Framework Computer Consultants Ltd",
+        "jurisdiction": "IE",
+        "identifier_type": "CIPO_APPLICATION",
+        "identifier_value": "1951783",
+        "relationship_type": "",
+        "related_subject_type": "UNKNOWN",
+        "related_subject_name": "",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Official CIPO filing lists Framework Computer Consultants Ltd, 7 Aylmer Lawns, Kilcock, Co. Kildare, Ireland as applicant for application 1,951,783."
+      }
+    ],
+    "decision": {
+      "state": "CONFIRMED",
+      "resolved_subject_type": "LEGAL_ENTITY",
+      "resolved_subject_name": "Framework Computer Consultants Ltd",
+      "resolved_jurisdiction": "IE",
+      "resolved_identifier_type": "",
+      "resolved_identifier_value": "",
+      "basis": "Official CIPO government filing identifies the named investor as an Irish legal-entity applicant."
+    }
+  },
+  {
+    "queue_id": "5238bdc249b698af9bae7afc75bec9eadb05b1c21c902e733153eb94d29ce3ed",
+    "evidence": [
+      {
+        "evidence_type": "OFFICIAL_GOVERNMENT_FILING",
+        "source_url": "https://www.uspto.gov/web/trademarks/tmog/20221122_OG.pdf",
+        "source_title": "Trademark Official Gazette - ConTeyor International NV owner record",
+        "source_publisher": "United States Patent and Trademark Office",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "ConTeyor International NV",
+        "jurisdiction": "BE",
+        "identifier_type": "WIPO_IR",
+        "identifier_value": "1580712",
+        "relationship_type": "",
+        "related_subject_type": "UNKNOWN",
+        "related_subject_name": "",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Official USPTO gazette lists ConTeyor International NV, Merelbeke, Belgium and identifies the legal entity as a Belgian naamloze vennootschap."
+      }
+    ],
+    "decision": {
+      "state": "CONFIRMED",
+      "resolved_subject_type": "LEGAL_ENTITY",
+      "resolved_subject_name": "ConTeyor International NV",
+      "resolved_jurisdiction": "BE",
+      "resolved_identifier_type": "",
+      "resolved_identifier_value": "",
+      "basis": "Official USPTO filing confirms the exact legal name and Belgian legal-entity jurisdiction."
+    }
+  },
+  {
+    "queue_id": "91177501b56d4c0e26f7704b53a297bbab9448b5e8fd0b463b4e282475d488d9",
+    "evidence": [
+      {
+        "evidence_type": "OFFICIAL_COMPANY_SITE",
+        "source_url": "https://sioox.com/app/uploads/sites/2/2024/07/SiOO_X-Wood-Protection-Industry_SE-en_v1_0.pdf",
+        "source_title": "SiOO:X Wood Protection Industry Safety Data Sheet",
+        "source_publisher": "SiOO",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "SiOO WoodProtection Industry AB",
+        "jurisdiction": "SE",
+        "identifier_type": "",
+        "identifier_value": "",
+        "relationship_type": "",
+        "related_subject_type": "UNKNOWN",
+        "related_subject_name": "",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Official company-hosted safety data sheet identifies SiOO WoodProtection Industry AB at a Gothenburg, Sweden address."
+      }
+    ],
+    "decision": {
+      "state": "CONFIRMED",
+      "resolved_subject_type": "LEGAL_ENTITY",
+      "resolved_subject_name": "SiOO WoodProtection Industry AB",
+      "resolved_jurisdiction": "SE",
+      "resolved_identifier_type": "",
+      "resolved_identifier_value": "",
+      "basis": "Official company-hosted regulatory document confirms the named Swedish legal entity."
+    }
+  },
+  {
+    "queue_id": "0ee2859873acd1c5c3b957bd9e2e6e11ba651c0527a77117cb429ead67fa9b12",
+    "evidence": [
+      {
+        "evidence_type": "OFFICIAL_COMPANY_SITE",
+        "source_url": "https://ghost.pegasi.fi/wiki/doku.php?do=export_pdf&id=tips_and_howtos%3Amake_dummy_rpm",
+        "source_title": "Pegasi Knowledge - Create an empty rpm",
+        "source_publisher": "Pegasi Oy",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "Pegasi Oy",
+        "jurisdiction": "FI",
+        "identifier_type": "BUSINESS_ID",
+        "identifier_value": "1555427-6",
+        "relationship_type": "",
+        "related_subject_type": "UNKNOWN",
+        "related_subject_name": "",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Official Pegasi-domain document identifies Pegasi Oy, Lappeenranta, Finland and publishes Y-tunnus 1555427-6."
+      }
+    ],
+    "decision": {
+      "state": "CONFIRMED",
+      "resolved_subject_type": "LEGAL_ENTITY",
+      "resolved_subject_name": "Pegasi Oy",
+      "resolved_jurisdiction": "FI",
+      "resolved_identifier_type": "BUSINESS_ID",
+      "resolved_identifier_value": "1555427-6",
+      "basis": "Official company-domain document confirms the named Finnish legal entity and business ID."
+    }
+  }
+]
