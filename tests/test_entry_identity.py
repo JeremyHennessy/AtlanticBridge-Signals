@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 import unittest
 
 from atlanticbridge.entry_identity import (
@@ -8,6 +9,8 @@ from atlanticbridge.entry_identity import (
     _lead_timing,
     _province_match,
     _role_status,
+    _unresolved_by_province,
+    ensure_entry_identity_schema,
     normalize_legal_name,
 )
 from atlanticbridge.sources.corporations_canada import (
@@ -99,6 +102,84 @@ class EntryIdentityTests(unittest.TestCase):
         self.assertEqual(
             _role_status(distinct, ("Example Canada Inc.",)),
             "DISTINCT_INVESTOR_REQUIRES_FOREIGN_RESOLUTION",
+        )
+
+
+    def test_unresolved_province_queue_preserves_source_geography(self):
+        conn = sqlite3.connect(":memory:")
+        conn.row_factory = sqlite3.Row
+        ensure_entry_identity_schema(conn)
+        conn.execute(
+            """
+            INSERT INTO entry_identity_runs (
+                run_id, start_month, end_month,
+                active_source_sha256, active_source_bytes,
+                inactive_source_sha256, inactive_source_bytes,
+                cohort_records, detail_limit, gold_limit, observed_at
+            ) VALUES (
+                'run-1', '2019-01', '2025-12',
+                'a', 1, 'b', 2, 3, 3, 3, '2026-09-19T00:00:00Z'
+            )
+            """
+        )
+
+        base = (
+            "run-1", "", "2024-01", "Germany", "Investor GmbH", "",
+            "", "NO_FEDERAL_EXACT_MATCH", 0, 0, "", "", "", "", "", "",
+            0, 0, "NOT_ATTEMPTED", "", 0, "", "{}", "", "", "UNKNOWN",
+            None, "UNRESOLVED", 0, 0, "2026-09-19T00:00:00Z"
+        )
+        rows = [
+            (
+                base[0], "out-1", base[2], base[3], base[4], base[5],
+                json.dumps([{"name":"A","administrative_area":"ON"}]),
+                *base[6:]
+            ),
+            (
+                base[0], "out-2", base[2], base[3], base[4], base[5],
+                json.dumps([
+                    {"name":"B","administrative_area":"QC"},
+                    {"name":"B2","administrative_area":"QC"},
+                ]),
+                *base[6:]
+            ),
+            (
+                base[0], "out-3", base[2], base[3], base[4], base[5],
+                "[]",
+                *base[6:]
+            ),
+        ]
+
+        conn.executemany(
+            """
+            INSERT INTO entry_identity_matches (
+                run_id, outcome_record_id, certification_month,
+                ultimate_control_country, investor_name, investor_locality,
+                source_businesses_json, matched_business_name, match_status,
+                candidate_count, geo_candidate_count,
+                selected_corporation_number, selected_business_number,
+                selected_source_state, selected_corporate_name,
+                selected_city, selected_province, city_match, province_match,
+                detail_status, detail_source_url, detail_name_match,
+                detail_raw_hash, detail_raw_json, federal_event_type,
+                federal_event_date, timing_status,
+                lead_days_to_outcome_month_start, investor_role_status,
+                gold_selected, gold_rank, observed_at
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )
+            """,
+            rows,
+        )
+        queue = _unresolved_by_province(conn, "run-1")
+        self.assertEqual(
+            queue,
+            [
+                {"province": "ON", "outcomes": 1},
+                {"province": "QC", "outcomes": 1},
+                {"province": "UNKNOWN", "outcomes": 1},
+            ],
         )
 
 
