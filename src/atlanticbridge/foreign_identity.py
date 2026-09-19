@@ -69,7 +69,8 @@ CREATE TABLE IF NOT EXISTS foreign_identity_resolutions (
     resolution_status TEXT NOT NULL CHECK (
         resolution_status IN (
             'CANADIAN_VEHICLE_PARENT_UNRESOLVED',
-            'CONFIRMED_NAMED_ENTITY',
+            'CONFIRMED_FOREIGN_NAMED_ENTITY',
+            'CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED',
             'REVIEW_READY_EXACT_NAME',
             'AMBIGUOUS_EXACT',
             'UNRESOLVED',
@@ -176,6 +177,26 @@ def classify_candidates(
     if not candidates:
         return "NO_RESULTS", None, 0, 0
     return "UNRESOLVED", None, 0, 0
+
+
+def _resolved_named_status(
+    status: str,
+    selected: GLEIFCandidate | None,
+) -> str:
+    if status != "CONFIRMED_NAMED_ENTITY" or selected is None:
+        return status
+
+    jurisdiction = selected.jurisdiction.upper()
+    legal_country = selected.legal_address_country.upper()
+    headquarters_country = selected.headquarters_country.upper()
+    if (
+        jurisdiction == "CA"
+        or jurisdiction.startswith("CA-")
+        or legal_country == "CA"
+        or headquarters_country == "CA"
+    ):
+        return "CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED"
+    return "CONFIRMED_FOREIGN_NAMED_ENTITY"
 
 
 def _candidate_snapshot(candidates: tuple[GLEIFCandidate, ...]) -> str:
@@ -433,6 +454,11 @@ def resolve_foreign_identities(
                     result.candidates,
                     target["investor_locality"],
                 )
+                status = _resolved_named_status(status, selected)
+                confirmed_statuses = {
+                    "CONFIRMED_FOREIGN_NAMED_ENTITY",
+                    "CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED",
+                }
                 base.update(
                     {
                         "resolution_status": status,
@@ -453,47 +479,47 @@ def resolve_foreign_identities(
                         {
                             "confirmed_lei": (
                                 selected.lei
-                                if status == "CONFIRMED_NAMED_ENTITY"
+                                if status in confirmed_statuses
                                 else ""
                             ),
                             "confirmed_legal_name": (
                                 selected.legal_name
-                                if status == "CONFIRMED_NAMED_ENTITY"
+                                if status in confirmed_statuses
                                 else ""
                             ),
                             "confirmed_jurisdiction": (
                                 selected.jurisdiction
-                                if status == "CONFIRMED_NAMED_ENTITY"
+                                if status in confirmed_statuses
                                 else ""
                             ),
                             "confirmed_registered_as": (
                                 selected.registered_as
-                                if status == "CONFIRMED_NAMED_ENTITY"
+                                if status in confirmed_statuses
                                 else ""
                             ),
                             "confirmed_registration_authority_id": (
                                 selected.registration_authority_id
-                                if status == "CONFIRMED_NAMED_ENTITY"
+                                if status in confirmed_statuses
                                 else ""
                             ),
                             "confirmed_legal_city": (
                                 selected.legal_address_city
-                                if status == "CONFIRMED_NAMED_ENTITY"
+                                if status in confirmed_statuses
                                 else ""
                             ),
                             "confirmed_headquarters_city": (
                                 selected.headquarters_city
-                                if status == "CONFIRMED_NAMED_ENTITY"
+                                if status in confirmed_statuses
                                 else ""
                             ),
                             "control_country_matches_jurisdiction": (
-                                status == "CONFIRMED_NAMED_ENTITY"
+                                status in confirmed_statuses
                                 and bool(country_iso2)
                                 and selected.jurisdiction.upper() == country_iso2
                             ),
                         }
                     )
-                    if status == "CONFIRMED_NAMED_ENTITY":
+                    if status in confirmed_statuses:
                         base["direct_parent"] = _parent_evidence(
                             selected,
                             "direct-parent",
@@ -620,12 +646,18 @@ def resolve_foreign_identities(
     direct_statuses = Counter(
         row["direct_parent"]["status"]
         for row in rows
-        if row["resolution_status"] == "CONFIRMED_NAMED_ENTITY"
+        if row["resolution_status"] in {
+            "CONFIRMED_FOREIGN_NAMED_ENTITY",
+            "CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED",
+        }
     )
     ultimate_statuses = Counter(
         row["ultimate_parent"]["status"]
         for row in rows
-        if row["resolution_status"] == "CONFIRMED_NAMED_ENTITY"
+        if row["resolution_status"] in {
+            "CONFIRMED_FOREIGN_NAMED_ENTITY",
+            "CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED",
+        }
     )
 
     return {
@@ -634,7 +666,16 @@ def resolve_foreign_identities(
         "target_records": len(targets),
         "queried_investors": queried,
         "status_counts": dict(sorted(statuses.items())),
-        "confirmed_named_entities": statuses["CONFIRMED_NAMED_ENTITY"],
+        "confirmed_foreign_named_entities":
+            statuses["CONFIRMED_FOREIGN_NAMED_ENTITY"],
+        "confirmed_canadian_named_investor_parent_unresolved":
+            statuses["CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED"],
+        "confirmed_named_entities_total": (
+            statuses["CONFIRMED_FOREIGN_NAMED_ENTITY"]
+            + statuses[
+                "CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED"
+            ]
+        ),
         "review_ready_exact_names": statuses["REVIEW_READY_EXACT_NAME"],
         "canadian_vehicle_parent_unresolved":
             statuses["CANADIAN_VEHICLE_PARENT_UNRESOLVED"],
@@ -643,6 +684,7 @@ def resolve_foreign_identities(
         "confirmed_entities": [
             {
                 "outcome_record_id": row["outcome_record_id"],
+                "resolution_status": row["resolution_status"],
                 "investor_name": row["investor_name"],
                 "investor_locality": row["investor_locality"],
                 "ultimate_control_country":
@@ -670,7 +712,10 @@ def resolve_foreign_identities(
                     row["ultimate_parent"]["exception_reason"],
             }
             for row in rows
-            if row["resolution_status"] == "CONFIRMED_NAMED_ENTITY"
+            if row["resolution_status"] in {
+                "CONFIRMED_FOREIGN_NAMED_ENTITY",
+                "CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED",
+            }
         ],
     }
 
@@ -708,6 +753,7 @@ def foreign_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
             """
             SELECT
                 outcome_record_id,
+                resolution_status,
                 investor_name,
                 investor_locality,
                 ultimate_control_country,
@@ -724,7 +770,10 @@ def foreign_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
                 ultimate_parent_exception_reason
             FROM foreign_identity_resolutions
             WHERE run_id = ?
-              AND resolution_status = 'CONFIRMED_NAMED_ENTITY'
+              AND resolution_status IN (
+                  'CONFIRMED_FOREIGN_NAMED_ENTITY',
+                  'CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED'
+              )
             ORDER BY certification_month, investor_name
             """,
             (run_id,),
