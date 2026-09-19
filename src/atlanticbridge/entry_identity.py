@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS entry_identity_matches (
     ultimate_control_country TEXT NOT NULL,
     investor_name TEXT NOT NULL,
     investor_locality TEXT NOT NULL,
+    source_businesses_json TEXT NOT NULL DEFAULT '[]',
     matched_business_name TEXT NOT NULL,
     match_status TEXT NOT NULL,
     candidate_count INTEGER NOT NULL,
@@ -119,8 +120,24 @@ _PROVINCE_ALIASES = {
 }
 
 
+_ENTRY_IDENTITY_MIGRATION_COLUMNS = {
+    "source_businesses_json": "TEXT NOT NULL DEFAULT '[]'",
+}
+
+
 def ensure_entry_identity_schema(conn: sqlite3.Connection) -> None:
     conn.executescript(SCHEMA)
+    existing = {
+        row["name"]
+        for row in conn.execute("PRAGMA table_info(entry_identity_matches)")
+    }
+    for column, declaration in _ENTRY_IDENTITY_MIGRATION_COLUMNS.items():
+        if column not in existing:
+            conn.execute(
+                f"ALTER TABLE entry_identity_matches "
+                f"ADD COLUMN {column} {declaration}"
+            )
+    conn.commit()
 
 
 def normalize_legal_name(value: str) -> str:
@@ -535,7 +552,8 @@ def run_entry_identity_resolution(
                 INSERT INTO entry_identity_matches (
                     run_id, outcome_record_id, certification_month,
                     ultimate_control_country, investor_name, investor_locality,
-                    matched_business_name, match_status, candidate_count,
+                    source_businesses_json, matched_business_name,
+                    match_status, candidate_count,
                     geo_candidate_count, selected_corporation_number,
                     selected_business_number, selected_source_state,
                     selected_corporate_name, selected_city, selected_province,
@@ -546,7 +564,7 @@ def run_entry_identity_resolution(
                     investor_role_status, gold_selected, gold_rank, observed_at
                 ) VALUES (
                     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                 )
                 """,
                 (
@@ -556,6 +574,7 @@ def run_entry_identity_resolution(
                     row["country"],
                     row["investor_name"],
                     row["investor_locality"],
+                    row["canadian_businesses_json"],
                     selected["matched_business_name"] if selected else "",
                     row["match_status"],
                     row["candidate_count"],
@@ -623,6 +642,7 @@ def run_entry_identity_resolution(
         ),
         "gold_selected": len(gold_rows),
         "gold_target": gold_limit,
+        "unresolved_by_province": _unresolved_by_province(conn, run_id),
         "investor_role_counts": dict(sorted(role_counts.items())),
         "timing_status_counts": dict(sorted(timing_counts.items())),
         "pre_entry_lead_days": {
@@ -660,6 +680,36 @@ def run_entry_identity_resolution(
         ],
     }
 
+
+
+
+def _unresolved_by_province(conn: sqlite3.Connection, run_id: str) -> list[dict[str, object]]:
+    counts: Counter[str] = Counter()
+    rows = conn.execute(
+        """
+        SELECT outcome_record_id, source_businesses_json
+        FROM entry_identity_matches
+        WHERE run_id = ?
+          AND detail_status <> 'FEDERAL_ENTITY_CONFIRMED'
+        """,
+        (run_id,),
+    )
+    for row in rows:
+        provinces = {
+            _clean(item.get("administrative_area")) or "UNKNOWN"
+            for item in _businesses(row["source_businesses_json"])
+        }
+        if not provinces:
+            provinces = {"UNKNOWN"}
+        for province in provinces:
+            counts[province] += 1
+    return [
+        {"province": province, "outcomes": count}
+        for province, count in sorted(
+            counts.items(),
+            key=lambda item: (-item[1], item[0]),
+        )
+    ]
 
 def entry_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
     ensure_entry_identity_schema(conn)
@@ -765,5 +815,6 @@ def entry_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
         "match_status_counts": match_counts,
         "detail_status_counts": detail_counts,
         "timing_status_counts": timing_counts,
+        "unresolved_by_province": _unresolved_by_province(conn, run_id),
         "gold_cohort": gold,
     }
