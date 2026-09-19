@@ -1,0 +1,54 @@
+name: Validate Entry Identity Production
+
+on:
+  push:
+    branches:
+      - "feature/entity-resolution-010"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Run full live outcome + entry-identity acceptance
+        run: |
+          DB="$RUNNER_TEMP/entry-identity-live.sqlite"
+
+          python -m atlanticbridge ingest-investment-canada             --db "$DB"             --history             --workers 4
+
+          RESULT="$(python -m atlanticbridge resolve-entry-identities             --db "$DB"             --start-month 2019-01             --end-month 2025-12             --gold-limit 100             --detail-limit 140             --detail-delay-seconds 0.05)"
+          echo "$RESULT"
+
+          SUMMARY="$(python -m atlanticbridge summarize-entry-identities --db "$DB")"
+          echo "$SUMMARY"
+
+          RESULT="$RESULT" SUMMARY="$SUMMARY" python - <<'PY'
+          import json
+          import os
+
+          result = json.loads(os.environ["RESULT"])
+          summary = json.loads(os.environ["SUMMARY"])
+
+          assert result["cohort_records"] == 382, result
+          assert result["confirmed_entry_entities"] >= 20, result
+          assert result["confirmed_share_percent"] > 5, result
+          assert result["gold_selected"] == result["confirmed_entry_entities"], result
+          assert result["gold_selected"] < result["gold_target"], result
+          assert result["pre_entry_lead_days"]["count"] > 0, result
+          assert result["active_source_bytes"] > 100_000_000, result
+          assert result["inactive_source_bytes"] > 150_000_000, result
+
+          assert summary["run_present"] is True, summary
+          assert summary["cohort_records"] == 382, summary
+          assert summary["confirmed_entry_entities"] == result["confirmed_entry_entities"], summary
+          assert summary["gold_selected"] == result["gold_selected"], summary
+          PY
