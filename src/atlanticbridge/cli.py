@@ -20,6 +20,7 @@ from .db import (
     replace_investment_canada_history,
 )
 from .gleif_resolution import gleif_resolution_summary, resolve_cordis_targets
+from .entry_identity import entry_identity_summary, run_entry_identity_resolution
 from .sources.cordis import (
     HORIZON_ARCHIVE_URL,
     SOURCE_BUCKET as CORDIS_SOURCE_BUCKET,
@@ -219,6 +220,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit aggregate Nova Scotia EU trade context and year-over-year comparisons",
     )
     statcan_summary_parser.add_argument("--db", required=True)
+
+    identity = subparsers.add_parser(
+        "resolve-entry-identities",
+        help=(
+            "Resolve recent Investment Canada new-business outcomes to "
+            "federal Canadian entry entities and certificate dates"
+        ),
+    )
+    identity.add_argument("--db", required=True)
+    identity.add_argument("--start-month", default="2019-01")
+    identity.add_argument("--end-month", default="2025-12")
+    identity.add_argument("--gold-limit", type=int, default=100)
+    identity.add_argument("--detail-limit", type=int, default=140)
+    identity.add_argument("--detail-delay-seconds", type=float, default=0.05)
+
+    identity_summary = subparsers.add_parser(
+        "summarize-entry-identities",
+        help="Emit latest federal entry-entity gold cohort and timing coverage",
+    )
+    identity_summary.add_argument("--db", required=True)
 
     return parser
 
@@ -639,6 +660,32 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "summarize-statcan-trade":
         conn = connect(args.db)
         print(json.dumps(statcan_trade_summary(conn), indent=2, sort_keys=True))
+        return 0
+
+    if args.command == "resolve-entry-identities":
+        try:
+            conn = connect(args.db)
+            with tempfile.TemporaryDirectory(
+                prefix="atlanticbridge-entry-identity-"
+            ) as temp_dir:
+                result = run_entry_identity_resolution(
+                    conn,
+                    workdir=temp_dir,
+                    start_month=args.start_month,
+                    end_month=args.end_month,
+                    gold_limit=args.gold_limit,
+                    detail_limit=args.detail_limit,
+                    detail_delay_seconds=args.detail_delay_seconds,
+                )
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        except Exception as exc:
+            print(f"Entry identity resolution failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "summarize-entry-identities":
+        conn = connect(args.db)
+        print(json.dumps(entry_identity_summary(conn), indent=2, sort_keys=True))
         return 0
 
     return 2

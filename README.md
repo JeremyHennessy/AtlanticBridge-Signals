@@ -90,6 +90,16 @@ python -m atlanticbridge ingest-statcan-trade \
 
 python -m atlanticbridge summarize-statcan-trade \
   --db data/atlanticbridge.sqlite
+
+# Resolve recent positive outcomes to federal Canadian entry entities
+python -m atlanticbridge resolve-entry-identities \
+  --db data/atlanticbridge.sqlite \
+  --start-month 2019-01 \
+  --end-month 2025-12 \
+  --gold-limit 100
+
+python -m atlanticbridge summarize-entry-identities \
+  --db data/atlanticbridge.sqlite
 ```
 
 ## Implemented
@@ -106,14 +116,18 @@ python -m atlanticbridge summarize-statcan-trade \
 - CIPO current-owner trademark search with explicit detail-enrichment coverage
 - CanadaBuys federal award notices with normalized EU-27 supplier evidence
 - Statistics Canada monthly major-EU and annual full-EU trade context for Nova Scotia + Canada benchmarks
+- Federal entry-entity resolution using active + inactive Corporations Canada legal names
+- Official federal corporation detail verification and pre-entry certificate timing
+- Reviewable 100-record entry-entity gold cohort when source coverage permits
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
 
 ## Next source sequence
 
-1. Confirm GLEIF candidate identities and materialize direct/ultimate parent links
-2. Historical CIPO bulk backfill once secure bulk transport is available
-3. Historical cross-source predictive analysis before any score weights
+1. Resolve foreign operating/parent identities for gold-cohort rows whose Investment Canada investor is a Canadian vehicle
+2. Extend historical incorporation coverage to provincial corporations where federal coverage is absent
+3. Historical CIPO bulk backfill once secure bulk transport is available
+4. Build matched non-entrant controls and event-time backtests before any score weights
 
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).
