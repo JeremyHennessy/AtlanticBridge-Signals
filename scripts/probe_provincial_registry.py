@@ -2,26 +2,19 @@ from __future__ import annotations
 
 import json
 import re
-from urllib.parse import quote_plus, urljoin
+from urllib.error import HTTPError
+from urllib.parse import urljoin
 from urllib.request import Request, urlopen
 
-BASE = "https://ised-isde.canada.ca/cbr-rec/en/search/results"
-QUERY = "Backbase Canada Inc."
-URL = f"{BASE}?search={quote_plus(QUERY)}"
+PAGE = "https://ised-isde.canada.ca/cbr-rec/en/search/results?search=Backbase+Canada+Inc."
 UA = (
     "AtlanticBridge-Signals/0.1 "
     "(public-data research; https://github.com/JeremyHennessy/AtlanticBridge-Signals)"
 )
 
 
-def fetch_text(url: str) -> tuple[str, str, int]:
-    req = Request(
-        url,
-        headers={
-            "User-Agent": UA,
-            "Accept": "text/html,application/javascript,application/json,*/*",
-        },
-    )
+def fetch(url: str) -> tuple[str, str, int]:
+    req = Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
     with urlopen(req, timeout=60) as response:
         return (
             response.geturl(),
@@ -33,128 +26,76 @@ def fetch_text(url: str) -> tuple[str, str, int]:
         )
 
 
-final_url, html, status = fetch_text(URL)
-base_match = re.search(r'<base[^>]+href=["\']([^"\']+)["\']', html, flags=re.I)
-document_base = (
-    urljoin(final_url, base_match.group(1))
-    if base_match
-    else final_url
-)
-
-script_srcs = re.findall(
-    r'<script[^>]+src=["\']([^"\']+)["\']',
+page_url, html, page_status = fetch(PAGE)
+base_href = re.search(
+    r'<base[^>]+href=["\']([^"\']+)["\']',
     html,
     flags=re.I,
 )
-scripts = [urljoin(document_base, src) for src in script_srcs]
+doc_base = urljoin(page_url, base_href.group(1) if base_href else "/cbr-rec/")
+config_url = urljoin(doc_base, "config.js")
+_, config_text, _ = fetch(config_url)
 
-config_url = urljoin(document_base, "config.js")
-config_final, config_text, config_status = fetch_text(config_url)
-
-bundle_url = next(
-    (
-        script_url
-        for script_url in scripts
-        if "/assets/index-" in script_url
-    ),
-    None,
+search_match = re.search(
+    r'window\.SEARCH_API_URL\s*=\s*"([^"]+)"',
+    config_text,
 )
-if not bundle_url:
-    raise RuntimeError(f"MRAS application bundle not found: {scripts!r}")
+if not search_match:
+    raise RuntimeError(f"SEARCH_API_URL missing from {config_text!r}")
+api_url = search_match.group(1)
 
-bundle_final, bundle, bundle_status = fetch_text(bundle_url)
+bundle_src = re.search(
+    r'<script[^>]+type=["\']module["\'][^>]+src=["\']([^"\']+)["\']',
+    html,
+    flags=re.I,
+)
+if not bundle_src:
+    raise RuntimeError("MRAS module bundle not found")
+bundle_url = urljoin(doc_base, bundle_src.group(1))
+_, bundle, _ = fetch(bundle_url)
 
-config_assignments = {}
-for key in (
-    "SEARCH_API_URL",
-    "LAST_UPDATED_API_URL",
-    "EMAIL_API_URL",
-    "MAINTENANCE_API_URL",
-):
-    match = re.search(
-        rf"(?:globalThis|window)\.{key}\s*=\s*[\"']([^\"']+)[\"']",
-        config_text,
-    )
-    if match:
-        config_assignments[key] = match.group(1)
 
-api_url = config_assignments.get("SEARCH_API_URL", "")
-
-patterns = [
-    "jL.search",
-    "SEARCH_API_URL",
-    "searchTerm",
-    "search",
-    "pageSize",
-    "pageNumber",
-    "jurisdiction",
-    "status",
-    "registrationDate",
-    "creationDate",
-    "inception",
-    "registryId",
-    "businessNumber",
-    "fetch(jL.search",
-    "method:\"POST\"",
-    "method:\"GET\"",
-]
-bundle_snippets = {}
-for pattern in patterns:
-    matches = []
-    for match in re.finditer(re.escape(pattern), bundle, flags=re.I):
-        start = max(0, match.start() - 1000)
-        end = min(len(bundle), match.end() + 1800)
+def around(pattern: str, radius: int = 2600, limit: int = 20):
+    results = []
+    for match in re.finditer(pattern, bundle, flags=re.I):
+        start = max(0, match.start() - radius)
+        end = min(len(bundle), match.end() + radius)
         snippet = re.sub(r"\s+", " ", bundle[start:end]).strip()
-        if snippet not in matches:
-            matches.append(snippet)
-        if len(matches) >= 10:
+        if snippet not in results:
+            results.append(snippet)
+        if len(results) >= limit:
             break
-    bundle_snippets[pattern] = matches
+    return results
 
-api_probe = None
-if api_url:
-    # First test is intentionally a GET without invented query parameters.
-    # Its status/body often exposes method/schema requirements without
-    # guessing or sending a broad search.
-    try:
-        api_final, api_text, api_status = fetch_text(api_url)
-        api_probe = {
-            "requested_url": api_url,
-            "final_url": api_final,
-            "status": api_status,
-            "body_prefix": api_text[:4000],
-        }
-    except Exception as exc:
-        api_probe = {
-            "requested_url": api_url,
-            "error_type": type(exc).__name__,
-            "error": str(exc),
-        }
+
+api_error = {}
+try:
+    fetch(api_url)
+except HTTPError as exc:
+    api_error = {
+        "status": exc.code,
+        "reason": str(exc.reason),
+        "headers": dict(exc.headers.items()),
+        "body": exc.read().decode("utf-8", errors="replace")[:12000],
+    }
 
 print(
     json.dumps(
         {
-            "query_page": {
-                "requested_url": URL,
-                "final_url": final_url,
-                "status": status,
-                "html_bytes": len(html.encode("utf-8")),
-                "document_base": document_base,
-            },
-            "config": {
-                "url": config_final,
-                "status": config_status,
-                "bytes": len(config_text.encode("utf-8")),
-                "text": config_text[:10000],
-                "assignments": config_assignments,
-            },
-            "bundle": {
-                "url": bundle_final,
-                "status": bundle_status,
-                "bytes": len(bundle.encode("utf-8")),
-                "snippets": bundle_snippets,
-            },
-            "api_probe": api_probe,
+            "api_url": api_url,
+            "api_empty_request_error": api_error,
+            "jL_search_sites": around(r"jL\.search"),
+            "fetch_search_sites": around(r"fetch\(jL\.search"),
+            "json_stringify_sites": [
+                snippet
+                for snippet in around(r"JSON\.stringify", radius=1800, limit=50)
+                if "search" in snippet.casefold()
+                or "jL" in snippet
+                or "jurisdiction" in snippet.casefold()
+            ][:20],
+            "search_term_sites": around(r"searchTerm", radius=1800),
+            "page_size_sites": around(r"pageSize", radius=1800),
+            "jurisdiction_sites": around(r"jurisdiction", radius=1800, limit=20),
         },
         indent=2,
         ensure_ascii=False,
