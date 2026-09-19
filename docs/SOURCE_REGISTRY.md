@@ -347,3 +347,43 @@ Current decisions:
 See [PROVINCIAL_REGISTRY_ACCESS.md](PROVINCIAL_REGISTRY_ACCESS.md).
 
 A province that cannot currently be resolved is stored as an access/coverage limitation, not a negative identity or expansion signal.
+
+
+## Foreign named-entity and parent contract
+
+Foreign identity resolution begins only after a Canadian entry entity is detail-confirmed.
+
+For an Investment Canada investor marked `DISTINCT_INVESTOR_REQUIRES_FOREIGN_RESOLUTION`, AtlanticBridge queries GLEIF by the official Investment Canada investor name.
+
+The Investment Canada `country of ultimate control` is **not** treated as the legal jurisdiction of the named investor. It is retained as separate control evidence.
+
+Automatic named-entity confirmation requires:
+
+1. an exact normalized legal-name match in GLEIF; and
+2. a unique match between the Investment Canada investor locality and the GLEIF legal-address or headquarters city.
+
+A unique exact legal-name candidate without locality corroboration is `REVIEW_READY_EXACT_NAME`, not confirmed.
+
+Rows whose Investment Canada investor is the Canadian vehicle remain `CANADIAN_VEHICLE_PARENT_UNRESOLVED` and are not queried using the Canadian company name as if it were the European parent.
+
+For a confirmed named entity, AtlanticBridge follows only the parent links advertised by the GLEIF LEI record:
+
+- a `related` Level 2 relationship is parsed as a directional relationship where the child is the start node and the accounting parent is the end node;
+- a `reporting-exception` is stored verbatim, including reasons such as `NO_LEI` or `NATURAL_PERSONS`;
+- absence of a relationship link is preserved as `NO_RELATIONSHIP_LINK`.
+
+GLEIF parent evidence represents direct/ultimate **accounting consolidating parent** relationships. It is not re-labelled as beneficial ownership.
+
+Source: GLEIF Level 2 Relationship Record data dictionary / API.
+
+
+### Named investor can still be Canadian
+
+Data Proof 012 live acceptance exposed an important distinction: an Investment Canada investor that is distinct from the newly listed Canadian business can itself still be a Canadian legal entity controlled from Europe.
+
+AtlanticBridge therefore classifies an exact name+locality GLEIF match as:
+
+- `CONFIRMED_FOREIGN_NAMED_ENTITY` only when the GLEIF legal entity is non-Canadian;
+- `CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED` when the named investor resolves to a Canadian legal entity.
+
+Country of ultimate control remains separate evidence and is never substituted for the named investor's legal jurisdiction.

@@ -199,3 +199,37 @@ def search_legal_name(
         total_results=int(pagination.get("total") or len(candidates)),
         candidates=tuple(candidates),
     )
+
+
+def fetch_api_resource(
+    url: str,
+    *,
+    timeout: int = 30,
+    attempts: int = 3,
+    backoff_seconds: float = 1.0,
+) -> dict:
+    """Fetch one GLEIF API resource using the same bounded retry contract."""
+    if not url.startswith("https://api.gleif.org/api/"):
+        raise ValueError(f"Unsupported GLEIF API URL: {url!r}")
+    return _request_json(
+        url,
+        timeout=timeout,
+        attempts=attempts,
+        backoff_seconds=backoff_seconds,
+    )
+
+
+def fetch_lei_record(
+    lei: str,
+    *,
+    timeout: int = 30,
+    attempts: int = 3,
+) -> dict:
+    lei = " ".join((lei or "").split()).strip()
+    if not lei:
+        raise ValueError("lei is required")
+    return fetch_api_resource(
+        f"{GLEIF_API_BASE}/{lei}",
+        timeout=timeout,
+        attempts=attempts,
+    )
