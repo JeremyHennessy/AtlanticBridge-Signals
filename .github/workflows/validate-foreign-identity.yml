@@ -1,0 +1,56 @@
+name: Validate Foreign Identity Production
+
+on:
+  push:
+    branches:
+      - "feature/foreign-parent-identity-012"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Run full live foreign identity acceptance
+        run: |
+          DB="$RUNNER_TEMP/foreign-identity-live.sqlite"
+
+          python -m atlanticbridge ingest-investment-canada             --db "$DB"             --history             --workers 4
+
+          ENTRY="$(python -m atlanticbridge resolve-entry-identities             --db "$DB"             --start-month 2019-01             --end-month 2025-12             --gold-limit 100             --detail-limit 140             --detail-delay-seconds 0.05)"
+          echo "$ENTRY"
+
+          FOREIGN="$(python -m atlanticbridge resolve-foreign-identities             --db "$DB"             --page-size 20             --delay-seconds 0.10)"
+          echo "$FOREIGN"
+
+          SUMMARY="$(python -m atlanticbridge summarize-foreign-identities --db "$DB")"
+          echo "$SUMMARY"
+
+          ENTRY="$ENTRY" FOREIGN="$FOREIGN" SUMMARY="$SUMMARY" python - <<'PY'
+          import json
+          import os
+
+          entry = json.loads(os.environ["ENTRY"])
+          foreign = json.loads(os.environ["FOREIGN"])
+          summary = json.loads(os.environ["SUMMARY"])
+
+          assert entry["confirmed_entry_entities"] == 27, entry
+          assert foreign["target_records"] == 27, foreign
+          assert foreign["queried_investors"] == 18, foreign
+          assert foreign["canadian_vehicle_parent_unresolved"] == 9, foreign
+          assert foreign["status_counts"].get("QUERY_ERROR", 0) == 0, foreign
+          assert sum(foreign["status_counts"].values()) == 27, foreign
+
+          assert summary["run_present"] is True, summary
+          assert summary["target_records"] == 27, summary
+          assert summary["queried_investors"] == 18, summary
+          assert len(summary["confirmed_entities"]) == foreign["confirmed_named_entities"], summary
+          PY
