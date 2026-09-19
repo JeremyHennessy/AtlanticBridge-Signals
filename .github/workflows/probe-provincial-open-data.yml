@@ -1,0 +1,21 @@
+name: Probe Licensed Provincial Registry Sources
+
+on:
+  push:
+    branches:
+      - "feature/provincial-identity-011"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Search Nova Scotia Open Data for registry-derived sources
+        run: python scripts/probe_provincial_open_data.py
