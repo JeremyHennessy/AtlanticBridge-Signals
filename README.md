@@ -126,7 +126,7 @@ python -m atlanticbridge summarize-foreign-identities \
 - Federal entry-entity resolution using active + inactive Corporations Canada legal names
 - Official federal corporation detail verification and pre-entry certificate timing
 - Reviewable federal entry-entity gold cohort
-- Foreign named-entity resolution requiring exact legal name + source locality
+- Named-investor legal-entity resolution requiring exact legal name + source locality, with Canadian and foreign entities separated
 - GLEIF direct/ultimate accounting-parent relationship or reporting-exception evidence
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
