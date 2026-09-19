@@ -42,7 +42,10 @@ CREATE TABLE IF NOT EXISTS curated_identity_queue (
             'RESOLVED_UPSTREAM'
         )
     ),
-    resolved_legal_name TEXT NOT NULL DEFAULT '',
+    resolved_subject_type TEXT NOT NULL DEFAULT '' CHECK (
+        resolved_subject_type IN ('', 'LEGAL_ENTITY', 'NATURAL_PERSON')
+    ),
+    resolved_subject_name TEXT NOT NULL DEFAULT '',
     resolved_jurisdiction TEXT NOT NULL DEFAULT '',
     resolved_identifier_type TEXT NOT NULL DEFAULT '',
     resolved_identifier_value TEXT NOT NULL DEFAULT '',
@@ -75,12 +78,18 @@ CREATE TABLE IF NOT EXISTS curated_identity_evidence (
     source_title TEXT NOT NULL,
     source_publisher TEXT NOT NULL,
     observed_at TEXT NOT NULL,
-    legal_name TEXT NOT NULL,
+    subject_type TEXT NOT NULL CHECK (
+        subject_type IN ('UNKNOWN', 'LEGAL_ENTITY', 'NATURAL_PERSON')
+    ),
+    subject_name TEXT NOT NULL,
     jurisdiction TEXT NOT NULL,
     identifier_type TEXT NOT NULL,
     identifier_value TEXT NOT NULL,
     relationship_type TEXT NOT NULL,
-    related_legal_name TEXT NOT NULL,
+    related_subject_type TEXT NOT NULL CHECK (
+        related_subject_type IN ('UNKNOWN', 'LEGAL_ENTITY', 'NATURAL_PERSON')
+    ),
+    related_subject_name TEXT NOT NULL,
     related_identifier_type TEXT NOT NULL,
     related_identifier_value TEXT NOT NULL,
     evidence_note TEXT NOT NULL,
@@ -104,7 +113,10 @@ CREATE TABLE IF NOT EXISTS curated_identity_decisions (
             'REJECTED'
         )
     ),
-    resolved_legal_name TEXT NOT NULL,
+    resolved_subject_type TEXT NOT NULL CHECK (
+        resolved_subject_type IN ('LEGAL_ENTITY', 'NATURAL_PERSON')
+    ),
+    resolved_subject_name TEXT NOT NULL,
     resolved_jurisdiction TEXT NOT NULL,
     resolved_identifier_type TEXT NOT NULL,
     resolved_identifier_value TEXT NOT NULL,
@@ -402,12 +414,17 @@ def _evidence_hash(queue_id: str, evidence: dict[str, object]) -> str:
             "queue_id": queue_id,
             "evidence_type": _clean(evidence.get("evidence_type")),
             "source_url": _clean(evidence.get("source_url")),
-            "legal_name": _clean(evidence.get("legal_name")),
+            "subject_type": _clean(evidence.get("subject_type")).upper() or "UNKNOWN",
+            "subject_name": _clean(
+                evidence.get("subject_name") or evidence.get("legal_name")
+            ),
             "jurisdiction": _clean(evidence.get("jurisdiction")),
             "identifier_type": _clean(evidence.get("identifier_type")),
             "identifier_value": _clean(evidence.get("identifier_value")),
             "relationship_type": _clean(evidence.get("relationship_type")),
-            "related_legal_name": _clean(evidence.get("related_legal_name")),
+            "related_subject_type":
+                _clean(evidence.get("related_subject_type")).upper() or "UNKNOWN",
+            "related_subject_name": _clean(evidence.get("related_subject_name")),
             "related_identifier_type":
                 _clean(evidence.get("related_identifier_type")),
             "related_identifier_value":
@@ -449,17 +466,19 @@ def _insert_evidence(
             source_title,
             source_publisher,
             observed_at,
-            legal_name,
+            subject_type,
+            subject_name,
             jurisdiction,
             identifier_type,
             identifier_value,
             relationship_type,
-            related_legal_name,
+            related_subject_type,
+            related_subject_name,
             related_identifier_type,
             related_identifier_value,
             evidence_note,
             evidence_hash
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(evidence_id) DO UPDATE SET
             source_title = excluded.source_title,
             source_publisher = excluded.source_publisher,
@@ -475,12 +494,14 @@ def _insert_evidence(
             _clean(evidence.get("source_title")),
             _clean(evidence.get("source_publisher")),
             _clean(evidence.get("observed_at")) or default_observed_at,
-            _clean(evidence.get("legal_name")),
+            _clean(evidence.get("subject_type")).upper() or "UNKNOWN",
+            _clean(evidence.get("subject_name") or evidence.get("legal_name")),
             _clean(evidence.get("jurisdiction")),
             _clean(evidence.get("identifier_type")),
             _clean(evidence.get("identifier_value")),
             _clean(evidence.get("relationship_type")),
-            _clean(evidence.get("related_legal_name")),
+            _clean(evidence.get("related_subject_type")).upper() or "UNKNOWN",
+            _clean(evidence.get("related_subject_name")),
             _clean(evidence.get("related_identifier_type")),
             _clean(evidence.get("related_identifier_value")),
             _clean(evidence.get("evidence_note")),
@@ -532,7 +553,11 @@ def _apply_decision(
     if queue is None:
         raise ValueError(f"Unknown curated identity queue_id: {queue_id}")
 
-    legal_name = _clean(decision.get("resolved_legal_name"))
+    subject_type = _clean(decision.get("resolved_subject_type")).upper()
+    subject_name = _clean(
+        decision.get("resolved_subject_name")
+        or decision.get("resolved_legal_name")
+    )
     jurisdiction = _clean(decision.get("resolved_jurisdiction"))
     identifier_type = _clean(decision.get("resolved_identifier_type"))
     identifier_value = _clean(decision.get("resolved_identifier_value"))
@@ -543,13 +568,18 @@ def _apply_decision(
             raise ValueError(
                 "CONFIRMED curated identity decisions require primary-source evidence"
             )
-        if not legal_name:
+        if subject_type not in {"LEGAL_ENTITY", "NATURAL_PERSON"}:
             raise ValueError(
-                "CONFIRMED curated identity decisions require resolved_legal_name"
+                "CONFIRMED curated identity decisions require "
+                "resolved_subject_type LEGAL_ENTITY or NATURAL_PERSON"
             )
-        if not jurisdiction:
+        if not subject_name:
             raise ValueError(
-                "CONFIRMED curated identity decisions require resolved_jurisdiction"
+                "CONFIRMED curated identity decisions require resolved_subject_name"
+            )
+        if subject_type == "LEGAL_ENTITY" and not jurisdiction:
+            raise ValueError(
+                "CONFIRMED LEGAL_ENTITY decisions require resolved_jurisdiction"
             )
     elif not basis:
         raise ValueError(
@@ -559,7 +589,8 @@ def _apply_decision(
     decision_payload = {
         "queue_id": queue_id,
         "state": state,
-        "resolved_legal_name": legal_name,
+        "resolved_subject_type": subject_type,
+        "resolved_subject_name": subject_name,
         "resolved_jurisdiction": jurisdiction,
         "resolved_identifier_type": identifier_type,
         "resolved_identifier_value": identifier_value,
@@ -576,20 +607,22 @@ def _apply_decision(
             decision_id,
             queue_id,
             decision_state,
-            resolved_legal_name,
+            resolved_subject_type,
+            resolved_subject_name,
             resolved_jurisdiction,
             resolved_identifier_type,
             resolved_identifier_value,
             decision_basis,
             evidence_ids_json,
             decided_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             decision_id,
             queue_id,
             state,
-            legal_name,
+            subject_type,
+            subject_name,
             jurisdiction,
             identifier_type,
             identifier_value,
@@ -604,7 +637,8 @@ def _apply_decision(
         UPDATE curated_identity_queue
         SET
             review_status = ?,
-            resolved_legal_name = ?,
+            resolved_subject_type = ?,
+            resolved_subject_name = ?,
             resolved_jurisdiction = ?,
             resolved_identifier_type = ?,
             resolved_identifier_value = ?,
@@ -615,7 +649,8 @@ def _apply_decision(
         """,
         (
             state,
-            legal_name,
+            subject_type,
+            subject_name,
             jurisdiction,
             identifier_type,
             identifier_value,
@@ -763,7 +798,8 @@ def curated_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
                 canadian_entry_corporation_number,
                 source_confirmed_legal_name,
                 source_confirmed_jurisdiction,
-                resolved_legal_name,
+                resolved_subject_type,
+                resolved_subject_name,
                 resolved_jurisdiction,
                 resolved_identifier_type,
                 resolved_identifier_value,
@@ -807,6 +843,26 @@ def curated_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
         ),
         0,
     )
+    confirmed_legal_entities = int(
+        conn.execute(
+            """
+            SELECT COUNT(*)
+            FROM curated_identity_queue
+            WHERE review_status = 'CONFIRMED'
+              AND resolved_subject_type = 'LEGAL_ENTITY'
+            """
+        ).fetchone()[0]
+    )
+    confirmed_natural_persons = int(
+        conn.execute(
+            """
+            SELECT COUNT(*)
+            FROM curated_identity_queue
+            WHERE review_status = 'CONFIRMED'
+              AND resolved_subject_type = 'NATURAL_PERSON'
+            """
+        ).fetchone()[0]
+    )
     open_records = next(
         (
             int(row["records"])
@@ -820,10 +876,12 @@ def curated_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
         "total_queue_records": total,
         "active_queue_records": len(queue),
         "confirmed_reviews": confirmed,
+        "confirmed_legal_entities": confirmed_legal_entities,
+        "confirmed_natural_persons": confirmed_natural_persons,
         "open_reviews": open_records,
         "status_counts": counts,
         "task_counts": task_counts,
         "evidence_type_counts": evidence_counts,
-        "modeling_ready_curated_records": confirmed,
+        "modeling_ready_curated_records": confirmed_legal_entities,
         "queue": queue,
     }
