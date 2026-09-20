@@ -683,13 +683,34 @@
       "federal_event_date": "2021-01-28",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 4,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The four-day month-start interval is too coarse to establish an operational lead. Named investor identity and relationship remain open.",
-      "additional_evidence": []
+      "audit_note": "HANECS' official locations page states that its Ottawa, Canada location has existed since 2021. The company site and legal imprint also identify Max Neusser as a CEO/managing director of HANECS GmbH, corroborating his role in the foreign HANECS group. These current pages carry historical year assertions but do not provide the Ottawa opening day, identify the Canadian location explicitly as HANECS Canada Inc., or establish the legal investor-to-Canadian-vehicle relationship. Because the Investment Canada outcome has only February 2021 month precision, the year-level location evidence cannot order establishment relative to the notification or establish the first Canadian software, consulting or training service date. Keep first_canadian_operations_date unset, the named-investor relationship open, and the case model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.hanecs.de/en/standorte/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current HANECS locations page with historical year assertion",
+          "observed_at": "2026-09-20",
+          "event_date": "2021",
+          "event_date_precision": "YEAR",
+          "claim": "HANECS states that its Ottawa, Canada location has existed since 2021.",
+          "supports": "CANADIAN_LOCATION_ESTABLISHMENT_DURING_2021"
+        },
+        {
+          "source_url": "https://www.hanecs.de/en/impressum/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current HANECS legal imprint; historical effective date not displayed",
+          "observed_at": "2026-09-20",
+          "claim": "HANECS GmbH's official legal imprint identifies Max Neusser as a managing director, corroborating his role in the foreign HANECS group but not the Canadian vehicle's ownership chain.",
+          "supports": "FOREIGN_GROUP_ROLE_CONTEXT_ONLY"
+        }
+      ]
     },
     {
       "outcome_record_id": "52ed53458345a7ea4c2dd652f867980115f96827923254fbdd31e05d7e3287c0",
