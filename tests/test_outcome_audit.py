@@ -216,3 +216,24 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('do not establish whether the award preceded the notification within June', case['audit_note'])
         self.assertIn('exact first Canadian service/operation date', case['audit_note'])
 
+    def test_hanecs_year_level_location_does_not_order_notification_or_resolve_identity(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'HANECS Canada Inc.'
+        )
+        self.assertEqual(
+            case['outcome_classification'],
+            'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED',
+        )
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('CANADIAN_LOCATION_ESTABLISHMENT_DURING_2021', supports)
+        self.assertIn('FOREIGN_GROUP_ROLE_CONTEXT_ONLY', supports)
+        self.assertIn('cannot order establishment relative to the notification', case['audit_note'])
+        self.assertIn('named-investor relationship open', case['audit_note'])
+
