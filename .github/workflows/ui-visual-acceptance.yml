@@ -1,0 +1,64 @@
+name: UI visual acceptance
+
+on:
+  push:
+    branches:
+      - "test/ui-visual-acceptance-*"
+
+permissions:
+  contents: read
+
+jobs:
+  browser-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright harness
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium webkit
+
+      - name: Start exact-branch UI
+        run: |
+          python -m http.server 8000 -d ui > /tmp/atlanticbridge-ui-server.log 2>&1 &
+          echo $! > /tmp/atlanticbridge-ui-server.pid
+          for i in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:8000/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/atlanticbridge-ui-server.log
+          exit 1
+
+      - name: Desktop and iPhone browser acceptance
+        env:
+          UI_BASE_URL: http://127.0.0.1:8000/
+        run: node tests/ui_visual_acceptance.mjs
+
+      - name: Acceptance report summary
+        if: always()
+        run: |
+          if [ -f artifacts/ui-acceptance/ui-acceptance-report.json ]; then
+            echo "## UI visual acceptance" >> "$GITHUB_STEP_SUMMARY"
+            echo "~~~json" >> "$GITHUB_STEP_SUMMARY"
+            cat artifacts/ui-acceptance/ui-acceptance-report.json >> "$GITHUB_STEP_SUMMARY"
+            echo "~~~" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-visual-acceptance-${{ github.sha }}
+          path: |
+            artifacts/ui-acceptance/
+            /tmp/atlanticbridge-ui-server.log
+          retention-days: 30
+          if-no-files-found: error
