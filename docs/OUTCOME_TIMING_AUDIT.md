@@ -26,8 +26,8 @@ Registry projections intentionally contain corporate names, status and activitie
 |---|---:|---|
 | Prior Canadian presence supported by primary or regulatory material | 5 | Backbase, Bolton, TOPdesk, Bayer Environmental Science and Reebelo: exclude their notification months as assumed first-entry dates |
 | Prior commercial presence supported only by secondary material | 0 | TOPdesk is upgraded by the City of Toronto's primary annual report evidence |
-| Establishment/project-development/recruitment/market-readiness/current footprint corroborated beyond registry | 7 | LINET founding; AIUT Canadian branch establishment; Trillium contracted LCBO distribution-centre project; Britishvolt project development; Pegasi Ontario continuation/current Toronto footprint; Relieve Windsor engineering recruitment; Sanllo produce-trade membership/brand activity. Exact first operations remain unresolved |
-| Registry establishment only; operating outcome unresolved | 15 | Require dated operational and notification-purpose evidence |
+| Establishment/project-development/recruitment/market-readiness/current footprint corroborated beyond registry | 8 | LINET founding; AIUT Canadian branch establishment; Trillium contracted LCBO distribution-centre project; Britishvolt project development; Pegasi Ontario continuation/current Toronto footprint; Relieve Windsor engineering recruitment; Sanllo produce-trade membership/brand activity; Vaxxinova Canada-facing group activity before local incorporation. Exact first local operations remain unresolved |
+| Registry establishment only; operating outcome unresolved | 14 | Require dated operational and notification-purpose evidence |
 | Exact first Canadian operating dates established | 0 | No positive first-entry labels promoted |
 | Cases eligible for first-entry model training from this audit | 0 | Unresolved is not a negative outcome |
 
@@ -92,8 +92,10 @@ The case review is complete as a disposition of the available evidence, not an e
 | Leadership Pipeline Institute Canada Inc. | [15266092](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15266092.json?lang=eng) | 2023-09 | 2023-08-09 | 23 | Unresolved |
 | Tiandingfeng Canada Nonwovens Co., Ltd. | [14895142](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14895142.json?lang=eng) | 2023-10 | 2023-03-30 | 185 | Unresolved |
 | K-Rouge Holding Inc. | [15924669](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15924669.json?lang=eng) | 2024-04 | 2024-04-05 | -4 | Unresolved |
-| Vaxxinova International B.V. / Vaxxinova Canada, Inc. | [16220801](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/16220801.json?lang=eng) | 2025-05 | 2024-07-18 | 287 | Unresolved |
+| Vaxxinova International B.V. / Vaxxinova Canada, Inc. | [16220801](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/16220801.json?lang=eng) | 2025-05 | 2024-07-18 | 287 | Canada-facing parent activity corroborated before local incorporation; local first operations unresolved |
 | Bolton BG Canada Inc. | [9996672](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/9996672.json?lang=eng) | 2025-10 | 2016-11-24 | 3233 | Prior presence supported |
+
+**Vaxxinova Canada:** Vaxxinova's official [4 March 2024 BU Aqua announcement](https://vaxxinova.com/vaxxinova-bu-aqua-announces-new-rd-and-business-development-director/) states that the business unit provides biological preventive solutions to the aquaculture industry in Canada. That statement predates Vaxxinova Canada, Inc.'s 18 July 2024 incorporation and the May 2025 notification, so it corroborates group-level Canada-facing activity before the local vehicle existed. CIPO's [VAXXINOVA registration TMA1107399](https://ised-isde.canada.ca/cipo/trademark-search/1912733) was filed in 2018 and registered in 2021 for veterinary vaccines/services, but the application claimed proposed use in Canada; it is retained as brand/market-intent evidence, not operational proof. The sources do not establish when Vaxxinova Canada itself first sold or distributed veterinary biologicals, so the case remains `UNRESOLVED` and model-ineligible.
 
 ## TVM Ventures VIII / Innovation II fund-chain disposition
 
