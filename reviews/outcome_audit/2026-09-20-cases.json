@@ -779,8 +779,19 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The 94-day incorporation-to-notification interval does not establish when manufacturing, sales or staff began in Canada.",
-      "additional_evidence": []
+      "audit_note": "CIPO application 1022072 (FITBOX) was filed in Canada on 1999-07-13 for reusable containers, racks, frames and related transport/automotive packaging goods and registered on 2002-12-05. The current registrant is conTeyor International nv, and CIPO records a 2013-11-22 owner-name change from CONTEYOR MULTIBAG SYSTEMS N.V. to conTeyor International nv. This establishes a Canada-specific, historically available IP/market signal for the exact foreign investor long before conTeyor Canada Ltd. was incorporated in 2020 and the March 2021 Investment Canada notification. It does not establish local Canadian manufacturing, sales, staffing or first operations, and no relationship to Xcel Fabrication is asserted. Keep the outcome UNRESOLVED and model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1022072",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "1999-07-13",
+          "source_date_basis": "CIPO filing date; registration followed on 2002-12-05 and the ownership record shows a 2013-11-22 name change",
+          "event_date": "1999-07-13",
+          "event_date_precision": "DAY",
+          "claim": "CIPO application 1022072 records FITBOX for reusable transport/automotive packaging goods; the current registrant is conTeyor International nv and CIPO records a 2013-11-22 owner-name change from CONTEYOR MULTIBAG SYSTEMS N.V.",
+          "supports": "CANADA_IP_MARKET_SIGNAL_LONG_BEFORE_LOCAL_INCORPORATION"
+        }
+      ]
     },
     {
       "outcome_record_id": "6148493d6fa4a81f910b90594d877222da8451e61dd2a6519a089d4236ced78e",

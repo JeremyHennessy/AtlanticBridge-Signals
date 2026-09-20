@@ -279,3 +279,25 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('after the August 2019 Investment Canada notification', case['audit_note'])
         self.assertIn('does not establish the exact opening date', case['audit_note'])
 
+    def test_conteyor_cipo_signal_does_not_promote_local_outcome(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'conTeyor Canada Ltd.'
+        )
+        self.assertEqual(case['outcome_classification'], 'UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        evidence = case['additional_evidence']
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]['source_date'], '1999-07-13')
+        self.assertEqual(
+            evidence[0]['supports'],
+            'CANADA_IP_MARKET_SIGNAL_LONG_BEFORE_LOCAL_INCORPORATION',
+        )
+        self.assertIn('does not establish local Canadian manufacturing', case['audit_note'])
+        self.assertIn('no relationship to Xcel Fabrication is asserted', case['audit_note'])
+
