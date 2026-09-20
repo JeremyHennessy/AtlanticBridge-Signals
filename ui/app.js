@@ -262,6 +262,151 @@ function renderCases() {
   });
 }
 
+function timelineDate(value, precision = null) {
+  if (!value) return null;
+  const text = String(value);
+  let sortValue = Number.POSITIVE_INFINITY;
+  let label = formatDate(text);
+  let precisionLabel = "";
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    sortValue = Date.parse(text + "T00:00:00Z");
+    precisionLabel = precision === "YEAR" ? "year only" : precision === "MONTH" ? "month only" : "";
+  } else if (/^\d{4}-\d{2}$/.test(text)) {
+    const [year, month] = text.split("-").map(Number);
+    sortValue = Date.UTC(year, month - 1, 1);
+    precisionLabel = "month only";
+  } else if (/^\d{4}$/.test(text)) {
+    sortValue = Date.UTC(Number(text), 0, 1);
+    label = text;
+    precisionLabel = "year only";
+  }
+
+  return {
+    raw: text,
+    sortValue,
+    label: precisionLabel ? `${label} · ${precisionLabel}` : label,
+  };
+}
+
+function buildCaseTimeline(item) {
+  const events = [];
+
+  const incorporation = timelineDate(item.incorporation_date, "DAY");
+  if (incorporation) {
+    events.push({
+      kind: "registry",
+      date: incorporation,
+      title: "Federal corporation event",
+      detail: `${item.canadian_business_name} incorporated or entered the federal registry.`,
+      meta: "Corporations Canada",
+    });
+  }
+
+  (item.evidence || []).forEach((evidence, index) => {
+    const eventDate = timelineDate(
+      evidence.event_date || evidence.source_date,
+      evidence.event_date ? evidence.event_date_precision : null,
+    );
+    if (eventDate) {
+      events.push({
+        kind: "evidence",
+        date: eventDate,
+        title: formatSourceType(evidence.source_type),
+        detail: evidence.claim || "Source-backed evidence milestone.",
+        meta: evidence.supports || "Evidence role unclassified",
+        evidenceIndex: index,
+      });
+    }
+
+    const publicDate = timelineDate(
+      evidence.publicly_available_date,
+      evidence.publicly_available_date_precision,
+    );
+    const primaryRaw = eventDate?.raw || null;
+    if (publicDate && publicDate.raw !== primaryRaw) {
+      events.push({
+        kind: "publication",
+        date: publicDate,
+        title: "Evidence publicly available",
+        detail: evidence.claim || formatSourceType(evidence.source_type),
+        meta: formatPublicationStatus(evidence.publication_status),
+        evidenceIndex: index,
+      });
+    }
+  });
+
+  const notification = timelineDate(item.notification_month, "MONTH");
+  if (notification) {
+    events.push({
+      kind: "notification",
+      date: notification,
+      title: "Investment Canada notification",
+      detail: `${item.canadian_business_name} appears in the audited new-business notification cohort.`,
+      meta: "Investment Canada Act",
+    });
+  }
+
+  const firstOperations = timelineDate(item.first_canadian_operations_date, "DAY");
+  if (firstOperations) {
+    events.push({
+      kind: "operations",
+      date: firstOperations,
+      title: "Verified first Canadian operations",
+      detail: "Audited first-operation date.",
+      meta: "Outcome timing",
+    });
+  }
+
+  events.sort((left, right) => {
+    if (left.date.sortValue !== right.date.sortValue) {
+      return left.date.sortValue - right.date.sortValue;
+    }
+    const order = {
+      evidence: 0,
+      publication: 1,
+      registry: 2,
+      notification: 3,
+      operations: 4,
+    };
+    return (order[left.kind] ?? 9) - (order[right.kind] ?? 9);
+  });
+
+  return events;
+}
+
+function renderCaseTimeline(item) {
+  const events = buildCaseTimeline(item);
+  const investor = `${item.investor_name || "Unknown investor"} · ${item.ultimate_control_country || "control country unresolved"}`;
+
+  return `
+    <div class="timeline-context">
+      <span>EU / foreign investor context</span>
+      <strong>${escapeHtml(investor)}</strong>
+    </div>
+    <div class="case-timeline">
+      ${events.length
+        ? events.map((event) => `
+            <article class="timeline-item timeline-${escapeHtml(event.kind)}">
+              <div class="timeline-marker" aria-hidden="true"></div>
+              <div class="timeline-content">
+                <div class="timeline-topline">
+                  <time>${escapeHtml(event.date.label)}</time>
+                  <span>${escapeHtml(event.meta)}</span>
+                </div>
+                <h4>${escapeHtml(event.title)}</h4>
+                <p>${escapeHtml(event.detail)}</p>
+              </div>
+            </article>
+          `).join("")
+        : '<div class="no-evidence">No dated milestones are available for this case.</div>'}
+    </div>
+    <p class="timeline-caveat">
+      Timeline order follows the recorded date precision. Month-only and year-only milestones do not imply an exact sequence within that period.
+    </p>
+  `;
+}
+
 function renderEvidence(evidence) {
   if (!evidence.length) {
     return `
@@ -356,7 +501,12 @@ function openCase(id) {
     </section>
 
     <section class="detail-section">
-      <h3>Evidence</h3>
+      <h3>Evidence timeline</h3>
+      ${renderCaseTimeline(item)}
+    </section>
+
+    <section class="detail-section">
+      <h3>Evidence ledger</h3>
       ${renderEvidence(item.evidence)}
     </section>
   `;

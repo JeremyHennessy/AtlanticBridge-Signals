@@ -169,6 +169,19 @@ async function verifyAllRowsAndDrawers(page, label) {
     const title = (await page.locator("#drawer-title").innerText()).trim();
     record(`${label}: drawer title ${item.id}`, title === item.canadian_business_name, title);
 
+    const timeline = page.locator("#case-drawer .case-timeline");
+    record(
+      `${label}: timeline rendered ${item.id}`,
+      (await timeline.count()) === 1,
+      item.canadian_business_name,
+    );
+    const timelineItems = timeline.locator(".timeline-item");
+    record(
+      `${label}: timeline contains registry and notification ${item.id}`,
+      (await timelineItems.count()) >= 2,
+      `items=${await timelineItems.count()}`,
+    );
+
     const cards = page.locator("#case-drawer .evidence-card");
     const cardCount = await cards.count();
     record(

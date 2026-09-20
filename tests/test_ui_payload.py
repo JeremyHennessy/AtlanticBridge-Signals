@@ -87,6 +87,9 @@ class UIPayloadTests(unittest.TestCase):
         self.assertIn("AtlanticBridge Signals", index)
         self.assertIn("Evidence Console", index)
         self.assertIn('fetch("data/dashboard.json"', app)
+        self.assertIn("buildCaseTimeline", app)
+        self.assertIn("Timeline order follows the recorded date precision", app)
+        self.assertIn(".case-timeline", styles)
         self.assertIn(".drawer", styles)
 
 

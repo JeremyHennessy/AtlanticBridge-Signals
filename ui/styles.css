@@ -726,6 +726,136 @@ tbody tr.case-row:focus-visible {
   line-height: 1.65;
 }
 
+.timeline-context {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(121, 174, 232, 0.055);
+}
+
+.timeline-context span,
+.timeline-context strong {
+  display: block;
+}
+
+.timeline-context span {
+  color: var(--text-faint);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.timeline-context strong {
+  margin-top: 5px;
+  color: #d6e3ef;
+  font-size: 12px;
+}
+
+.case-timeline {
+  position: relative;
+  margin-top: 14px;
+}
+
+.case-timeline::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 7px;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  gap: 11px;
+  padding-bottom: 17px;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-marker {
+  position: relative;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  margin: 5px 0 0 3px;
+  border-radius: 50%;
+  border: 2px solid #0a1625;
+  background: #7f91a5;
+  box-shadow: 0 0 0 1px var(--line-strong);
+}
+
+.timeline-publication .timeline-marker {
+  background: var(--accent);
+}
+
+.timeline-registry .timeline-marker {
+  background: var(--blue);
+}
+
+.timeline-notification .timeline-marker {
+  background: var(--warning);
+}
+
+.timeline-operations .timeline-marker {
+  background: #85d5a8;
+}
+
+.timeline-content {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(151, 174, 201, 0.035);
+}
+
+.timeline-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.timeline-topline time {
+  color: #c7d3df;
+  font-size: 10px;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-topline span {
+  max-width: 55%;
+  color: var(--text-faint);
+  font-size: 9px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.timeline-content h4 {
+  margin: 7px 0 5px;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+
+.timeline-content p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 11px;
+  line-height: 1.52;
+}
+
+.timeline-caveat {
+  margin: 12px 0 0;
+  color: var(--text-faint);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
 .evidence-stack {
   display: grid;
   gap: 10px;
