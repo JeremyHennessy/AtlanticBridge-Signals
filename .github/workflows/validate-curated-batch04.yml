@@ -1,0 +1,73 @@
+name: Validate Curated Identity Batch 04
+
+on:
+  push:
+    branches:
+      - "feature/curated-reviews-017"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Rebuild full identity chain and apply batches 01-04
+        run: |
+          DB="$RUNNER_TEMP/curated-batch04.sqlite"
+
+          python -m atlanticbridge ingest-investment-canada             --db "$DB"             --history             --workers 4
+
+          python -m atlanticbridge resolve-entry-identities             --db "$DB"             --start-month 2019-01             --end-month 2025-12             --gold-limit 100             --detail-limit 140             --detail-delay-seconds 0.05
+
+          python -m atlanticbridge resolve-foreign-identities             --db "$DB"             --page-size 20             --delay-seconds 0.1
+
+          python -m atlanticbridge build-curated-identity-queue             --db "$DB"
+
+          python -m atlanticbridge apply-curated-identity-review             --db "$DB"             --file reviews/curated_identity/2026-09-19-primary-batch-01.json
+
+          python -m atlanticbridge apply-curated-identity-review             --db "$DB"             --file reviews/curated_identity/2026-09-19-primary-batch-02.json
+
+          python -m atlanticbridge apply-curated-identity-review             --db "$DB"             --file reviews/curated_identity/2026-09-20-primary-batch-03.json
+
+          RESULT="$(python -m atlanticbridge apply-curated-identity-review             --db "$DB"             --file reviews/curated_identity/2026-09-20-primary-batch-04.json)"
+          echo "$RESULT"
+
+          SUMMARY="$(python -m atlanticbridge summarize-curated-identity --db "$DB")"
+          echo "$SUMMARY"
+
+          RESULT="$RESULT" SUMMARY="$SUMMARY" python - <<'PY'
+          import json
+          import os
+
+          result = json.loads(os.environ["RESULT"])
+          summary = json.loads(os.environ["SUMMARY"])
+
+          assert result["items_processed"] == 1, result
+          assert result["evidence_rows_processed"] == 3, result
+          assert result["decisions_processed"] == 1, result
+
+          assert summary["active_queue_records"] == 26, summary
+          assert summary["confirmed_reviews"] == 12, summary
+          assert summary["confirmed_legal_entities"] == 12, summary
+          assert summary["confirmed_natural_persons"] == 0, summary
+          assert summary["modeling_ready_curated_records"] == 12, summary
+          assert summary["open_reviews"] == 14, summary
+
+          bolton = next(
+              row for row in summary["queue"]
+              if row["queue_id"] == "7246539ea05aee0809c9eab2cfcbd97f3fb70fdf43d7f589550829b84edd22d4"
+          )
+          assert bolton["review_status"] == "CONFIRMED", bolton
+          assert bolton["resolved_subject_name"] == "Bolton Group S.r.l.", bolton
+          assert bolton["resolved_jurisdiction"] == "IT", bolton
+          assert bolton["resolved_identifier_type"] == "VAT", bolton
+          assert bolton["resolved_identifier_value"] == "05983890152", bolton
+          PY
