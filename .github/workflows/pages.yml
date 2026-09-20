@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "ui/**"
+      - "index.html"\n      - "ui/**"
       - "scripts/build_ui_payload.py"
       - "reviews/outcome_audit/**"
       - "tests/ui_visual_acceptance.mjs"
@@ -81,7 +81,7 @@ jobs:
 
       - name: Verify hosted desktop and iPhone UI
         env:
-          UI_BASE_URL: ${{ needs.deploy.outputs.page_url }}ui/
+          UI_BASE_URL: ${{ needs.deploy.outputs.page_url }}
         run: node tests/ui_visual_acceptance.mjs
 
       - name: Upload hosted acceptance screenshots
