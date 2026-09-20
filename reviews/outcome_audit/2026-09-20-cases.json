@@ -945,7 +945,7 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "Pre-notification Canadian project-development activity is established, but the manufacturing start and exact first Canadian operating date are not established",
-      "audit_note": "Britishvolt Canada had documented Canadian project-development activity before the June 2021 notification: its federal lobbying registration began 2021-03-09 and sought financial support for construction of a battery manufacturing plant in Canada. EY's March 2023 administrators' proposals later reported that the Canadian company employed one person, had been set up to explore the potential for a Canadian battery manufacturing facility, and remained in early-stage development. This corroborates an established Canadian project-development presence, not a completed battery-manufacturing entry. The exact first operating date remains unset; the federal registry later records dissolution on 2025-01-10.",
+      "audit_note": "Britishvolt Canada had documented Canadian project-development activity before the June 2021 notification. Its federal consultant-lobbying registration has an effective/start date of 2021-03-09 and states the undertaking sought financial support for construction of a battery manufacturing plant in Canada; that effective date is not treated as the historical public-availability date. Separately, the Registry of Lobbyists records a 2021-03-18 communication with the Minister of Innovation, Science and Industry and his Chief of Staff, posted publicly on 2021-04-08. EY's March 2023 administrators' proposals later reported that the Canadian company employed one person, had been set up to explore the potential for a Canadian battery manufacturing facility, and remained in early-stage development. This corroborates an established Canadian project-development presence, not a completed battery-manufacturing entry. The exact first operating date remains unset; the federal registry later records dissolution on 2025-01-10.",
       "additional_evidence": [
         {
           "source_url": "https://lobbycanada.gc.ca/app/secure/ocl/lrs/do/vwRg?cno=368941&regId=910086",
@@ -965,6 +965,19 @@
           "pdf_page": 6,
           "claim": "EY's Joint Administrators reported that the Group's Canadian company employed one member of staff, had been set up to explore the potential for developing a battery manufacturing facility in Canada, and was in early-stage development.",
           "supports": "PROJECT_DEVELOPMENT_PRESENCE_NOT_MANUFACTURING_ENTRY"
+        },
+        {
+          "source_url": "https://lobbycanada.gc.ca/app/secure/ocl/lrs/do/rgstrnCmmnctnRprts?regId=915221",
+          "source_type": "OFFICIAL_FEDERAL_LOBBY_COMMUNICATION_REPORT",
+          "source_date": "2021-03-18",
+          "source_date_basis": "Communication date reported in the federal Registry of Lobbyists; public posting occurred later",
+          "publicly_available_date": "2021-04-08",
+          "publicly_available_date_precision": "DAY",
+          "publicly_available_date_basis": "Registry of Lobbyists monthly communication report posted date",
+          "event_date": "2021-03-18",
+          "event_date_precision": "DAY",
+          "claim": "Britishvolt Canada Inc. reported an oral/arranged communication with François-Philippe Champagne, Minister of Innovation, Science and Industry, and Sarah Hussaini, Chief of Staff, on Industry and Science and Technology. The Registry records communication number 368941-500855 as posted on 2021-04-08.",
+          "supports": "PRE_NOTIFICATION_PUBLIC_FEDERAL_LOBBYING_COMMUNICATION"
         }
       ]
     },
