@@ -50,6 +50,11 @@ jobs:
           validate_risk_set_controls(generated)
           assert generated["summary"]["candidate_count"] == 7
           assert generated["summary"]["negative_labels_created"] == 0
+          assert generated["summary"]["backtest_control_eligible_assignments"] == 0
+          assert (
+              generated["summary"]["identity_unreviewed_assignments"]
+              == generated["summary"]["risk_set_candidate_assignments"]
+          )
 
           pinned = Path("reviews/control_cohorts/2026-09-20-risk-set-controls.json")
           if pinned.exists():
