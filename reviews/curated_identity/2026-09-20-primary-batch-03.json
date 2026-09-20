@@ -91,12 +91,12 @@
         "jurisdiction": "IT",
         "identifier_type": "VAT",
         "identifier_value": "12368010018",
-        "relationship_type": "",
-        "related_subject_type": "UNKNOWN",
-        "related_subject_name": "",
+        "relationship_type": "SAME_LEGAL_ENTITY_AS",
+        "related_subject_type": "LEGAL_ENTITY",
+        "related_subject_name": "SD2 Engineering Services S.T.P. A R.L",
         "related_identifier_type": "",
         "related_identifier_value": "",
-        "evidence_note": "Official Turin metropolitan-government procurement act identifies SD2 Engineering Services società tra professionisti a R.L., Via Pianezza 13, Torino, P.IVA 12368010018."
+        "evidence_note": "Official Turin metropolitan-government procurement act identifies SD2 Engineering Services società tra professionisti a R.L., Via Pianezza 13, Torino, P.IVA 12368010018, and on the same page refers to the same engineer/firm as SD2 engineering services s.t.p. a r.l.; the shared address/VAT and same-contract context support the source-name alias."
       },
       {
         "evidence_type": "OFFICIAL_COMPANY_SITE",
