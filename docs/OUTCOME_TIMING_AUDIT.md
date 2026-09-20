@@ -24,10 +24,10 @@ Registry projections intentionally contain corporate names, status and activitie
 
 | Finding | Cases | Treatment |
 |---|---:|---|
-| Prior Canadian presence supported by primary or regulatory material | 3 | Bolton, TOPdesk and Bayer Environmental Science: exclude their notification months as assumed first-entry dates |
+| Prior Canadian presence supported by primary or regulatory material | 4 | Bolton, TOPdesk, Bayer Environmental Science and Reebelo: exclude their notification months as assumed first-entry dates |
 | Prior commercial presence supported only by secondary material | 0 | TOPdesk is upgraded by the City of Toronto's primary annual report evidence |
 | Establishment/project-development/current footprint corroborated beyond registry | 3 | LINET founding; Britishvolt project development; Pegasi Ontario continuation/current Toronto footprint. Exact first operations remain unresolved |
-| Registry establishment only; operating outcome unresolved | 21 | Require dated operational and notification-purpose evidence |
+| Registry establishment only; operating outcome unresolved | 20 | Require dated operational and notification-purpose evidence |
 | Exact first Canadian operating dates established | 0 | No positive first-entry labels promoted |
 | Cases eligible for first-entry model training from this audit | 0 | Unresolved is not a negative outcome |
 
@@ -47,7 +47,9 @@ All 27 selected federal events are incorporations. Twenty-five occurred before t
 
 **Pegasi IAM Canada:** Corporations Canada records the federal corporation as `Inactive - Discontinued`, with a 2021-07-06 discontinuance to Ontario rather than a dissolution. Pegasi's [current official site](https://pegasi.fi/) lists a Toronto office at 2 Bloor Street West, Suite 2120. This corrects the interpretation of the inactive federal status and corroborates an eventual Canadian footprint. Because the company-site evidence is current and undated historically, it does not prove when Canadian operations began or whether operations preceded the July 2021 notification.
 
-The case review is complete as a disposition of the available evidence, not an exhaustive reconstruction of every operating history. Twenty-one cases remain registry-only; other rows have stronger descriptive evidence but still lack a model-eligible first-entry date. Acquisition, reorganization, delayed notification, never-started operations and first operating entry are not assigned without supporting evidence.
+**Reebelo Canada:** Reebelo's Canadian help centre [published on 2023-07-05](https://help.reebelo.ca/hc/en-us/articles/20328511773081-What-is-Reebelo) that it "currently" sold in Canada, establishing commercial presence before the August 2023 notification. CIPO's [REEBELO record](https://ised-isde.canada.ca/cipo/trademark-search/2237254) shows a Canadian trademark filing on 2023-01-13 by Quista Technology Pte. Ltd. for retail and online-marketplace services. The filing is pre-notification market-intent evidence, not an operating date. July 5 is therefore an `operating by` bound only; the exact first Canadian sale remains unresolved and the case stays model-ineligible.
+
+The case review is complete as a disposition of the available evidence, not an exhaustive reconstruction of every operating history. Twenty cases remain registry-only; other rows have stronger descriptive evidence but still lack a model-eligible first-entry date. Acquisition, reorganization, delayed notification, never-started operations and first operating entry are not assigned without supporting evidence.
 
 ## Every case
 
@@ -76,7 +78,7 @@ The case review is complete as a disposition of the available evidence, not an e
 | Roberto Sancristobal Llobell / Sanllo Canada Inc | [14292910](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14292910.json?lang=eng) | 2022-10 | 2022-08-16 | 46 | Unresolved |
 | Anastasios Lianos / Knitly Inc. | [14719808](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14719808.json?lang=eng) | 2023-02 | 2023-01-30 | 2 | Unresolved |
 | Sioo Wood Protection Industry AB / Sioo Wood Protection Industry Canada Inc. | [14274431](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14274431.json?lang=eng) | 2023-07 | 2022-08-09 | 326 | Unresolved |
-| Quista Technology Pte. Ltd. / Reebelo Canada, Inc. | [15053404](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15053404.json?lang=eng) | 2023-08 | 2023-05-24 | 69 | Unresolved |
+| Quista Technology Pte. Ltd. / Reebelo Canada, Inc. | [15053404](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15053404.json?lang=eng) | 2023-08 | 2023-05-24 | 69 | Commercial presence proven by 2023-07-05; exact first sale unresolved |
 | Leadership Pipeline Institute Canada Inc. | [15266092](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15266092.json?lang=eng) | 2023-09 | 2023-08-09 | 23 | Unresolved |
 | Tiandingfeng Canada Nonwovens Co., Ltd. | [14895142](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14895142.json?lang=eng) | 2023-10 | 2023-03-30 | 185 | Unresolved |
 | K-Rouge Holding Inc. | [15924669](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15924669.json?lang=eng) | 2024-04 | 2024-04-05 | -4 | Unresolved |
