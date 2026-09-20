@@ -439,13 +439,34 @@
       "federal_event_date": "2019-03-20",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 134,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Notification names the Canadian vehicle. Resolve the foreign parent and obtain a dated operational opening; incorporation alone is insufficient.",
-      "additional_evidence": []
+      "audit_note": "Antea's official corporate history places its North American expansion with new offices in Canada and the United States in 2020. Its current Canada branch page identifies the Brossard office at 7900 Taschereau Blvd, Building B, Office B-203—the same location carried by the federal corporation—and describes the Canadian branch as Antea Americas HQ for sales, asset-integrity-management software development and local support. This corroborates Canadian office establishment during 2020, after the August 2019 Investment Canada notification, but the year-level history does not establish the exact opening date, first Canadian customer/service date, or the Italian parent/control chain. Keep first_canadian_operations_date unset and the case model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://antea.tech/our-story/",
+          "source_type": "OFFICIAL_COMPANY_HISTORY",
+          "source_date": null,
+          "source_date_basis": "Current Antea corporate-history page; timeline assigns the expansion event to 2020 but does not display the page's original publication date",
+          "observed_at": "2026-09-20",
+          "event_date": "2020",
+          "event_date_precision": "YEAR",
+          "claim": "Antea's corporate history states that in 2020 it expanded to North America with new offices in Canada and the United States.",
+          "supports": "CANADIAN_OFFICE_ESTABLISHMENT_DURING_2020"
+        },
+        {
+          "source_url": "https://antea.tech/canada-branch-office-antea/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current branch page; historical publication date not established",
+          "observed_at": "2026-09-20",
+          "claim": "Antea's Canada branch page identifies 7900 Taschereau Blvd, Building B, Office B-203, Brossard as its Canada/Americas HQ and describes local sales, software development and support functions.",
+          "supports": "CURRENT_CANADIAN_OPERATING_FOOTPRINT"
+        }
+      ]
     },
     {
       "outcome_record_id": "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
