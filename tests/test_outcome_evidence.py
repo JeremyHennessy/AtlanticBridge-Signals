@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 import unittest
 
 from atlanticbridge.outcome_evidence import (
@@ -123,6 +125,42 @@ class OutcomeEvidencePublicationGateTests(unittest.TestCase):
             }
         )
         enforce_model_eligibility_publication_gate(summary)
+
+
+    def test_real_audit_batch01_publication_cutoffs_are_pinned(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
+        )
+        summary = summarize_outcome_publication_gate(payload)
+        self.assertEqual(summary["case_count"], 27)
+        self.assertEqual(summary["evidence_record_count"], 50)
+        self.assertEqual(
+            summary["publication_status_counts"],
+            {
+                "UNVERIFIED": 34,
+                "VERIFIED_AFTER_NOTIFICATION_MONTH": 3,
+                "VERIFIED_BEFORE_NOTIFICATION_MONTH": 11,
+                "VERIFIED_DURING_NOTIFICATION_MONTH": 2,
+            },
+        )
+        self.assertEqual(
+            summary["cases_with_verified_pre_notification_evidence"], 10
+        )
+        self.assertEqual(summary["model_eligible_cases"], 0)
+        self.assertEqual(summary["model_eligibility_violations"], [])
+
+        cipo = next(
+            evidence
+            for case in payload["cases"]
+            if case["canadian_business_name"] == "Tiandingfeng Canada Nonwovens Co., Ltd."
+            for evidence in case["additional_evidence"]
+            if evidence["source_url"].endswith("/2198269")
+        )
+        self.assertNotIn("publicly_available_date", cipo)
+        self.assertEqual(
+            evidence_publication_status(cipo, "2023-10"), "UNVERIFIED"
+        )
 
 
 if __name__ == "__main__":
