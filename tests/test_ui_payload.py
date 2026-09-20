@@ -3,6 +3,11 @@ from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 import unittest
 
+from atlanticbridge.outcome_evidence import (
+    evidence_publication_status,
+    summarize_outcome_publication_gate,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = spec_from_file_location("build_ui_payload", ROOT / "scripts" / "build_ui_payload.py")
@@ -29,6 +34,51 @@ class UIPayloadTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["identity_supported"], 12)
         self.assertEqual(payload["summary"]["identity_requires_review"], 0)
         self.assertEqual(len(payload["cases"]), payload["summary"]["case_count"])
+
+    def test_ui_publication_cutoff_matches_canonical_gate(self):
+        payload = ui_payload.build_payload()
+        cases_doc = json.loads(
+            (ROOT / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
+        )
+        expected = summarize_outcome_publication_gate(cases_doc)
+        self.assertEqual(
+            payload["summary"]["publication_status_counts"],
+            expected["publication_status_counts"],
+        )
+        self.assertEqual(
+            payload["summary"]["cases_with_verified_pre_notification_evidence"],
+            expected["cases_with_verified_pre_notification_evidence"],
+        )
+
+        source_by_id = {
+            case["outcome_record_id"]: case
+            for case in cases_doc["cases"]
+        }
+        for ui_case in payload["cases"]:
+            source_case = source_by_id[ui_case["id"]]
+            self.assertEqual(
+                len(ui_case["evidence"]),
+                len(source_case["additional_evidence"]),
+            )
+            for ui_evidence, source_evidence in zip(
+                ui_case["evidence"],
+                source_case["additional_evidence"],
+            ):
+                self.assertEqual(
+                    ui_evidence["publication_status"],
+                    evidence_publication_status(
+                        source_evidence,
+                        source_case["notification_month"],
+                    ),
+                )
+                self.assertEqual(
+                    ui_evidence["publicly_available_date"],
+                    source_evidence.get("publicly_available_date"),
+                )
+                self.assertEqual(
+                    ui_evidence["publicly_available_date_precision"],
+                    source_evidence.get("publicly_available_date_precision"),
+                )
 
     def test_static_ui_assets_exist_and_reference_payload(self):
         index = (ROOT / "ui" / "index.html").read_text()
