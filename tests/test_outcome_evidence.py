@@ -1,0 +1,129 @@
+import unittest
+
+from atlanticbridge.outcome_evidence import (
+    enforce_model_eligibility_publication_gate,
+    evidence_publication_status,
+    summarize_outcome_publication_gate,
+)
+
+
+class OutcomeEvidencePublicationGateTests(unittest.TestCase):
+    def test_explicit_day_before_notification_is_verified(self):
+        evidence = {
+            "source_date": "2024-05-01",
+            "event_date": "2024-05-01",
+            "publicly_available_date": "2024-05-01",
+            "publicly_available_date_precision": "DAY",
+        }
+        self.assertEqual(
+            evidence_publication_status(evidence, "2024-06"),
+            "VERIFIED_BEFORE_NOTIFICATION_MONTH",
+        )
+
+    def test_source_and_event_dates_do_not_substitute_for_public_availability(self):
+        evidence = {
+            "source_date": "2020-01-01",
+            "source_date_basis": "Publication date shown by source",
+            "event_date": "2020-01-01",
+            "observed_at": "2026-09-20",
+        }
+        self.assertEqual(
+            evidence_publication_status(evidence, "2021-01"),
+            "UNVERIFIED",
+        )
+
+    def test_same_month_and_after_notification_are_distinct(self):
+        self.assertEqual(
+            evidence_publication_status(
+                {
+                    "publicly_available_date": "2024-06-12",
+                    "publicly_available_date_precision": "DAY",
+                },
+                "2024-06",
+            ),
+            "VERIFIED_DURING_NOTIFICATION_MONTH",
+        )
+        self.assertEqual(
+            evidence_publication_status(
+                {
+                    "publicly_available_date": "2024-07",
+                    "publicly_available_date_precision": "MONTH",
+                },
+                "2024-06",
+            ),
+            "VERIFIED_AFTER_NOTIFICATION_MONTH",
+        )
+
+    def test_year_precision_overlapping_notification_fails_closed(self):
+        self.assertEqual(
+            evidence_publication_status(
+                {
+                    "publicly_available_date": "2024",
+                    "publicly_available_date_precision": "YEAR",
+                },
+                "2024-06",
+            ),
+            "OVERLAPS_NOTIFICATION_MONTH",
+        )
+
+    def test_summary_tracks_case_level_gate_and_strict_failure(self):
+        payload = {
+            "cases": [
+                {
+                    "outcome_record_id": "a",
+                    "investor_name": "Example GmbH",
+                    "canadian_business_name": "Example Canada Inc.",
+                    "notification_month": "2024-06",
+                    "model_eligible": True,
+                    "additional_evidence": [
+                        {
+                            "publicly_available_date": "2024-05-20",
+                            "publicly_available_date_precision": "DAY",
+                        }
+                    ],
+                },
+                {
+                    "outcome_record_id": "b",
+                    "investor_name": "Other GmbH",
+                    "canadian_business_name": "Other Canada Inc.",
+                    "notification_month": "2024-06",
+                    "model_eligible": True,
+                    "additional_evidence": [
+                        {
+                            "source_date": "2024-01-01",
+                            "event_date": "2024-01-01",
+                        }
+                    ],
+                },
+            ]
+        }
+        summary = summarize_outcome_publication_gate(payload)
+        self.assertEqual(summary["case_count"], 2)
+        self.assertEqual(summary["evidence_record_count"], 2)
+        self.assertEqual(
+            summary["cases_with_verified_pre_notification_evidence"], 1
+        )
+        self.assertEqual(len(summary["model_eligibility_violations"]), 1)
+        with self.assertRaisesRegex(ValueError, "Other Canada Inc."):
+            enforce_model_eligibility_publication_gate(summary)
+
+    def test_strict_gate_accepts_no_current_model_eligible_cases(self):
+        summary = summarize_outcome_publication_gate(
+            {
+                "cases": [
+                    {
+                        "outcome_record_id": "a",
+                        "investor_name": "Example GmbH",
+                        "canadian_business_name": "Example Canada Inc.",
+                        "notification_month": "2024-06",
+                        "model_eligible": False,
+                        "additional_evidence": [],
+                    }
+                ]
+            }
+        )
+        enforce_model_eligibility_publication_gate(summary)
+
+
+if __name__ == "__main__":
+    unittest.main()
