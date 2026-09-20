@@ -121,3 +121,20 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('does not establish direct ownership of Sanllo Canada', case['audit_note'])
         self.assertIn('named-investor relationship', case['audit_note'])
 
+    def test_vaxxinova_parent_activity_does_not_promote_local_outcome(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'Vaxxinova Canada, Inc.'
+        )
+        self.assertEqual(case['outcome_classification'], 'UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('PARENT_CANADA_FACING_ACTIVITY_BEFORE_LOCAL_INCORPORATION', supports)
+        self.assertIn('CANADIAN_BRAND_REGISTRATION_PREENTRY_NOT_OPERATIONAL_PROOF', supports)
+        self.assertIn('Neither source establishes when Vaxxinova Canada itself first sold', case['audit_note'])
+
