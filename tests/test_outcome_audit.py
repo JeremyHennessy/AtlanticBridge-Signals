@@ -138,3 +138,21 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('CANADIAN_BRAND_REGISTRATION_PREENTRY_NOT_OPERATIONAL_PROOF', supports)
         self.assertIn('Neither source establishes when Vaxxinova Canada itself first sold', case['audit_note'])
 
+    def test_tiandingfeng_preentry_signal_does_not_promote_outcome(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'Tiandingfeng Canada Nonwovens Co., Ltd.'
+        )
+        self.assertEqual(case['outcome_classification'], 'UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('CANADA_MARKET_INTENT_BEFORE_LOCAL_INCORPORATION', supports)
+        self.assertIn('POST_NOTIFICATION_FACTORY_SITE_PROJECT', supports)
+        self.assertIn('not proof of Canadian operations', case['audit_note'])
+        self.assertIn('France as ultimate control', case['audit_note'])
+

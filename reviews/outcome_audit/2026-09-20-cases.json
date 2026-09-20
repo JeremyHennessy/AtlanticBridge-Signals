@@ -1580,8 +1580,29 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Resolve the operating parent and first local manufacturing activity. Ultimate-control country France is a source attribute, not proof of the named vehicle being a French operating company.",
-      "additional_evidence": []
+      "audit_note": "CIPO application 2198269 was filed by Tiandingfeng Nonwovens Co., Ltd. on 2022-07-14 for non-woven fabrics and related class 24 goods, more than eight months before Tiandingfeng Canada Nonwovens Co., Ltd. was incorporated on 2023-03-30 and roughly fifteen months before the October 2023 Investment Canada notification. This is a Canada-specific pre-incorporation market-intent signal, not proof of Canadian operations. Sorel-Tracy council resolution 2025-03-197 later ratified a 2025-02-26 promise of purchase with Tiandingfeng Canada for industrial land, confirming eventual physical-project development after the notification. Neither source establishes the first local manufacturing date or resolves why the Investment Canada record reports France as ultimate control while the pre-entry trademark applicant is a Chinese Tiandingfeng entity. Keep the case UNRESOLVED and model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/2198269",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2022-07-14",
+          "source_date_basis": "CIPO filing date",
+          "event_date": "2022-07-14",
+          "event_date_precision": "DAY",
+          "claim": "CIPO application 2198269 was filed by Tiandingfeng Nonwovens Co., Ltd. of China for class 24 goods including non-woven fabrics and non-woven textile fabrics.",
+          "supports": "CANADA_MARKET_INTENT_BEFORE_LOCAL_INCORPORATION"
+        },
+        {
+          "source_url": "https://www.ville.sorel-tracy.qc.ca/storage/app/media/ville/vos-elus/seances-du-conseil/proces_verbaux/proces_verbaux_2025/Mars_2025/2025-03-31_pv_extra.pdf",
+          "source_type": "OFFICIAL_MUNICIPAL_RECORD",
+          "source_date": "2025-03-31",
+          "source_date_basis": "Sorel-Tracy council meeting date",
+          "event_date": "2025-02-26",
+          "event_date_precision": "DAY",
+          "claim": "Sorel-Tracy resolution 2025-03-197 ratifies a purchase promise signed 2025-02-26 between Tiandingfeng Canada Nonwovens Co., Ltd. and the City for specified industrial land parcels.",
+          "supports": "POST_NOTIFICATION_FACTORY_SITE_PROJECT"
+        }
+      ]
     },
     {
       "outcome_record_id": "02e67296d5aebadc3460f48f1a7fbdf2d3b94660dc5edae830e5a9e3ec872eb1",
