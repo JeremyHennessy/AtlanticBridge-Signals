@@ -174,9 +174,23 @@ class RiskSetControlTests(unittest.TestCase):
         self.assertEqual(len(first["controls"]), 2)
         self.assertEqual(first["controls"][0]["investor_name"], "Future Software GmbH")
         self.assertEqual(first["controls"][0]["match_tier"], "COUNTRY_ACTIVITY")
-        self.assertEqual(first["controls"][1]["investor_name"], "Future Food GmbH")
-        self.assertEqual(first["controls"][1]["match_tier"], "COUNTRY_ONLY_FALLBACK")
+        self.assertEqual(first["controls"][1]["investor_name"], "Late Candidate GmbH")
+        self.assertEqual(first["controls"][1]["match_tier"], "COUNTRY_ACTIVITY")
         self.assertTrue(all(not row["negative_label_eligible"] for row in first["controls"]))
+
+    def test_future_candidate_may_serve_as_earlier_risk_set_control(self):
+        payload = build_risk_set_controls(
+            self.records,
+            self.cohorts,
+            self.audit,
+            horizon_months=24,
+            max_controls=5,
+        )
+        names = {
+            row["investor_name"]
+            for row in payload["candidates"][0]["controls"]
+        }
+        self.assertIn("Late Candidate GmbH", names)
 
     def test_prior_investment_canada_activity_disqualifies_control(self):
         payload = build_risk_set_controls(
