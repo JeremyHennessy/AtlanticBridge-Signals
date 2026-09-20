@@ -697,7 +697,7 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The 534-day interval requires an operating-history and notification-purpose check. Resolve the foreign parent of the named Canadian supply-chain vehicle.",
+      "audit_note": "Deutsche Post AG (HRB 6792) is confirmed as Trillium Supply Chain Inc.'s ultimate group parent from the 2019 Deutsche Post DHL Group annual report and linked shareholding list, which records Trillium at 100% group equity. Immediate legal shareholder identity is not asserted. The 534-day incorporation-to-notification interval still requires a separate operating-history and notification-purpose check.",
       "additional_evidence": []
     },
     {
