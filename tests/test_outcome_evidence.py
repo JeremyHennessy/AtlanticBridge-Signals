@@ -240,5 +240,33 @@ class OutcomeEvidencePublicationGateTests(unittest.TestCase):
         )
 
 
+    def test_real_audit_batch04_uses_public_council_date_for_topdesk_report(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
+        )
+        case = next(
+            case for case in payload["cases"]
+            if case["canadian_business_name"] == "TOPdesk Canada Inc."
+        )
+        evidence = next(
+            evidence for evidence in case["additional_evidence"]
+            if evidence["source_type"] == "OFFICIAL_MUNICIPAL_ANNUAL_REPORT"
+        )
+        self.assertEqual(evidence["source_date"], "2016-05-09")
+        self.assertEqual(evidence["publicly_available_date"], "2016-06-07")
+        self.assertEqual(
+            evidence["publicly_available_date_precision"], "DAY"
+        )
+        self.assertIn(
+            "City Council agenda",
+            evidence["publicly_available_date_basis"],
+        )
+        self.assertEqual(
+            evidence_publication_status(evidence, "2022-07"),
+            "VERIFIED_BEFORE_NOTIFICATION_MONTH",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
