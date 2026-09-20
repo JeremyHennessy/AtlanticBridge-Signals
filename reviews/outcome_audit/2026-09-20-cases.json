@@ -1678,8 +1678,29 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The 287-day interval corroborates establishment before notification only. Obtain a dated Canadian operating milestone and distinguish it from earlier sales into Canada.",
-      "additional_evidence": []
+      "audit_note": "Vaxxinova's official 2024-03-04 announcement states that its BU Aqua business unit provides biological preventive solutions to the aquaculture industry in Canada. This predates Vaxxinova Canada, Inc.'s 2024-07-18 incorporation and the May 2025 Investment Canada notification, and therefore corroborates Canada-facing group activity before the local vehicle existed. CIPO also records Vaxxinova International B.V.'s VAXXINOVA Canadian trademark filed in 2018 and registered in 2021 for veterinary vaccines/services, but that application claimed proposed use and is not treated as proof of operations. Neither source establishes when Vaxxinova Canada itself first sold or distributed veterinary biologicals. Keep the operating outcome UNRESOLVED and model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://vaxxinova.com/vaxxinova-bu-aqua-announces-new-rd-and-business-development-director/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": "2024-03-04",
+          "source_date_basis": "Publication date displayed on Vaxxinova announcement",
+          "event_date": "2024-03-04",
+          "event_date_precision": "DAY",
+          "claim": "Vaxxinova states that BU Aqua is dedicated to providing biological preventive solutions to the aquaculture industry in Canada, alongside Chile, Europe and the UK.",
+          "supports": "PARENT_CANADA_FACING_ACTIVITY_BEFORE_LOCAL_INCORPORATION"
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1912733",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2021-08-24",
+          "source_date_basis": "Canadian trademark registration date; application was filed 2018-08-01",
+          "event_date": "2021-08-24",
+          "event_date_precision": "DAY",
+          "claim": "CIPO registration TMA1107399 records VAXXINOVA owned by Vaxxinova International B.V. for veterinary vaccines and veterinary services. The application claimed proposed use in Canada, so the registration is supporting brand/market-intent evidence rather than proof of actual Canadian operations.",
+          "supports": "CANADIAN_BRAND_REGISTRATION_PREENTRY_NOT_OPERATIONAL_PROOF"
+        }
+      ]
     },
     {
       "outcome_record_id": "41ad36779f4802b9b4d5731a229528a4acc7f2373c67e5b86b996a793a711058",
