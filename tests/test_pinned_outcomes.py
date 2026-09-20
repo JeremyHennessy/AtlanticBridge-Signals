@@ -85,6 +85,18 @@ class PinnedOutcomeTests(unittest.TestCase):
             'LOCAL_CANADIAN_PROJECT_SERVICE_CAPABILITY_YEAR_ONLY',
         )
 
+    def test_trillium_lcbo_contract_is_pre_notification_project_not_exact_operations(self):
+        case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == '6148493d6fa4a81f910b90594d877222da8451e61dd2a6519a089d4236ced78e')
+        self.assertEqual(case['outcome_classification'], 'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        evidence = {e['source_type']: e for e in case['additional_evidence']}
+        self.assertEqual(evidence['OFFICIAL_CROWN_AGENCY_ANNOUNCEMENT']['source_date'], '2020-05-20')
+        self.assertEqual(
+            evidence['OFFICIAL_CROWN_AGENCY_ANNOUNCEMENT']['supports'],
+            'PRE_NOTIFICATION_CANADIAN_CONTRACTED_PROJECT_ACTIVITY',
+        )
+
     def test_britishvolt_is_project_development_not_assumed_manufacturing_entry(self):
         case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == 'a13912957fb3e46e6b11603fb55da3d3cc080240b51814ff8a3b937eebcf046a')
         self.assertEqual(case['outcome_classification'], 'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED')

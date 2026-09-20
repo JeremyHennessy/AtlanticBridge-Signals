@@ -692,13 +692,24 @@
       "federal_event_date": "2019-10-15",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 534,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Deutsche Post AG (HRB 6792) is confirmed as Trillium Supply Chain Inc.'s ultimate group parent from the 2019 Deutsche Post DHL Group annual report and linked shareholding list, which records Trillium at 100% group equity. Immediate legal shareholder identity is not asserted. The 534-day incorporation-to-notification interval still requires a separate operating-history and notification-purpose check.",
-      "additional_evidence": []
+      "audit_note": "Deutsche Post AG (HRB 6792) is confirmed as Trillium Supply Chain Inc.'s ultimate group parent from the 2019 Deutsche Post DHL Group annual report and linked shareholding list. LCBO's 2020-05-20 primary-source update states that Trillium had already been selected through a completed RFP as the service provider to locate, set up and operate a new distribution centre, with a first transition phase expected in fall 2020. This establishes pre-notification Canadian contracted project activity but not the exact first day Trillium began operating the facility. Immediate legal shareholder identity and the April 2021 notification purpose remain unasserted.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.doingbusinesswithlcbo.com/content/dbwl/en/basepage/home/updates/AnupdateontheLCBOsTorontoRetailServiceCentre.html",
+          "source_type": "OFFICIAL_CROWN_AGENCY_ANNOUNCEMENT",
+          "source_date": "2020-05-20",
+          "source_date_basis": "Publication date shown by LCBO",
+          "claim": "LCBO states that its RFP was complete and Trillium Supply Chain had been selected as service provider to locate, set up and operate a new distribution centre; Trillium would operate the warehouse and the first transition phase was expected in fall 2020.",
+          "event_date": "2020-05-20",
+          "event_date_precision": "DAY",
+          "supports": "PRE_NOTIFICATION_CANADIAN_CONTRACTED_PROJECT_ACTIVITY"
+        }
+      ]
     },
     {
       "outcome_record_id": "a13912957fb3e46e6b11603fb55da3d3cc080240b51814ff8a3b937eebcf046a",
