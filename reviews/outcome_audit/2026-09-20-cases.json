@@ -110,8 +110,26 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The notification names a fund investing in Ocellaris Pharma. Establish the investor-to-portfolio-company relationship and whether this outcome represents the intended operating-company expansion target.",
-      "additional_evidence": []
+      "audit_note": "SEC Form D confirms the exact Investment Canada named investor, TVM Life Science Ventures VIII SCSp, as a Luxembourg venture-capital fund formed in 2018. TVM's own Ocellaris portfolio page, however, states that Ocellaris is fully financed by TVM Life Science Innovation II SCSp. The named-investor identity is therefore confirmed, but the Ventures VIII-to-Innovation II-to-Ocellaris relationship is not. Do not promote this case until that relationship, first operational activity and target eligibility are established.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1767198/000176719819000001/xslFormDX01/primary_doc.xml",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2019-02-08",
+          "source_date_basis": "SEC Form D filing date; before both 2019 Investment Canada notification months",
+          "claim": "Form D identifies TVM Life Science Ventures VIII SCSp as a Luxembourg limited partnership formed in 2018, CIK 0001767198, with TVM Life Science Ventures VIII (GP) S.a.r.l. as its general partner.",
+          "supports": "NAMED_INVESTOR_IDENTITY_ONLY"
+        },
+        {
+          "source_url": "https://tvm-capital.com/portfolio/ocellaris-pharma/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current TVM Capital Life Science page; no historical publication date displayed",
+          "observed_at": "2026-09-20",
+          "claim": "TVM's official Ocellaris portfolio page describes Ocellaris as a Montréal special-purpose company created to develop one compound to proof-of-concept and says the project is fully financed by TVM Life Science Innovation II SCSp.",
+          "supports": "FUND_TO_PORTFOLIO_RELATIONSHIP_REQUIRES_RESOLUTION"
+        }
+      ]
     },
     {
       "outcome_record_id": "2218a7793aceb72a2314dd7de226f67b25c9cdd12a7d1d5908ee28018c3a44a9",
@@ -174,8 +192,26 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "A second TVM fund notification concerns Acanthas Pharma; do not merge it with Ocellaris. Resolve portfolio relationship, operating start and target eligibility separately.",
-      "additional_evidence": []
+      "audit_note": "SEC Form D confirms the exact Investment Canada named investor, TVM Life Science Ventures VIII SCSp, as a Luxembourg venture-capital fund formed in 2018. TVM's own strategy material assigns Acanthas Pharma to TVM LSI II rather than Ventures VIII. The named-investor identity is therefore confirmed, but the Ventures VIII-to-Innovation II-to-Acanthas relationship is not. Keep Acanthas separate from Ocellaris and do not promote this case until the fund relationship, first operational activity and target eligibility are established.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1767198/000176719819000001/xslFormDX01/primary_doc.xml",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2019-02-08",
+          "source_date_basis": "SEC Form D filing date; before both 2019 Investment Canada notification months",
+          "claim": "Form D identifies TVM Life Science Ventures VIII SCSp as a Luxembourg limited partnership formed in 2018, CIK 0001767198, with TVM Life Science Ventures VIII (GP) S.a.r.l. as its general partner.",
+          "supports": "NAMED_INVESTOR_IDENTITY_ONLY"
+        },
+        {
+          "source_url": "https://tvm-capital.com/strategy-approach/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current TVM Capital Life Science page; no historical publication date displayed",
+          "observed_at": "2026-09-20",
+          "claim": "TVM's official strategy page lists Acanthas Pharma, Inc. under TVM LSI II and describes it as a single-asset oncology development company later acquired by Eli Lilly.",
+          "supports": "FUND_TO_PORTFOLIO_RELATIONSHIP_REQUIRES_RESOLUTION"
+        }
+      ]
     },
     {
       "outcome_record_id": "d3270a81c191224283631421d65a55587192a729a20dc5f887bb2035ab209388",

@@ -149,7 +149,7 @@ python -m atlanticbridge apply-curated-identity-review \
 
 ## Next source sequence
 
-1. Complete the remaining Bolton parent-link evidence review and continue the 27-case operational-history audit
+1. Complete the remaining Bolton parent-link review, resolve the TVM Ventures VIII/Innovation II portfolio relationship, and continue the 27-case operational-history audit
 2. Obtain authorized provincial registry access for unresolved non-federal entry entities
 3. Historical CIPO bulk backfill once secure bulk transport is available
 4. Build matched non-entrant controls and event-time backtests on confirmed identities before any score weights
