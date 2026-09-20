@@ -553,8 +553,38 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Foreign identity is evidence-supported, but first Canadian operations of Digitary and pre-existing Canadian service delivery remain unresolved.",
-      "additional_evidence": []
+      "audit_note": "ARUCC/MyCreds' official 2020-06-15 announcement states that Digitary was selected through a competitive international RFP as solution provider for Canada's national digital credential network during the same month as the Investment Canada notification. The University of Waterloo's 2020-07-03 announcement independently identifies Digitary as the solution provider and says work to build the Network would begin in July 2020. ARUCC's current partnerships page explicitly names Digitary Canada Inc. as the MyCreds partner. Together these sources corroborate a Canadian national project relationship around the notification period, but the June award names Digitary at group level, the current Canadian-entity page is not contemporaneously dated, and the Investment Canada outcome has only month precision. They therefore do not establish whether the award preceded the notification within June or the exact first Canadian service/operation date of Digitary Canada Inc. Keep the case UNRESOLVED and model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://mydigitalcreds.ca/2020/06/15/arucc-partners-with-digitary-to-build-the-canadian-national-network-called-mycreds/",
+          "source_type": "OFFICIAL_PROJECT_OWNER_ANNOUNCEMENT",
+          "source_date": "2020-06-15",
+          "source_date_basis": "MyCreds/ARUCC publication date",
+          "event_date": "2020-06-15",
+          "event_date_precision": "DAY",
+          "claim": "ARUCC announced that Digitary had been selected after a competitive international RFP as solution provider for the Made-for-Canada National Network/MyCreds.",
+          "supports": "CANADIAN_NATIONAL_PROJECT_AWARD_DURING_NOTIFICATION_MONTH"
+        },
+        {
+          "source_url": "https://uwaterloo.ca/daily-bulletin/2020-07-03",
+          "source_type": "OFFICIAL_UNIVERSITY_ANNOUNCEMENT",
+          "source_date": "2020-07-03",
+          "source_date_basis": "University of Waterloo publication date",
+          "event_date": "2020-07",
+          "event_date_precision": "MONTH",
+          "claim": "The University of Waterloo identified Digitary as the Network solution provider and stated that work to build the Canadian National Network would begin in July 2020.",
+          "supports": "CANADIAN_PROJECT_IMPLEMENTATION_START_MONTH"
+        },
+        {
+          "source_url": "https://arucc.ca/en/about/partnerships",
+          "source_type": "OFFICIAL_ASSOCIATION_SITE",
+          "source_date": null,
+          "source_date_basis": "Current ARUCC partnerships page; historical effective date for the legal-entity naming is not displayed",
+          "observed_at": "2026-09-20",
+          "claim": "ARUCC's current partnerships page explicitly names Digitary Canada Inc. as the partner supporting MyCreds, the Canadian national credential wallet.",
+          "supports": "CURRENT_CANADIAN_ENTITY_PROJECT_RELATIONSHIP"
+        }
+      ]
     },
     {
       "outcome_record_id": "71a370f22b9a0671aff101c4b2320f59603d291556696724290c961a5e144c99",
