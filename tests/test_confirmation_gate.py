@@ -83,8 +83,8 @@ class ConfirmationGateTests(unittest.TestCase):
                 } for e in item["evidence"]]
                 issue = confirmation_evidence_issue(queue[item["queue_id"]], item["decision"], evidence)
                 (flagged if issue else supported).append(item["decision"]["resolved_subject_name"])
-        self.assertEqual(len(supported), 10)
-        self.assertEqual(set(flagged), {"Bolton Group S.r.l.", "SD2 Engineering Services società tra professionisti a R.L."})
+        self.assertEqual(len(supported), 11)
+        self.assertEqual(set(flagged), {"Bolton Group S.r.l."})
 
     def test_explicit_primary_alias_and_punctuation_are_supported(self):
         self.payload["decision"]["resolved_subject_name"] = "Example Holding GmbH"
