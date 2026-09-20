@@ -1323,13 +1323,34 @@
       "federal_event_date": "2023-05-24",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 69,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
-      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The named foreign entity is Singapore-incorporated while the notification reports German ultimate control. Preserve that distinction and verify first Canadian trading separately.",
-      "additional_evidence": []
+      "exclusion_reason": "Reebelo's own dated Canadian help content proves commercial presence by 2023-07-05, but the exact first Canadian sale/operation date and pre-operation feature availability are not established",
+      "audit_note": "Reebelo's Canadian help centre published an article on 2023-07-05 stating that Reebelo currently sold in Canada. That is dated first-party evidence of Canadian commercial presence before the August 2023 Investment Canada notification. A CIPO record also shows the REEBELO mark was filed for Canadian retail/online-marketplace services on 2023-01-13 by Quista Technology Pte. Ltd. The trademark filing is market-intent evidence, not proof of operations. The exact first Canadian sale/operating date remains unknown, so July 5 is treated only as an 'operating by' bound and the case remains model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://help.reebelo.ca/hc/en-us/articles/20328511773081-What-is-Reebelo",
+          "source_type": "OFFICIAL_COMPANY_HELP_CENTER",
+          "source_date": "2023-07-05",
+          "source_date_basis": "Displayed publication timestamp on Reebelo Canada's help centre",
+          "event_date": "2023-07-05",
+          "event_date_precision": "DAY",
+          "claim": "Reebelo states that it currently sells in Canada, establishing Canadian commercial presence by this date.",
+          "supports": "COMMERCIAL_PRESENCE_BY_DATE_NOT_FIRST_ENTRY_DATE"
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/2237254",
+          "source_type": "OFFICIAL_GOVERNMENT_IP_RECORD",
+          "source_date": "2023-01-13",
+          "source_date_basis": "CIPO Canadian filing date",
+          "identifier_type": "CIPO_TRADEMARK_APPLICATION",
+          "identifier_value": "2237254",
+          "claim": "CIPO records a Canadian filing for the REEBELO mark by Quista Technology Pte. Ltd. covering retail and online-marketplace services.",
+          "supports": "PRE_NOTIFICATION_CANADA_MARKET_INTENT_NOT_OPERATIONS"
+        }
+      ]
     },
     {
       "outcome_record_id": "ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
