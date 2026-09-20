@@ -807,7 +807,7 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Deutsche Post AG (HRB 6792) is confirmed as Trillium Supply Chain Inc.'s ultimate group parent from the 2019 Deutsche Post DHL Group annual report and linked shareholding list. LCBO's 2020-05-20 primary-source update states that Trillium had already been selected through a completed RFP as the service provider to locate, set up and operate a new distribution centre, with a first transition phase expected in fall 2020. This establishes pre-notification Canadian contracted project activity but not the exact first day Trillium began operating the facility. Immediate legal shareholder identity and the April 2021 notification purpose remain unasserted.",
+      "audit_note": "Deutsche Post AG (HRB 6792) is confirmed as Trillium Supply Chain Inc.'s ultimate group parent. LCBO's 2020-05-20 update shows Trillium had already won the RFP to locate, set up and operate the new distribution centre. LCBO's 2021-01-08 transition notice then scheduled High Volume Consignment product transition to the Trillium facility for 2021-01-11 and the first agent transition for 2021-01-18; it also states that a December pickup video was filmed when substantial building construction was complete. A later Ontario Superior Court decision, 2024 ONSC 1853, recites the plaintiff's pleaded background that LCBO relocated its distribution centre to Caledon in January 2021 and contracted Trillium to manage it, with alleged problems arising after Trillium began management. The judicial passage is retained as retrospective corroboration of the pleaded operational history, not independent fact-finding. Together the evidence strongly bounds Trillium's Caledon operating transition to January 2021, before the April 2021 notification, but does not establish Trillium's absolute first Canadian operation or exact first day of facility management. Keep first_canadian_operations_date unset and the case model-ineligible.",
       "additional_evidence": [
         {
           "source_url": "https://www.doingbusinesswithlcbo.com/content/dbwl/en/basepage/home/updates/AnupdateontheLCBOsTorontoRetailServiceCentre.html",
@@ -818,6 +818,26 @@
           "event_date": "2020-05-20",
           "event_date_precision": "DAY",
           "supports": "PRE_NOTIFICATION_CANADIAN_CONTRACTED_PROJECT_ACTIVITY"
+        },
+        {
+          "source_url": "https://www.doingbusinesswithlcbo.com/content/dbwl/en/basepage/home/updates/supporting-your-transition-to-the-Trillium-facility-update.html",
+          "source_type": "OFFICIAL_CROWN_AGENCY_TRANSITION_NOTICE",
+          "source_date": "2021-01-08",
+          "source_date_basis": "Publication date shown by LCBO",
+          "event_date": "2021-01-11",
+          "event_date_precision": "PLANNED_DAY",
+          "claim": "LCBO announced that High Volume Consignment product transition to the Trillium facility would start 2021-01-11 and the first agent would transition 2021-01-18; pickup materials and a December facility video were already prepared.",
+          "supports": "PLANNED_TRILLIUM_FACILITY_OPERATIONAL_TRANSITION_JAN_2021"
+        },
+        {
+          "source_url": "https://www.minicounsel.ca/scj/2024/1853",
+          "source_type": "JUDICIAL_DECISION_TEXT_REPRODUCTION",
+          "source_date": "2024-03-28",
+          "source_date_basis": "Decision date for 2024 ONSC 1853; passage summarizes pleaded background on a motion to strike rather than an independent factual finding",
+          "event_date": "2021-01",
+          "event_date_precision": "MONTH",
+          "claim": "2024 ONSC 1853 recites the plaintiff's pleaded history that LCBO relocated its distribution centre to Caledon in January 2021, contracted Trillium to manage it, and that issues arose after Trillium began managing the centre.",
+          "supports": "RETROSPECTIVE_PLEADED_OPERATIONAL_HISTORY_JAN_2021"
         }
       ]
     },
