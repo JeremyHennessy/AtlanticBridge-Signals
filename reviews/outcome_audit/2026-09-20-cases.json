@@ -81,7 +81,9 @@
           "claim": "Central 1 launched the Canada-focused Forge digital banking platform built using Backbase technology.",
           "event_date": "2018-10-29",
           "event_date_precision": "DAY",
-          "supports": "CANADIAN_COMMERCIAL_DEPLOYMENT_BEFORE_NOTIFICATION"
+          "supports": "CANADIAN_COMMERCIAL_DEPLOYMENT_BEFORE_NOTIFICATION",
+          "publicly_available_date": "2018-10-29",
+          "publicly_available_date_precision": "DAY"
         }
       ]
     },
@@ -139,7 +141,9 @@
           "source_date": "2019-02-08",
           "source_date_basis": "SEC Form D filing date; before both 2019 Investment Canada notification months",
           "claim": "Form D identifies TVM Life Science Ventures VIII SCSp as a Luxembourg limited partnership formed in 2018, CIK 0001767198, with TVM Life Science Ventures VIII (GP) S.a.r.l. as its general partner.",
-          "supports": "NAMED_INVESTOR_IDENTITY_ONLY"
+          "supports": "NAMED_INVESTOR_IDENTITY_ONLY",
+          "publicly_available_date": "2019-02-08",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://tvm-capital.com/portfolio/ocellaris-pharma/",
@@ -246,7 +250,9 @@
           "source_date": "2019-02-08",
           "source_date_basis": "SEC Form D filing date; before both 2019 Investment Canada notification months",
           "claim": "Form D identifies TVM Life Science Ventures VIII SCSp as a Luxembourg limited partnership formed in 2018, CIK 0001767198, with TVM Life Science Ventures VIII (GP) S.a.r.l. as its general partner.",
-          "supports": "NAMED_INVESTOR_IDENTITY_ONLY"
+          "supports": "NAMED_INVESTOR_IDENTITY_ONLY",
+          "publicly_available_date": "2019-02-08",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://tvm-capital.com/strategy-approach/",
@@ -524,7 +530,9 @@
           "claim": "Corroborates Canadian subsidiary founding on 2019-02-21; describes forthcoming support and distribution coordination.",
           "event_date": "2019-02-21",
           "event_date_precision": "DAY",
-          "supports": "LEGAL_ESTABLISHMENT_NOT_FIRST_OPERATIONS"
+          "supports": "LEGAL_ESTABLISHMENT_NOT_FIRST_OPERATIONS",
+          "publicly_available_date": "2019-10-21",
+          "publicly_available_date_precision": "DAY"
         }
       ]
     },
@@ -584,7 +592,9 @@
           "event_date": "2020-06-15",
           "event_date_precision": "DAY",
           "claim": "ARUCC announced that Digitary had been selected after a competitive international RFP as solution provider for the Made-for-Canada National Network/MyCreds.",
-          "supports": "CANADIAN_NATIONAL_PROJECT_AWARD_DURING_NOTIFICATION_MONTH"
+          "supports": "CANADIAN_NATIONAL_PROJECT_AWARD_DURING_NOTIFICATION_MONTH",
+          "publicly_available_date": "2020-06-15",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://uwaterloo.ca/daily-bulletin/2020-07-03",
@@ -594,7 +604,9 @@
           "event_date": "2020-07",
           "event_date_precision": "MONTH",
           "claim": "The University of Waterloo identified Digitary as the Network solution provider and stated that work to build the Canadian National Network would begin in July 2020.",
-          "supports": "CANADIAN_PROJECT_IMPLEMENTATION_START_MONTH"
+          "supports": "CANADIAN_PROJECT_IMPLEMENTATION_START_MONTH",
+          "publicly_available_date": "2020-07-03",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://arucc.ca/en/about/partnerships",
@@ -849,7 +861,9 @@
           "claim": "LCBO states that its RFP was complete and Trillium Supply Chain had been selected as service provider to locate, set up and operate a new distribution centre; Trillium would operate the warehouse and the first transition phase was expected in fall 2020.",
           "event_date": "2020-05-20",
           "event_date_precision": "DAY",
-          "supports": "PRE_NOTIFICATION_CANADIAN_CONTRACTED_PROJECT_ACTIVITY"
+          "supports": "PRE_NOTIFICATION_CANADIAN_CONTRACTED_PROJECT_ACTIVITY",
+          "publicly_available_date": "2020-05-20",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://www.doingbusinesswithlcbo.com/content/dbwl/en/basepage/home/updates/supporting-your-transition-to-the-Trillium-facility-update.html",
@@ -859,7 +873,9 @@
           "event_date": "2021-01-11",
           "event_date_precision": "PLANNED_DAY",
           "claim": "LCBO announced that High Volume Consignment product transition to the Trillium facility would start 2021-01-11 and the first agent would transition 2021-01-18; pickup materials and a December facility video were already prepared.",
-          "supports": "PLANNED_TRILLIUM_FACILITY_OPERATIONAL_TRANSITION_JAN_2021"
+          "supports": "PLANNED_TRILLIUM_FACILITY_OPERATIONAL_TRANSITION_JAN_2021",
+          "publicly_available_date": "2021-01-08",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://www.minicounsel.ca/scj/2024/1853",
@@ -1174,7 +1190,9 @@
           "source_date": "2022-03-10",
           "source_date_basis": "Bayer publication date",
           "claim": "Bayer announced a definitive agreement to sell its existing Environmental Science Professional business to Cinven.",
-          "supports": "BUSINESS_DIVESTITURE_CONTEXT"
+          "supports": "BUSINESS_DIVESTITURE_CONTEXT",
+          "publicly_available_date": "2022-03-10",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://www.canada.ca/en/health-canada/services/consumer-product-safety/reports-publications/pesticides-pest-management/decisions-updates/special-registration-decision/2024/fosetyl-aluminum.html",
@@ -1183,7 +1201,9 @@
           "source_date_basis": "Health Canada publication date; post-notification corroboration only",
           "registration_number": "32800",
           "claim": "Health Canada lists the same commercial product registration 32800, Signature Xtra Stressgard, under 2022 Environmental Science CA Inc.",
-          "supports": "PRODUCT_REGISTRATION_CONTINUITY_POST_TRANSFER"
+          "supports": "PRODUCT_REGISTRATION_CONTINUITY_POST_TRANSFER",
+          "publicly_available_date": "2024-08-29",
+          "publicly_available_date_precision": "DAY"
         }
       ]
     },
@@ -1306,7 +1326,9 @@
           "source_date": "2015-11-08",
           "source_date_basis": "Displayed publication date",
           "claim": "Reports a planned two-person Toronto office after earlier remote service to Canadian customers.",
-          "supports": "REPORTED_PRIOR_COMMERCIAL_PRESENCE; PRIMARY_OPERATING_DATE_STILL_REQUIRED"
+          "supports": "REPORTED_PRIOR_COMMERCIAL_PRESENCE; PRIMARY_OPERATING_DATE_STILL_REQUIRED",
+          "publicly_available_date": "2015-11-08",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://www.toronto.ca/legdocs/mmis/2016/ex/bgrd/backgroundfile-93038.pdf",
@@ -1384,7 +1406,9 @@
           "event_date": "2022-06-07",
           "event_date_precision": "DAY",
           "claim": "BORME records Sanllo World Group S.L. as sole shareholder of Sanllo Export S.L.; Sanllo World Group becomes sole administrator and Roberto Sancristobal Llobell is designated as the natural-person representative of that administrator.",
-          "supports": "FOREIGN_SIDE_SANLLO_MANAGEMENT_CHAIN_PREENTRY"
+          "supports": "FOREIGN_SIDE_SANLLO_MANAGEMENT_CHAIN_PREENTRY",
+          "publicly_available_date": "2022-06-14",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://fvdrc.com/solutions/membership-updates-for-november-15-2022/",
@@ -1394,7 +1418,9 @@
           "event_date": "2022-11-15",
           "event_date_precision": "WINDOW_END",
           "claim": "DRC lists Sanllo Canada Inc. (Ontario) and Sanllo Export, S.L. (Valencia, Spain), both d/b/a Sanllo, among new members added from October 15 through November 15, 2022. DRC states that in Canada membership is a regulatory requirement to trade fresh fruits and vegetables unless excepted.",
-          "supports": "CANADIAN_PRODUCE_TRADE_MEMBERSHIP_BY_2022_11_15"
+          "supports": "CANADIAN_PRODUCE_TRADE_MEMBERSHIP_BY_2022_11_15",
+          "publicly_available_date": "2022-11-29",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/2233219",
@@ -1528,7 +1554,9 @@
           "event_date": "2023-06-21",
           "event_date_precision": "LATEST_BY",
           "claim": "Nefco states that SiOO received a 2022 Nopef grant to co-finance a feasibility study into establishment in Canada and describes a successful establishment in Canada before its 2023 Fast-track financing for North American scale-up.",
-          "supports": "CANADIAN_ESTABLISHMENT_BY_2023_06_21"
+          "supports": "CANADIAN_ESTABLISHMENT_BY_2023_06_21",
+          "publicly_available_date": "2023-06-21",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1799092",
@@ -1605,7 +1633,9 @@
           "claim": "Reebelo states that it currently sells in Canada.",
           "event_date": "2023-07-05",
           "event_date_precision": "DAY",
-          "supports": "PRE_NOTIFICATION_CANADIAN_COMMERCIAL_PRESENCE"
+          "supports": "PRE_NOTIFICATION_CANADIAN_COMMERCIAL_PRESENCE",
+          "publicly_available_date": "2023-07-05",
+          "publicly_available_date_precision": "DAY"
         }
       ]
     },
@@ -1844,7 +1874,9 @@
           "event_date": "2024-03-04",
           "event_date_precision": "DAY",
           "claim": "Vaxxinova states that BU Aqua is dedicated to providing biological preventive solutions to the aquaculture industry in Canada, alongside Chile, Europe and the UK.",
-          "supports": "PARENT_CANADA_FACING_ACTIVITY_BEFORE_LOCAL_INCORPORATION"
+          "supports": "PARENT_CANADA_FACING_ACTIVITY_BEFORE_LOCAL_INCORPORATION",
+          "publicly_available_date": "2024-03-04",
+          "publicly_available_date_precision": "DAY"
         },
         {
           "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1912733",
