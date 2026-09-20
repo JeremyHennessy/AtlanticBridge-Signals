@@ -45,6 +45,48 @@ async function attachErrorCapture(page, bucket) {
   page.on("pageerror", (err) => bucket.pageErrors.push(String(err)));
 }
 
+async function waitForCaseRows(page, label) {
+  const attempts = [];
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
+    try {
+      await page.locator("#cases-body tr.case-row").first().waitFor({
+        state: "visible",
+        timeout: 5000,
+      });
+      return attempts;
+    } catch (_) {
+      const diagnostic = await page.evaluate(async () => {
+        let dashboard = { status: null, ok: false, contentType: null, prefix: null };
+        try {
+          const response = await fetch("data/dashboard.json", { cache: "no-store" });
+          dashboard = {
+            status: response.status,
+            ok: response.ok,
+            contentType: response.headers.get("content-type"),
+            prefix: (await response.text()).slice(0, 120),
+          };
+        } catch (error) {
+          dashboard.error = String(error);
+        }
+        return {
+          attempt: null,
+          readyState: document.readyState,
+          tableText: document.querySelector("#cases-body")?.textContent?.trim().slice(0, 240) || "",
+          dashboard,
+          scripts: Array.from(document.scripts).map((script) => script.src || "inline"),
+        };
+      });
+      diagnostic.attempt = attempt;
+      attempts.push(diagnostic);
+      if (attempt < 8) {
+        await page.waitForTimeout(5000);
+        await page.reload({ waitUntil: "networkidle", timeout: 30000 });
+      }
+    }
+  }
+  throw new Error(`${label}: case rows did not become ready: ${JSON.stringify(attempts)}`);
+}
+
 async function assertNoPageOverflow(page, label) {
   const result = await page.evaluate(() => ({
     viewport: window.innerWidth,
@@ -198,7 +240,7 @@ async function runDesktop() {
   await attachErrorCapture(page, report.desktop);
   const response = await page.goto(baseUrl, { waitUntil: "networkidle", timeout: 30000 });
   record("desktop: page HTTP success", Boolean(response && response.ok()), `status=${response?.status()}`);
-  await page.locator("#cases-body tr.case-row").first().waitFor({ state: "visible", timeout: 10000 });
+  report.desktop.readinessAttempts = await waitForCaseRows(page, "desktop");
 
   report.desktop.title = await page.title();
   record("desktop: correct title", report.desktop.title.includes("AtlanticBridge Signals"), report.desktop.title);
@@ -240,7 +282,7 @@ async function runIphone() {
   await attachErrorCapture(page, report.iphone);
   const response = await page.goto(baseUrl, { waitUntil: "networkidle", timeout: 30000 });
   record("iphone: page HTTP success", Boolean(response && response.ok()), `status=${response?.status()}`);
-  await page.locator("#cases-body tr.case-row").first().waitFor({ state: "visible", timeout: 10000 });
+  report.iphone.readinessAttempts = await waitForCaseRows(page, "iphone");
 
   report.iphone.viewport = await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
   report.iphone.overflow = await assertNoPageOverflow(page, "iphone");
