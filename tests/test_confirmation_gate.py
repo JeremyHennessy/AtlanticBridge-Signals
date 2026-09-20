@@ -75,7 +75,7 @@ class ConfirmationGateTests(unittest.TestCase):
         supported, flagged = [], []
         for filename in ("2026-09-19-primary-batch-01.json", "2026-09-19-primary-batch-02.json",
                          "2026-09-20-primary-batch-03.json", "2026-09-20-primary-batch-04.json",
-                         "2026-09-20-primary-batch-05.json"):
+                         "2026-09-20-primary-batch-05.json", "2026-09-20-primary-batch-06.json"):
             path = root / "reviews/curated_identity" / filename
             for item in json.loads(path.read_text()):
                 evidence = [{
@@ -84,7 +84,7 @@ class ConfirmationGateTests(unittest.TestCase):
                 } for e in item["evidence"]]
                 issue = confirmation_evidence_issue(queue[item["queue_id"]], item["decision"], evidence)
                 (flagged if issue else supported).append(item["decision"]["resolved_subject_name"])
-        self.assertEqual(len(supported), 13)
+        self.assertEqual(len(supported), 14)
         self.assertEqual(set(flagged), {"Bolton Group S.r.l."})
 
     def test_explicit_primary_alias_and_punctuation_are_supported(self):
