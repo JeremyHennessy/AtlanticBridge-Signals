@@ -258,3 +258,24 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('not independent fact-finding', case['audit_note'])
         self.assertIn('does not establish Trillium\'s absolute first Canadian operation', case['audit_note'])
 
+    def test_antea_2020_establishment_does_not_backdate_2019_operations(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'Antea Canada Inc.'
+        )
+        self.assertEqual(
+            case['outcome_classification'],
+            'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED',
+        )
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('CANADIAN_OFFICE_ESTABLISHMENT_DURING_2020', supports)
+        self.assertIn('CURRENT_CANADIAN_OPERATING_FOOTPRINT', supports)
+        self.assertIn('after the August 2019 Investment Canada notification', case['audit_note'])
+        self.assertIn('does not establish the exact opening date', case['audit_note'])
+
