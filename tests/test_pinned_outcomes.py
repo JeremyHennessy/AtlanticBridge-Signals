@@ -34,6 +34,17 @@ class PinnedOutcomeTests(unittest.TestCase):
             self.assertFalse(c['model_eligible'])
             self.assertTrue(c['audit_note'])
 
+    def test_topdesk_primary_evidence_excludes_2022_as_assumed_first_entry(self):
+        case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == 'b206b73fcd9d6ee2451a66884be6094f77bafaf2b5c469199c9f0d868ac1f7cb')
+        self.assertEqual(case['outcome_classification'], 'EXISTING_CANADIAN_PRESENCE')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        primary = [e for e in case['additional_evidence'] if e['source_type'] == 'OFFICIAL_MUNICIPAL_ANNUAL_REPORT']
+        self.assertEqual(len(primary), 1)
+        self.assertEqual(primary[0]['event_date'], '2015')
+        self.assertEqual(primary[0]['event_date_precision'], 'YEAR')
+        self.assertEqual(primary[0]['supports'], 'EXISTING_CANADIAN_PRESENCE')
+
     def test_refresh_verifies_both_sources_and_fails_on_event_change(self):
         c = self.payload['cases'][0]
         record = SimpleNamespace(record_id=c['outcome_record_id'], is_new_business=True,
