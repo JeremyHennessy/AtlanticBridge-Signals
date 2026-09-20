@@ -56,6 +56,17 @@ class PinnedOutcomeTests(unittest.TestCase):
         self.assertEqual(evidence['OFFICIAL_GOVERNMENT_REGULATORY_DECISION']['registration_number'], '32800')
         self.assertEqual(evidence['OFFICIAL_GOVERNMENT_REGULATORY_DECISION']['supports'], 'PRODUCT_REGISTRATION_CONTINUITY_POST_TRANSFER')
 
+    def test_britishvolt_is_project_development_not_assumed_manufacturing_entry(self):
+        case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == 'a13912957fb3e46e6b11603fb55da3d3cc080240b51814ff8a3b937eebcf046a')
+        self.assertEqual(case['outcome_classification'], 'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        evidence = {e['source_type']: e for e in case['additional_evidence']}
+        self.assertEqual(evidence['OFFICIAL_FEDERAL_LOBBY_REGISTRY']['event_date'], '2021-03-09')
+        self.assertEqual(evidence['OFFICIAL_FEDERAL_LOBBY_REGISTRY']['supports'], 'PRE_NOTIFICATION_CANADIAN_PROJECT_DEVELOPMENT')
+        self.assertEqual(evidence['INSOLVENCY_ADMINISTRATOR_REPORT']['source_date'], '2023-03-13')
+        self.assertEqual(evidence['INSOLVENCY_ADMINISTRATOR_REPORT']['supports'], 'PROJECT_DEVELOPMENT_PRESENCE_NOT_MANUFACTURING_ENTRY')
+
     def test_refresh_verifies_both_sources_and_fails_on_event_change(self):
         c = self.payload['cases'][0]
         record = SimpleNamespace(record_id=c['outcome_record_id'], is_new_business=True,
