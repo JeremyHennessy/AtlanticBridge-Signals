@@ -861,13 +861,40 @@
       "federal_event_date": "2022-01-13",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 78,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Resolve whether the separately incorporated environmental-science entity represents new operations or a transfer/reorganization of existing Canadian business. Current parent evidence cannot date that event.",
-      "additional_evidence": []
+      "audit_note": "A PMRA-approved 2018 commercial label for registration 32800 (Signature Xtra Stressgard) identifies Bayer CropScience Inc. in Calgary, establishing Bayer Environmental Science activity in Canada years before the 2022 entity and notification. Bayer announced a definitive agreement in March 2022 to sell its existing Environmental Science Professional business to Cinven, and Health Canada later lists the same registration 32800 under 2022 Environmental Science CA Inc. Together these sources support an existing-business transfer/reorganization interpretation rather than first Canadian market entry. The exact first-operating date and the precise Investment Canada notification purpose remain unresolved.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.ca.envu.com/-/media/prfcanada/product-sds-and-labels/signature-xtra-stressgard---english-label---13june2018.ashx",
+          "source_type": "PMRA_APPROVED_LABEL_ARCHIVE",
+          "source_date": "2018-06-13",
+          "source_date_basis": "PMRA approval date printed on the archived Canadian label",
+          "registration_number": "32800",
+          "claim": "PMRA-approved commercial label for Signature Xtra Stressgard identifies Bayer CropScience Inc., Calgary, Alberta, as the registrant/supplier in Canada.",
+          "supports": "EXISTING_CANADIAN_PRESENCE"
+        },
+        {
+          "source_url": "https://www.bayer.com/media/en-us/bayer-to-sell-its-environmental-science-professional-business-to-cinven-for-26-billion-us-dollars/",
+          "source_type": "OFFICIAL_COMPANY_TRANSACTION_ANNOUNCEMENT",
+          "source_date": "2022-03-10",
+          "source_date_basis": "Bayer publication date",
+          "claim": "Bayer announced a definitive agreement to sell its existing Environmental Science Professional business to Cinven.",
+          "supports": "BUSINESS_DIVESTITURE_CONTEXT"
+        },
+        {
+          "source_url": "https://www.canada.ca/en/health-canada/services/consumer-product-safety/reports-publications/pesticides-pest-management/decisions-updates/special-registration-decision/2024/fosetyl-aluminum.html",
+          "source_type": "OFFICIAL_GOVERNMENT_REGULATORY_DECISION",
+          "source_date": "2024-08-29",
+          "source_date_basis": "Health Canada publication date; post-notification corroboration only",
+          "registration_number": "32800",
+          "claim": "Health Canada lists the same commercial product registration 32800, Signature Xtra Stressgard, under 2022 Environmental Science CA Inc.",
+          "supports": "PRODUCT_REGISTRATION_CONTINUITY_POST_TRANSFER"
+        }
+      ]
     },
     {
       "outcome_record_id": "b681a6f4f3eeee19eaa99159e8b51bb2d53213d541cfae119490d38990312e7f",

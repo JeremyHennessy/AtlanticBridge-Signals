@@ -24,10 +24,10 @@ Registry projections intentionally contain corporate names, status and activitie
 
 | Finding | Cases | Treatment |
 |---|---:|---|
-| Prior Canadian presence supported by primary material | 2 | Bolton and TOPdesk: exclude their notification months as assumed first-entry dates |
+| Prior Canadian presence supported by primary or regulatory material | 3 | Bolton, TOPdesk and Bayer Environmental Science: exclude their notification months as assumed first-entry dates |
 | Prior commercial presence supported only by secondary material | 0 | TOPdesk is upgraded by the City of Toronto's primary annual report evidence |
 | Subsidiary founding corroborated by company news | 1 | LINET: legal founding confirmed; first operations still unresolved |
-| Registry establishment only; operating outcome unresolved | 24 | Require dated operational and notification-purpose evidence |
+| Registry establishment only; operating outcome unresolved | 23 | Require dated operational and notification-purpose evidence |
 | Exact first Canadian operating dates established | 0 | No positive first-entry labels promoted |
 | Cases eligible for first-entry model training from this audit | 0 | Unresolved is not a negative outcome |
 
@@ -36,6 +36,8 @@ All 27 selected federal events are incorporations. Twenty-five occurred before t
 **Bolton:** an [Italian Cultural Institute Toronto event page](https://iictoronto.esteri.it/en/gli_eventi/calendario/bocconi-alumni-toronto-andrea-pugliese-2/) for March 2020 describes establishment of a Toronto subsidiary in 2017 and Canadian retail distribution. The [2020 company report](https://www.bolton.com/sites/default/files/2024-07/Bolton-Group-Sustainability-Report-2020-1.pdf), PDF page 6, also lists Bolton BG Canada. This supports prior presence. It does not establish an exact first-operations day or explain the October 2025 notification. The 2017 reference has year precision only.
 
 **TOPdesk:** the 2015-09-23 registry incorporation predates the July 2022 notification by 2,473 days. Invest Toronto's [2015 Annual Report](https://www.toronto.ca/legdocs/mmis/2016/ex/bgrd/backgroundfile-93038.pdf), received by City Council in 2016, states that Invest Toronto assisted with establishment of TOPdesk's first Canadian location in Toronto in 2015. This upgrades prior presence from secondary reporting to primary municipal evidence. The milestone has year precision only, so `first_canadian_operations_date` remains unset and the 2022 notification purpose remains unresolved.
+
+**Bayer Environmental Science:** a [PMRA-approved 2018 Canadian commercial label](https://www.ca.envu.com/-/media/prfcanada/product-sds-and-labels/signature-xtra-stressgard---english-label---13june2018.ashx) for registration 32800 identifies Bayer CropScience Inc. in Calgary. Bayer's [March 2022 sale announcement](https://www.bayer.com/media/en-us/bayer-to-sell-its-environmental-science-professional-business-to-cinven-for-26-billion-us-dollars/) describes Environmental Science Professional as an existing business being sold to Cinven. Health Canada's [2024 regulatory decision](https://www.canada.ca/en/health-canada/services/consumer-product-safety/reports-publications/pesticides-pest-management/decisions-updates/special-registration-decision/2024/fosetyl-aluminum.html) lists the same registration 32800 under 2022 Environmental Science CA Inc. The evidence therefore supports pre-existing Canadian business activity and a transfer/reorganization interpretation, not a first Canadian market entry in April 2022. Exact first operations and the legal purpose of the notification remain unset.
 
 **LINET:** [official group news dated 2019-10-21](https://www.wi-bo.com/de/Linet/news/news-and-press-releases/2019/New-Subsidiary-in-Canada-will-Share-Clinical-Experience) corroborates founding on 2019-02-21 and describes forthcoming Canadian support and partner coordination. The publication falls in the notification month. It does not prove that this evidence was publicly available before operations began.
 
@@ -62,7 +64,7 @@ The case review is complete as a disposition of the available evidence, not an e
 | Power by Britishvolt Limited / Britishvolt Canada Inc. | [12720914](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12720914.json?lang=eng) | 2021-06 | 2021-02-08 | 113 | Unresolved |
 | Pegasi Oy / Pegasi IAM Canada Inc. | [13072681](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13072681.json?lang=eng) | 2021-07 | 2021-06-03 | 28 | Unresolved |
 | Aiut sp. z.o.o. / Aiut Inc. | [12934345](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12934345.json?lang=eng) | 2021-08 | 2021-04-18 | 105 | Unresolved |
-| Bayer CropScience Inc. / 2022 Environmental Science CA Inc. | [13679624](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13679624.json?lang=eng) | 2022-04 | 2022-01-13 | 78 | Unresolved |
+| Bayer CropScience Inc. / 2022 Environmental Science CA Inc. | [13679624](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13679624.json?lang=eng) | 2022-04 | 2022-01-13 | 78 | Existing Canadian business; transfer/reorganization supported |
 | SD2 Engineering Services S.T.P. A R.L / SD2 Consulting Services Inc. | [12773449](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12773449.json?lang=eng) | 2022-04 | 2021-02-25 | 400 | Unresolved |
 | TOPdesk Canada Inc. | [9450122](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/9450122.json?lang=eng) | 2022-07 | 2015-09-23 | 2473 | Prior presence supported by City primary evidence |
 | Roberto Sancristobal Llobell / Sanllo Canada Inc | [14292910](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14292910.json?lang=eng) | 2022-10 | 2022-08-16 | 46 | Unresolved |
@@ -108,6 +110,6 @@ Local validation: **77 tests passed**. Regression coverage includes wrong-subjec
 ## Next work
 
 1. Resolve the remaining Bolton legal parent-link gap, preserving all prior decisions.
-2. Establish operational milestones for the remaining unresolved cases, starting with the Bayer environmental-science vehicle, the two TVM portfolio companies and inactive entities. TOPdesk is now confirmed as pre-existing Canadian presence at year precision; its exact first-operating date and 2022 notification purpose remain unresolved. Record first operations, evidence publication/availability and notification purpose separately, at the precision the sources support.
+2. Establish operational milestones for the remaining unresolved cases, starting with the two TVM portfolio companies and inactive entities. TOPdesk and Bayer Environmental Science are now excluded as assumed notification-month first entries; their exact first-operating dates and notification purposes remain unresolved. Record first operations, evidence publication/availability and notification purpose separately, at the precision the sources support.
 3. For cases with defensible outcome dates and historical identity chains, construct matched controls and enforce publication cutoffs. Missing evidence remains unresolved; it does not become a negative label.
 4. Validate incremental predictive lift before assigning Expansion Likelihood weights. Keep Nova Scotia Fit and Evidence Confidence separate.

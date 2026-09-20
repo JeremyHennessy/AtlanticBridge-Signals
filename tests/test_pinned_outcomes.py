@@ -45,6 +45,17 @@ class PinnedOutcomeTests(unittest.TestCase):
         self.assertEqual(primary[0]['event_date_precision'], 'YEAR')
         self.assertEqual(primary[0]['supports'], 'EXISTING_CANADIAN_PRESENCE')
 
+    def test_bayer_environmental_science_is_not_treated_as_2022_first_entry(self):
+        case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == '814a591396e8a1ef40318eefe89e7c27c15c6bcdabb0dbe5100da163c89c4b58')
+        self.assertEqual(case['outcome_classification'], 'EXISTING_CANADIAN_PRESENCE')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        evidence = {e['source_type']: e for e in case['additional_evidence']}
+        self.assertEqual(evidence['PMRA_APPROVED_LABEL_ARCHIVE']['registration_number'], '32800')
+        self.assertEqual(evidence['PMRA_APPROVED_LABEL_ARCHIVE']['source_date'], '2018-06-13')
+        self.assertEqual(evidence['OFFICIAL_GOVERNMENT_REGULATORY_DECISION']['registration_number'], '32800')
+        self.assertEqual(evidence['OFFICIAL_GOVERNMENT_REGULATORY_DECISION']['supports'], 'PRODUCT_REGISTRATION_CONTINUITY_POST_TRANSFER')
+
     def test_refresh_verifies_both_sources_and_fails_on_event_change(self):
         c = self.payload['cases'][0]
         record = SimpleNamespace(record_id=c['outcome_record_id'], is_new_business=True,
