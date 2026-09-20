@@ -27,6 +27,7 @@ class InvestorHistory:
     investor_node_id: str
     normalized_name: str
     investor_name: str
+    investor_locality: str
     country: str
     earliest_any_month: str
     first_new_business_month: str
@@ -39,6 +40,7 @@ class RiskSetControl:
     control_entity_key: str
     investor_node_id: str
     investor_name: str
+    investor_locality: str
     country: str
     earliest_investment_canada_month: str
     future_new_business_month: str
@@ -148,6 +150,7 @@ def investor_histories(
             investor_node_id=representative.investor_node_id,
             normalized_name=normalize_entity_name(representative.investor_name),
             investor_name=representative.investor_name,
+            investor_locality=representative.investor_locality,
             country=representative.country_of_ultimate_control,
             earliest_any_month=ordered[0].certification_month,
             first_new_business_month=first_new.certification_month,
@@ -253,6 +256,7 @@ def _rank_controls(
             control_entity_key=history.entity_key,
             investor_node_id=history.investor_node_id,
             investor_name=history.investor_name,
+            investor_locality=history.investor_locality,
             country=history.country,
             earliest_investment_canada_month=history.earliest_any_month,
             future_new_business_month=history.first_new_business_month,
@@ -473,4 +477,79 @@ def summarize_risk_set_controls(payload: dict[str, object]) -> dict[str, object]
             for item in assignments
         ),
         "negative_labels_created": 0,
+    }
+
+
+def build_control_identity_review_queue(
+    payload: dict[str, object],
+) -> dict[str, object]:
+    validate_risk_set_controls(payload)
+    candidates = payload["candidates"]
+    by_entity: dict[str, dict[str, object]] = {}
+
+    for candidate in candidates:
+        assert isinstance(candidate, dict)
+        candidate_id = str(candidate["outcome_record_id"])
+        for control in candidate["controls"]:
+            assert isinstance(control, dict)
+            key = str(control["control_entity_key"])
+            row = by_entity.get(key)
+            if row is None:
+                row = {
+                    "control_entity_key": key,
+                    "investor_node_id": str(control.get("investor_node_id") or ""),
+                    "investor_name": str(control.get("investor_name") or ""),
+                    "investor_locality": str(control.get("investor_locality") or ""),
+                    "ultimate_control_country": str(control.get("country") or ""),
+                    "identity_qualification_status": "UNREVIEWED",
+                    "backtest_control_eligible": False,
+                    "assigned_candidate_outcome_ids": [],
+                }
+                by_entity[key] = row
+            else:
+                identity_fields = (
+                    ("investor_node_id", control.get("investor_node_id")),
+                    ("investor_name", control.get("investor_name")),
+                    ("investor_locality", control.get("investor_locality")),
+                    ("ultimate_control_country", control.get("country")),
+                )
+                for field, value in identity_fields:
+                    if str(row[field]) != str(value or ""):
+                        raise ValueError(
+                            f"risk-set control identity conflict for {key}: {field}"
+                        )
+
+            assignments = row["assigned_candidate_outcome_ids"]
+            assert isinstance(assignments, list)
+            if candidate_id not in assignments:
+                assignments.append(candidate_id)
+
+    rows = sorted(
+        by_entity.values(),
+        key=lambda item: (
+            str(item["ultimate_control_country"]),
+            str(item["investor_name"]).casefold(),
+            str(item["control_entity_key"]),
+        ),
+    )
+    for row in rows:
+        row["assigned_candidate_outcome_ids"] = sorted(
+            row["assigned_candidate_outcome_ids"]
+        )
+
+    return {
+        "schema_version": 1,
+        "purpose": (
+            "Primary/GLEIF legal-entity review queue for raw future-entrant "
+            "risk-set candidates. Rows are not backtest controls until explicitly "
+            "qualified."
+        ),
+        "identity_gate_rule": (
+            "Confirm the named investor as a foreign legal entity using explicit "
+            "identity evidence; Canadian vehicles, natural persons, ambiguous "
+            "entities and unsupported names remain ineligible."
+        ),
+        "record_count": len(rows),
+        "backtest_control_eligible": 0,
+        "records": rows,
     }
