@@ -34,6 +34,22 @@ class PinnedOutcomeTests(unittest.TestCase):
             self.assertFalse(c['model_eligible'])
             self.assertTrue(c['audit_note'])
 
+    def test_backbase_2018_canadian_presence_excludes_january_2019_as_first_entry(self):
+        case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == 'ee71ab378d4d1f4fc2262c83b4884fb18288761608082df563b14db3ef503df2')
+        self.assertEqual(case['outcome_classification'], 'EXISTING_CANADIAN_PRESENCE')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        evidence = {e['source_type']: e for e in case['additional_evidence']}
+        self.assertEqual(evidence['OFFICIAL_COMPANY_SITE']['event_date'], '2018')
+        self.assertEqual(
+            evidence['OFFICIAL_CLIENT_ANNOUNCEMENT']['source_date'],
+            '2018-10-29',
+        )
+        self.assertEqual(
+            evidence['OFFICIAL_CLIENT_ANNOUNCEMENT']['supports'],
+            'CANADIAN_COMMERCIAL_DEPLOYMENT_BEFORE_NOTIFICATION',
+        )
+
     def test_topdesk_primary_evidence_excludes_2022_as_assumed_first_entry(self):
         case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == 'b206b73fcd9d6ee2451a66884be6094f77bafaf2b5c469199c9f0d868ac1f7cb')
         self.assertEqual(case['outcome_classification'], 'EXISTING_CANADIAN_PRESENCE')
