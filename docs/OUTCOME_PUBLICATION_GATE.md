@@ -70,3 +70,20 @@ At introduction of this gate:
 - model-eligible cases: **0**
 
 Existing evidence rows are not retrospectively declared historically available. The next data-proof step is source-family-by-source-family verification of publication semantics, followed by explicit availability dates only where those semantics are defensible.
+
+
+## Verified backfill batches
+
+### Batch 01 — 2026-09-20
+
+The first manual source-family pass is documented in [OUTCOME_PUBLICATION_BACKFILL_01.md](OUTCOME_PUBLICATION_BACKFILL_01.md).
+
+It adds explicit day-level public availability to 16 evidence rows. The resulting gate state is:
+
+- 11 `VERIFIED_BEFORE_NOTIFICATION_MONTH`
+- 2 `VERIFIED_DURING_NOTIFICATION_MONTH`
+- 3 `VERIFIED_AFTER_NOTIFICATION_MONTH`
+- 10 cases with at least one verified pre-notification evidence row
+- 0 model-eligible cases
+
+CIPO filing/registration dates and undated historical company pages remain unverified pending separate source-semantics proof.
