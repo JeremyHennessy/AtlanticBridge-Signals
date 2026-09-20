@@ -4,8 +4,9 @@ AtlanticBridge does not currently have verified negative labels for companies th
 "did not enter Canada." Provincial registry coverage is incomplete and absence
 from Investment Canada is not proof of absence from the Canadian market.
 
-Control Cohort 001 therefore uses **future entrants as censored risk-set
-controls**.
+Control Cohort 001 therefore begins with **future entrants as censored risk-set
+control candidates**. The risk-set clock is proven here; legal-entity
+comparability is a separate gate.
 
 ## Design
 
@@ -21,7 +22,9 @@ For each audited `TRUE_NEW_ENTRY_CANDIDATE` at notification month `t`:
    Investment Canada corpus;
 6. rank the eligible future entrants using retrospective Canadian-business
    activity-text overlap, then future-entry lag;
-7. retain at most five controls per candidate.
+7. retain at most five risk-set candidates per audited entry candidate;
+8. mark every selected row `identity_qualification_status = UNREVIEWED` and
+   `backtest_control_eligible = false`.
 
 A company with an acquisition or any other Investment Canada record inside the
 risk window is excluded even if its first new-business notification occurs
@@ -33,7 +36,7 @@ time-indexed, not a permanent company label.
 
 ## Interpretation
 
-A matched control means only:
+A raw risk-set candidate means only:
 
 > this investor had no Investment Canada record through the candidate's
 > 24-month risk horizon and was later observed as a new-business entrant.
@@ -45,8 +48,15 @@ It does **not** mean:
 - the company was a true non-entrant;
 - the control is a negative training label.
 
-Every control therefore carries
-`negative_label_eligible = false`.
+Every row therefore carries `negative_label_eligible = false`. In Control
+Cohort 001 it also carries `identity_qualification_status = UNREVIEWED` and
+`backtest_control_eligible = false`.
+
+This extra gate is necessary because Investment Canada's country of ultimate
+control does not prove that the named investor is itself a foreign operating
+company. The named investor may be a natural person or a Canadian vehicle.
+Those cases must not enter the comparable-company backtest until explicit
+foreign legal-entity identity evidence resolves them.
 
 ## Matching metadata is not a signal
 
@@ -68,13 +78,17 @@ that proof and therefore does not create conventional negative labels.
 
 ## Next research use
 
-The risk-set cohort is suitable for:
+The unreviewed risk-set candidate cohort is suitable for:
 
 - source-specific historical coverage analysis;
 - publication-cutoff-safe signal prevalence comparisons;
 - sensitivity analysis with 12/24/36-month horizons;
-- identifying which seven censored entry candidates have enough comparable
-  controls for a first backtest.
+- identifying the raw future-entrant pool that must pass the next foreign
+  legal-entity identity review.
+
+It is **not** yet a comparable-company control cohort. No row is backtest
+eligible until the identity gate confirms the named investor is a foreign legal
+entity and records the supporting evidence.
 
 It is not sufficient to publish model weights. Each candidate signal still
 requires its own historical publication semantics before event-time values can
