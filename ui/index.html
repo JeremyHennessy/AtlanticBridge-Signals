@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AtlanticBridge Signals evidence console for audited Canada–EU expansion research."
+    />
+    <title>AtlanticBridge Signals — Evidence Console</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">AB</div>
+          <div>
+            <div class="brand-name">AtlanticBridge Signals</div>
+            <div class="brand-subtitle">Evidence Console</div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="phase-badge">Data Proof</span>
+          <span class="audit-date" id="audit-date">Audit date —</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Canada–EU expansion intelligence</p>
+            <h1>Historical evidence before scoring.</h1>
+            <p class="hero-text">
+              Explore audited expansion cases, source-backed milestones, identity support,
+              and the evidence boundaries that determine whether a record can enter a model.
+            </p>
+          </div>
+          <div class="model-gate" role="status">
+            <div class="model-gate-icon" aria-hidden="true">!</div>
+            <div>
+              <strong>Expansion scoring is intentionally disabled.</strong>
+              <span>
+                No historical case is model-eligible until first-operation timing and
+                publication cutoffs are sufficiently established.
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section class="metrics" aria-label="Audit summary">
+          <article class="metric-card">
+            <span class="metric-label">Audited outcomes</span>
+            <strong class="metric-value" id="metric-cases">—</strong>
+            <span class="metric-detail">Historical EU-controlled new-business cases reviewed</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Evidence beyond registry</span>
+            <strong class="metric-value" id="metric-evidence">—</strong>
+            <span class="metric-detail">Cases with additional sourced milestones or signals</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Identity support</span>
+            <strong class="metric-value" id="metric-identity">—</strong>
+            <span class="metric-detail">Curated approvals satisfying the current evidence gate</span>
+          </article>
+          <article class="metric-card metric-card-alert">
+            <span class="metric-label">Model-eligible labels</span>
+            <strong class="metric-value" id="metric-model">—</strong>
+            <span class="metric-detail">First-entry outcomes cleared for backtesting</span>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel panel-wide">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Historical cases</p>
+                <h2>Evidence review queue</h2>
+              </div>
+              <div class="panel-tools">
+                <label class="search-field">
+                  <span class="sr-only">Search historical cases</span>
+                  <input id="case-search" type="search" placeholder="Search company, investor, country…" />
+                </label>
+                <label>
+                  <span class="sr-only">Filter by outcome classification</span>
+                  <select id="classification-filter">
+                    <option value="">All classifications</option>
+                    <option value="EXISTING_CANADIAN_PRESENCE">Existing Canadian presence</option>
+                    <option value="ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED">Establishment corroborated</option>
+                    <option value="UNRESOLVED">Unresolved</option>
+                  </select>
+                </label>
+                <label>
+                  <span class="sr-only">Filter by evidence coverage</span>
+                  <select id="evidence-filter">
+                    <option value="">All evidence states</option>
+                    <option value="with">With additional evidence</option>
+                    <option value="without">Registry only</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <div class="table-summary">
+              <span id="case-count-label">— cases</span>
+              <span>Click a row to inspect evidence and audit boundaries.</span>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Canadian business</th>
+                    <th>Investor / control</th>
+                    <th>Notification</th>
+                    <th>Lead</th>
+                    <th>Evidence</th>
+                    <th>Audit state</th>
+                  </tr>
+                </thead>
+                <tbody id="cases-body"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <aside class="panel side-panel">
+            <div class="panel-header compact">
+              <div>
+                <p class="eyebrow">Coverage</p>
+                <h2>Audit posture</h2>
+              </div>
+            </div>
+            <div class="coverage-stack">
+              <div class="coverage-item">
+                <div class="coverage-row">
+                  <span>Notification before month</span>
+                  <strong id="coverage-before">—</strong>
+                </div>
+                <div class="progress-track"><span id="coverage-before-bar"></span></div>
+              </div>
+              <div class="coverage-item">
+                <div class="coverage-row">
+                  <span>Same-month incorporation</span>
+                  <strong id="coverage-same">—</strong>
+                </div>
+                <div class="progress-track"><span id="coverage-same-bar"></span></div>
+              </div>
+              <div class="coverage-note">
+                <span>Median incorporation lead</span>
+                <strong id="median-lead">—</strong>
+                <p>
+                  Incorporation lead is not treated as first-operation lead. It is displayed
+                  only as a registry-timing diagnostic.
+                </p>
+              </div>
+            </div>
+
+            <div class="source-section">
+              <div class="section-label">Most-used evidence types</div>
+              <div id="source-types" class="source-list"></div>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+    <aside class="drawer" id="case-drawer" aria-hidden="true" aria-labelledby="drawer-title">
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Case evidence</p>
+          <h2 id="drawer-title">Case</h2>
+        </div>
+        <button class="icon-button" id="drawer-close" type="button" aria-label="Close case details">×</button>
+      </div>
+      <div class="drawer-content" id="drawer-content"></div>
+    </aside>
+
+    <template id="empty-row-template">
+      <tr>
+        <td colspan="6">
+          <div class="empty-state">No cases match the current filters.</div>
+        </td>
+      </tr>
+    </template>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

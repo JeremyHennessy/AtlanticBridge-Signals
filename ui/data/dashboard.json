@@ -1,0 +1,1077 @@
+{
+  "schema_version": 1,
+  "generated_from": {
+    "cases": "reviews/outcome_audit/2026-09-20-cases.json",
+    "identity_dispositions": "reviews/outcome_audit/2026-09-20-identity-dispositions.json"
+  },
+  "audit_date": "2026-09-20",
+  "summary": {
+    "case_count": 27,
+    "evidence_case_count": 23,
+    "identity_supported": 12,
+    "identity_requires_review": 0,
+    "model_eligible_count": 0,
+    "first_operation_dates_established": 0,
+    "before_notification_month": 25,
+    "same_notification_month": 2,
+    "median_days_before_notification_month": 94,
+    "classification_counts": {
+      "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED": 9,
+      "EXISTING_CANADIAN_PRESENCE": 5,
+      "UNRESOLVED": 13
+    },
+    "source_type_counts": {
+      "OFFICIAL_GOVERNMENT_FILING": 12,
+      "OFFICIAL_COMPANY_SITE": 8,
+      "OFFICIAL_COMPANY_FILING": 2,
+      "OFFICIAL_COMPANY_HISTORY": 2,
+      "OFFICIAL_INVESTOR_MATERIAL": 2,
+      "INDUSTRY_MEMBERSHIP_RECORD": 1,
+      "INSOLVENCY_ADMINISTRATOR_REPORT": 1,
+      "JUDICIAL_DECISION_TEXT_REPRODUCTION": 1,
+      "OFFICIAL_ASSOCIATION_SITE": 1,
+      "OFFICIAL_CLIENT_ANNOUNCEMENT": 1,
+      "OFFICIAL_COMPANY_ANNOUNCEMENT": 1,
+      "OFFICIAL_COMPANY_HELP_CENTRE": 1,
+      "OFFICIAL_COMPANY_NEWS": 1,
+      "OFFICIAL_COMPANY_REPORT": 1,
+      "OFFICIAL_COMPANY_TRANSACTION_ANNOUNCEMENT": 1,
+      "OFFICIAL_CROWN_AGENCY_ANNOUNCEMENT": 1,
+      "OFFICIAL_CROWN_AGENCY_TRANSITION_NOTICE": 1,
+      "OFFICIAL_FEDERAL_LOBBY_COMMUNICATION_REPORT": 1,
+      "OFFICIAL_FEDERAL_LOBBY_REGISTRY": 1,
+      "OFFICIAL_FEDERAL_REGISTRY_EVENT": 1,
+      "OFFICIAL_GOVERNMENT_EVENT_PAGE": 1,
+      "OFFICIAL_GOVERNMENT_REGULATORY_DECISION": 1,
+      "OFFICIAL_MUNICIPAL_ANNUAL_REPORT": 1,
+      "OFFICIAL_MUNICIPAL_RECORD": 1,
+      "OFFICIAL_PROJECT_OWNER_ANNOUNCEMENT": 1,
+      "OFFICIAL_PUBLIC_FINANCE_INSTITUTION": 1,
+      "OFFICIAL_UNIVERSITY_ANNOUNCEMENT": 1,
+      "PMRA_APPROVED_LABEL_ARCHIVE": 1,
+      "SECONDARY_CONTEMPORANEOUS_REPORT": 1,
+      "WORKFORCE_DEVELOPMENT_REPORT": 1
+    }
+  },
+  "cases": [
+    {
+      "id": "41ad36779f4802b9b4d5731a229528a4acc7f2373c67e5b86b996a793a711058",
+      "investor_name": "Bolton BG Canada Inc.",
+      "canadian_business_name": "Bolton BG Canada Inc.",
+      "canadian_business_activity": "Supplies various food and home and personal care products to retailers.",
+      "ultimate_control_country": "Italy",
+      "corporation_number": "9996672",
+      "registry_status": "Active",
+      "notification_month": "2025-10",
+      "incorporation_date": "2016-11-24",
+      "days_before_notification_month": 3233,
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "An Italian government event page for March 2020 describes establishing the Toronto subsidiary in 2017 and retail distribution. The 2020 group report also lists Bolton BG Canada. Existing Canadian commercial presence predates the October 2025 notification; the notification reason and exact first-operations date remain unresolved. The legal parent-to-vehicle link also needs explicit identity evidence.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://iictoronto.esteri.it/en/gli_eventi/calendario/bocconi-alumni-toronto-andrea-pugliese-2/",
+          "source_type": "OFFICIAL_GOVERNMENT_EVENT_PAGE",
+          "source_date": "2020-03-26",
+          "source_date_basis": "Scheduled event date; page publication date not established",
+          "event_date": "2017",
+          "event_date_precision": "YEAR",
+          "claim": "Describes Toronto subsidiary establishment in 2017 and Canadian retail distribution.",
+          "supports": "EXISTING_CANADIAN_PRESENCE"
+        },
+        {
+          "source_url": "https://www.bolton.com/sites/default/files/2024-07/Bolton-Group-Sustainability-Report-2020-1.pdf",
+          "source_type": "OFFICIAL_COMPANY_REPORT",
+          "source_date": "2020",
+          "source_date_basis": "Reporting year; exact publication and historical availability not established",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Lists Bolton BG Canada in the group structure.",
+          "supports": "CANADIAN_SUBSIDIARY_IN_2020_REPORT"
+        }
+      ]
+    },
+    {
+      "id": "e4ae3d3f67808ad18113d8df938b5f33e5333d3550a60a12cd9485e3cfee7c15",
+      "investor_name": "Vaxxinova International B.V.",
+      "canadian_business_name": "Vaxxinova Canada, Inc.",
+      "canadian_business_activity": "Sells and distributes veterinary biologicals.",
+      "ultimate_control_country": "Germany",
+      "corporation_number": "16220801",
+      "registry_status": "Active",
+      "notification_month": "2025-05",
+      "incorporation_date": "2024-07-18",
+      "days_before_notification_month": 287,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Vaxxinova's official 2024-03-04 announcement states that its BU Aqua business unit provides biological preventive solutions to the aquaculture industry in Canada. This predates Vaxxinova Canada, Inc.'s 2024-07-18 incorporation and the May 2025 Investment Canada notification, and therefore corroborates Canada-facing group activity before the local vehicle existed. CIPO also records Vaxxinova International B.V.'s VAXXINOVA Canadian trademark filed in 2018 and registered in 2021 for veterinary vaccines/services, but that application claimed proposed use and is not treated as proof of operations. Neither source establishes when Vaxxinova Canada itself first sold or distributed veterinary biologicals. Keep the operating outcome UNRESOLVED and model-ineligible.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://vaxxinova.com/vaxxinova-bu-aqua-announces-new-rd-and-business-development-director/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": "2024-03-04",
+          "source_date_basis": "Publication date displayed on Vaxxinova announcement",
+          "event_date": "2024-03-04",
+          "event_date_precision": "DAY",
+          "claim": "Vaxxinova states that BU Aqua is dedicated to providing biological preventive solutions to the aquaculture industry in Canada, alongside Chile, Europe and the UK.",
+          "supports": "PARENT_CANADA_FACING_ACTIVITY_BEFORE_LOCAL_INCORPORATION"
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1912733",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2021-08-24",
+          "source_date_basis": "Canadian trademark registration date; application was filed 2018-08-01",
+          "event_date": "2021-08-24",
+          "event_date_precision": "DAY",
+          "claim": "CIPO registration TMA1107399 records VAXXINOVA owned by Vaxxinova International B.V. for veterinary vaccines and veterinary services. The application claimed proposed use in Canada, so the registration is supporting brand/market-intent evidence rather than proof of actual Canadian operations.",
+          "supports": "CANADIAN_BRAND_REGISTRATION_PREENTRY_NOT_OPERATIONAL_PROOF"
+        }
+      ]
+    },
+    {
+      "id": "02e67296d5aebadc3460f48f1a7fbdf2d3b94660dc5edae830e5a9e3ec872eb1",
+      "investor_name": "K-Rouge Holding Inc.",
+      "canadian_business_name": "K-Rouge Holding Inc.",
+      "canadian_business_activity": "Acts as a holding company.",
+      "ultimate_control_country": "Luxembourg",
+      "corporation_number": "15924669",
+      "registry_status": "Active",
+      "notification_month": "2024-04",
+      "incorporation_date": "2024-04-05",
+      "days_before_notification_month": -4,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "The incorporation falls inside the notification month. Resolve the holding-company parent and operating-business relationship; do not treat the holding vehicle as proven new operations.",
+      "evidence_count": 0,
+      "evidence": []
+    },
+    {
+      "id": "5640d5839f0068a44dcad83527bab4277e4b32fbb277f09cc1b67ec8d50b8584",
+      "investor_name": "Tiandingfeng Canada Nonwovens Co., Ltd.",
+      "canadian_business_name": "Tiandingfeng Canada Nonwovens Co., Ltd.",
+      "canadian_business_activity": "Produces nonwoven fabrics for use by North American manufacturers of waterproofing products.",
+      "ultimate_control_country": "France",
+      "corporation_number": "14895142",
+      "registry_status": "Active",
+      "notification_month": "2023-10",
+      "incorporation_date": "2023-03-30",
+      "days_before_notification_month": 185,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "CIPO application 2198269 was filed by Tiandingfeng Nonwovens Co., Ltd. on 2022-07-14 for non-woven fabrics and related class 24 goods, more than eight months before Tiandingfeng Canada Nonwovens Co., Ltd. was incorporated on 2023-03-30 and roughly fifteen months before the October 2023 Investment Canada notification. This is a Canada-specific pre-incorporation market-intent signal, not proof of Canadian operations. Sorel-Tracy council resolution 2025-03-197 later ratified a 2025-02-26 promise of purchase with Tiandingfeng Canada for industrial land, confirming eventual physical-project development after the notification. Neither source establishes the first local manufacturing date or resolves why the Investment Canada record reports France as ultimate control while the pre-entry trademark applicant is a Chinese Tiandingfeng entity. Keep the case UNRESOLVED and model-ineligible.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/2198269",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2022-07-14",
+          "source_date_basis": "CIPO filing date",
+          "event_date": "2022-07-14",
+          "event_date_precision": "DAY",
+          "claim": "CIPO application 2198269 was filed by Tiandingfeng Nonwovens Co., Ltd. of China for class 24 goods including non-woven fabrics and non-woven textile fabrics.",
+          "supports": "CANADA_MARKET_INTENT_BEFORE_LOCAL_INCORPORATION"
+        },
+        {
+          "source_url": "https://www.ville.sorel-tracy.qc.ca/storage/app/media/ville/vos-elus/seances-du-conseil/proces_verbaux/proces_verbaux_2025/Mars_2025/2025-03-31_pv_extra.pdf",
+          "source_type": "OFFICIAL_MUNICIPAL_RECORD",
+          "source_date": "2025-03-31",
+          "source_date_basis": "Sorel-Tracy council meeting date",
+          "event_date": "2025-02-26",
+          "event_date_precision": "DAY",
+          "claim": "Sorel-Tracy resolution 2025-03-197 ratifies a purchase promise signed 2025-02-26 between Tiandingfeng Canada Nonwovens Co., Ltd. and the City for specified industrial land parcels.",
+          "supports": "POST_NOTIFICATION_FACTORY_SITE_PROJECT"
+        }
+      ]
+    },
+    {
+      "id": "ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "investor_name": "Leadership Pipeline Institute Canada Inc.",
+      "canadian_business_name": "Leadership Pipeline Institute Canada Inc.",
+      "canadian_business_activity": "Operates a business within education and development, including consultancy work, coaching, supervision and educational design for individuals and companies.",
+      "ultimate_control_country": "Denmark",
+      "corporation_number": "15266092",
+      "registry_status": "Active",
+      "notification_month": "2023-09",
+      "incorporation_date": "2023-08-09",
+      "days_before_notification_month": 23,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Leadership Pipeline Institute A/S (CVR 29971463) is confirmed as the 100%-owning parent of Leadership Pipeline Institute Canada Inc. The audited 2023 annual report filed through Denmark's Virk states that during 2023 the group expanded with new subsidiaries in the UK and Canada, and Note 6 lists Leadership Pipeline Institute Canada Inc., Canada, with CAD 100 share capital and 100% ownership. This corroborates Canadian subsidiary establishment during 2023, but the report provides only year precision and was adopted in 2024, so it cannot order establishment relative to the September 2023 Investment Canada notification or establish the first Canadian training, consulting or service date. Keep first_canadian_operations_date unset and the case model-ineligible.",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "source_url": "https://regnskaber.virk.dk/36417992/amNsb3VkczovLzAzL2U2Lzc4LzY1LzJmL2M5ZjktNDY4MS1hOWFjLTQwNGNjNzVkZjA4NQ.pdf",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2024-05-31",
+          "source_date_basis": "Annual report adoption date; management review describes the 2023 financial year",
+          "event_date": "2023",
+          "event_date_precision": "YEAR",
+          "claim": "Leadership Pipeline Institute A/S states that during 2023 its business expanded with new subsidiaries in the UK and Canada; Note 6 identifies Leadership Pipeline Institute Canada Inc. as a 100%-owned Canadian subsidiary.",
+          "supports": "CANADIAN_SUBSIDIARY_ESTABLISHMENT_DURING_2023"
+        }
+      ]
+    },
+    {
+      "id": "5a207dc535fcf72737ecad67b62415bef3e25cd284e702ca1c3e2a2c8e73b8f6",
+      "investor_name": "Quista Technology Pte. Ltd.",
+      "canadian_business_name": "Reebelo Canada, Inc.",
+      "canadian_business_activity": "Operates online marketplaces, selling certified, pre-owned tech devices such as cell phones, personal computers, and household appliances.",
+      "ultimate_control_country": "Germany",
+      "corporation_number": "15053404",
+      "registry_status": "Inactive - Discontinued",
+      "notification_month": "2023-08",
+      "incorporation_date": "2023-05-24",
+      "days_before_notification_month": 69,
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Reebelo's official Canada help centre published 2023-07-05 states that Reebelo currently sells in Canada. That establishes Canadian commercial availability before the August 2023 Investment Canada notification, so the notification is not treated as first Canadian market entry. The exact first sale/customer date remains unestablished. Preserve the Singapore legal-entity identity separately from Investment Canada's Germany ultimate-control field.",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "source_url": "https://help.reebelo.ca/hc/en-us/articles/20328511773081-What-is-Reebelo",
+          "source_type": "OFFICIAL_COMPANY_HELP_CENTRE",
+          "source_date": "2023-07-05",
+          "source_date_basis": "Publication date shown by Reebelo Canada help centre",
+          "event_date": "2023-07-05",
+          "event_date_precision": "DAY",
+          "claim": "Reebelo states that it currently sells in Canada.",
+          "supports": "PRE_NOTIFICATION_CANADIAN_COMMERCIAL_PRESENCE"
+        }
+      ]
+    },
+    {
+      "id": "97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "investor_name": "Sioo Wood Protection Industry AB",
+      "canadian_business_name": "Sioo Wood Protection Industry Canada Inc.",
+      "canadian_business_activity": "Operates a wood protection business.",
+      "ultimate_control_country": "Sweden",
+      "corporation_number": "14274431",
+      "registry_status": "Active",
+      "notification_month": "2023-07",
+      "incorporation_date": "2022-08-09",
+      "days_before_notification_month": 326,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Nefco's official 2023-06-21 financing announcement states that SiOO received a Nopef grant in 2022 to co-finance a feasibility study into establishment in Canada and says that, after a successful establishment in Canada with Nopef's help, Nefco was financing further North American scale-up. This primary public-finance evidence establishes Canadian establishment before the July 2023 Investment Canada notification. CIPO separately records the SIOO:X Canadian trademark filed in 2016 and registered in 2019 with proposed use in Canada; that is retained as earlier Canada-specific market-intent evidence, not proof of operations. Neither source gives the exact establishment completion, first sale, first customer, staffing start or operating date. Keep first_canadian_operations_date unset and the case model-ineligible.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://www.nefco.int/news/sioo-receives-financing-from-nefco/",
+          "source_type": "OFFICIAL_PUBLIC_FINANCE_INSTITUTION",
+          "source_date": "2023-06-21",
+          "source_date_basis": "Nefco publication date",
+          "event_date": "2023-06-21",
+          "event_date_precision": "LATEST_BY",
+          "claim": "Nefco states that SiOO received a 2022 Nopef grant to co-finance a feasibility study into establishment in Canada and describes a successful establishment in Canada before its 2023 Fast-track financing for North American scale-up.",
+          "supports": "CANADIAN_ESTABLISHMENT_BY_2023_06_21"
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1799092",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2016-09-07",
+          "source_date_basis": "CIPO filing date; registration followed on 2019-07-08",
+          "event_date": "2016-09-07",
+          "event_date_precision": "DAY",
+          "claim": "CIPO application 1799092 records SIOO:X filed by SIOO WOODPROTECTION AB with proposed use in Canada for wood-protection and related goods.",
+          "supports": "CANADA_MARKET_INTENT_PREESTABLISHMENT_NOT_OPERATIONAL_PROOF"
+        }
+      ]
+    },
+    {
+      "id": "c17f25725bb1d849a85608cb20d3a52d5d0ae8b898ed34b6ecd99f6177634846",
+      "investor_name": "Anastasios Lianos",
+      "canadian_business_name": "Knitly Inc.",
+      "canadian_business_activity": "Provides a Software as a Service marketing platform.",
+      "ultimate_control_country": "Greece",
+      "corporation_number": "14719808",
+      "registry_status": "Dissolved",
+      "notification_month": "2023-02",
+      "incorporation_date": "2023-01-30",
+      "days_before_notification_month": 2,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Named investor identity remains open. Establish the investor-to-Knitly relationship and first operations; the two-day month-start interval is not a validated predictive lead.",
+      "evidence_count": 0,
+      "evidence": []
+    },
+    {
+      "id": "09dbdb9242a006cbd36c897a25cd18a45fd2e5569bfec185d0aaa8b7255f7398",
+      "investor_name": "Roberto Sancristobal Llobell",
+      "canadian_business_name": "Sanllo Canada Inc",
+      "canadian_business_activity": "Engaged in the import and distribution of fruit.",
+      "ultimate_control_country": "Spain",
+      "corporation_number": "14292910",
+      "registry_status": "Dissolved",
+      "notification_month": "2022-10",
+      "incorporation_date": "2022-08-16",
+      "days_before_notification_month": 46,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Spain's official mercantile bulletin records that, effective 2022-06-07, Sanllo Export S.L.'s sole shareholder was Sanllo World Group S.L.; Roberto Sancristobal Llobell ceased as sole administrator when Sanllo World Group became sole administrator, with Roberto designated as its natural-person representative. DRC then listed both Sanllo Canada Inc. and Sanllo Export, S.L., each d/b/a Sanllo, as new members during the 2022-10-15 to 2022-11-15 window. CIPO records a SANLLO Canadian trademark filing by Sanllo Export on 2022-11-24 for fresh fruits and vegetables. This corroborates a linked Spain/Canada produce-market compliance and brand footprint around the notification period, but does not establish direct ownership of Sanllo Canada, the exact first Canadian sale/import/operation date, or whether DRC admission preceded the October notification. Keep the named-investor relationship and operating outcome unresolved and model-ineligible.",
+      "evidence_count": 3,
+      "evidence": [
+        {
+          "source_url": "https://www.boe.es/borme/dias/2022/06/14/pdfs/BORME-A-2022-112-46.pdf",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2022-06-14",
+          "source_date_basis": "Spanish Boletín Oficial del Registro Mercantil publication date; registry acts shown as 2022-06-07",
+          "event_date": "2022-06-07",
+          "event_date_precision": "DAY",
+          "claim": "BORME records Sanllo World Group S.L. as sole shareholder of Sanllo Export S.L.; Sanllo World Group becomes sole administrator and Roberto Sancristobal Llobell is designated as the natural-person representative of that administrator.",
+          "supports": "FOREIGN_SIDE_SANLLO_MANAGEMENT_CHAIN_PREENTRY"
+        },
+        {
+          "source_url": "https://fvdrc.com/solutions/membership-updates-for-november-15-2022/",
+          "source_type": "INDUSTRY_MEMBERSHIP_RECORD",
+          "source_date": "2022-11-29",
+          "source_date_basis": "DRC publication date; article states the new-member window ran from 2022-10-15 through 2022-11-15",
+          "event_date": "2022-11-15",
+          "event_date_precision": "WINDOW_END",
+          "claim": "DRC lists Sanllo Canada Inc. (Ontario) and Sanllo Export, S.L. (Valencia, Spain), both d/b/a Sanllo, among new members added from October 15 through November 15, 2022. DRC states that in Canada membership is a regulatory requirement to trade fresh fruits and vegetables unless excepted.",
+          "supports": "CANADIAN_PRODUCE_TRADE_MEMBERSHIP_BY_2022_11_15"
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/2233219",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2022-11-24",
+          "source_date_basis": "CIPO filing and international-registration date",
+          "event_date": "2022-11-24",
+          "event_date_precision": "DAY",
+          "claim": "CIPO application 2233219 records SANLLO filed by Sanllo Export, S.L. for fresh fruits and vegetables and related class 31 goods.",
+          "supports": "CANADA_MARKET_TRADEMARK_ACTIVITY_BY_2022_11_24"
+        }
+      ]
+    },
+    {
+      "id": "b206b73fcd9d6ee2451a66884be6094f77bafaf2b5c469199c9f0d868ac1f7cb",
+      "investor_name": "TOPdesk Canada Inc.",
+      "canadian_business_name": "TOPdesk Canada Inc.",
+      "canadian_business_activity": "Engaged in the development of computer software.",
+      "ultimate_control_country": "Netherlands",
+      "corporation_number": "9450122",
+      "registry_status": "Inactive - Discontinued",
+      "notification_month": "2022-07",
+      "incorporation_date": "2015-09-23",
+      "days_before_notification_month": 2473,
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "The registry incorporation predates the July 2022 notification by 2,473 days. Invest Toronto's official 2015 annual report states that it assisted TOPdesk with establishment of its first Canadian location in Toronto in 2015. This is primary municipal evidence of Canadian presence years before the notification. The source has year precision only and does not establish an exact first-operating date or the economic purpose of the 2022 notification.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://www.itworldcanada.com/article/customer-service-software-firm-topdesk-stakes-canadian-turf/378282",
+          "source_type": "SECONDARY_CONTEMPORANEOUS_REPORT",
+          "source_date": "2015-11-08",
+          "source_date_basis": "Displayed publication date",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Reports a planned two-person Toronto office after earlier remote service to Canadian customers.",
+          "supports": "REPORTED_PRIOR_COMMERCIAL_PRESENCE; PRIMARY_OPERATING_DATE_STILL_REQUIRED"
+        },
+        {
+          "source_url": "https://www.toronto.ca/legdocs/mmis/2016/ex/bgrd/backgroundfile-93038.pdf",
+          "source_type": "OFFICIAL_MUNICIPAL_ANNUAL_REPORT",
+          "source_date": "2016-05-09",
+          "source_date_basis": "The 2015 Invest Toronto Annual Report was submitted as Attachment 1 to the City Manager report dated 2016-05-09; the TOPdesk milestone in the report is explicitly dated to 2015",
+          "event_date": "2015",
+          "event_date_precision": "YEAR",
+          "claim": "Invest Toronto states that Global Affairs Canada introduced TOPdesk and that Invest Toronto assisted with establishment of TOPdesk's first Canadian location in Toronto in 2015.",
+          "supports": "EXISTING_CANADIAN_PRESENCE"
+        }
+      ]
+    },
+    {
+      "id": "b681a6f4f3eeee19eaa99159e8b51bb2d53213d541cfae119490d38990312e7f",
+      "investor_name": "SD2 Engineering Services S.T.P. A R.L",
+      "canadian_business_name": "SD2 Consulting Services Inc.",
+      "canadian_business_activity": "Provides drafting services (drawing detailed layouts, plans and illustrations of buildings, structures, systems or components from engineering and architectural specifications.",
+      "ultimate_control_country": "Italy",
+      "corporation_number": "12773449",
+      "registry_status": "Active",
+      "notification_month": "2022-04",
+      "incorporation_date": "2021-02-25",
+      "days_before_notification_month": 400,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "The Turin government filing uses both the full legal form and the abbreviated `s.t.p. a r.l.` spelling for the same firm in the same contract context, with the same address and VAT 12368010018, satisfying the curated identity alias gate. The 400-day incorporation-to-notification interval still requires an operational-history check and is not a validated predictive lead.",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "source_url": "https://trasparenza.cittametropolitana.torino.it/media/10392/download",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2023-02-20",
+          "source_date_basis": "Date of Città Metropolitana di Torino determination DD 777; after the 2022 notification, so identity support only",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "The filing identifies SD2 Engineering Services società tra professionisti a R.L., Via Pianezza 13, Torino, P.IVA 12368010018 and refers on the same page to SD2 engineering services s.t.p. a r.l. in the same contract context.",
+          "supports": "IDENTITY_ALIAS_ONLY"
+        }
+      ]
+    },
+    {
+      "id": "814a591396e8a1ef40318eefe89e7c27c15c6bcdabb0dbe5100da163c89c4b58",
+      "investor_name": "Bayer CropScience Inc.",
+      "canadian_business_name": "2022 Environmental Science CA Inc.",
+      "canadian_business_activity": "Engaged in pest control marketing, sales and related services with a focus on greenhouse, turf, industrial vegetation and professional pest control uses.",
+      "ultimate_control_country": "Germany",
+      "corporation_number": "13679624",
+      "registry_status": "Active",
+      "notification_month": "2022-04",
+      "incorporation_date": "2022-01-13",
+      "days_before_notification_month": 78,
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "A PMRA-approved 2018 commercial label for registration 32800 (Signature Xtra Stressgard) identifies Bayer CropScience Inc. in Calgary, establishing Bayer Environmental Science activity in Canada years before the 2022 entity and notification. Bayer announced a definitive agreement in March 2022 to sell its existing Environmental Science Professional business to Cinven, and Health Canada later lists the same registration 32800 under 2022 Environmental Science CA Inc. Together these sources support an existing-business transfer/reorganization interpretation rather than first Canadian market entry. The exact first-operating date and the precise Investment Canada notification purpose remain unresolved.",
+      "evidence_count": 3,
+      "evidence": [
+        {
+          "source_url": "https://www.ca.envu.com/-/media/prfcanada/product-sds-and-labels/signature-xtra-stressgard---english-label---13june2018.ashx",
+          "source_type": "PMRA_APPROVED_LABEL_ARCHIVE",
+          "source_date": "2018-06-13",
+          "source_date_basis": "PMRA approval date printed on the archived Canadian label",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "PMRA-approved commercial label for Signature Xtra Stressgard identifies Bayer CropScience Inc., Calgary, Alberta, as the registrant/supplier in Canada.",
+          "supports": "EXISTING_CANADIAN_PRESENCE"
+        },
+        {
+          "source_url": "https://www.bayer.com/media/en-us/bayer-to-sell-its-environmental-science-professional-business-to-cinven-for-26-billion-us-dollars/",
+          "source_type": "OFFICIAL_COMPANY_TRANSACTION_ANNOUNCEMENT",
+          "source_date": "2022-03-10",
+          "source_date_basis": "Bayer publication date",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Bayer announced a definitive agreement to sell its existing Environmental Science Professional business to Cinven.",
+          "supports": "BUSINESS_DIVESTITURE_CONTEXT"
+        },
+        {
+          "source_url": "https://www.canada.ca/en/health-canada/services/consumer-product-safety/reports-publications/pesticides-pest-management/decisions-updates/special-registration-decision/2024/fosetyl-aluminum.html",
+          "source_type": "OFFICIAL_GOVERNMENT_REGULATORY_DECISION",
+          "source_date": "2024-08-29",
+          "source_date_basis": "Health Canada publication date; post-notification corroboration only",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Health Canada lists the same commercial product registration 32800, Signature Xtra Stressgard, under 2022 Environmental Science CA Inc.",
+          "supports": "PRODUCT_REGISTRATION_CONTINUITY_POST_TRANSFER"
+        }
+      ]
+    },
+    {
+      "id": "d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "investor_name": "Aiut sp. z.o.o.",
+      "canadian_business_name": "Aiut Inc.",
+      "canadian_business_activity": "Provides industrial engineering services.",
+      "ultimate_control_country": "Poland",
+      "corporation_number": "12934345",
+      "registry_status": "Active",
+      "notification_month": "2021-08",
+      "incorporation_date": "2021-04-18",
+      "days_before_notification_month": 105,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "AIUT's official company history records opening a Canadian branch in 2021. Its branch announcement identifies AIUT Inc. in Canada and describes a local competence centre providing direct customer support and ongoing project/service supervision. The accessible primary sources do not expose an exact branch-opening date, so the milestone cannot be ordered relative to the August 2021 notification and the exact first Canadian project or service date remains unresolved.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://aiut.com/en/about-us/",
+          "source_type": "OFFICIAL_COMPANY_HISTORY",
+          "source_date": "2021",
+          "source_date_basis": "Company-history milestone year; exact branch-opening date is not stated",
+          "event_date": "2021",
+          "event_date_precision": "YEAR",
+          "claim": "AIUT's official history records opening a branch in Canada in 2021.",
+          "supports": "CANADIAN_BRANCH_ESTABLISHMENT_YEAR_ONLY"
+        },
+        {
+          "source_url": "https://aiut.com/us/aiut-has-opened-a-new-branch-in-canada/",
+          "source_type": "OFFICIAL_COMPANY_ANNOUNCEMENT",
+          "source_date": null,
+          "source_date_basis": "Accessible page does not expose an exact publication date",
+          "event_date": "2021",
+          "event_date_precision": "YEAR",
+          "claim": "AIUT identifies AIUT Inc. in Canada and describes a local competence centre providing direct customer support and supervision of company projects.",
+          "supports": "LOCAL_CANADIAN_PROJECT_SERVICE_CAPABILITY_YEAR_ONLY"
+        }
+      ]
+    },
+    {
+      "id": "27c205d64d75881dfd852aa0c3c80fa121714ec2ed394772fa95bdc9171f6cee",
+      "investor_name": "Pegasi Oy",
+      "canadian_business_name": "Pegasi IAM Canada Inc.",
+      "canadian_business_activity": "Engaged in the development of identity and access management services.",
+      "ultimate_control_country": "Finland",
+      "corporation_number": "13072681",
+      "registry_status": "Inactive - Discontinued",
+      "notification_month": "2021-07",
+      "incorporation_date": "2021-06-03",
+      "days_before_notification_month": 28,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "The federal status `Inactive - Discontinued` is not a dissolution: Corporations Canada records a 2021-07-06 discontinuance to Ontario. Pegasi's current official site publishes a Toronto office at 2 Bloor Street West, Suite 2120, corroborating an eventual Canadian operating footprint. The exact Pegasi Oy investor identity is already confirmed separately in the curated review (Finnish business ID 1555427-6). These facts do not establish the exact first Canadian operating date, whether operations preceded the July 2021 notification, or what evidence was publicly available before operations began.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13072681.json?lang=eng",
+          "source_type": "OFFICIAL_FEDERAL_REGISTRY_EVENT",
+          "source_date": "2021-07-06",
+          "source_date_basis": "Corporations Canada discontinuance activity date in the pinned registry projection",
+          "event_date": "2021-07-06",
+          "event_date_precision": "DAY",
+          "claim": "Corporations Canada records Pegasi IAM Canada Inc. as discontinued from the federal jurisdiction to Ontario, rather than dissolved.",
+          "supports": "DISCONTINUED_TO_ONTARIO_NOT_DISSOLVED"
+        },
+        {
+          "source_url": "https://pegasi.fi/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current company contact page; no historical publication date displayed",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Pegasi's official site lists a Canadian office at 2 Bloor Street West, Suite 2120, Toronto, Ontario.",
+          "supports": "CURRENT_CANADIAN_OFFICE_FOOTPRINT_NOT_EVENT_TIME"
+        }
+      ]
+    },
+    {
+      "id": "a13912957fb3e46e6b11603fb55da3d3cc080240b51814ff8a3b937eebcf046a",
+      "investor_name": "Power by Britishvolt Limited",
+      "canadian_business_name": "Britishvolt Canada Inc.",
+      "canadian_business_activity": "Produces Lithium-ion batteries.",
+      "ultimate_control_country": "Sweden",
+      "corporation_number": "12720914",
+      "registry_status": "Dissolved",
+      "notification_month": "2021-06",
+      "incorporation_date": "2021-02-08",
+      "days_before_notification_month": 113,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Britishvolt Canada had documented Canadian project-development activity before the June 2021 notification. Its federal consultant-lobbying registration has an effective/start date of 2021-03-09 and states the undertaking sought financial support for construction of a battery manufacturing plant in Canada; that effective date is not treated as the historical public-availability date. Separately, the Registry of Lobbyists records a 2021-03-18 communication with the Minister of Innovation, Science and Industry and his Chief of Staff, posted publicly on 2021-04-08. EY's March 2023 administrators' proposals later reported that the Canadian company employed one person, had been set up to explore the potential for a Canadian battery manufacturing facility, and remained in early-stage development. This corroborates an established Canadian project-development presence, not a completed battery-manufacturing entry. The exact first operating date remains unset; the federal registry later records dissolution on 2025-01-10.",
+      "evidence_count": 3,
+      "evidence": [
+        {
+          "source_url": "https://lobbycanada.gc.ca/app/secure/ocl/lrs/do/vwRg?cno=368941&regId=910086",
+          "source_type": "OFFICIAL_FEDERAL_LOBBY_REGISTRY",
+          "source_date": "2021-03-09",
+          "source_date_basis": "Initial federal consultant-lobbyist registration start date",
+          "event_date": "2021-03-09",
+          "event_date_precision": "DAY",
+          "claim": "Britishvolt Canada Inc. registered a board member to seek federal financial support for construction of a battery manufacturing plant in Canada; the registration names Power By Britishvolt PLC as the parent company.",
+          "supports": "PRE_NOTIFICATION_CANADIAN_PROJECT_DEVELOPMENT"
+        },
+        {
+          "source_url": "https://www.ey.com/content/dam/ey-unified-site/ey-com/en-uk/campaigns/administrations/documents/ey-pbv-proposals.pdf",
+          "source_type": "INSOLVENCY_ADMINISTRATOR_REPORT",
+          "source_date": "2023-03-13",
+          "source_date_basis": "Date the Joint Administrators' proposals were delivered to creditors",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "EY's Joint Administrators reported that the Group's Canadian company employed one member of staff, had been set up to explore the potential for developing a battery manufacturing facility in Canada, and was in early-stage development.",
+          "supports": "PROJECT_DEVELOPMENT_PRESENCE_NOT_MANUFACTURING_ENTRY"
+        },
+        {
+          "source_url": "https://lobbycanada.gc.ca/app/secure/ocl/lrs/do/rgstrnCmmnctnRprts?regId=915221",
+          "source_type": "OFFICIAL_FEDERAL_LOBBY_COMMUNICATION_REPORT",
+          "source_date": "2021-03-18",
+          "source_date_basis": "Communication date reported in the federal Registry of Lobbyists; public posting occurred later",
+          "event_date": "2021-03-18",
+          "event_date_precision": "DAY",
+          "claim": "Britishvolt Canada Inc. reported an oral/arranged communication with François-Philippe Champagne, Minister of Innovation, Science and Industry, and Sarah Hussaini, Chief of Staff, on Industry and Science and Technology. The Registry records communication number 368941-500855 as posted on 2021-04-08.",
+          "supports": "PRE_NOTIFICATION_PUBLIC_FEDERAL_LOBBYING_COMMUNICATION"
+        }
+      ]
+    },
+    {
+      "id": "6148493d6fa4a81f910b90594d877222da8451e61dd2a6519a089d4236ced78e",
+      "investor_name": "Trillium Supply Chain Inc.",
+      "canadian_business_name": "Trillium Supply Chain Inc.",
+      "canadian_business_activity": "Provides third party logistics services.",
+      "ultimate_control_country": "Germany",
+      "corporation_number": "11681460",
+      "registry_status": "Active",
+      "notification_month": "2021-04",
+      "incorporation_date": "2019-10-15",
+      "days_before_notification_month": 534,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Deutsche Post AG (HRB 6792) is confirmed as Trillium Supply Chain Inc.'s ultimate group parent. LCBO's 2020-05-20 update shows Trillium had already won the RFP to locate, set up and operate the new distribution centre. LCBO's 2021-01-08 transition notice then scheduled High Volume Consignment product transition to the Trillium facility for 2021-01-11 and the first agent transition for 2021-01-18; it also states that a December pickup video was filmed when substantial building construction was complete. A later Ontario Superior Court decision, 2024 ONSC 1853, recites the plaintiff's pleaded background that LCBO relocated its distribution centre to Caledon in January 2021 and contracted Trillium to manage it, with alleged problems arising after Trillium began management. The judicial passage is retained as retrospective corroboration of the pleaded operational history, not independent fact-finding. Together the evidence strongly bounds Trillium's Caledon operating transition to January 2021, before the April 2021 notification, but does not establish Trillium's absolute first Canadian operation or exact first day of facility management. Keep first_canadian_operations_date unset and the case model-ineligible.",
+      "evidence_count": 3,
+      "evidence": [
+        {
+          "source_url": "https://www.doingbusinesswithlcbo.com/content/dbwl/en/basepage/home/updates/AnupdateontheLCBOsTorontoRetailServiceCentre.html",
+          "source_type": "OFFICIAL_CROWN_AGENCY_ANNOUNCEMENT",
+          "source_date": "2020-05-20",
+          "source_date_basis": "Publication date shown by LCBO",
+          "event_date": "2020-05-20",
+          "event_date_precision": "DAY",
+          "claim": "LCBO states that its RFP was complete and Trillium Supply Chain had been selected as service provider to locate, set up and operate a new distribution centre; Trillium would operate the warehouse and the first transition phase was expected in fall 2020.",
+          "supports": "PRE_NOTIFICATION_CANADIAN_CONTRACTED_PROJECT_ACTIVITY"
+        },
+        {
+          "source_url": "https://www.doingbusinesswithlcbo.com/content/dbwl/en/basepage/home/updates/supporting-your-transition-to-the-Trillium-facility-update.html",
+          "source_type": "OFFICIAL_CROWN_AGENCY_TRANSITION_NOTICE",
+          "source_date": "2021-01-08",
+          "source_date_basis": "Publication date shown by LCBO",
+          "event_date": "2021-01-11",
+          "event_date_precision": "PLANNED_DAY",
+          "claim": "LCBO announced that High Volume Consignment product transition to the Trillium facility would start 2021-01-11 and the first agent would transition 2021-01-18; pickup materials and a December facility video were already prepared.",
+          "supports": "PLANNED_TRILLIUM_FACILITY_OPERATIONAL_TRANSITION_JAN_2021"
+        },
+        {
+          "source_url": "https://www.minicounsel.ca/scj/2024/1853",
+          "source_type": "JUDICIAL_DECISION_TEXT_REPRODUCTION",
+          "source_date": "2024-03-28",
+          "source_date_basis": "Decision date for 2024 ONSC 1853; passage summarizes pleaded background on a motion to strike rather than an independent factual finding",
+          "event_date": "2021-01",
+          "event_date_precision": "MONTH",
+          "claim": "2024 ONSC 1853 recites the plaintiff's pleaded history that LCBO relocated its distribution centre to Caledon in January 2021, contracted Trillium to manage it, and that issues arose after Trillium began managing the centre.",
+          "supports": "RETROSPECTIVE_PLEADED_OPERATIONAL_HISTORY_JAN_2021"
+        }
+      ]
+    },
+    {
+      "id": "52ed53458345a7ea4c2dd652f867980115f96827923254fbdd31e05d7e3287c0",
+      "investor_name": "conTeyor International NV",
+      "canadian_business_name": "conTeyor Canada Ltd.",
+      "canadian_business_activity": "Engages in the production and sale of re-usable packaging.",
+      "ultimate_control_country": "Belgium",
+      "corporation_number": "12527430",
+      "registry_status": "Active",
+      "notification_month": "2021-03",
+      "incorporation_date": "2020-11-27",
+      "days_before_notification_month": 94,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "CIPO application 1022072 (FITBOX) was filed in Canada on 1999-07-13 for reusable containers, racks, frames and related transport/automotive packaging goods and registered on 2002-12-05. The current registrant is conTeyor International nv, and CIPO records a 2013-11-22 owner-name change from CONTEYOR MULTIBAG SYSTEMS N.V. to conTeyor International nv. This establishes a Canada-specific, historically available IP/market signal for the exact foreign investor long before conTeyor Canada Ltd. was incorporated in 2020 and the March 2021 Investment Canada notification. It does not establish local Canadian manufacturing, sales, staffing or first operations, and no relationship to Xcel Fabrication is asserted. Keep the outcome UNRESOLVED and model-ineligible.",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1022072",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "1999-07-13",
+          "source_date_basis": "CIPO filing date; registration followed on 2002-12-05 and the ownership record shows a 2013-11-22 name change",
+          "event_date": "1999-07-13",
+          "event_date_precision": "DAY",
+          "claim": "CIPO application 1022072 records FITBOX for reusable transport/automotive packaging goods; the current registrant is conTeyor International nv and CIPO records a 2013-11-22 owner-name change from CONTEYOR MULTIBAG SYSTEMS N.V.",
+          "supports": "CANADA_IP_MARKET_SIGNAL_LONG_BEFORE_LOCAL_INCORPORATION"
+        }
+      ]
+    },
+    {
+      "id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "investor_name": "Max Neusser",
+      "canadian_business_name": "HANECS Canada Inc.",
+      "canadian_business_activity": "Engaged in software development, training and consulting.",
+      "ultimate_control_country": "Germany",
+      "corporation_number": "12689481",
+      "registry_status": "Active",
+      "notification_month": "2021-02",
+      "incorporation_date": "2021-01-28",
+      "days_before_notification_month": 4,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "HANECS' official locations page states that its Ottawa, Canada location has existed since 2021. The company site and legal imprint also identify Max Neusser as a CEO/managing director of HANECS GmbH, corroborating his role in the foreign HANECS group. These current pages carry historical year assertions but do not provide the Ottawa opening day, identify the Canadian location explicitly as HANECS Canada Inc., or establish the legal investor-to-Canadian-vehicle relationship. Because the Investment Canada outcome has only February 2021 month precision, the year-level location evidence cannot order establishment relative to the notification or establish the first Canadian software, consulting or training service date. Keep first_canadian_operations_date unset, the named-investor relationship open, and the case model-ineligible.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://www.hanecs.de/en/standorte/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current HANECS locations page with historical year assertion",
+          "event_date": "2021",
+          "event_date_precision": "YEAR",
+          "claim": "HANECS states that its Ottawa, Canada location has existed since 2021.",
+          "supports": "CANADIAN_LOCATION_ESTABLISHMENT_DURING_2021"
+        },
+        {
+          "source_url": "https://www.hanecs.de/en/impressum/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current HANECS legal imprint; historical effective date not displayed",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "HANECS GmbH's official legal imprint identifies Max Neusser as a managing director, corroborating his role in the foreign HANECS group but not the Canadian vehicle's ownership chain.",
+          "supports": "FOREIGN_GROUP_ROLE_CONTEXT_ONLY"
+        }
+      ]
+    },
+    {
+      "id": "71a370f22b9a0671aff101c4b2320f59603d291556696724290c961a5e144c99",
+      "investor_name": "Dynamic Breeders United Inc.",
+      "canadian_business_name": "Dynamic Breeders United Inc.",
+      "canadian_business_activity": "Operates a cannabis nursery.",
+      "ultimate_control_country": "Spain",
+      "corporation_number": "11577662",
+      "registry_status": "Dissolved",
+      "notification_month": "2020-07",
+      "incorporation_date": "2019-08-19",
+      "days_before_notification_month": 317,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "The 317-day interval and inactive baseline require an operating-history check; neither proves delayed filing or failed expansion.",
+      "evidence_count": 0,
+      "evidence": []
+    },
+    {
+      "id": "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+      "investor_name": "FRAMEWORK COMPUTER CONSULTANTS LTD",
+      "canadian_business_name": "DIGITARY CANADA INC.",
+      "canadian_business_activity": "Provides universities with a credential issuing platform along with verifying applying students' credentials.",
+      "ultimate_control_country": "Ireland",
+      "corporation_number": "12015056",
+      "registry_status": "Active",
+      "notification_month": "2020-06",
+      "incorporation_date": "2020-04-21",
+      "days_before_notification_month": 41,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "ARUCC/MyCreds' official 2020-06-15 announcement states that Digitary was selected through a competitive international RFP as solution provider for Canada's national digital credential network during the same month as the Investment Canada notification. The University of Waterloo's 2020-07-03 announcement independently identifies Digitary as the solution provider and says work to build the Network would begin in July 2020. ARUCC's current partnerships page explicitly names Digitary Canada Inc. as the MyCreds partner. Together these sources corroborate a Canadian national project relationship around the notification period, but the June award names Digitary at group level, the current Canadian-entity page is not contemporaneously dated, and the Investment Canada outcome has only month precision. They therefore do not establish whether the award preceded the notification within June or the exact first Canadian service/operation date of Digitary Canada Inc. Keep the case UNRESOLVED and model-ineligible.",
+      "evidence_count": 3,
+      "evidence": [
+        {
+          "source_url": "https://mydigitalcreds.ca/2020/06/15/arucc-partners-with-digitary-to-build-the-canadian-national-network-called-mycreds/",
+          "source_type": "OFFICIAL_PROJECT_OWNER_ANNOUNCEMENT",
+          "source_date": "2020-06-15",
+          "source_date_basis": "MyCreds/ARUCC publication date",
+          "event_date": "2020-06-15",
+          "event_date_precision": "DAY",
+          "claim": "ARUCC announced that Digitary had been selected after a competitive international RFP as solution provider for the Made-for-Canada National Network/MyCreds.",
+          "supports": "CANADIAN_NATIONAL_PROJECT_AWARD_DURING_NOTIFICATION_MONTH"
+        },
+        {
+          "source_url": "https://uwaterloo.ca/daily-bulletin/2020-07-03",
+          "source_type": "OFFICIAL_UNIVERSITY_ANNOUNCEMENT",
+          "source_date": "2020-07-03",
+          "source_date_basis": "University of Waterloo publication date",
+          "event_date": "2020-07",
+          "event_date_precision": "MONTH",
+          "claim": "The University of Waterloo identified Digitary as the Network solution provider and stated that work to build the Canadian National Network would begin in July 2020.",
+          "supports": "CANADIAN_PROJECT_IMPLEMENTATION_START_MONTH"
+        },
+        {
+          "source_url": "https://arucc.ca/en/about/partnerships",
+          "source_type": "OFFICIAL_ASSOCIATION_SITE",
+          "source_date": null,
+          "source_date_basis": "Current ARUCC partnerships page; historical effective date for the legal-entity naming is not displayed",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "ARUCC's current partnerships page explicitly names Digitary Canada Inc. as the partner supporting MyCreds, the Canadian national credential wallet.",
+          "supports": "CURRENT_CANADIAN_ENTITY_PROJECT_RELATIONSHIP"
+        }
+      ]
+    },
+    {
+      "id": "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "investor_name": "LINET spol. s.r.o.",
+      "canadian_business_name": "Linet Canada Inc.",
+      "canadian_business_activity": "Provides solutions designed for intensive care, products for regular in-bed treatment and also special beds for old people's homes and long-term care facilities.",
+      "ultimate_control_country": "Czechia",
+      "corporation_number": "11263161",
+      "registry_status": "Active",
+      "notification_month": "2019-10",
+      "incorporation_date": "2019-02-21",
+      "days_before_notification_month": 222,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Official group news dated 2019-10-21 corroborates founding on 2019-02-21 and describes future customer support and partner coordination. Publication falls in the notification month; first operations and earlier public availability remain unestablished.",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "source_url": "https://www.wi-bo.com/de/Linet/news/news-and-press-releases/2019/New-Subsidiary-in-Canada-will-Share-Clinical-Experience",
+          "source_type": "OFFICIAL_COMPANY_NEWS",
+          "source_date": "2019-10-21",
+          "source_date_basis": "Displayed publication date",
+          "event_date": "2019-02-21",
+          "event_date_precision": "DAY",
+          "claim": "Corroborates Canadian subsidiary founding on 2019-02-21; describes forthcoming support and distribution coordination.",
+          "supports": "LEGAL_ESTABLISHMENT_NOT_FIRST_OPERATIONS"
+        }
+      ]
+    },
+    {
+      "id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "investor_name": "Antea Canada Inc.",
+      "canadian_business_name": "Antea Canada Inc.",
+      "canadian_business_activity": "Provides software development services.",
+      "ultimate_control_country": "Italy",
+      "corporation_number": "11309552",
+      "registry_status": "Active",
+      "notification_month": "2019-08",
+      "incorporation_date": "2019-03-20",
+      "days_before_notification_month": 134,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Antea's official corporate history places its North American expansion with new offices in Canada and the United States in 2020. Its current Canada branch page identifies the Brossard office at 7900 Taschereau Blvd, Building B, Office B-203—the same location carried by the federal corporation—and describes the Canadian branch as Antea Americas HQ for sales, asset-integrity-management software development and local support. This corroborates Canadian office establishment during 2020, after the August 2019 Investment Canada notification, but the year-level history does not establish the exact opening date, first Canadian customer/service date, or the Italian parent/control chain. Keep first_canadian_operations_date unset and the case model-ineligible.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://antea.tech/our-story/",
+          "source_type": "OFFICIAL_COMPANY_HISTORY",
+          "source_date": null,
+          "source_date_basis": "Current Antea corporate-history page; timeline assigns the expansion event to 2020 but does not display the page's original publication date",
+          "event_date": "2020",
+          "event_date_precision": "YEAR",
+          "claim": "Antea's corporate history states that in 2020 it expanded to North America with new offices in Canada and the United States.",
+          "supports": "CANADIAN_OFFICE_ESTABLISHMENT_DURING_2020"
+        },
+        {
+          "source_url": "https://antea.tech/canada-branch-office-antea/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current branch page; historical publication date not established",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Antea's Canada branch page identifies 7900 Taschereau Blvd, Building B, Office B-203, Brossard as its Canada/Americas HQ and describes local sales, software development and support functions.",
+          "supports": "CURRENT_CANADIAN_OPERATING_FOOTPRINT"
+        }
+      ]
+    },
+    {
+      "id": "a8afb1e8f8de482c06f8cfb1e473816c2a5a745ca1319029932fbe1fb0cc4186",
+      "investor_name": "Relieve Consulting Services Canada Inc.",
+      "canadian_business_name": "Relieve Consulting Services Canada Inc.",
+      "canadian_business_activity": "Carries out activities relating to surveying, engineering and related services in civil and industrial works.",
+      "ultimate_control_country": "Spain",
+      "corporation_number": "11351362",
+      "registry_status": "Dissolved",
+      "notification_month": "2019-07",
+      "incorporation_date": "2019-04-10",
+      "days_before_notification_month": 82,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Workforce WindsorEssex's September 2022 Job Demand Report records four active Windsor job-posting roles under the exact company name: Bridge Engineering Manager, Bridge Technical Lead, Bridge Construction Party Chief and Engineering Manager. This corroborates Canadian engineering recruitment/project activity by September 2022, but it is more than three years after the July 2019 notification and does not establish the first Canadian operating date. The 2025 dissolution likewise does not establish a historical negative. Keep the outcome UNRESOLVED and model-ineligible.",
+      "evidence_count": 1,
+      "evidence": [
+        {
+          "source_url": "https://www.workforcewindsoressex.com/wp-content/uploads/2017/12/22-09-WFWE-Job-Demand-Report.pdf",
+          "source_type": "WORKFORCE_DEVELOPMENT_REPORT",
+          "source_date": "2022-09",
+          "source_date_basis": "Report month; exact publication day not established",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Workforce WindsorEssex records four active City of Windsor job postings under Relieve Consulting Services Canada Inc.: Bridge Engineering Manager, Bridge Technical Lead, Bridge Construction Party Chief and Engineering Manager. The report states that its job-posting data are collected from job boards and employer websites and that the Employment Ontario service is funded in part by the governments of Canada and Ontario.",
+          "supports": "CANADIAN_RECRUITMENT_ACTIVITY_BY_2022_09"
+        }
+      ]
+    },
+    {
+      "id": "d3270a81c191224283631421d65a55587192a729a20dc5f887bb2035ab209388",
+      "investor_name": "Futy Ntango Ngongo Filipe Mingas",
+      "canadian_business_name": "MIM Technology Group Inc.",
+      "canadian_business_activity": "Provides technological design, research and development services.",
+      "ultimate_control_country": "Germany",
+      "corporation_number": "11400916",
+      "registry_status": "Active",
+      "notification_month": "2019-05",
+      "incorporation_date": "2019-05-09",
+      "days_before_notification_month": -8,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Named investor identity remains open; distinguish the investor from MIM Technology Group and establish first operational activity. Same-month registry timing does not establish event order.",
+      "evidence_count": 0,
+      "evidence": []
+    },
+    {
+      "id": "2218a7793aceb72a2314dd7de226f67b25c9cdd12a7d1d5908ee28018c3a44a9",
+      "investor_name": "TVM Life Science Ventures VIII SCSp",
+      "canadian_business_name": "Acanthas Pharma Inc.",
+      "canadian_business_activity": "Develops and markets pharmaceutical products.",
+      "ultimate_control_country": "Luxembourg",
+      "corporation_number": "11228170",
+      "registry_status": "Inactive - Discontinued",
+      "notification_month": "2019-04",
+      "incorporation_date": "2019-01-31",
+      "days_before_notification_month": 60,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "The named investor TVM Life Science Ventures VIII SCSp is confirmed by its 2019 SEC Form D. Cross-name fund evidence is now supported at the economic-commitment level: Bukwang's 2019 Q2 materials call its LP participation TVM Life Science Innovation II, while Bukwang's later filed annual report labels the asset Innovation II but states that the LP investment contract was entered into with TVM Life Science Ventures VIII. A January 2020 SEC filing identifies Innovation II SCSp with its own Innovation II GP, so no legal SAME_LEGAL_ENTITY_AS or formal rename is asserted without Luxembourg name-history evidence. TVM assigns Acanthas to Innovation II. Keep Acanthas separate from Ocellaris and keep the outcome UNRESOLVED/model-ineligible until first operational activity, event-time availability and target eligibility are established.",
+      "evidence_count": 5,
+      "evidence": [
+        {
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1767198/000176719819000001/xslFormDX01/primary_doc.xml",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2019-02-08",
+          "source_date_basis": "SEC Form D filing date; before both 2019 Investment Canada notification months",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Form D identifies TVM Life Science Ventures VIII SCSp as a Luxembourg limited partnership formed in 2018, CIK 0001767198, with TVM Life Science Ventures VIII (GP) S.a.r.l. as its general partner.",
+          "supports": "NAMED_INVESTOR_IDENTITY_ONLY"
+        },
+        {
+          "source_url": "https://tvm-capital.com/strategy-approach/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current TVM Capital Life Science page; no historical publication date displayed",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "TVM's official strategy page lists Acanthas Pharma, Inc. under TVM LSI II and describes it as a single-asset oncology development company later acquired by Eli Lilly.",
+          "supports": "FUND_TO_PORTFOLIO_RELATIONSHIP_REQUIRES_RESOLUTION"
+        },
+        {
+          "source_url": "https://www.bukwang.co.kr/board/download_pdf.php?bo_table=ir&board=Y&file_name=b_file_1692755732i1pm737gka.pdf&o_file_name=2019%EB%85%84+2%EB%B6%84%EA%B8%B0.pdf",
+          "source_type": "OFFICIAL_INVESTOR_MATERIAL",
+          "source_date": null,
+          "source_date_basis": "Bukwang 2019 Q2 investor-relations deck covering 2019-04-01 through 2019-06-30; exact publication date not established",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Bukwang states that it participates as a limited partner in TVM Life Science Innovation II during the same 2019 period in which Investment Canada names TVM Life Science Ventures VIII SCSp.",
+          "supports": "CROSS_NAME_FUND_COMMITMENT_SUPPORTED"
+        },
+        {
+          "source_url": "https://www.bukwang.co.kr/board/download_pdf.php?bo_table=announce&board=Y&file_name=b_file_16902485857eppsv9z7c.pdf&o_file_name=%5B%EB%B6%80%EA%B4%91%EC%95%BD%ED%92%88%5D%EC%82%AC%EC%97%85%EB%B3%B4%EA%B3%A0%EC%84%9C%282023.03.20%29.pdf",
+          "source_type": "OFFICIAL_COMPANY_FILING",
+          "source_date": "2023-03-20",
+          "source_date_basis": "Date shown in Bukwang's filed annual report filename/document",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Bukwang's investment table names the holding TVM Life Science Innovation II, while the corresponding footnote says Bukwang entered its limited-partner investment contract in the TVM Capital-managed TVM Life Science Ventures VIII.",
+          "supports": "CROSS_NAME_FUND_COMMITMENT_SUPPORTED"
+        },
+        {
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1757097/000119312520007168/d869674dsc13d.htm",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2020-01-14",
+          "source_date_basis": "SEC Schedule 13D signature date",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "The SEC filing identifies TVM Life Science Innovation II SCSp as a Luxembourg special limited partnership and TVM Life Science Innovation II (GP) S.a r.l. as its general partner.",
+          "supports": "LEGAL_ENTITY_EQUIVALENCE_UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "id": "e122ed0fde4c6afba88baf455e7321f1de2d35f2e5380659dc873b6c124465aa",
+      "investor_name": "TVM Life Science Ventures VIII SCSp",
+      "canadian_business_name": "Ocellaris Pharma Inc.",
+      "canadian_business_activity": "Develop and market pharmaceutical products.",
+      "ultimate_control_country": "Luxembourg",
+      "corporation_number": "11223836",
+      "registry_status": "Active",
+      "notification_month": "2019-03",
+      "incorporation_date": "2019-01-29",
+      "days_before_notification_month": 31,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "The named investor TVM Life Science Ventures VIII SCSp is confirmed by its 2019 SEC Form D. Cross-name fund evidence is now supported at the economic-commitment level: Bukwang's 2019 Q2 materials call its LP participation TVM Life Science Innovation II, while Bukwang's later filed annual report labels the asset Innovation II but states that the LP investment contract was entered into with TVM Life Science Ventures VIII. A January 2020 SEC filing identifies Innovation II SCSp with its own Innovation II GP, so no legal SAME_LEGAL_ENTITY_AS or formal rename is asserted without Luxembourg name-history evidence. TVM states Ocellaris is fully financed by Innovation II. Keep the outcome UNRESOLVED and model-ineligible until first operational activity, event-time availability and target eligibility are established.",
+      "evidence_count": 5,
+      "evidence": [
+        {
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1767198/000176719819000001/xslFormDX01/primary_doc.xml",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2019-02-08",
+          "source_date_basis": "SEC Form D filing date; before both 2019 Investment Canada notification months",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Form D identifies TVM Life Science Ventures VIII SCSp as a Luxembourg limited partnership formed in 2018, CIK 0001767198, with TVM Life Science Ventures VIII (GP) S.a.r.l. as its general partner.",
+          "supports": "NAMED_INVESTOR_IDENTITY_ONLY"
+        },
+        {
+          "source_url": "https://tvm-capital.com/portfolio/ocellaris-pharma/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current TVM Capital Life Science page; no historical publication date displayed",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "TVM's official Ocellaris portfolio page describes Ocellaris as a Montréal special-purpose company created to develop one compound to proof-of-concept and says the project is fully financed by TVM Life Science Innovation II SCSp.",
+          "supports": "FUND_TO_PORTFOLIO_RELATIONSHIP_REQUIRES_RESOLUTION"
+        },
+        {
+          "source_url": "https://www.bukwang.co.kr/board/download_pdf.php?bo_table=ir&board=Y&file_name=b_file_1692755732i1pm737gka.pdf&o_file_name=2019%EB%85%84+2%EB%B6%84%EA%B8%B0.pdf",
+          "source_type": "OFFICIAL_INVESTOR_MATERIAL",
+          "source_date": null,
+          "source_date_basis": "Bukwang 2019 Q2 investor-relations deck covering 2019-04-01 through 2019-06-30; exact publication date not established",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Bukwang states that it participates as a limited partner in TVM Life Science Innovation II during the same 2019 period in which Investment Canada names TVM Life Science Ventures VIII SCSp.",
+          "supports": "CROSS_NAME_FUND_COMMITMENT_SUPPORTED"
+        },
+        {
+          "source_url": "https://www.bukwang.co.kr/board/download_pdf.php?bo_table=announce&board=Y&file_name=b_file_16902485857eppsv9z7c.pdf&o_file_name=%5B%EB%B6%80%EA%B4%91%EC%95%BD%ED%92%88%5D%EC%82%AC%EC%97%85%EB%B3%B4%EA%B3%A0%EC%84%9C%282023.03.20%29.pdf",
+          "source_type": "OFFICIAL_COMPANY_FILING",
+          "source_date": "2023-03-20",
+          "source_date_basis": "Date shown in Bukwang's filed annual report filename/document",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "Bukwang's investment table names the holding TVM Life Science Innovation II, while the corresponding footnote says Bukwang entered its limited-partner investment contract in the TVM Capital-managed TVM Life Science Ventures VIII.",
+          "supports": "CROSS_NAME_FUND_COMMITMENT_SUPPORTED"
+        },
+        {
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1757097/000119312520007168/d869674dsc13d.htm",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2020-01-14",
+          "source_date_basis": "SEC Schedule 13D signature date",
+          "event_date": null,
+          "event_date_precision": null,
+          "claim": "The SEC filing identifies TVM Life Science Innovation II SCSp as a Luxembourg special limited partnership and TVM Life Science Innovation II (GP) S.a r.l. as its general partner.",
+          "supports": "LEGAL_ENTITY_EQUIVALENCE_UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "id": "ee71ab378d4d1f4fc2262c83b4884fb18288761608082df563b14db3ef503df2",
+      "investor_name": "Backbase B.V.",
+      "canadian_business_name": "Backbase Canada Inc.",
+      "canadian_business_activity": "Develops software in relation to digital banking platforms.",
+      "ultimate_control_country": "Netherlands",
+      "corporation_number": "11075896",
+      "registry_status": "Active",
+      "notification_month": "2019-01",
+      "incorporation_date": "2018-11-01",
+      "days_before_notification_month": 61,
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
+      "first_canadian_operations_date": null,
+      "model_eligible": false,
+      "audit_note": "Backbase's official Toronto location page states that its Canadian head office has been scaling since 2018. Central 1's official 2018-10-29 Forge launch states that the Canadian digital-banking platform was built using Backbase technology. These sources establish Backbase Canadian office/commercial presence before the January 2019 Investment Canada notification. They do not establish the exact first Canadian office-opening, customer-contract or operating date, so first_canadian_operations_date remains unset.",
+      "evidence_count": 2,
+      "evidence": [
+        {
+          "source_url": "https://www.backbase.com/careers/locations/toronto",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current Backbase Toronto location page with a historical year assertion",
+          "event_date": "2018",
+          "event_date_precision": "YEAR",
+          "claim": "Backbase states that its Canadian head office has been scaling since 2018.",
+          "supports": "EXISTING_CANADIAN_OFFICE_BY_2018"
+        },
+        {
+          "source_url": "https://central1.com/in_the_news/central-1-transforms-the-digital-banking-experience-with-the-launch-of-forge/",
+          "source_type": "OFFICIAL_CLIENT_ANNOUNCEMENT",
+          "source_date": "2018-10-29",
+          "source_date_basis": "Publication date shown by Central 1",
+          "event_date": "2018-10-29",
+          "event_date_precision": "DAY",
+          "claim": "Central 1 launched the Canada-focused Forge digital banking platform built using Backbase technology.",
+          "supports": "CANADIAN_COMMERCIAL_DEPLOYMENT_BEFORE_NOTIFICATION"
+        }
+      ]
+    }
+  ]
+}

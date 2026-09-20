@@ -128,6 +128,28 @@ python -m atlanticbridge summarize-outcome-publication-gate \
   --strict-model-eligibility
 ```
 
+## Evidence Console UI
+
+The first UI is a read-only evidence console over the audited historical-case files. It deliberately does **not** calculate or display an Expansion Score while model eligibility remains zero.
+
+Build the deterministic UI payload and serve the static app locally:
+
+```bash
+python scripts/build_ui_payload.py
+python -m http.server 8000 -d ui
+```
+
+Then open `http://localhost:8000`.
+
+The console currently provides:
+
+- audit summary metrics;
+- historical-case search and filters;
+- registry timing diagnostics;
+- source-type coverage;
+- case-level evidence drill-through;
+- explicit model-eligibility and first-operation boundaries.
+
 ## Implemented
 
 - SQLite evidence/provenance store
@@ -149,6 +171,7 @@ python -m atlanticbridge summarize-outcome-publication-gate \
 - GLEIF direct/ultimate accounting-parent relationship or reporting-exception evidence
 - Persistent curated identity-review queue with primary-source evidence and audited decisions
 - Explicit publication-cutoff gate that fails closed before historical model eligibility
+- Read-only evidence console UI generated deterministically from audited case/identity files
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
