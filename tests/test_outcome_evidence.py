@@ -268,5 +268,84 @@ class OutcomeEvidencePublicationGateTests(unittest.TestCase):
         )
 
 
+    def test_real_audit_batch05_reviews_every_remaining_row_and_backfills_only_proven_clocks(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
+        )
+        review = json.loads(
+            (root / "reviews/outcome_audit/2026-09-20-publication-review-05.json").read_text()
+        )
+        self.assertEqual(review["summary"]["reviewed_rows"], 28)
+        self.assertEqual(review["summary"]["newly_verified_rows"], 6)
+        self.assertEqual(review["summary"]["remains_unverified_rows"], 22)
+
+        by_key = {
+            (case["canadian_business_name"], evidence["source_type"]): evidence
+            for case in payload["cases"]
+            for evidence in case["additional_evidence"]
+        }
+        expected = {
+            ("Ocellaris Pharma Inc.", "OFFICIAL_COMPANY_FILING"): "2023-03-28",
+            ("Acanthas Pharma Inc.", "OFFICIAL_COMPANY_FILING"): "2023-03-28",
+            ("Trillium Supply Chain Inc.", "JUDICIAL_DECISION_TEXT_REPRODUCTION"): "2024-03-28",
+            ("Britishvolt Canada Inc.", "INSOLVENCY_ADMINISTRATOR_REPORT"): "2023-03-22",
+            ("Tiandingfeng Canada Nonwovens Co., Ltd.", "OFFICIAL_MUNICIPAL_RECORD"): "2025-03-31",
+            ("Bolton BG Canada Inc.", "OFFICIAL_GOVERNMENT_EVENT_PAGE"): "2020-03-20",
+        }
+        for key, available_date in expected.items():
+            evidence = by_key[key]
+            self.assertEqual(evidence["publicly_available_date"], available_date)
+            self.assertEqual(evidence["publicly_available_date_precision"], "DAY")
+            self.assertTrue(evidence["publicly_available_date_basis"])
+
+        # Source dates/effective dates that still lack a defensible public clock
+        # remain fail-closed rather than being copied into publication fields.
+        remains_unverified = [
+            row for row in review["rows"]
+            if row["review_disposition"] == "REMAINS_UNVERIFIED"
+        ]
+        for row in remains_unverified:
+            case = next(
+                case for case in payload["cases"]
+                if case["outcome_record_id"] == row["outcome_record_id"]
+            )
+            evidence = next(
+                evidence for evidence in case["additional_evidence"]
+                if evidence["source_url"] == row["source_url"]
+                and evidence["source_type"] == row["source_type"]
+            )
+            self.assertNotIn("publicly_available_date", evidence)
+            self.assertEqual(
+                evidence_publication_status(evidence, case["notification_month"]),
+                "UNVERIFIED",
+            )
+
+    def test_batch05_bolton_cutoff_is_pre_notification_but_post_event_rows_stay_after(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
+        )
+        by_business = {
+            case["canadian_business_name"]: case for case in payload["cases"]
+        }
+        bolton = next(
+            evidence for evidence in by_business["Bolton BG Canada Inc."]["additional_evidence"]
+            if evidence["source_type"] == "OFFICIAL_GOVERNMENT_EVENT_PAGE"
+        )
+        self.assertEqual(
+            evidence_publication_status(bolton, "2025-10"),
+            "VERIFIED_BEFORE_NOTIFICATION_MONTH",
+        )
+        britishvolt = next(
+            evidence for evidence in by_business["Britishvolt Canada Inc."]["additional_evidence"]
+            if evidence["source_type"] == "INSOLVENCY_ADMINISTRATOR_REPORT"
+        )
+        self.assertEqual(
+            evidence_publication_status(britishvolt, "2021-06"),
+            "VERIFIED_AFTER_NOTIFICATION_MONTH",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

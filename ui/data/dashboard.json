@@ -53,12 +53,12 @@
       "WORKFORCE_DEVELOPMENT_REPORT": 1
     },
     "publication_status_counts": {
-      "UNVERIFIED": 28,
-      "VERIFIED_AFTER_NOTIFICATION_MONTH": 5,
-      "VERIFIED_BEFORE_NOTIFICATION_MONTH": 16,
+      "UNVERIFIED": 22,
+      "VERIFIED_AFTER_NOTIFICATION_MONTH": 10,
+      "VERIFIED_BEFORE_NOTIFICATION_MONTH": 17,
       "VERIFIED_DURING_NOTIFICATION_MONTH": 2
     },
-    "cases_with_verified_pre_notification_evidence": 12
+    "cases_with_verified_pre_notification_evidence": 13
   },
   "cases": [
     {
@@ -87,11 +87,11 @@
           "event_date_precision": "YEAR",
           "claim": "Describes Toronto subsidiary establishment in 2017 and Canadian retail distribution.",
           "supports": "EXISTING_CANADIAN_PRESENCE",
-          "publicly_available_date": null,
-          "publicly_available_date_precision": null,
-          "publicly_available_date_basis": null,
-          "publicly_available_date_source_url": null,
-          "publication_status": "UNVERIFIED"
+          "publicly_available_date": "2020-03-20",
+          "publicly_available_date_precision": "DAY",
+          "publicly_available_date_basis": "The Italian Cultural Institute Toronto public event invitation required RSVP by 2020-03-20 for the 2020-03-26 event; the page therefore had to be public no later than the RSVP deadline.",
+          "publicly_available_date_source_url": "https://iictoronto.esteri.it/en/gli_eventi/calendario/bocconi-alumni-toronto-andrea-pugliese-2/",
+          "publication_status": "VERIFIED_BEFORE_NOTIFICATION_MONTH"
         },
         {
           "source_url": "https://www.bolton.com/sites/default/files/2024-07/Bolton-Group-Sustainability-Report-2020-1.pdf",
@@ -109,7 +109,7 @@
           "publication_status": "UNVERIFIED"
         }
       ],
-      "verified_pre_notification_evidence_count": 0
+      "verified_pre_notification_evidence_count": 1
     },
     {
       "id": "e4ae3d3f67808ad18113d8df938b5f33e5333d3550a60a12cd9485e3cfee7c15",
@@ -221,11 +221,11 @@
           "event_date_precision": "DAY",
           "claim": "Sorel-Tracy resolution 2025-03-197 ratifies a purchase promise signed 2025-02-26 between Tiandingfeng Canada Nonwovens Co., Ltd. and the City for specified industrial land parcels.",
           "supports": "POST_NOTIFICATION_FACTORY_SITE_PROJECT",
-          "publicly_available_date": null,
-          "publicly_available_date_precision": null,
-          "publicly_available_date_basis": null,
-          "publicly_available_date_source_url": null,
-          "publication_status": "UNVERIFIED"
+          "publicly_available_date": "2025-03-31",
+          "publicly_available_date_precision": "DAY",
+          "publicly_available_date_basis": "Sorel-Tracy's official public council minutes record resolution 2025-03-197 at the 2025-03-31 council meeting; this meeting date is used as a conservative latest-by public cutoff.",
+          "publicly_available_date_source_url": "https://www.ville.sorel-tracy.qc.ca/storage/app/media/ville/vos-elus/seances-du-conseil/proces_verbaux/proces_verbaux_2025/Mars_2025/2025-03-31_pv_extra.pdf",
+          "publication_status": "VERIFIED_AFTER_NOTIFICATION_MONTH"
         }
       ],
       "verified_pre_notification_evidence_count": 0
@@ -725,11 +725,11 @@
           "event_date_precision": null,
           "claim": "EY's Joint Administrators reported that the Group's Canadian company employed one member of staff, had been set up to explore the potential for developing a battery manufacturing facility in Canada, and was in early-stage development.",
           "supports": "PROJECT_DEVELOPMENT_PRESENCE_NOT_MANUFACTURING_ENTRY",
-          "publicly_available_date": null,
-          "publicly_available_date_precision": null,
-          "publicly_available_date_basis": null,
-          "publicly_available_date_source_url": null,
-          "publication_status": "UNVERIFIED"
+          "publicly_available_date": "2023-03-22",
+          "publicly_available_date_precision": "DAY",
+          "publicly_available_date_basis": "UK Companies House filing history records the Statement of administrator's proposal (AM03) as filed on 2023-03-22; the retained EY proposals are the administrator proposals delivered 2023-03-13.",
+          "publicly_available_date_source_url": "https://find-and-update.company-information.service.gov.uk/company/12381543/filing-history",
+          "publication_status": "VERIFIED_AFTER_NOTIFICATION_MONTH"
         },
         {
           "source_url": "https://lobbycanada.gc.ca/app/secure/ocl/lrs/do/rgstrnCmmnctnRprts?regId=915221",
@@ -805,11 +805,11 @@
           "event_date_precision": "MONTH",
           "claim": "2024 ONSC 1853 recites the plaintiff's pleaded history that LCBO relocated its distribution centre to Caledon in January 2021, contracted Trillium to manage it, and that issues arose after Trillium began managing the centre.",
           "supports": "RETROSPECTIVE_PLEADED_OPERATIONAL_HISTORY_JAN_2021",
-          "publicly_available_date": null,
-          "publicly_available_date_precision": null,
-          "publicly_available_date_basis": null,
-          "publicly_available_date_source_url": null,
-          "publication_status": "UNVERIFIED"
+          "publicly_available_date": "2024-03-28",
+          "publicly_available_date_precision": "DAY",
+          "publicly_available_date_basis": "2024 ONSC 1853 is dated 2024-03-28; the retained reproduction identifies the CanLII decision and reproduces the court-file date.",
+          "publicly_available_date_source_url": "https://www.minicounsel.ca/scj/2024/1853",
+          "publication_status": "VERIFIED_AFTER_NOTIFICATION_MONTH"
         }
       ],
       "verified_pre_notification_evidence_count": 2
@@ -1193,11 +1193,11 @@
           "event_date_precision": null,
           "claim": "Bukwang's investment table names the holding TVM Life Science Innovation II, while the corresponding footnote says Bukwang entered its limited-partner investment contract in the TVM Capital-managed TVM Life Science Ventures VIII.",
           "supports": "CROSS_NAME_FUND_COMMITMENT_SUPPORTED",
-          "publicly_available_date": null,
-          "publicly_available_date_precision": null,
-          "publicly_available_date_basis": null,
-          "publicly_available_date_source_url": null,
-          "publication_status": "UNVERIFIED"
+          "publicly_available_date": "2023-03-28",
+          "publicly_available_date_precision": "DAY",
+          "publicly_available_date_basis": "Bukwang's annual report first page is addressed to the Korean Financial Services Commission and Korea Exchange and dated 2023-03-28; the PDF is a DART electronic-disclosure document.",
+          "publicly_available_date_source_url": "https://www.bukwang.co.kr/board/download_pdf.php?bo_table=announce&board=Y&file_name=b_file_16902485857eppsv9z7c.pdf&o_file_name=%5B%EB%B6%80%EA%B4%91%EC%95%BD%ED%92%88%5D%EC%82%AC%EC%97%85%EB%B3%B4%EA%B3%A0%EC%84%9C%282023.03.20%29.pdf",
+          "publication_status": "VERIFIED_AFTER_NOTIFICATION_MONTH"
         },
         {
           "source_url": "https://www.sec.gov/Archives/edgar/data/1757097/000119312520007168/d869674dsc13d.htm",
@@ -1288,11 +1288,11 @@
           "event_date_precision": null,
           "claim": "Bukwang's investment table names the holding TVM Life Science Innovation II, while the corresponding footnote says Bukwang entered its limited-partner investment contract in the TVM Capital-managed TVM Life Science Ventures VIII.",
           "supports": "CROSS_NAME_FUND_COMMITMENT_SUPPORTED",
-          "publicly_available_date": null,
-          "publicly_available_date_precision": null,
-          "publicly_available_date_basis": null,
-          "publicly_available_date_source_url": null,
-          "publication_status": "UNVERIFIED"
+          "publicly_available_date": "2023-03-28",
+          "publicly_available_date_precision": "DAY",
+          "publicly_available_date_basis": "Bukwang's annual report first page is addressed to the Korean Financial Services Commission and Korea Exchange and dated 2023-03-28; the PDF is a DART electronic-disclosure document.",
+          "publicly_available_date_source_url": "https://www.bukwang.co.kr/board/download_pdf.php?bo_table=announce&board=Y&file_name=b_file_16902485857eppsv9z7c.pdf&o_file_name=%5B%EB%B6%80%EA%B4%91%EC%95%BD%ED%92%88%5D%EC%82%AC%EC%97%85%EB%B3%B4%EA%B3%A0%EC%84%9C%282023.03.20%29.pdf",
+          "publication_status": "VERIFIED_AFTER_NOTIFICATION_MONTH"
         },
         {
           "source_url": "https://www.sec.gov/Archives/edgar/data/1757097/000119312520007168/d869674dsc13d.htm",

@@ -135,3 +135,29 @@ After Batch 04:
 - 28 `UNVERIFIED`
 - 12 cases with at least one verified pre-notification evidence row
 - 0 model-eligible cases
+
+### Batch 05 — residual source-family review
+
+Batch 05 reviews every one of the **28** rows that remained `UNVERIFIED` after Batch 04. The full row-level disposition is documented in [OUTCOME_PUBLICATION_BACKFILL_05_REVIEW.md](OUTCOME_PUBLICATION_BACKFILL_05_REVIEW.md) and `reviews/outcome_audit/2026-09-20-publication-review-05.json`.
+
+Six rows receive new defensible historical public cutoffs:
+
+- two Bukwang DART annual-report rows: 2023-03-28;
+- Trillium judicial decision: 2024-03-28;
+- Britishvolt administrator proposal filing: 2023-03-22;
+- Sorel-Tracy municipal resolution: 2025-03-31;
+- Bolton government event invitation: conservative latest-by cutoff 2020-03-20.
+
+The remaining **22 rows stay `UNVERIFIED`**. In particular, current pages, reporting periods, legal-event dates, approval dates and registry effective dates are not promoted merely because they are dated.
+
+After Batch 05:
+
+- 17 `VERIFIED_BEFORE_NOTIFICATION_MONTH`
+- 2 `VERIFIED_DURING_NOTIFICATION_MONTH`
+- 10 `VERIFIED_AFTER_NOTIFICATION_MONTH`
+- 22 `UNVERIFIED`
+- 13 cases with at least one verified pre-notification evidence row
+- 0 model-eligible cases
+
+This completes the explicit publication-semantics review of the current 51-row audit corpus without relaxing the fail-closed rule.
+
