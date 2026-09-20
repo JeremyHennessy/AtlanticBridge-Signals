@@ -5,7 +5,10 @@ import hashlib
 import json
 from pathlib import Path
 
-from atlanticbridge.risk_set_controls import build_risk_set_controls
+from atlanticbridge.risk_set_controls import (
+    build_control_identity_review_queue,
+    build_risk_set_controls,
+)
 from atlanticbridge.sources.investment_canada import (
     SOURCE_NAME,
     crawl_investment_canada_history,
@@ -76,6 +79,14 @@ def main() -> int:
         "--output",
         default="reviews/control_cohorts/2026-09-20-risk-set-controls.json",
     )
+    parser.add_argument(
+        "--manifest-output",
+        default="reviews/control_cohorts/2026-09-20-risk-set-controls.manifest.json",
+    )
+    parser.add_argument(
+        "--identity-review-output",
+        default="reviews/control_cohorts/2026-09-20-risk-set-control-identity-review.json",
+    )
     parser.add_argument("--horizon-months", type=int, default=24)
     parser.add_argument("--max-controls", type=int, default=5)
     parser.add_argument("--workers", type=int, default=4)
@@ -90,10 +101,40 @@ def main() -> int:
     )
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+    output_text = json.dumps(
+        payload, ensure_ascii=False, indent=2, sort_keys=True
+    ) + "\n"
+    output.write_text(output_text, encoding="utf-8")
+
+    review_queue = build_control_identity_review_queue(payload)
+    review_output = Path(args.identity_review_output)
+    review_output.parent.mkdir(parents=True, exist_ok=True)
+    review_output.write_text(
+        json.dumps(review_queue, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+
+    manifest = {
+        "schema_version": 1,
+        "design": payload["design"],
+        "horizon_months": payload["horizon_months"],
+        "max_controls_per_candidate": payload["max_controls_per_candidate"],
+        "payload_canonical_sha256": hashlib.sha256(
+            _canonical_json(payload).encode("utf-8")
+        ).hexdigest(),
+        "identity_review_queue_canonical_sha256": hashlib.sha256(
+            _canonical_json(review_queue).encode("utf-8")
+        ).hexdigest(),
+        "summary": payload["summary"],
+        "source_proof": payload["source_proof"],
+    }
+    manifest_output = Path(args.manifest_output)
+    manifest_output.parent.mkdir(parents=True, exist_ok=True)
+    manifest_output.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
     print(json.dumps(payload["summary"], indent=2, sort_keys=True))
     print(json.dumps(payload["source_proof"], indent=2, sort_keys=True))
     return 0
