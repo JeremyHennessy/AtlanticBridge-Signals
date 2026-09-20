@@ -975,12 +975,12 @@
       "federal_event_date": "2015-09-23",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 2473,
-      "outcome_classification": "PRIOR_PRESENCE_REPORTED",
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The registry event predates notification by 2,473 days. A contemporaneous 2015-11-08 trade report describes a planned Toronto office and earlier remote Canadian service. Prior commercial presence is reported; exact office opening, first operations and the 2022 notification reason remain unresolved.",
+      "audit_note": "The registry incorporation predates the July 2022 notification by 2,473 days. Invest Toronto's official 2015 annual report states that it assisted TOPdesk with establishment of its first Canadian location in Toronto in 2015. This is primary municipal evidence of Canadian presence years before the notification. The source has year precision only and does not establish an exact first-operating date or the economic purpose of the 2022 notification.",
       "additional_evidence": [
         {
           "source_url": "https://www.itworldcanada.com/article/customer-service-software-firm-topdesk-stakes-canadian-turf/378282",
@@ -989,6 +989,17 @@
           "source_date_basis": "Displayed publication date",
           "claim": "Reports a planned two-person Toronto office after earlier remote service to Canadian customers.",
           "supports": "REPORTED_PRIOR_COMMERCIAL_PRESENCE; PRIMARY_OPERATING_DATE_STILL_REQUIRED"
+        },
+        {
+          "source_url": "https://www.toronto.ca/legdocs/mmis/2016/ex/bgrd/backgroundfile-93038.pdf",
+          "source_type": "OFFICIAL_MUNICIPAL_ANNUAL_REPORT",
+          "source_date": "2016-05-09",
+          "source_date_basis": "The 2015 Invest Toronto Annual Report was submitted as Attachment 1 to the City Manager report dated 2016-05-09; the TOPdesk milestone in the report is explicitly dated to 2015",
+          "page": 20,
+          "claim": "Invest Toronto states that Global Affairs Canada introduced TOPdesk and that Invest Toronto assisted with establishment of TOPdesk's first Canadian location in Toronto in 2015.",
+          "event_date": "2015",
+          "event_date_precision": "YEAR",
+          "supports": "EXISTING_CANADIAN_PRESENCE"
         }
       ]
     },
