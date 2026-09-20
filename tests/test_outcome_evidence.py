@@ -163,5 +163,59 @@ class OutcomeEvidencePublicationGateTests(unittest.TestCase):
         )
 
 
+    def test_real_audit_batch02_uses_cipo_advertised_dates_not_filing_dates(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
+        )
+        summary = summarize_outcome_publication_gate(payload)
+        self.assertEqual(
+            summary["publication_status_counts"],
+            {
+                "UNVERIFIED": 29,
+                "VERIFIED_AFTER_NOTIFICATION_MONTH": 5,
+                "VERIFIED_BEFORE_NOTIFICATION_MONTH": 14,
+                "VERIFIED_DURING_NOTIFICATION_MONTH": 2,
+            },
+        )
+        self.assertEqual(
+            summary["cases_with_verified_pre_notification_evidence"], 11
+        )
+
+        by_url = {
+            evidence["source_url"]: evidence
+            for case in payload["cases"]
+            for evidence in case["additional_evidence"]
+            if evidence["source_url"].startswith(
+                "https://ised-isde.canada.ca/cipo/trademark-search/"
+            )
+        }
+        expected = {
+            "https://ised-isde.canada.ca/cipo/trademark-search/1022072": "2002-03-13",
+            "https://ised-isde.canada.ca/cipo/trademark-search/1799092": "2018-12-12",
+            "https://ised-isde.canada.ca/cipo/trademark-search/2233219": "2024-05-22",
+            "https://ised-isde.canada.ca/cipo/trademark-search/2198269": "2024-03-27",
+            "https://ised-isde.canada.ca/cipo/trademark-search/1912733": "2021-05-05",
+        }
+        self.assertEqual(set(by_url), set(expected))
+        for url, advertised in expected.items():
+            self.assertEqual(by_url[url]["publicly_available_date"], advertised)
+            self.assertEqual(
+                by_url[url]["publicly_available_date_precision"], "DAY"
+            )
+            self.assertIn("Advertised", by_url[url]["publicly_available_date_basis"])
+
+        tiandingfeng = by_url[
+            "https://ised-isde.canada.ca/cipo/trademark-search/2198269"
+        ]
+        self.assertEqual(
+            tiandingfeng["source_date"], "2022-07-14"
+        )
+        self.assertEqual(
+            evidence_publication_status(tiandingfeng, "2023-10"),
+            "VERIFIED_AFTER_NOTIFICATION_MONTH",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
