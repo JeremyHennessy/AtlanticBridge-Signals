@@ -149,7 +149,7 @@ python -m atlanticbridge apply-curated-identity-review \
 
 ## Next source sequence
 
-1. Audit notification outcomes against actual Canadian presence and resolve flagged identity-evidence gaps
+1. Complete the remaining Bolton parent-link evidence review and continue the 27-case operational-history audit
 2. Obtain authorized provincial registry access for unresolved non-federal entry entities
 3. Historical CIPO bulk backfill once secure bulk transport is available
 4. Build matched non-entrant controls and event-time backtests on confirmed identities before any score weights
