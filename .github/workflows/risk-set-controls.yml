@@ -35,6 +35,8 @@ jobs:
           mkdir -p control-output
           python scripts/build_risk_set_controls.py \
             --output control-output/2026-09-20-risk-set-controls.json \
+            --manifest-output control-output/2026-09-20-risk-set-controls.manifest.json \
+            --identity-review-output control-output/2026-09-20-risk-set-control-identity-review.json \
             --workers 4
 
       - name: Validate generated payload
@@ -56,12 +58,34 @@ jobs:
               == generated["summary"]["risk_set_candidate_assignments"]
           )
 
-          pinned = Path("reviews/control_cohorts/2026-09-20-risk-set-controls.json")
-          if pinned.exists():
-              expected = json.loads(pinned.read_text())
-              if generated != expected:
+          pinned_manifest = Path(
+              "reviews/control_cohorts/2026-09-20-risk-set-controls.manifest.json"
+          )
+          pinned_review = Path(
+              "reviews/control_cohorts/2026-09-20-risk-set-control-identity-review.json"
+          )
+          if pinned_manifest.exists() or pinned_review.exists():
+              if not (pinned_manifest.exists() and pinned_review.exists()):
+                  raise SystemExit("Pinned control manifest/review queue must exist together")
+              expected_manifest = json.loads(pinned_manifest.read_text())
+              generated_manifest = json.loads(
+                  Path(
+                      "control-output/2026-09-20-risk-set-controls.manifest.json"
+                  ).read_text()
+              )
+              expected_review = json.loads(pinned_review.read_text())
+              generated_review = json.loads(
+                  Path(
+                      "control-output/2026-09-20-risk-set-control-identity-review.json"
+                  ).read_text()
+              )
+              if generated_manifest != expected_manifest:
                   raise SystemExit(
-                      "Pinned risk-set controls differ from the current complete-history build"
+                      "Pinned risk-set manifest differs from the complete-history build"
+                  )
+              if generated_review != expected_review:
+                  raise SystemExit(
+                      "Pinned control identity-review queue differs from the build"
                   )
           PY
 
