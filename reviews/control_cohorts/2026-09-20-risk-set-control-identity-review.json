@@ -1,0 +1,261 @@
+{
+  "backtest_control_eligible": 0,
+  "identity_gate_rule": "Confirm the named investor as a foreign legal entity using explicit identity evidence; Canadian vehicles, natural persons, ambiguous entities and unsupported names remain ineligible.",
+  "purpose": "Primary/GLEIF legal-entity review queue for raw future-entrant risk-set candidates. Rows are not backtest controls until explicitly qualified.",
+  "record_count": 21,
+  "records": [
+    {
+      "assigned_candidate_outcome_ids": [
+        "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:241151",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Prague",
+      "investor_name": "Senzomatic, s.r.o.",
+      "investor_node_id": "241151",
+      "ultimate_control_country": "Czechia"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:211511",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Prague",
+      "investor_name": "Stormont Automatization Canada Inc.",
+      "investor_node_id": "211511",
+      "ultimate_control_country": "Czechia"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:242990",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Fredericia",
+      "investor_name": "Global Wind Service A/S",
+      "investor_node_id": "242990",
+      "ultimate_control_country": "Denmark"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:213348",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Toronto,",
+      "investor_name": "Audi Red Inc.",
+      "investor_node_id": "213348",
+      "ultimate_control_country": "Germany"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:233727",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Berlin",
+      "investor_name": "Cosmo Consult Inc.",
+      "investor_node_id": "233727",
+      "ultimate_control_country": "Germany"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:213961",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Mont Royal,",
+      "investor_name": "Dirk Riehle",
+      "investor_node_id": "213961",
+      "ultimate_control_country": "Germany"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:232003",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Diedorf",
+      "investor_name": "MountainByte IT Canada Inc.",
+      "investor_node_id": "232003",
+      "ultimate_control_country": "Germany"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:232043",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Boeblingen",
+      "investor_name": "Piterion Canada Inc.",
+      "investor_node_id": "232043",
+      "ultimate_control_country": "Germany"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:213282",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Vancouver,",
+      "investor_name": "Azorra Aviation Canada ULC",
+      "investor_node_id": "213282",
+      "ultimate_control_country": "Ireland"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:232051",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Belfast",
+      "investor_name": "Data Intellect Services (Canada) Ltd.",
+      "investor_node_id": "232051",
+      "ultimate_control_country": "Ireland"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:213890",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Petawawa,",
+      "investor_name": "Emeka Ikwukeme",
+      "investor_node_id": "213890",
+      "ultimate_control_country": "Ireland"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:230665",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Dublin",
+      "investor_name": "Gary O'Keeffe",
+      "investor_node_id": "230665",
+      "ultimate_control_country": "Ireland"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:213172",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Nelson,",
+      "investor_name": "Jake Stenson",
+      "investor_node_id": "213172",
+      "ultimate_control_country": "Ireland"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:212932",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Gravina in Puglia",
+      "investor_name": "Andriani S.P.A.",
+      "investor_node_id": "212932",
+      "ultimate_control_country": "Italy"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:213642",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Sheung Wan",
+      "investor_name": "Doku Asia Limited",
+      "investor_node_id": "213642",
+      "ultimate_control_country": "Italy"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:212990",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Milano,",
+      "investor_name": "Gilardoni S.p.A.",
+      "investor_node_id": "212990",
+      "ultimate_control_country": "Italy"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:212045",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Torino",
+      "investor_name": "SD2 Engineering Services S.T.P. A R.L",
+      "investor_node_id": "212045",
+      "ultimate_control_country": "Italy"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:212309",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Pisa",
+      "investor_name": "Utopia Gaming Inc.",
+      "investor_node_id": "212309",
+      "ultimate_control_country": "Italy"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:238375",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Jelenia Gora",
+      "investor_name": "Robert Michalak",
+      "investor_node_id": "238375",
+      "ultimate_control_country": "Poland"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:243924",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "San Francisco,",
+      "investor_name": "Nothing Technology Inc.",
+      "investor_node_id": "243924",
+      "ultimate_control_country": "Sweden"
+    },
+    {
+      "assigned_candidate_outcome_ids": [
+        "97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9"
+      ],
+      "backtest_control_eligible": false,
+      "control_entity_key": "node:243371",
+      "identity_qualification_status": "UNREVIEWED",
+      "investor_locality": "Oshawa",
+      "investor_name": "NUTRONIC NUCLEAR INC.",
+      "investor_node_id": "243371",
+      "ultimate_control_country": "Sweden"
+    }
+  ],
+  "schema_version": 1
+}

@@ -37,8 +37,8 @@ These are notification labels, not yet validated first-entry labels. A company m
 2. Isolate EU-27 investors and classify new-business vs acquisition outcomes.
 3. Resolve investors to durable company identities.
 4. For each positive company, reconstruct signals available 3, 6, 12 and 24 months before the outcome month.
-5. Construct comparable EU control companies that did not enter Canada in the same observation window.
-6. Measure signal prevalence and lead time.
+5. Construct time-indexed future-entrant risk sets from the same Investment Canada outcome source, then require a separate foreign legal-entity identity gate before any row becomes a comparable-company control.
+6. Measure signal prevalence and lead time only from source evidence whose historical publication clock is proven.
 7. Only then define Expansion Score 1.0.
 
 ## Candidate pre-entry signals
@@ -73,6 +73,10 @@ For every candidate signal:
 The current 27-case outcome audit is partitioned separately from the canonical source classifications so prior-presence cases are not mixed with plausible new-entry cases. See [OUTCOME_COHORTS.md](OUTCOME_COHORTS.md).
 
 The current partition contains seven `TRUE_NEW_ENTRY_CANDIDATE` rows suitable for censored matching research, but **zero** confirmed training-positive labels.
+
+Control Cohort 001 now defines a 24-month future-entrant risk set from the same complete Investment Canada history. The accepted live build covers all seven candidates and yields 21 unique raw risk-set entities. All 21 remain `UNREVIEWED`, `backtest_control_eligible = false`, and `negative_label_eligible = false` pending explicit foreign legal-entity identity review. See [RISK_SET_CONTROLS.md](RISK_SET_CONTROLS.md).
+
+This is deliberately not yet a conventional matched-control cohort. Investment Canada's country of ultimate control does not prove the named investor is itself a foreign company; the first live queue includes natural persons and Canadian vehicles. Those rows are preserved for review rather than silently discarded or relabelled.
 
 ## Score separation
 
