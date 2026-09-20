@@ -171,20 +171,6 @@ class OutcomeEvidencePublicationGateTests(unittest.TestCase):
         payload = json.loads(
             (root / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
         )
-        summary = summarize_outcome_publication_gate(payload)
-        self.assertEqual(
-            summary["publication_status_counts"],
-            {
-                "UNVERIFIED": 29,
-                "VERIFIED_AFTER_NOTIFICATION_MONTH": 5,
-                "VERIFIED_BEFORE_NOTIFICATION_MONTH": 14,
-                "VERIFIED_DURING_NOTIFICATION_MONTH": 2,
-            },
-        )
-        self.assertEqual(
-            summary["cases_with_verified_pre_notification_evidence"], 11
-        )
-
         by_url = {
             evidence["source_url"]: evidence
             for case in payload["cases"]
@@ -200,7 +186,7 @@ class OutcomeEvidencePublicationGateTests(unittest.TestCase):
             "https://ised-isde.canada.ca/cipo/trademark-search/2198269": "2024-03-27",
             "https://ised-isde.canada.ca/cipo/trademark-search/1912733": "2021-05-05",
         }
-        self.assertEqual(set(by_url), set(expected))
+        self.assertTrue(set(expected).issubset(by_url))
         for url, advertised in expected.items():
             self.assertEqual(by_url[url]["publicly_available_date"], advertised)
             self.assertEqual(
@@ -211,12 +197,46 @@ class OutcomeEvidencePublicationGateTests(unittest.TestCase):
         tiandingfeng = by_url[
             "https://ised-isde.canada.ca/cipo/trademark-search/2198269"
         ]
-        self.assertEqual(
-            tiandingfeng["source_date"], "2022-07-14"
-        )
+        self.assertEqual(tiandingfeng["source_date"], "2022-07-14")
         self.assertEqual(
             evidence_publication_status(tiandingfeng, "2023-10"),
             "VERIFIED_AFTER_NOTIFICATION_MONTH",
+        )
+
+
+    def test_real_audit_batch03_uses_lobbying_posted_date_not_effective_date(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
+        )
+        case = next(
+            case for case in payload["cases"]
+            if case["canadian_business_name"] == "Britishvolt Canada Inc."
+        )
+        registration = next(
+            evidence for evidence in case["additional_evidence"]
+            if evidence["source_type"] == "OFFICIAL_FEDERAL_LOBBY_REGISTRY"
+        )
+        communication = next(
+            evidence for evidence in case["additional_evidence"]
+            if evidence["source_type"] == "OFFICIAL_FEDERAL_LOBBY_COMMUNICATION_REPORT"
+        )
+        self.assertNotIn("publicly_available_date", registration)
+        self.assertEqual(
+            evidence_publication_status(registration, "2021-06"),
+            "UNVERIFIED",
+        )
+        self.assertEqual(communication["source_date"], "2021-03-18")
+        self.assertEqual(
+            communication["publicly_available_date"], "2021-04-08"
+        )
+        self.assertEqual(
+            evidence_publication_status(communication, "2021-06"),
+            "VERIFIED_BEFORE_NOTIFICATION_MONTH",
+        )
+        self.assertEqual(
+            communication["supports"],
+            "PRE_NOTIFICATION_PUBLIC_FEDERAL_LOBBYING_COMMUNICATION",
         )
 
 

@@ -103,3 +103,19 @@ After Batch 02:
 - 29 `UNVERIFIED`
 - 11 cases with at least one verified pre-notification evidence row
 - 0 model-eligible cases
+
+
+### Batch 03 — Federal lobbying posted dates
+
+Federal Registry of Lobbyists publication semantics are documented in [OUTCOME_PUBLICATION_BACKFILL_03_LOBBYING.md](OUTCOME_PUBLICATION_BACKFILL_03_LOBBYING.md).
+
+The registration's effective/start date is **not** treated as a publication date. For Britishvolt, Batch 03 adds a separate monthly communication report whose Registry record explicitly gives a **Posted date of 2021-04-08**, before the June 2021 notification.
+
+After Batch 03:
+
+- 15 `VERIFIED_BEFORE_NOTIFICATION_MONTH`
+- 2 `VERIFIED_DURING_NOTIFICATION_MONTH`
+- 5 `VERIFIED_AFTER_NOTIFICATION_MONTH`
+- 29 `UNVERIFIED`
+- 12 cases with at least one verified pre-notification evidence row
+- 0 model-eligible cases
