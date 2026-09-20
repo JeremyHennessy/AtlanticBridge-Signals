@@ -1271,8 +1271,39 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Named investor identity remains open. Establish the relationship to Sanllo Canada and a dated operational start before classifying company expansion.",
-      "additional_evidence": []
+      "audit_note": "Spain's official mercantile bulletin records that, effective 2022-06-07, Sanllo Export S.L.'s sole shareholder was Sanllo World Group S.L.; Roberto Sancristobal Llobell ceased as sole administrator when Sanllo World Group became sole administrator, with Roberto designated as its natural-person representative. DRC then listed both Sanllo Canada Inc. and Sanllo Export, S.L., each d/b/a Sanllo, as new members during the 2022-10-15 to 2022-11-15 window. CIPO records a SANLLO Canadian trademark filing by Sanllo Export on 2022-11-24 for fresh fruits and vegetables. This corroborates a linked Spain/Canada produce-market compliance and brand footprint around the notification period, but does not establish direct ownership of Sanllo Canada, the exact first Canadian sale/import/operation date, or whether DRC admission preceded the October notification. Keep the named-investor relationship and operating outcome unresolved and model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.boe.es/borme/dias/2022/06/14/pdfs/BORME-A-2022-112-46.pdf",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2022-06-14",
+          "source_date_basis": "Spanish Boletín Oficial del Registro Mercantil publication date; registry acts shown as 2022-06-07",
+          "event_date": "2022-06-07",
+          "event_date_precision": "DAY",
+          "claim": "BORME records Sanllo World Group S.L. as sole shareholder of Sanllo Export S.L.; Sanllo World Group becomes sole administrator and Roberto Sancristobal Llobell is designated as the natural-person representative of that administrator.",
+          "supports": "FOREIGN_SIDE_SANLLO_MANAGEMENT_CHAIN_PREENTRY"
+        },
+        {
+          "source_url": "https://fvdrc.com/solutions/membership-updates-for-november-15-2022/",
+          "source_type": "INDUSTRY_MEMBERSHIP_RECORD",
+          "source_date": "2022-11-29",
+          "source_date_basis": "DRC publication date; article states the new-member window ran from 2022-10-15 through 2022-11-15",
+          "event_date": "2022-11-15",
+          "event_date_precision": "WINDOW_END",
+          "claim": "DRC lists Sanllo Canada Inc. (Ontario) and Sanllo Export, S.L. (Valencia, Spain), both d/b/a Sanllo, among new members added from October 15 through November 15, 2022. DRC states that in Canada membership is a regulatory requirement to trade fresh fruits and vegetables unless excepted.",
+          "supports": "CANADIAN_PRODUCE_TRADE_MEMBERSHIP_BY_2022_11_15"
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/2233219",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2022-11-24",
+          "source_date_basis": "CIPO filing and international-registration date",
+          "event_date": "2022-11-24",
+          "event_date_precision": "DAY",
+          "claim": "CIPO application 2233219 records SANLLO filed by Sanllo Export, S.L. for fresh fruits and vegetables and related class 31 goods.",
+          "supports": "CANADA_MARKET_TRADEMARK_ACTIVITY_BY_2022_11_24"
+        }
+      ]
     },
     {
       "outcome_record_id": "c17f25725bb1d849a85608cb20d3a52d5d0ae8b898ed34b6ecd99f6177634846",
