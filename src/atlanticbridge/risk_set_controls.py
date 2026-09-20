@@ -47,6 +47,8 @@ class RiskSetControl:
     future_business_activity: str
     activity_similarity: float
     match_tier: str
+    identity_qualification_status: str = "UNREVIEWED"
+    backtest_control_eligible: bool = False
     interpretation: str = (
         "NO_INVESTMENT_CANADA_RECORD_THROUGH_HORIZON_"
         "WITH_LATER_NEW_BUSINESS_OBSERVED"
@@ -335,14 +337,15 @@ def build_risk_set_controls(
 
     payload = {
         "schema_version": 1,
-        "design": "FUTURE_ENTRANT_RISK_SET_CONTROLS",
+        "design": "FUTURE_ENTRANT_RISK_SET_CONTROL_CANDIDATES",
         "horizon_months": horizon_months,
         "max_controls_per_candidate": max_controls,
         "corpus_end_month": corpus_end_month,
         "interpretation": (
-            "Controls are later EU new-business entrants with no Investment Canada "
-            "record of any type through the candidate's risk horizon. They are "
-            "censored risk-set controls, not verified non-entry negatives."
+            "Rows are later EU-controlled new-business investors with no Investment "
+            "Canada record of any type through the candidate's risk horizon. They are "
+            "raw censored risk-set candidates pending foreign legal-entity identity "
+            "qualification, not verified controls or non-entry negatives."
         ),
         "matching_note": (
             "Ultimate-control country is matched exactly. Future Canadian-business "
@@ -394,7 +397,16 @@ def validate_risk_set_controls(payload: dict[str, object]) -> None:
                 raise ValueError("control assignments must be unique per candidate")
             seen_controls.add(key)
             if control.get("negative_label_eligible"):
-                raise ValueError("risk-set controls cannot be negative training labels")
+                raise ValueError("risk-set candidates cannot be negative training labels")
+            if control.get("identity_qualification_status") != "UNREVIEWED":
+                raise ValueError(
+                    "Control Cohort 001 rows must remain UNREVIEWED until a separate "
+                    "legal-entity identity gate is applied"
+                )
+            if control.get("backtest_control_eligible"):
+                raise ValueError(
+                    "Unreviewed risk-set candidates cannot be backtest controls"
+                )
             if control.get("country") != candidate.get("country"):
                 raise ValueError("risk-set controls must match ultimate-control country")
             if _month_index(str(control["earliest_investment_canada_month"])) <= _month_index(expected_end):
@@ -439,8 +451,8 @@ def summarize_risk_set_controls(payload: dict[str, object]) -> dict[str, object]
         "candidates_with_complete_followup": complete,
         "candidates_with_controls": with_controls,
         "candidates_with_full_control_count": full_matches,
-        "control_assignments": len(assignments),
-        "distinct_control_entities": len(
+        "risk_set_candidate_assignments": len(assignments),
+        "distinct_risk_set_entities": len(
             {str(item["control_entity_key"]) for item in assignments if isinstance(item, dict)}
         ),
         "country_activity_matches": sum(
@@ -449,6 +461,15 @@ def summarize_risk_set_controls(payload: dict[str, object]) -> dict[str, object]
         ),
         "country_only_fallbacks": sum(
             isinstance(item, dict) and item.get("match_tier") == "COUNTRY_ONLY_FALLBACK"
+            for item in assignments
+        ),
+        "identity_unreviewed_assignments": sum(
+            isinstance(item, dict)
+            and item.get("identity_qualification_status") == "UNREVIEWED"
+            for item in assignments
+        ),
+        "backtest_control_eligible_assignments": sum(
+            isinstance(item, dict) and bool(item.get("backtest_control_eligible"))
             for item in assignments
         ),
         "negative_labels_created": 0,
