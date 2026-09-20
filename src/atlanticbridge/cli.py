@@ -27,6 +27,10 @@ from .curated_identity import (
     seed_curated_identity_queue,
 )
 from .entry_identity import entry_identity_summary, run_entry_identity_resolution
+from .outcome_evidence import (
+    enforce_model_eligibility_publication_gate,
+    load_and_summarize as load_and_summarize_outcome_publication_gate,
+)
 from .sources.cordis import (
     HORIZON_ARCHIVE_URL,
     SOURCE_BUCKET as CORDIS_SOURCE_BUCKET,
@@ -282,6 +286,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="Emit unresolved/confirmed curated identity review coverage",
     )
     curated_summary_parser.add_argument("--db", required=True)
+
+    publication_gate = subparsers.add_parser(
+        "summarize-outcome-publication-gate",
+        help=(
+            "Summarize explicit historical public-availability cutoffs for "
+            "audited outcome evidence"
+        ),
+    )
+    publication_gate.add_argument(
+        "--file",
+        default="reviews/outcome_audit/2026-09-20-cases.json",
+    )
+    publication_gate.add_argument(
+        "--strict-model-eligibility",
+        action="store_true",
+        help=(
+            "Fail when any model-eligible case lacks explicit evidence "
+            "available before its notification month"
+        ),
+    )
 
     return parser
 
@@ -773,5 +797,16 @@ def main(argv: list[str] | None = None) -> int:
         conn = connect(args.db)
         print(json.dumps(curated_identity_summary(conn), indent=2, sort_keys=True))
         return 0
+
+    if args.command == "summarize-outcome-publication-gate":
+        try:
+            summary = load_and_summarize_outcome_publication_gate(args.file)
+            if args.strict_model_eligibility:
+                enforce_model_eligibility_publication_gate(summary)
+            print(json.dumps(summary, indent=2, sort_keys=True))
+            return 0
+        except Exception as exc:
+            print(f"Outcome publication gate failed: {exc}", file=sys.stderr)
+            return 1
 
     return 2

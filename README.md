@@ -121,6 +121,11 @@ python -m atlanticbridge summarize-curated-identity \
 python -m atlanticbridge apply-curated-identity-review \
   --db data/atlanticbridge.sqlite \
   --file review.json
+
+# Audit historical public-availability cutoffs before model eligibility
+python -m atlanticbridge summarize-outcome-publication-gate \
+  --file reviews/outcome_audit/2026-09-20-cases.json \
+  --strict-model-eligibility
 ```
 
 ## Implemented
@@ -143,6 +148,7 @@ python -m atlanticbridge apply-curated-identity-review \
 - Named-investor legal-entity resolution requiring exact legal name + source locality, with Canadian and foreign entities separated
 - GLEIF direct/ultimate accounting-parent relationship or reporting-exception evidence
 - Persistent curated identity-review queue with primary-source evidence and audited decisions
+- Explicit publication-cutoff gate that fails closed before historical model eligibility
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
 - unit tests and live source checks
@@ -156,4 +162,4 @@ python -m atlanticbridge apply-curated-identity-review \
 
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).
 
-The outcome audit and confirmation-gate changes are documented in [docs/OUTCOME_TIMING_AUDIT.md](docs/OUTCOME_TIMING_AUDIT.md).
+The outcome audit and confirmation-gate changes are documented in [docs/OUTCOME_TIMING_AUDIT.md](docs/OUTCOME_TIMING_AUDIT.md). Publication-cutoff semantics are documented in [docs/OUTCOME_PUBLICATION_GATE.md](docs/OUTCOME_PUBLICATION_GATE.md).
