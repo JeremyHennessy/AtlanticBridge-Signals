@@ -93,3 +93,19 @@ entity and records the supporting evidence.
 It is not sufficient to publish model weights. Each candidate signal still
 requires its own historical publication semantics before event-time values can
 be compared.
+
+
+## Durable acceptance artifacts
+
+The live workflow retains the complete generated risk-set payload as an artifact.
+The repository pins two smaller durable files:
+
+- `2026-09-20-risk-set-controls.manifest.json`: canonical SHA-256 of the full
+  semantic payload, source snapshot-manifest hash, and accepted summary.
+- `2026-09-20-risk-set-control-identity-review.json`: deduplicated legal-entity
+  review queue for every raw risk-set entity, including Investment Canada
+  investor node, source locality, ultimate-control country and candidate
+  assignments.
+
+After those files are pinned, the workflow rebuilds the complete live history and
+requires exact manifest and review-queue reproduction.
