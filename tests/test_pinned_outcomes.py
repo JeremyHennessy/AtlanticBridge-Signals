@@ -67,6 +67,18 @@ class PinnedOutcomeTests(unittest.TestCase):
         self.assertEqual(evidence['INSOLVENCY_ADMINISTRATOR_REPORT']['source_date'], '2023-03-13')
         self.assertEqual(evidence['INSOLVENCY_ADMINISTRATOR_REPORT']['supports'], 'PROJECT_DEVELOPMENT_PRESENCE_NOT_MANUFACTURING_ENTRY')
 
+    def test_pegasi_discontinuance_is_not_treated_as_failed_entry(self):
+        case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == '27c205d64d75881dfd852aa0c3c80fa121714ec2ed394772fa95bdc9171f6cee')
+        self.assertEqual(case['outcome_classification'], 'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        discontinuance = next(a['activity'] for a in case['registry_projection']['activities'] if a['activity']['activity'] == 'Discontinuance')
+        self.assertEqual(discontinuance['date'], '2021-07-06')
+        self.assertEqual(discontinuance['jurisdictionId'], 'Ontario')
+        evidence = {e['source_type']: e for e in case['additional_evidence']}
+        self.assertEqual(evidence['OFFICIAL_FEDERAL_REGISTRY_EVENT']['supports'], 'DISCONTINUED_TO_ONTARIO_NOT_DISSOLVED')
+        self.assertEqual(evidence['OFFICIAL_COMPANY_SITE']['supports'], 'CURRENT_CANADIAN_OFFICE_FOOTPRINT_NOT_EVENT_TIME')
+
     def test_refresh_verifies_both_sources_and_fails_on_event_change(self):
         c = self.payload['cases'][0]
         record = SimpleNamespace(record_id=c['outcome_record_id'], is_new_business=True,

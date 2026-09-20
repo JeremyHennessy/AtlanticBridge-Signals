@@ -803,13 +803,33 @@
       "federal_event_date": "2021-06-03",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 28,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
-      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The Canadian entity is inactive in the baseline. Establish operational start and historical Finnish-parent relationship rather than inferring either from the registry date.",
-      "additional_evidence": []
+      "exclusion_reason": "Federal discontinuance to Ontario and a current Canadian office footprint are established, but the exact first Canadian operating date and event-time evidence availability are not",
+      "audit_note": "The federal status `Inactive - Discontinued` is not a dissolution: Corporations Canada records a 2021-07-06 discontinuance to Ontario. Pegasi's current official site publishes a Toronto office at 2 Bloor Street West, Suite 2120, corroborating an eventual Canadian operating footprint. The exact Pegasi Oy investor identity is already confirmed separately in the curated review (Finnish business ID 1555427-6). These facts do not establish the exact first Canadian operating date, whether operations preceded the July 2021 notification, or what evidence was publicly available before operations began.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13072681.json?lang=eng",
+          "source_type": "OFFICIAL_FEDERAL_REGISTRY_EVENT",
+          "source_date": "2021-07-06",
+          "source_date_basis": "Corporations Canada discontinuance activity date in the pinned registry projection",
+          "event_date": "2021-07-06",
+          "event_date_precision": "DAY",
+          "claim": "Corporations Canada records Pegasi IAM Canada Inc. as discontinued from the federal jurisdiction to Ontario, rather than dissolved.",
+          "supports": "DISCONTINUED_TO_ONTARIO_NOT_DISSOLVED"
+        },
+        {
+          "source_url": "https://pegasi.fi/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current company contact page; no historical publication date displayed",
+          "observed_at": "2026-09-20",
+          "claim": "Pegasi's official site lists a Canadian office at 2 Bloor Street West, Suite 2120, Toronto, Ontario.",
+          "supports": "CURRENT_CANADIAN_OFFICE_FOOTPRINT_NOT_EVENT_TIME"
+        }
+      ]
     },
     {
       "outcome_record_id": "d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
