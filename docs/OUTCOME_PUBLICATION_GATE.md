@@ -87,3 +87,19 @@ It adds explicit day-level public availability to 16 evidence rows. The resultin
 - 0 model-eligible cases
 
 CIPO filing/registration dates and undated historical company pages remain unverified pending separate source-semantics proof.
+
+
+### Batch 02 — CIPO advertised dates
+
+CIPO publication semantics are documented in [OUTCOME_PUBLICATION_BACKFILL_02_CIPO.md](OUTCOME_PUBLICATION_BACKFILL_02_CIPO.md).
+
+CIPO filing dates are **not** used as historical public-availability dates. Batch 02 uses each record's `Advertised` date from CIPO Action History, corresponding to publication in the official Trademarks Journal.
+
+After Batch 02:
+
+- 14 `VERIFIED_BEFORE_NOTIFICATION_MONTH`
+- 2 `VERIFIED_DURING_NOTIFICATION_MONTH`
+- 5 `VERIFIED_AFTER_NOTIFICATION_MONTH`
+- 29 `UNVERIFIED`
+- 11 cases with at least one verified pre-notification evidence row
+- 0 model-eligible cases
