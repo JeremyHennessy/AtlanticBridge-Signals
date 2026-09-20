@@ -1410,13 +1410,34 @@
       "federal_event_date": "2022-08-09",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 326,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The registry carries English and French names for one corporation. Resolve operational start; bilingual names do not create separate entries.",
-      "additional_evidence": []
+      "audit_note": "Nefco's official 2023-06-21 financing announcement states that SiOO received a Nopef grant in 2022 to co-finance a feasibility study into establishment in Canada and says that, after a successful establishment in Canada with Nopef's help, Nefco was financing further North American scale-up. This primary public-finance evidence establishes Canadian establishment before the July 2023 Investment Canada notification. CIPO separately records the SIOO:X Canadian trademark filed in 2016 and registered in 2019 with proposed use in Canada; that is retained as earlier Canada-specific market-intent evidence, not proof of operations. Neither source gives the exact establishment completion, first sale, first customer, staffing start or operating date. Keep first_canadian_operations_date unset and the case model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.nefco.int/news/sioo-receives-financing-from-nefco/",
+          "source_type": "OFFICIAL_PUBLIC_FINANCE_INSTITUTION",
+          "source_date": "2023-06-21",
+          "source_date_basis": "Nefco publication date",
+          "event_date": "2023-06-21",
+          "event_date_precision": "LATEST_BY",
+          "claim": "Nefco states that SiOO received a 2022 Nopef grant to co-finance a feasibility study into establishment in Canada and describes a successful establishment in Canada before its 2023 Fast-track financing for North American scale-up.",
+          "supports": "CANADIAN_ESTABLISHMENT_BY_2023_06_21"
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1799092",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2016-09-07",
+          "source_date_basis": "CIPO filing date; registration followed on 2019-07-08",
+          "event_date": "2016-09-07",
+          "event_date_precision": "DAY",
+          "claim": "CIPO application 1799092 records SIOO:X filed by SIOO WOODPROTECTION AB with proposed use in Canada for wood-protection and related goods.",
+          "supports": "CANADA_MARKET_INTENT_PREESTABLISHMENT_NOT_OPERATIONAL_PROOF"
+        }
+      ]
     },
     {
       "outcome_record_id": "5a207dc535fcf72737ecad67b62415bef3e25cd284e702ca1c3e2a2c8e73b8f6",
