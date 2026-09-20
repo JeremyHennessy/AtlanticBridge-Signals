@@ -24,14 +24,16 @@ Registry projections intentionally contain corporate names, status and activitie
 
 | Finding | Cases | Treatment |
 |---|---:|---|
-| Prior Canadian presence supported by primary or regulatory material | 4 | Bolton, TOPdesk, Bayer Environmental Science and Reebelo: exclude their notification months as assumed first-entry dates |
+| Prior Canadian presence supported by primary or regulatory material | 5 | Backbase, Bolton, TOPdesk, Bayer Environmental Science and Reebelo: exclude their notification months as assumed first-entry dates |
 | Prior commercial presence supported only by secondary material | 0 | TOPdesk is upgraded by the City of Toronto's primary annual report evidence |
 | Establishment/project-development/current footprint corroborated beyond registry | 4 | LINET founding; AIUT Canadian branch establishment; Britishvolt project development; Pegasi Ontario continuation/current Toronto footprint. Exact first operations remain unresolved |
-| Registry establishment only; operating outcome unresolved | 19 | Require dated operational and notification-purpose evidence |
+| Registry establishment only; operating outcome unresolved | 18 | Require dated operational and notification-purpose evidence |
 | Exact first Canadian operating dates established | 0 | No positive first-entry labels promoted |
 | Cases eligible for first-entry model training from this audit | 0 | Unresolved is not a negative outcome |
 
 All 27 selected federal events are incorporations. Twenty-five occurred before the notification month and two occurred within it. Among the 25 earlier events the median remains **94 days**. Same-month negative numbers in the table are arithmetic relative to day one of the month, not evidence of an event occurring after notification.
+
+**Backbase:** Backbase's official [Toronto location page](https://www.backbase.com/careers/locations/toronto) states that its Canadian head office has been scaling since 2018. Central 1's official [Forge launch announcement](https://central1.com/in_the_news/central-1-transforms-the-digital-banking-experience-with-the-launch-of-forge/) dated 2018-10-29 says the Canadian platform was built using Backbase technology. Together these establish Canadian office/commercial presence before the January 2019 Investment Canada notification. Neither source establishes the exact first Canadian office-opening, contract or operating date, so `first_canadian_operations_date` remains unset and the case remains ineligible for first-entry model training.
 
 **Bolton:** an [Italian Cultural Institute Toronto event page](https://iictoronto.esteri.it/en/gli_eventi/calendario/bocconi-alumni-toronto-andrea-pugliese-2/) for March 2020 describes establishment of a Toronto subsidiary in 2017 and Canadian retail distribution. The [2020 company report](https://www.bolton.com/sites/default/files/2024-07/Bolton-Group-Sustainability-Report-2020-1.pdf), PDF page 6, also lists Bolton BG Canada. This supports prior presence. It does not establish an exact first-operations day or explain the October 2025 notification. The 2017 reference has year precision only.
 
@@ -51,7 +53,7 @@ All 27 selected federal events are incorporations. Twenty-five occurred before t
 
 **Pegasi IAM Canada:** Corporations Canada records the federal corporation as `Inactive - Discontinued`, with a 2021-07-06 discontinuance to Ontario rather than a dissolution. Pegasi's [current official site](https://pegasi.fi/) lists a Toronto office at 2 Bloor Street West, Suite 2120. This corrects the interpretation of the inactive federal status and corroborates an eventual Canadian footprint. Because the company-site evidence is current and undated historically, it does not prove when Canadian operations began or whether operations preceded the July 2021 notification.
 
-The case review is complete as a disposition of the available evidence, not an exhaustive reconstruction of every operating history. Nineteen cases remain registry-only; other rows have stronger descriptive evidence but still lack a model-eligible first-entry date. Acquisition, reorganization, delayed notification, never-started operations and first operating entry are not assigned without supporting evidence.
+The case review is complete as a disposition of the available evidence, not an exhaustive reconstruction of every operating history. Eighteen cases remain registry-only; other rows have stronger descriptive evidence but still lack a model-eligible first-entry date. Acquisition, reorganization, delayed notification, never-started operations and first operating entry are not assigned without supporting evidence.
 
 ## Every case
 
@@ -59,7 +61,7 @@ The case review is complete as a disposition of the available evidence, not an e
 
 | Investor / Canadian business | Corporation | Notification | Incorporation | Days to month start | Audit disposition |
 |---|---|---|---|---:|---|
-| Backbase B.V. / Backbase Canada Inc. | [11075896](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11075896.json?lang=eng) | 2019-01 | 2018-11-01 | 61 | Unresolved |
+| Backbase B.V. / Backbase Canada Inc. | [11075896](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11075896.json?lang=eng) | 2019-01 | 2018-11-01 | 61 | Canadian office/commercial presence supported before notification; exact first operations unresolved |
 | TVM Life Science Ventures VIII SCSp / Ocellaris Pharma Inc. | [11223836](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11223836.json?lang=eng) | 2019-03 | 2019-01-29 | 31 | Unresolved |
 | TVM Life Science Ventures VIII SCSp / Acanthas Pharma Inc. | [11228170](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11228170.json?lang=eng) | 2019-04 | 2019-01-31 | 60 | Unresolved |
 | Futy Ntango Ngongo Filipe Mingas / MIM Technology Group Inc. | [11400916](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11400916.json?lang=eng) | 2019-05 | 2019-05-09 | -8 | Unresolved |
