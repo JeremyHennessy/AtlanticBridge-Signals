@@ -766,6 +766,55 @@ tbody tr.case-row:focus-visible {
   line-height: 1.58;
 }
 
+.evidence-publication {
+  margin-top: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.publication-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 720;
+  line-height: 1.2;
+}
+
+.publication-before {
+  color: #9fe9df;
+  background: var(--accent-soft);
+  border: 1px solid rgba(75, 183, 167, 0.22);
+}
+
+.publication-during {
+  color: #acd2fb;
+  background: var(--blue-soft);
+  border: 1px solid rgba(121, 174, 232, 0.22);
+}
+
+.publication-after,
+.publication-overlaps {
+  color: #f2c98f;
+  background: var(--warning-soft);
+  border: 1px solid rgba(243, 186, 104, 0.24);
+}
+
+.publication-unverified {
+  color: #aebed0;
+  background: rgba(151, 174, 201, 0.09);
+  border: 1px solid rgba(151, 174, 201, 0.17);
+}
+
+.publication-date {
+  color: var(--text-faint);
+  font-size: 10px;
+}
+
 .evidence-support {
   margin-top: 10px;
   color: #8fa4bc;
