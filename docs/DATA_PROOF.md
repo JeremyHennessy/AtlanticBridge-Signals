@@ -68,6 +68,12 @@ For every candidate signal:
 - identity-match confidence
 - source availability over historical time
 
+## Audited outcome cohorts
+
+The current 27-case outcome audit is partitioned separately from the canonical source classifications so prior-presence cases are not mixed with plausible new-entry cases. See [OUTCOME_COHORTS.md](OUTCOME_COHORTS.md).
+
+The current partition contains seven `TRUE_NEW_ENTRY_CANDIDATE` rows suitable for censored matching research, but **zero** confirmed training-positive labels.
+
 ## Score separation
 
 Three values remain independent:
