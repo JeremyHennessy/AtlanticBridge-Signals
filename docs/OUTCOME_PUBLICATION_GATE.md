@@ -119,3 +119,19 @@ After Batch 03:
 - 29 `UNVERIFIED`
 - 12 cases with at least one verified pre-notification evidence row
 - 0 model-eligible cases
+
+
+### Batch 04 — Toronto council archive
+
+The City of Toronto publication cutoff for the TOPdesk primary evidence is documented in [OUTCOME_PUBLICATION_BACKFILL_04_TORONTO.md](OUTCOME_PUBLICATION_BACKFILL_04_TORONTO.md).
+
+AtlanticBridge uses the **2016-06-07 City Council meeting date** as a conservative latest-by public cutoff for the linked Invest Toronto 2015 Annual Report. The report's 2016-05-09 origin date remains a separate source date.
+
+After Batch 04:
+
+- 16 `VERIFIED_BEFORE_NOTIFICATION_MONTH`
+- 2 `VERIFIED_DURING_NOTIFICATION_MONTH`
+- 5 `VERIFIED_AFTER_NOTIFICATION_MONTH`
+- 28 `UNVERIFIED`
+- 12 cases with at least one verified pre-notification evidence row
+- 0 model-eligible cases
