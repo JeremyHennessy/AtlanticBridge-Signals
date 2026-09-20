@@ -213,6 +213,6 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('CANADIAN_NATIONAL_PROJECT_AWARD_DURING_NOTIFICATION_MONTH', supports)
         self.assertIn('CANADIAN_PROJECT_IMPLEMENTATION_START_MONTH', supports)
         self.assertIn('CURRENT_CANADIAN_ENTITY_PROJECT_RELATIONSHIP', supports)
-        self.assertIn('cannot establish whether the award preceded the notification within June', case['audit_note'])
+        self.assertIn('do not establish whether the award preceded the notification within June', case['audit_note'])
         self.assertIn('exact first Canadian service/operation date', case['audit_note'])
 
