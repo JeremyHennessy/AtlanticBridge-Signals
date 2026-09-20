@@ -386,8 +386,17 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The Canadian vehicle appears in the inactive federal baseline. Establish operational start and closure chronology; inactive status observed later does not establish a historical negative.",
-      "additional_evidence": []
+      "audit_note": "Workforce WindsorEssex's September 2022 Job Demand Report records four active Windsor job-posting roles under the exact company name: Bridge Engineering Manager, Bridge Technical Lead, Bridge Construction Party Chief and Engineering Manager. This corroborates Canadian engineering recruitment/project activity by September 2022, but it is more than three years after the July 2019 notification and does not establish the first Canadian operating date. The 2025 dissolution likewise does not establish a historical negative. Keep the outcome UNRESOLVED and model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.workforcewindsoressex.com/wp-content/uploads/2017/12/22-09-WFWE-Job-Demand-Report.pdf",
+          "source_type": "WORKFORCE_DEVELOPMENT_REPORT",
+          "source_date": "2022-09",
+          "source_date_basis": "Report month; exact publication day not established",
+          "claim": "Workforce WindsorEssex records four active City of Windsor job postings under Relieve Consulting Services Canada Inc.: Bridge Engineering Manager, Bridge Technical Lead, Bridge Construction Party Chief and Engineering Manager. The report states that its job-posting data are collected from job boards and employer websites and that the Employment Ontario service is funded in part by the governments of Canada and Ontario.",
+          "supports": "CANADIAN_RECRUITMENT_ACTIVITY_BY_2022_09"
+        }
+      ]
     },
     {
       "outcome_record_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",

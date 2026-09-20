@@ -86,3 +86,19 @@ class OutcomeAuditTests(unittest.TestCase):
             self.assertIn('LEGAL_ENTITY_EQUIVALENCE_UNVERIFIED', supports)
             self.assertIn('no legal SAME_LEGAL_ENTITY_AS', case['audit_note'])
 
+    def test_relieve_recruitment_evidence_does_not_promote_outcome(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'Relieve Consulting Services Canada Inc.'
+        )
+        self.assertEqual(case['outcome_classification'], 'UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('CANADIAN_RECRUITMENT_ACTIVITY_BY_2022_09', supports)
+        self.assertIn('does not establish the first Canadian operating date', case['audit_note'])
+
