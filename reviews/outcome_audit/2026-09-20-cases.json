@@ -915,8 +915,17 @@
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The source investor spelling needs explicit alias support under the new identity gate. The 400-day interval also requires an operational-history check.",
-      "additional_evidence": []
+      "audit_note": "The Turin government filing uses both the full legal form and the abbreviated `s.t.p. a r.l.` spelling for the same firm in the same contract context, with the same address and VAT 12368010018, satisfying the curated identity alias gate. The 400-day incorporation-to-notification interval still requires an operational-history check and is not a validated predictive lead.",
+      "additional_evidence": [
+        {
+          "source_url": "https://trasparenza.cittametropolitana.torino.it/media/10392/download",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2023-02-20",
+          "source_date_basis": "Date of Città Metropolitana di Torino determination DD 777; after the 2022 notification, so identity support only",
+          "claim": "The filing identifies SD2 Engineering Services società tra professionisti a R.L., Via Pianezza 13, Torino, P.IVA 12368010018 and refers on the same page to SD2 engineering services s.t.p. a r.l. in the same contract context.",
+          "supports": "IDENTITY_ALIAS_ONLY"
+        }
+      ]
     },
     {
       "outcome_record_id": "b206b73fcd9d6ee2451a66884be6094f77bafaf2b5c469199c9f0d868ac1f7cb",
