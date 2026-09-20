@@ -1,10 +1,13 @@
 from copy import deepcopy
+import json
+from pathlib import Path
 import unittest
 
 from test_curated_identity import _conn, _insert_foreign_run, _insert_resolution
 from atlanticbridge.curated_identity import (
     apply_curated_identity_review, seed_curated_identity_queue,
     curated_identity_summary,
+    confirmation_evidence_issue,
 )
 
 
@@ -54,6 +57,35 @@ class ConfirmationGateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "queued investor"):
             apply_curated_identity_review(self.conn, self.payload)
 
+    def test_one_matching_source_does_not_hide_conflicting_cited_evidence(self):
+        for key, value in [("jurisdiction", "FR"), ("identifier_value", "999")]:
+            with self.subTest(key=key):
+                payload = deepcopy(self.payload)
+                conflicting = deepcopy(payload["evidence"][0])
+                conflicting[key] = value
+                conflicting["source_url"] += "/conflict"
+                payload["evidence"].append(conflicting)
+                with self.assertRaisesRegex(ValueError, "contradicts"):
+                    apply_curated_identity_review(self.conn, payload)
+
+    def test_committed_reviews_have_explicit_gate_dispositions(self):
+        root = Path(__file__).resolve().parents[1]
+        baseline = json.loads((root / "reviews/outcome_audit/2026-09-20-baseline-queue.json").read_text())
+        queue = {r["queue_id"]: r for r in baseline["queue"]}
+        supported, flagged = [], []
+        for filename in ("2026-09-19-primary-batch-01.json", "2026-09-19-primary-batch-02.json",
+                         "2026-09-20-primary-batch-03.json", "2026-09-20-primary-batch-04.json"):
+            path = root / "reviews/curated_identity" / filename
+            for item in json.loads(path.read_text()):
+                evidence = [{
+                    "relationship_type": "", "related_subject_type": "UNKNOWN",
+                    "related_subject_name": "", "identifier_type": "", "identifier_value": "", **e,
+                } for e in item["evidence"]]
+                issue = confirmation_evidence_issue(queue[item["queue_id"]], item["decision"], evidence)
+                (flagged if issue else supported).append(item["decision"]["resolved_subject_name"])
+        self.assertEqual(len(supported), 10)
+        self.assertEqual(set(flagged), {"Bolton Group S.r.l.", "SD2 Engineering Services società tra professionisti a R.L."})
+
     def test_explicit_primary_alias_and_punctuation_are_supported(self):
         self.payload["decision"]["resolved_subject_name"] = "Example Holding GmbH"
         self.payload["evidence"][0].update(
@@ -100,6 +132,18 @@ class ConfirmationGateTests(unittest.TestCase):
             apply_curated_identity_review(self.conn, [self.payload, second])
         self.assertEqual(curated_identity_summary(self.conn)["confirmed_reviews"], 0)
         self.assertEqual(self.conn.execute("SELECT COUNT(*) FROM curated_identity_decisions").fetchone()[0], 0)
+
+    def test_reapplying_prior_decision_uses_its_own_citations(self):
+        apply_curated_identity_review(self.conn, self.payload)
+        later = deepcopy(self.payload)
+        later["evidence"][0]["source_url"] += "/new"
+        later["decision"]["basis"] = "A later review."
+        apply_curated_identity_review(self.conn, later)
+        self.conn.execute("UPDATE curated_identity_evidence SET subject_name = 'Other GmbH' WHERE source_url LIKE '%/new'")
+        self.conn.commit()
+        result = apply_curated_identity_review(self.conn, self.payload)
+        self.assertEqual(result["summary"]["identity_evidence_supported_curated_records"], 1)
+        self.assertEqual(self.conn.execute("SELECT COUNT(*) FROM curated_identity_decisions").fetchone()[0], 2)
 
     def test_legacy_unsupported_decision_is_flagged_without_overwrite(self):
         apply_curated_identity_review(self.conn, self.payload)

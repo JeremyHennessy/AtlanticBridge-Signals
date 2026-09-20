@@ -2,6 +2,8 @@
 
 Validation date: **2026-09-19**
 
+**Interpretation correction, 2026-09-20:** This document records the original acceptance. Its historical `PRE_ENTRY` terminology measures a federal event before the Investment Canada **notification month**, not before first Canadian operations. New outputs use `BEFORE_NOTIFICATION_MONTH` and `notification_lead_days`; summaries translate the legacy status without modifying stored decisions. The 94-day median remains notification-relative. See [OUTCOME_TIMING_AUDIT.md](OUTCOME_TIMING_AUDIT.md).
+
 ## Purpose
 
 Establish a high-confidence bridge between recent EU-controlled Investment Canada new-business outcomes and the actual Canadian entry corporation, then measure whether a federal incorporation/amalgamation/continuance event was observable before the Investment Canada outcome month.
@@ -68,7 +70,7 @@ Among the 27 confirmed federal entry entities:
 
 - **25** had a federal incorporation/amalgamation/continuance event before the Investment Canada outcome month.
 - **2** had their event in the same month.
-- median pre-entry lead: **94 days**
+- median lead before notification month: **94 days**
 - p25: **46 days**
 - p75: **287 days**
 
@@ -79,7 +81,7 @@ Examples:
 - conTeyor Canada Ltd. — incorporation **2020-11-27**, outcome **2021-03**: **94 days** lead.
 - HANECS Canada Inc. — incorporation **2021-01-28**, outcome **2021-02**: **4 days** lead.
 
-The outcome source is month-granular. Same-month incorporation events are therefore not labeled as pre-entry.
+The outcome source is month-granular. Same-month incorporation events are labeled SAME_MONTH; neither category establishes first operations.
 
 ## Investor-role boundary
 
@@ -113,13 +115,14 @@ An outcome can appear in more than one province if the Investment Canada source 
 
 ## Interpretation
 
-Federal incorporation timing is now an evidence-supported candidate pre-entry signal.
+Federal incorporation timing is evidence-supported relative to notification month. Its predictive value before first Canadian operations remains unestablished.
 
 It is **not yet assigned an Expansion Likelihood weight** because:
 
-1. provincial coverage is still incomplete;
-2. a matched non-entrant control cohort has not yet been constructed; and
-3. false-positive prevalence among comparable EU firms is not yet measured.
+1. first Canadian operations and historical evidence availability remain unaudited for most cases;
+2. provincial coverage is still incomplete;
+3. a matched non-entrant control cohort has not yet been constructed; and
+4. false-positive prevalence among comparable EU firms is not yet measured.
 
 ## Next acceptance target
 

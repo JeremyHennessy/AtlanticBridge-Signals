@@ -49,7 +49,13 @@ Review states:
 - `REJECTED`
 - `RESOLVED_UPSTREAM`
 
-A `CONFIRMED` decision is rejected unless the queue has at least one primary-source evidence record. The decision must explicitly classify the resolved subject as `LEGAL_ENTITY` or `NATURAL_PERSON`. Legal entities require a resolved name and jurisdiction; natural persons require a resolved name but are not promoted into the company-level modeling cohort.
+A `CONFIRMED` decision requires explicitly cited primary evidence matching the resolved subject type, normalized full name and legal jurisdiction. A declared identifier requires a matching evidence identifier. Conflicting cited jurisdictions or values of the declared identifier type reject the decision. A non-empty decision basis is required.
+
+The cited evidence consists of the current item's `evidence` rows plus explicitly supplied `evidence_ids` already belonging to that queue item. Evidence elsewhere in the queue does not silently support a new decision. Each decision retains the actual cited IDs.
+
+For a named-investor identity, the resolved name must match the queued investor after punctuation/spacing normalization, or matching primary evidence must explicitly assert `SAME_LEGAL_ENTITY_AS` to the queued spelling. Legal suffixes, acronyms and company words are not discarded. For a parent task, matching primary evidence must explicitly link the resolved parent to the queued investor through `DIRECT_PARENT_OF`, `ULTIMATE_PARENT_OF`, `GROUP_HOLDING_PARENT_OF`, `DIRECT_ACCOUNTING_PARENT_OF` or `ULTIMATE_ACCOUNTING_PARENT_OF`. Brand membership or an unspecified group relationship is insufficient.
+
+These checks validate the consistency of reviewed assertions; a reviewer must still authenticate the publisher and read the source. A supplied source-type label is not automatic proof that a URL is authoritative.
 
 Rebuilding the queue never overwrites explicit reviewed decisions. A task that disappears from a newer foreign-identity run is marked `RESOLVED_UPSTREAM` rather than deleted.
 
@@ -92,6 +98,16 @@ A file can contain either one object or a list of review objects.
 ## Modeling boundary
 
 Curated identity confirmation is an identity/evidence gate only. It does not create an Expansion Likelihood score. Confirmed natural persons remain valid reviewed identities but do not count as modeling-ready company identities.
+
+Summary fields now distinguish:
+
+- `confirmed_reviews` / `confirmed_legal_entities`: historical reviewed decisions, preserved;
+- `identity_evidence_supported_curated_records`: legal-entity confirmations passing the current evidence gate;
+- `confirmations_requiring_evidence_review`: earlier decisions that require more explicit evidence;
+- per-row `confirmation_gate_status` and `confirmation_gate_reason`;
+- `modeling_readiness_status = NOT_EVALUATED` and deprecated compatibility field `modeling_ready_curated_records = 0` until separate outcome, event-time and scope eligibility are established.
+
+The previous summary equated a confirmed legal identity with model readiness. That interpretation is withdrawn. Historical validation documents retain their original counts as records of the old gate, not current model eligibility. Existing decisions are not rewritten by this reassessment.
 
 Matched-control and event-time modeling should use only identities that are either:
 

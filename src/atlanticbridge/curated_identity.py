@@ -154,6 +154,9 @@ _TASK_MAP = {
 
 def ensure_curated_identity_schema(conn: sqlite3.Connection) -> None:
     conn.executescript(SCHEMA)
+    columns = {row[1] for row in conn.execute("PRAGMA table_info(curated_identity_queue)")}
+    if "current_decision_id" not in columns:
+        conn.execute("ALTER TABLE curated_identity_queue ADD COLUMN current_decision_id TEXT NOT NULL DEFAULT ''")
 
 
 def _canonical_json(value: object) -> str:
@@ -545,6 +548,14 @@ def confirmation_evidence_issue(queue, decision, evidence) -> str:
     )]
     if not matching:
         return "Primary evidence must match the resolved subject type, name and jurisdiction"
+    if any(
+        normalize_legal_name(e["subject_name"]) == name
+        and (e["subject_type"] != subject_type
+             or (subject_type == "LEGAL_ENTITY"
+                 and _clean(e["jurisdiction"]).upper() != jurisdiction))
+        for e in primary
+    ):
+        return "Cited primary evidence contradicts the resolved subject type or jurisdiction"
     identifier_type = _clean(decision.get("resolved_identifier_type")).upper()
     identifier_value = _clean(decision.get("resolved_identifier_value"))
     if bool(identifier_type) != bool(identifier_value):
@@ -554,6 +565,11 @@ def confirmation_evidence_issue(queue, decision, evidence) -> str:
         and _clean(e["identifier_value"]) == identifier_value for e in matching
     ):
         return "Resolved identifier must be supported by matching primary evidence"
+    if identifier_type and any(
+        _clean(e["identifier_type"]).upper() == identifier_type
+        and _clean(e["identifier_value"]) != identifier_value for e in matching
+    ):
+        return "Cited primary evidence contradicts the resolved identifier"
     target = normalize_legal_name(queue["investor_name"])
     if queue["task_type"] == "NAMED_INVESTOR_IDENTITY":
         if name != target and not any(
@@ -698,6 +714,7 @@ def _apply_decision(
             resolved_identifier_value = ?,
             decision_basis = ?,
             decision_at = ?,
+            current_decision_id = ?,
             updated_at = ?
         WHERE queue_id = ?
         """,
@@ -710,6 +727,7 @@ def _apply_decision(
             identifier_value,
             basis,
             decided_at,
+            decision_id,
             decided_at,
             queue_id,
         ),
@@ -854,6 +872,7 @@ def curated_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
             SELECT
                 queue_id,
                 decision_at,
+                current_decision_id,
                 priority,
                 task_type,
                 review_status,
@@ -908,7 +927,15 @@ def curated_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
         if item["review_status"] == "CONFIRMED":
             decision = conn.execute(
                 "SELECT * FROM curated_identity_decisions WHERE queue_id = ? "
-                "ORDER BY rowid DESC LIMIT 1", (item["queue_id"],),
+                "AND (decision_id = ? OR (? = '' AND decision_state = 'CONFIRMED' "
+                "AND resolved_subject_type = ? AND resolved_subject_name = ? "
+                "AND resolved_jurisdiction = ? AND resolved_identifier_type = ? "
+                "AND resolved_identifier_value = ? AND decision_basis = ?)) "
+                "ORDER BY rowid DESC LIMIT 1",
+                (item["queue_id"], item["current_decision_id"], item["current_decision_id"],
+                 item["resolved_subject_type"], item["resolved_subject_name"],
+                 item["resolved_jurisdiction"], item["resolved_identifier_type"],
+                 item["resolved_identifier_value"], item["decision_basis"]),
             ).fetchone()
             ids = set(json.loads(decision["evidence_ids_json"])) if decision else set()
             evidence = [dict(row) for row in conn.execute(

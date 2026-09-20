@@ -1,0 +1,1477 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-09-20",
+  "baseline_commit": "72a7884160914287c939eb52fd2b1e0495a115e3",
+  "baseline_run_url": "https://github.com/JeremyHennessy/AtlanticBridge-Signals/actions/runs/35485089110",
+  "scope": "All 27 previously confirmed federal outcomes; targeted official-source refresh. This is not a fresh estimate of recall in the complete historical corpus.",
+  "failed_full_refresh_url": "https://github.com/JeremyHennessy/AtlanticBridge-Signals/actions/runs/35515294530",
+  "full_refresh_failure": "Investment Canada returned HTTP 503 after bounded retries; no full rebuild claimed.",
+  "case_count": 27,
+  "notification_relative_counts": {
+    "before_month": 25,
+    "same_month": 2,
+    "median_days_before_month": 94
+  },
+  "first_operation_dates_established": 0,
+  "model_eligible_count": 0,
+  "cases": [
+    {
+      "outcome_record_id": "ee71ab378d4d1f4fc2262c83b4884fb18288761608082df563b14db3ef503df2",
+      "investor_name": "Backbase B.V.",
+      "investor_node_id": "186020",
+      "ultimate_control_country": "Netherlands",
+      "canadian_business_name": "Backbase Canada Inc.",
+      "canadian_business_activity": "Develops software in relation to digital banking platforms.",
+      "corporation_number": "11075896",
+      "notification_type": "Notification - new business",
+      "notification_month": "2019-01",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/b?page=7",
+      "notification_page_sha256": "c04dfbebfc164e4bb4ed21b12155edb945adaa299e5021016e25a90ba9866bdb",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11075896.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:42.438033+00:00",
+      "registry_raw_sha256": "d383214a3f8be681528a97fd2f4473139fb2df04576953a2bb9cd8a1da0cb649",
+      "registry_projection": {
+        "corporationId": "11075896",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "BACKBASE CANADA INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2018-11-01"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2018-11-01"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2018-11-01",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 61,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Foreign named identity was confirmed separately by GLEIF in the baseline. The 2018 corporation event does not establish first Canadian banking customers or staffed operations.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "e122ed0fde4c6afba88baf455e7321f1de2d35f2e5380659dc873b6c124465aa",
+      "investor_name": "TVM Life Science Ventures VIII SCSp",
+      "investor_node_id": "186220",
+      "ultimate_control_country": "Luxembourg",
+      "canadian_business_name": "Ocellaris Pharma Inc.",
+      "canadian_business_activity": "Develop and market pharmaceutical products.",
+      "corporation_number": "11223836",
+      "notification_type": "Notification - new business",
+      "notification_month": "2019-03",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/t?page=7",
+      "notification_page_sha256": "935ff3c0cd4e8b68fbc6383c6ef2b18df70031eb3a332fe07aa38ff9edd9a530",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11223836.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:16:55.981661+00:00",
+      "registry_raw_sha256": "1abda7bee837e75ef5a65d6339231ddc0bad1e16b3f67f623a1e5a033408c215",
+      "registry_projection": {
+        "corporationId": "11223836",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Ocellaris Pharma Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2019-01-29"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2019-01-29"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2019-01-29",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 31,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The notification names a fund investing in Ocellaris Pharma. Establish the investor-to-portfolio-company relationship and whether this outcome represents the intended operating-company expansion target.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "2218a7793aceb72a2314dd7de226f67b25c9cdd12a7d1d5908ee28018c3a44a9",
+      "investor_name": "TVM Life Science Ventures VIII SCSp",
+      "investor_node_id": "186221",
+      "ultimate_control_country": "Luxembourg",
+      "canadian_business_name": "Acanthas Pharma Inc.",
+      "canadian_business_activity": "Develops and markets pharmaceutical products.",
+      "corporation_number": "11228170",
+      "notification_type": "Notification - new business",
+      "notification_month": "2019-04",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/t?page=7",
+      "notification_page_sha256": "935ff3c0cd4e8b68fbc6383c6ef2b18df70031eb3a332fe07aa38ff9edd9a530",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11228170.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:16:56.146239+00:00",
+      "registry_raw_sha256": "0eb68e0af3e696c7253917a936274b4feffa62d28826623073929707e4aa2461",
+      "registry_projection": {
+        "corporationId": "11228170",
+        "status": "Inactive - Discontinued",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Acanthas Pharma Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2019-01-31"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2019-01-31"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Amendment",
+              "date": "2020-09-29",
+              "roChanged": true,
+              "section": "6"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Discontinuance",
+              "date": "2021-02-25",
+              "jurisdictionId": "British Columbia"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2019-01-31",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 60,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "A second TVM fund notification concerns Acanthas Pharma; do not merge it with Ocellaris. Resolve portfolio relationship, operating start and target eligibility separately.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "d3270a81c191224283631421d65a55587192a729a20dc5f887bb2035ab209388",
+      "investor_name": "Futy Ntango Ngongo Filipe Mingas",
+      "investor_node_id": "186070",
+      "ultimate_control_country": "Germany",
+      "canadian_business_name": "MIM Technology Group Inc.",
+      "canadian_business_activity": "Provides technological design, research and development services.",
+      "corporation_number": "11400916",
+      "notification_type": "Notification - new business",
+      "notification_month": "2019-05",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/f?page=5",
+      "notification_page_sha256": "35aef133ea9c83c06ef8a33a77ed46316d8ad2a1761bf25ce31fbdc421c0f348",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11400916.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:16:47.524811+00:00",
+      "registry_raw_sha256": "5b0020741d566a50c7eb16a87a85f8b7c79d454f00aaef26a8cddbbc47dc2ddd",
+      "registry_projection": {
+        "corporationId": "11400916",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "MIM Technology Group Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2019-05-09"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2019-05-09"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2019-05-09",
+      "notification_timing": "SAME_MONTH",
+      "days_before_notification_month": -8,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Named investor identity remains open; distinguish the investor from MIM Technology Group and establish first operational activity. Same-month registry timing does not establish event order.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "a8afb1e8f8de482c06f8cfb1e473816c2a5a745ca1319029932fbe1fb0cc4186",
+      "investor_name": "Relieve Consulting Services Canada Inc.",
+      "investor_node_id": "186184",
+      "ultimate_control_country": "Spain",
+      "canadian_business_name": "Relieve Consulting Services Canada Inc.",
+      "canadian_business_activity": "Carries out activities relating to surveying, engineering and related services in civil and industrial works.",
+      "corporation_number": "11351362",
+      "notification_type": "Notification - new business",
+      "notification_month": "2019-07",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/r?page=5",
+      "notification_page_sha256": "1d1648ce6fce731d72e43ad128ff35d28b68e52da71902ae2620c9833c554740",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11351362.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:13.416317+00:00",
+      "registry_raw_sha256": "5711861e2befb9b9c85e1f463a60d7d1f3f4e6da30f8549dc7b442f668c5d0ba",
+      "registry_projection": {
+        "corporationId": "11351362",
+        "status": "Dissolved",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Relieve Consulting Services Canada Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2019-04-10"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2019-04-10"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Dissolution",
+              "date": "2025-03-08",
+              "section": "14"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2019-04-10",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 82,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The Canadian vehicle appears in the inactive federal baseline. Establish operational start and closure chronology; inactive status observed later does not establish a historical negative.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "investor_name": "Antea Canada Inc.",
+      "investor_node_id": "186006",
+      "ultimate_control_country": "Italy",
+      "canadian_business_name": "Antea Canada Inc.",
+      "canadian_business_activity": "Provides software development services.",
+      "corporation_number": "11309552",
+      "notification_type": "Notification - new business",
+      "notification_month": "2019-08",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/a?page=13",
+      "notification_page_sha256": "38d14969d30655fafc77eb97998b913f0d356789222ecce68f1e5e4c43890377",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11309552.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:13.424234+00:00",
+      "registry_raw_sha256": "fadabdb4426b7266af72400cc4a017d2c557d2e055d7d1871d738f645df3e7a0",
+      "registry_projection": {
+        "corporationId": "11309552",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "ANTEA CANADA INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2019-03-20"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2019-03-20"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2019-03-20",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 134,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Notification names the Canadian vehicle. Resolve the foreign parent and obtain a dated operational opening; incorporation alone is insufficient.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "investor_name": "LINET spol. s.r.o.",
+      "investor_node_id": "186123",
+      "ultimate_control_country": "Czechia",
+      "canadian_business_name": "Linet Canada Inc.",
+      "canadian_business_activity": "Provides solutions designed for intensive care, products for regular in-bed treatment and also special beds for old people's homes and long-term care facilities.",
+      "corporation_number": "11263161",
+      "notification_type": "Notification - new business",
+      "notification_month": "2019-10",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/l?page=4",
+      "notification_page_sha256": "d7a7660afeb21f79fc52e9e599528356207629f0083e071049919c8229c34892",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11263161.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:42.450886+00:00",
+      "registry_raw_sha256": "b595d4410a39d9f608391f70f0f2af94c5e888f4dfc162ea2a783ce356fd7c60",
+      "registry_projection": {
+        "corporationId": "11263161",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "LINET CANADA INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2019-02-21"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2019-02-21"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2019-02-21",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 222,
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Official group news dated 2019-10-21 corroborates founding on 2019-02-21 and describes future customer support and partner coordination. Publication falls in the notification month; first operations and earlier public availability remain unestablished.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.wi-bo.com/de/Linet/news/news-and-press-releases/2019/New-Subsidiary-in-Canada-will-Share-Clinical-Experience",
+          "source_type": "OFFICIAL_COMPANY_NEWS",
+          "source_date": "2019-10-21",
+          "source_date_basis": "Displayed publication date",
+          "claim": "Corroborates Canadian subsidiary founding on 2019-02-21; describes forthcoming support and distribution coordination.",
+          "event_date": "2019-02-21",
+          "event_date_precision": "DAY",
+          "supports": "LEGAL_ESTABLISHMENT_NOT_FIRST_OPERATIONS"
+        }
+      ]
+    },
+    {
+      "outcome_record_id": "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+      "investor_name": "FRAMEWORK COMPUTER CONSULTANTS LTD",
+      "investor_node_id": "210186",
+      "ultimate_control_country": "Ireland",
+      "canadian_business_name": "DIGITARY CANADA INC.",
+      "canadian_business_activity": "Provides universities with a credential issuing platform along with verifying applying students' credentials.",
+      "corporation_number": "12015056",
+      "notification_type": "Notification - new business",
+      "notification_month": "2020-06",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/f?page=4",
+      "notification_page_sha256": "eb00f9735ba7977c8a3726e0752b7568199ee9dc7f09dc7a8741ea62b11608bd",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12015056.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:31.831038+00:00",
+      "registry_raw_sha256": "6fed251710e6707ce632979273790be6db7ddb49a567deea3def87da091c99b0",
+      "registry_projection": {
+        "corporationId": "12015056",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "DIGITARY CANADA INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2020-04-21"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2020-04-21"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2020-04-21",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 41,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Foreign identity is evidence-supported, but first Canadian operations of Digitary and pre-existing Canadian service delivery remain unresolved.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "71a370f22b9a0671aff101c4b2320f59603d291556696724290c961a5e144c99",
+      "investor_name": "Dynamic Breeders United Inc.",
+      "investor_node_id": "210165",
+      "ultimate_control_country": "Spain",
+      "canadian_business_name": "Dynamic Breeders United Inc.",
+      "canadian_business_activity": "Operates a cannabis nursery.",
+      "corporation_number": "11577662",
+      "notification_type": "Notification - new business",
+      "notification_month": "2020-07",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/d?page=5",
+      "notification_page_sha256": "9d579a7285b520e63938bca2f96b979406f35227f9acfdf8466b64678b1df3ef",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11577662.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:04.316341+00:00",
+      "registry_raw_sha256": "f7350f31e6cae1ecabb802801a001118e4b9dea0d144c8147c841fe534fd3fa2",
+      "registry_projection": {
+        "corporationId": "11577662",
+        "status": "Dissolved",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "DYNAMIC BREEDERS UNITED INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2019-08-19"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2019-08-19"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Dissolution",
+              "date": "2021-07-31",
+              "section": "10"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2019-08-19",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 317,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The 317-day interval and inactive baseline require an operating-history check; neither proves delayed filing or failed expansion.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "investor_name": "Max Neusser",
+      "investor_node_id": "211447",
+      "ultimate_control_country": "Germany",
+      "canadian_business_name": "HANECS Canada Inc.",
+      "canadian_business_activity": "Engaged in software development, training and consulting.",
+      "corporation_number": "12689481",
+      "notification_type": "Notification - new business",
+      "notification_month": "2021-02",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/m?page=6",
+      "notification_page_sha256": "913d89c97182b56dcf139947dd105148ff588d102fbe5b4fbe1191a3658a467b",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12689481.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:16:47.374995+00:00",
+      "registry_raw_sha256": "9f4bb133d6c50ac70e77b329cb0765a932c284c38a50b7ae69cdf18bc0feeae7",
+      "registry_projection": {
+        "corporationId": "12689481",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "HANECS Canada Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2021-01-28"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2021-01-28"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2021-01-28",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 4,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The four-day month-start interval is too coarse to establish an operational lead. Named investor identity and relationship remain open.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "52ed53458345a7ea4c2dd652f867980115f96827923254fbdd31e05d7e3287c0",
+      "investor_name": "conTeyor International NV",
+      "investor_node_id": "211331",
+      "ultimate_control_country": "Belgium",
+      "canadian_business_name": "conTeyor Canada Ltd.",
+      "canadian_business_activity": "Engages in the production and sale of re-usable packaging.",
+      "corporation_number": "12527430",
+      "notification_type": "Notification - new business",
+      "notification_month": "2021-03",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/c?page=8",
+      "notification_page_sha256": "2427175d205c59b991fde06649355e8db6ba392f96bd316f340a54cc2b0aaacb",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12527430.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:31.900610+00:00",
+      "registry_raw_sha256": "2449a54ede39957ebbca9ddca36f8dcaaa37362dec7497ccc3c4dd9756dd904b",
+      "registry_projection": {
+        "corporationId": "12527430",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "conTeyor Canada Ltd.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2020-11-27"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2020-11-27"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2020-11-27",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 94,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The 94-day incorporation-to-notification interval does not establish when manufacturing, sales or staff began in Canada.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "6148493d6fa4a81f910b90594d877222da8451e61dd2a6519a089d4236ced78e",
+      "investor_name": "Trillium Supply Chain Inc.",
+      "investor_node_id": "211514",
+      "ultimate_control_country": "Germany",
+      "canadian_business_name": "Trillium Supply Chain Inc.",
+      "canadian_business_activity": "Provides third party logistics services.",
+      "corporation_number": "11681460",
+      "notification_type": "Notification - new business",
+      "notification_month": "2021-04",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/t?page=5",
+      "notification_page_sha256": "f14fdcedd5b3347f7c76e5d60b447dd46347331571caa80b864631a0ea03ad2a",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11681460.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:04.419670+00:00",
+      "registry_raw_sha256": "5aa9913d0362d9d4366bee8e54ced46105d45b0d4b864afb01e3f3469305f491",
+      "registry_projection": {
+        "corporationId": "11681460",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "TRILLIUM SUPPLY CHAIN INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2019-10-15"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2019-10-15"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2019-10-15",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 534,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The 534-day interval requires an operating-history and notification-purpose check. Resolve the foreign parent of the named Canadian supply-chain vehicle.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "a13912957fb3e46e6b11603fb55da3d3cc080240b51814ff8a3b937eebcf046a",
+      "investor_name": "Power by Britishvolt Limited",
+      "investor_node_id": "211472",
+      "ultimate_control_country": "Sweden",
+      "canadian_business_name": "Britishvolt Canada Inc.",
+      "canadian_business_activity": "Produces Lithium-ion batteries.",
+      "corporation_number": "12720914",
+      "notification_type": "Notification - new business",
+      "notification_month": "2021-06",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/p?page=6",
+      "notification_page_sha256": "e7b847f1e04d933d045059bdff846ea220df6c9d42aaa46081caed0927570a93",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12720914.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:13.519063+00:00",
+      "registry_raw_sha256": "f0f6473a1974a29ff3b97cff1b24ccc745fa2b5a836c47b80d2843d3a717c5b5",
+      "registry_projection": {
+        "corporationId": "12720914",
+        "status": "Dissolved",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "BRITISHVOLT CANADA INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2021-02-08"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2021-02-08"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Dissolution",
+              "date": "2025-01-10",
+              "section": "14"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2021-02-08",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 113,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The Canadian entity is inactive in the baseline. A registry incorporation and foreign identity confirmation do not establish that planned Canadian operations commenced.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "27c205d64d75881dfd852aa0c3c80fa121714ec2ed394772fa95bdc9171f6cee",
+      "investor_name": "Pegasi Oy",
+      "investor_node_id": "211474",
+      "ultimate_control_country": "Finland",
+      "canadian_business_name": "Pegasi IAM Canada Inc.",
+      "canadian_business_activity": "Engaged in the development of identity and access management services.",
+      "corporation_number": "13072681",
+      "notification_type": "Notification - new business",
+      "notification_month": "2021-07",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/p?page=6",
+      "notification_page_sha256": "e7b847f1e04d933d045059bdff846ea220df6c9d42aaa46081caed0927570a93",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13072681.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:31.750711+00:00",
+      "registry_raw_sha256": "b8b3a827bc4d4d866c2eef001ae644d8662348ff33b0b94e505d3d411171b8e0",
+      "registry_projection": {
+        "corporationId": "13072681",
+        "status": "Inactive - Discontinued",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Pegasi IAM Canada Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2021-06-03"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2021-06-03"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Discontinuance",
+              "date": "2021-07-06",
+              "jurisdictionId": "Ontario"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2021-06-03",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 28,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The Canadian entity is inactive in the baseline. Establish operational start and historical Finnish-parent relationship rather than inferring either from the registry date.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "investor_name": "Aiut sp. z.o.o.",
+      "investor_node_id": "211305",
+      "ultimate_control_country": "Poland",
+      "canadian_business_name": "Aiut Inc.",
+      "canadian_business_activity": "Provides industrial engineering services.",
+      "corporation_number": "12934345",
+      "notification_type": "Notification - new business",
+      "notification_month": "2021-08",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/a?page=10",
+      "notification_page_sha256": "fc09c3c2fdcf2ad8e422e5d2898060a97edb5dfb2d225e7c06994f3f6c7ee4e4",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12934345.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:31.841052+00:00",
+      "registry_raw_sha256": "d18179d327d85d11ebd80f0fc305272ad017ee81bb64a9d0993500e0838c3f26",
+      "registry_projection": {
+        "corporationId": "12934345",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "aiut Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2021-05-01"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2021-04-18"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Amendment",
+              "date": "2021-07-12",
+              "minmaxChanged": true,
+              "section": "6"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2021-04-18",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 105,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "AIUT foreign identity is supported. First Canadian operational work and historical relationship to Aiut Inc. still need dated evidence.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "814a591396e8a1ef40318eefe89e7c27c15c6bcdabb0dbe5100da163c89c4b58",
+      "investor_name": "Bayer CropScience Inc.",
+      "investor_node_id": "211913",
+      "ultimate_control_country": "Germany",
+      "canadian_business_name": "2022 Environmental Science CA Inc.",
+      "canadian_business_activity": "Engaged in pest control marketing, sales and related services with a focus on greenhouse, turf, industrial vegetation and professional pest control uses.",
+      "corporation_number": "13679624",
+      "notification_type": "Notification - new business",
+      "notification_month": "2022-04",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/b?page=4",
+      "notification_page_sha256": "47ec6a2bb4c4c6977a03f23637ddc33af3019c511bd33782f5aab34a1f776f7c",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13679624.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:13.556355+00:00",
+      "registry_raw_sha256": "91ea81f84c23b764ea040cf2f8bea69021107891a0d9c16409cca4521aa1dffa",
+      "registry_projection": {
+        "corporationId": "13679624",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "2022 Environmental Science CA Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2022-01-13"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2022-01-13"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Amendment",
+              "date": "2024-02-19",
+              "minmaxChanged": true,
+              "section": "6"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2022-01-13",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 78,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Resolve whether the separately incorporated environmental-science entity represents new operations or a transfer/reorganization of existing Canadian business. Current parent evidence cannot date that event.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "b681a6f4f3eeee19eaa99159e8b51bb2d53213d541cfae119490d38990312e7f",
+      "investor_name": "SD2 Engineering Services S.T.P. A R.L",
+      "investor_node_id": "212045",
+      "ultimate_control_country": "Italy",
+      "canadian_business_name": "SD2 Consulting Services Inc.",
+      "canadian_business_activity": "Provides drafting services (drawing detailed layouts, plans and illustrations of buildings, structures, systems or components from engineering and architectural specifications.",
+      "corporation_number": "12773449",
+      "notification_type": "Notification - new business",
+      "notification_month": "2022-04",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/s?page=8",
+      "notification_page_sha256": "ad96a87f4efad5795f94c3e4f9b4a3415914d6f109254181efdba84f25a908b5",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12773449.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:23.234068+00:00",
+      "registry_raw_sha256": "30fa41722d1f479dc154a9c4f509d4bd4846b31060d05e90353820c562cd6dc1",
+      "registry_projection": {
+        "corporationId": "12773449",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "SD2 Consulting Services Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2021-02-25"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2021-02-25"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2021-02-25",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 400,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The source investor spelling needs explicit alias support under the new identity gate. The 400-day interval also requires an operational-history check.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "b206b73fcd9d6ee2451a66884be6094f77bafaf2b5c469199c9f0d868ac1f7cb",
+      "investor_name": "TOPdesk Canada Inc.",
+      "investor_node_id": "212268",
+      "ultimate_control_country": "Netherlands",
+      "canadian_business_name": "TOPdesk Canada Inc.",
+      "canadian_business_activity": "Engaged in the development of computer software.",
+      "corporation_number": "9450122",
+      "notification_type": "Notification - new business",
+      "notification_month": "2022-07",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/t?page=4",
+      "notification_page_sha256": "2313aa8a9a995f063af3d552d4c367767256d87733f167af8e6fe80a9bc4f97f",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/9450122.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:04.451947+00:00",
+      "registry_raw_sha256": "cec65e402adccdddbfe8a12149f3abafc218127de6f696c064e917df66053c5f",
+      "registry_projection": {
+        "corporationId": "9450122",
+        "status": "Inactive - Discontinued",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "TOPDESK CANADA INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2015-09-23"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2015-09-23"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Discontinuance",
+              "date": "2017-07-07",
+              "jurisdictionId": "New Brunswick"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2015-09-23",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 2473,
+      "outcome_classification": "PRIOR_PRESENCE_REPORTED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The registry event predates notification by 2,473 days. A contemporaneous 2015-11-08 trade report describes a planned Toronto office and earlier remote Canadian service. Prior commercial presence is reported; exact office opening, first operations and the 2022 notification reason remain unresolved.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.itworldcanada.com/article/customer-service-software-firm-topdesk-stakes-canadian-turf/378282",
+          "source_type": "SECONDARY_CONTEMPORANEOUS_REPORT",
+          "source_date": "2015-11-08",
+          "source_date_basis": "Displayed publication date",
+          "claim": "Reports a planned two-person Toronto office after earlier remote service to Canadian customers.",
+          "supports": "REPORTED_PRIOR_COMMERCIAL_PRESENCE; PRIMARY_OPERATING_DATE_STILL_REQUIRED"
+        }
+      ]
+    },
+    {
+      "outcome_record_id": "09dbdb9242a006cbd36c897a25cd18a45fd2e5569bfec185d0aaa8b7255f7398",
+      "investor_name": "Roberto Sancristobal Llobell",
+      "investor_node_id": "212406",
+      "ultimate_control_country": "Spain",
+      "canadian_business_name": "Sanllo Canada Inc",
+      "canadian_business_activity": "Engaged in the import and distribution of fruit.",
+      "corporation_number": "14292910",
+      "notification_type": "Notification - new business",
+      "notification_month": "2022-10",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/r?page=3",
+      "notification_page_sha256": "6f0c325fd3571ab3a9e4e26fe40f62368eae77561daac172287e3f644044375c",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14292910.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:16:47.353304+00:00",
+      "registry_raw_sha256": "e6c4dd96bd49cf357415a6ee00adbeb6ed29839b77cacb327df801c75536fcf9",
+      "registry_projection": {
+        "corporationId": "14292910",
+        "status": "Dissolved",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Sanllo Canada Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2022-08-16"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2022-08-16"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Dissolution",
+              "date": "2025-07-16",
+              "section": "14"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2022-08-16",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 46,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Named investor identity remains open. Establish the relationship to Sanllo Canada and a dated operational start before classifying company expansion.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "c17f25725bb1d849a85608cb20d3a52d5d0ae8b898ed34b6ecd99f6177634846",
+      "investor_name": "Anastasios Lianos",
+      "investor_node_id": "212892",
+      "ultimate_control_country": "Greece",
+      "canadian_business_name": "Knitly Inc.",
+      "canadian_business_activity": "Provides a Software as a Service marketing platform.",
+      "corporation_number": "14719808",
+      "notification_type": "Notification - new business",
+      "notification_month": "2023-02",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/a?page=7",
+      "notification_page_sha256": "68cd5fe506b842b89b984de14294632062247b85a09b38a6f458431519ec2c74",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14719808.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:16:47.441134+00:00",
+      "registry_raw_sha256": "38014a884b97887ac1c17ea20498caab6fcbe00e3748aff6f32dbea1ea6bd567",
+      "registry_projection": {
+        "corporationId": "14719808",
+        "status": "Dissolved",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "KNITLY INC.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2023-01-30"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2023-01-30"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Dissolution",
+              "date": "2026-08-04",
+              "section": "11"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2023-01-30",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 2,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Named investor identity remains open. Establish the investor-to-Knitly relationship and first operations; the two-day month-start interval is not a validated predictive lead.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "investor_name": "Sioo Wood Protection Industry AB",
+      "investor_node_id": "213023",
+      "ultimate_control_country": "Sweden",
+      "canadian_business_name": "Sioo Wood Protection Industry Canada Inc.",
+      "canadian_business_activity": "Operates a wood protection business.",
+      "corporation_number": "14274431",
+      "notification_type": "Notification - new business",
+      "notification_month": "2023-07",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/s?page=6",
+      "notification_page_sha256": "c4b0b2296fa5038b7ff0027c9f913267a6f156cc73480cd82bbbff40ebf3c39b",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14274431.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:23.131001+00:00",
+      "registry_raw_sha256": "559ae601c297f729fed57719ae0f73ea355c7c014f437df08d551a44b08ddc9b",
+      "registry_projection": {
+        "corporationId": "14274431",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Sioo Protection du Bois Industrie Canada Inc.",
+              "nameType": "Alternate",
+              "current": true,
+              "effectiveDate": "2022-08-09"
+            }
+          },
+          {
+            "CorporationName": {
+              "name": "Sioo Wood Protection Industry Canada Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2022-08-09"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2022-08-09"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2022-08-09",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 326,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The registry carries English and French names for one corporation. Resolve operational start; bilingual names do not create separate entries.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "5a207dc535fcf72737ecad67b62415bef3e25cd284e702ca1c3e2a2c8e73b8f6",
+      "investor_name": "Quista Technology Pte. Ltd.",
+      "investor_node_id": "213345",
+      "ultimate_control_country": "Germany",
+      "canadian_business_name": "Reebelo Canada, Inc.",
+      "canadian_business_activity": "Operates online marketplaces, selling certified, pre-owned tech devices such as cell phones, personal computers, and household appliances.",
+      "corporation_number": "15053404",
+      "notification_type": "Notification - new business",
+      "notification_month": "2023-08",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/q",
+      "notification_page_sha256": "f6550517e678c95be8147f6190f13430d45253f3a039ba47493a1ace89b64237",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15053404.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:23.219373+00:00",
+      "registry_raw_sha256": "eea6c268bb4276590927cc75499e8157691e4c15f35f4b64b2fabf144609c817",
+      "registry_projection": {
+        "corporationId": "15053404",
+        "status": "Inactive - Discontinued",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Reebelo Canada, Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2023-05-24"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2023-05-24"
+            }
+          },
+          {
+            "activity": {
+              "activity": "Discontinuance",
+              "date": "2026-05-31",
+              "jurisdictionId": "Ontario"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2023-05-24",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 69,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The named foreign entity is Singapore-incorporated while the notification reports German ultimate control. Preserve that distinction and verify first Canadian trading separately.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "investor_name": "Leadership Pipeline Institute Canada Inc.",
+      "investor_node_id": "213515",
+      "ultimate_control_country": "Denmark",
+      "canadian_business_name": "Leadership Pipeline Institute Canada Inc.",
+      "canadian_business_activity": "Operates a business within education and development, including consultancy work, coaching, supervision and educational design for individuals and companies.",
+      "corporation_number": "15266092",
+      "notification_type": "Notification - new business",
+      "notification_month": "2023-09",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/l?page=2",
+      "notification_page_sha256": "91b651cab3902e2b36504756f34d596cb096419cc3408f3ec24bacec19b3c226",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15266092.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:04.450979+00:00",
+      "registry_raw_sha256": "807c52e24ec3e205b9fdb3b4f25e863d6f2eccf1066acaf6e88337100a64a4be",
+      "registry_projection": {
+        "corporationId": "15266092",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Leadership Pipeline Institute Canada Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2023-08-09"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2023-08-09"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2023-08-09",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 23,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Resolve the parent of the named Canadian vehicle and obtain a dated start of local training/services; incorporation is only legal establishment.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "5640d5839f0068a44dcad83527bab4277e4b32fbb277f09cc1b67ec8d50b8584",
+      "investor_name": "Tiandingfeng Canada Nonwovens Co., Ltd.",
+      "investor_node_id": "213608",
+      "ultimate_control_country": "France",
+      "canadian_business_name": "Tiandingfeng Canada Nonwovens Co., Ltd.",
+      "canadian_business_activity": "Produces nonwoven fabrics for use by North American manufacturers of waterproofing products.",
+      "corporation_number": "14895142",
+      "notification_type": "Notification - new business",
+      "notification_month": "2023-10",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/t?page=2",
+      "notification_page_sha256": "6a844a05f6bddf906b8d0df31c72371b8292cabe48494586dd8054fe6115437d",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14895142.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:16:56.084123+00:00",
+      "registry_raw_sha256": "401f12109a1517f7b682864381cea97a4b7821255cce1ced87055e47044ee7a6",
+      "registry_projection": {
+        "corporationId": "14895142",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "TIANDINGFENG CANADA NONWOVENS CO., LTD.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2023-03-30"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2023-03-30"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2023-03-30",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 185,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "Resolve the operating parent and first local manufacturing activity. Ultimate-control country France is a source attribute, not proof of the named vehicle being a French operating company.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "02e67296d5aebadc3460f48f1a7fbdf2d3b94660dc5edae830e5a9e3ec872eb1",
+      "investor_name": "K-Rouge Holding Inc.",
+      "investor_node_id": "214406",
+      "ultimate_control_country": "Luxembourg",
+      "canadian_business_name": "K-Rouge Holding Inc.",
+      "canadian_business_activity": "Acts as a holding company.",
+      "corporation_number": "15924669",
+      "notification_type": "Notification - new business",
+      "notification_month": "2024-04",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/k",
+      "notification_page_sha256": "63f520d1f88e5ae9622682fff7187d3287c8375909672fad35595e50d3030f1f",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15924669.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:16:55.971366+00:00",
+      "registry_raw_sha256": "e5a89d314b9d4dfa678f3e280f04ce96f7b10ee9b953ecc892e65adbb95d5438",
+      "registry_projection": {
+        "corporationId": "15924669",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "K-Rouge Holding Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2024-04-05"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2024-04-05"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2024-04-05",
+      "notification_timing": "SAME_MONTH",
+      "days_before_notification_month": -4,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The incorporation falls inside the notification month. Resolve the holding-company parent and operating-business relationship; do not treat the holding vehicle as proven new operations.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "e4ae3d3f67808ad18113d8df938b5f33e5333d3550a60a12cd9485e3cfee7c15",
+      "investor_name": "Vaxxinova International B.V.",
+      "investor_node_id": "232898",
+      "ultimate_control_country": "Germany",
+      "canadian_business_name": "Vaxxinova Canada, Inc.",
+      "canadian_business_activity": "Sells and distributes veterinary biologicals.",
+      "corporation_number": "16220801",
+      "notification_type": "Notification - new business",
+      "notification_month": "2025-05",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/v",
+      "notification_page_sha256": "6d3b4300feeace6de5f33af584480349a0a772fb9439e1882beaed8565dd989f",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/16220801.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:23.125541+00:00",
+      "registry_raw_sha256": "455fdff9a9d33b0997d90f2bd4b4b0f55f3d2bb18f631f0345774691ddff769d",
+      "registry_projection": {
+        "corporationId": "16220801",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Vaxxinova Canada, Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2024-07-18"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2024-07-18"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2024-07-18",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 287,
+      "outcome_classification": "UNRESOLVED",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "The 287-day interval corroborates establishment before notification only. Obtain a dated Canadian operating milestone and distinguish it from earlier sales into Canada.",
+      "additional_evidence": []
+    },
+    {
+      "outcome_record_id": "41ad36779f4802b9b4d5731a229528a4acc7f2373c67e5b86b996a793a711058",
+      "investor_name": "Bolton BG Canada Inc.",
+      "investor_node_id": "238352",
+      "ultimate_control_country": "Italy",
+      "canadian_business_name": "Bolton BG Canada Inc.",
+      "canadian_business_activity": "Supplies various food and home and personal care products to retailers.",
+      "corporation_number": "9996672",
+      "notification_type": "Notification - new business",
+      "notification_month": "2025-10",
+      "outcome_source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/b",
+      "notification_page_sha256": "059caff2078cd28025f94475c73cd833d770aba09aead71d9b824a19a5d4ca1e",
+      "registry_source_url": "https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/9996672.json?lang=eng",
+      "registry_observed_at": "2026-09-20T14:17:42.272074+00:00",
+      "registry_raw_sha256": "6ab0c0f4fff87e8962ec96bb0ae9033eed32cd391cc1c0b81e6347ed0578bd38",
+      "registry_projection": {
+        "corporationId": "9996672",
+        "status": "Active",
+        "corporationNames": [
+          {
+            "CorporationName": {
+              "name": "Bolton BG Canada Inc.",
+              "nameType": "Primary",
+              "current": true,
+              "effectiveDate": "2016-11-24"
+            }
+          }
+        ],
+        "activities": [
+          {
+            "activity": {
+              "activity": "Incorporation",
+              "date": "2016-11-24"
+            }
+          }
+        ]
+      },
+      "federal_event_type": "Incorporation",
+      "federal_event_date": "2016-11-24",
+      "notification_timing": "BEFORE_NOTIFICATION_MONTH",
+      "days_before_notification_month": 3233,
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
+      "first_canadian_operations_date": null,
+      "registry_evidence_available_before_first_operations": null,
+      "model_eligible": false,
+      "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
+      "audit_note": "An Italian government event page for March 2020 describes establishing the Toronto subsidiary in 2017 and retail distribution. The 2020 group report also lists Bolton BG Canada. Existing Canadian commercial presence predates the October 2025 notification; the notification reason and exact first-operations date remain unresolved. The legal parent-to-vehicle link also needs explicit identity evidence.",
+      "additional_evidence": [
+        {
+          "source_url": "https://iictoronto.esteri.it/en/gli_eventi/calendario/bocconi-alumni-toronto-andrea-pugliese-2/",
+          "source_type": "OFFICIAL_GOVERNMENT_EVENT_PAGE",
+          "source_date": "2020-03-26",
+          "source_date_basis": "Scheduled event date; page publication date not established",
+          "claim": "Describes Toronto subsidiary establishment in 2017 and Canadian retail distribution.",
+          "event_date": "2017",
+          "event_date_precision": "YEAR",
+          "supports": "EXISTING_CANADIAN_PRESENCE"
+        },
+        {
+          "source_url": "https://www.bolton.com/sites/default/files/2024-07/Bolton-Group-Sustainability-Report-2020-1.pdf",
+          "source_type": "OFFICIAL_COMPANY_REPORT",
+          "source_date": "2020",
+          "source_date_basis": "Reporting year; exact publication and historical availability not established",
+          "page": 6,
+          "claim": "Lists Bolton BG Canada in the group structure.",
+          "supports": "CANADIAN_SUBSIDIARY_IN_2020_REPORT"
+        }
+      ]
+    }
+  ]
+}

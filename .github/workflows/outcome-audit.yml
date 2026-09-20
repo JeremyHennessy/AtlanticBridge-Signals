@@ -2,11 +2,18 @@ name: Outcome audit acceptance
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["fix/outcome-audit-identity-gate-20260920"]
+    inputs:
+      full_history:
+        description: Rebuild the full historical cohort as well as refreshing pinned cases
+        type: boolean
+        default: false
+  pull_request:
+    branches: [main]
     paths:
-      - "src/**"
-      - "scripts/export_outcome_audit.py"
+      - "src/atlanticbridge/curated_identity.py"
+      - "src/atlanticbridge/entry_identity.py"
+      - "scripts/*outcome*.py"
+      - "reviews/outcome_audit/**"
       - ".github/workflows/outcome-audit.yml"
 
 permissions:
@@ -24,9 +31,11 @@ jobs:
       - run: python -m pip install -e .
       - name: Regression tests
         run: python -m unittest discover -s tests -v
-      - name: Reconstruct outcomes and confirmed registry identities
+      - name: Refresh all pinned notification and registry cases
+        run: python scripts/refresh_outcome_cases.py --output audit-output/pinned
+      - name: Reconstruct full historical cohort
+        if: ${{ inputs.full_history == true }}
         run: |
-          mkdir -p audit-output
           python -m atlanticbridge ingest-investment-canada --db audit-output/audit.sqlite --history > audit-output/history.json
           python -m atlanticbridge resolve-entry-identities --db audit-output/audit.sqlite --start-month 2019-01 --end-month 2025-12 --gold-limit 100 > audit-output/identity.json
           python scripts/export_outcome_audit.py --db audit-output/audit.sqlite --output audit-output/cohort.json

@@ -348,6 +348,7 @@ def _role_status(row: dict, detail_names: tuple[str, ...]) -> str:
 
 
 def _lead_timing(certification_month: str, event_date: str):
+    # A certificate predating a notification is not proof of pre-operation warning.
     if not event_date:
         return "UNKNOWN", None
     outcome_date = date.fromisoformat(certification_month + "-01")
@@ -755,11 +756,13 @@ def entry_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
         dict(row)
         for row in conn.execute(
             """
-            SELECT timing_status, COUNT(*) AS records
+            SELECT CASE WHEN timing_status = 'PRE_ENTRY'
+                        THEN 'BEFORE_NOTIFICATION_MONTH' ELSE timing_status END AS timing_status,
+                   COUNT(*) AS records
             FROM entry_identity_matches
             WHERE run_id = ?
               AND detail_status = 'FEDERAL_ENTITY_CONFIRMED'
-            GROUP BY timing_status
+            GROUP BY 1
             ORDER BY timing_status
             """,
             (run_id,),
@@ -780,7 +783,8 @@ def entry_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
                 selected_source_state,
                 federal_event_type,
                 federal_event_date,
-                timing_status,
+                CASE WHEN timing_status = 'PRE_ENTRY'
+                     THEN 'BEFORE_NOTIFICATION_MONTH' ELSE timing_status END AS timing_status,
                 lead_days_to_outcome_month_start,
                 investor_role_status,
                 detail_source_url
@@ -817,4 +821,5 @@ def entry_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
         "timing_status_counts": timing_counts,
         "unresolved_by_province": _unresolved_by_province(conn, run_id),
         "gold_cohort": gold,
+        "timing_basis": "FEDERAL_EVENT_VS_NOTIFICATION_MONTH; FIRST_OPERATIONS_NOT_ESTABLISHED",
     }
