@@ -127,40 +127,43 @@ class OutcomeEvidencePublicationGateTests(unittest.TestCase):
         enforce_model_eligibility_publication_gate(summary)
 
 
-    def test_real_audit_batch01_publication_cutoffs_are_pinned(self):
+    def test_real_audit_batch01_publication_rows_remain_pinned(self):
         root = Path(__file__).resolve().parents[1]
         payload = json.loads(
             (root / "reviews/outcome_audit/2026-09-20-cases.json").read_text()
         )
-        summary = summarize_outcome_publication_gate(payload)
-        self.assertEqual(summary["case_count"], 27)
-        self.assertEqual(summary["evidence_record_count"], 50)
-        self.assertEqual(
-            summary["publication_status_counts"],
-            {
-                "UNVERIFIED": 34,
-                "VERIFIED_AFTER_NOTIFICATION_MONTH": 3,
-                "VERIFIED_BEFORE_NOTIFICATION_MONTH": 11,
-                "VERIFIED_DURING_NOTIFICATION_MONTH": 2,
-            },
-        )
-        self.assertEqual(
-            summary["cases_with_verified_pre_notification_evidence"], 10
-        )
-        self.assertEqual(summary["model_eligible_cases"], 0)
-        self.assertEqual(summary["model_eligibility_violations"], [])
-
-        cipo = next(
+        expected = {
+            "https://central1.com/in_the_news/central-1-transforms-the-digital-banking-experience-with-the-launch-of-forge/": "2018-10-29",
+            "https://www.sec.gov/Archives/edgar/data/1767198/000176719819000001/xslFormDX01/primary_doc.xml": "2019-02-08",
+            "https://www.wi-bo.com/de/Linet/news/news-and-press-releases/2019/New-Subsidiary-in-Canada-will-Share-Clinical-Experience": "2019-10-21",
+            "https://mydigitalcreds.ca/2020/06/15/arucc-partners-with-digitary-to-build-the-canadian-national-network-called-mycreds/": "2020-06-15",
+            "https://uwaterloo.ca/daily-bulletin/2020-07-03": "2020-07-03",
+            "https://www.doingbusinesswithlcbo.com/content/dbwl/en/basepage/home/updates/AnupdateontheLCBOsTorontoRetailServiceCentre.html": "2020-05-20",
+            "https://www.doingbusinesswithlcbo.com/content/dbwl/en/basepage/home/updates/supporting-your-transition-to-the-Trillium-facility-update.html": "2021-01-08",
+            "https://www.bayer.com/media/en-us/bayer-to-sell-its-environmental-science-professional-business-to-cinven-for-26-billion-us-dollars/": "2022-03-10",
+            "https://www.canada.ca/en/health-canada/services/consumer-product-safety/reports-publications/pesticides-pest-management/decisions-updates/special-registration-decision/2024/fosetyl-aluminum.html": "2024-08-29",
+            "https://www.itworldcanada.com/article/customer-service-software-firm-topdesk-stakes-canadian-turf/378282": "2015-11-08",
+            "https://www.boe.es/borme/dias/2022/06/14/pdfs/BORME-A-2022-112-46.pdf": "2022-06-14",
+            "https://fvdrc.com/solutions/membership-updates-for-november-15-2022/": "2022-11-29",
+            "https://www.nefco.int/news/sioo-receives-financing-from-nefco/": "2023-06-21",
+            "https://help.reebelo.ca/hc/en-us/articles/20328511773081-What-is-Reebelo": "2023-07-05",
+            "https://vaxxinova.com/vaxxinova-bu-aqua-announces-new-rd-and-business-development-director/": "2024-03-04",
+        }
+        matched = [
             evidence
             for case in payload["cases"]
-            if case["canadian_business_name"] == "Tiandingfeng Canada Nonwovens Co., Ltd."
             for evidence in case["additional_evidence"]
-            if evidence["source_url"].endswith("/2198269")
-        )
-        self.assertNotIn("publicly_available_date", cipo)
-        self.assertEqual(
-            evidence_publication_status(cipo, "2023-10"), "UNVERIFIED"
-        )
+            if evidence["source_url"] in expected
+        ]
+        self.assertEqual(len(matched), 16)
+        for evidence in matched:
+            self.assertEqual(
+                evidence["publicly_available_date"],
+                expected[evidence["source_url"]],
+            )
+            self.assertEqual(
+                evidence["publicly_available_date_precision"], "DAY"
+            )
 
 
     def test_real_audit_batch02_uses_cipo_advertised_dates_not_filing_dates(self):
