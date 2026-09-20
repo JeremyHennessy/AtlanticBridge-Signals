@@ -81,18 +81,18 @@ The previous gate accepted any primary evidence on a queue item, including evide
 
 New decisions store a pointer to the active decision, so replaying an earlier decision uses its own citations. Existing databases migrate additively. Summary reads reassess existing confirmations without rewriting their decision history. Existing evidence must be cited explicitly by its evidence ID; incidental evidence elsewhere on the queue cannot satisfy a new decision.
 
-Of the 12 committed historical approvals, **10 satisfy this structured gate and 2 require evidence review**:
+Of the 12 committed historical approvals, **11 now satisfy this structured gate and 1 requires evidence review**:
 
 | Historical approval | Missing support | Action |
 |---|---|---|
-| SD2 Engineering Services società tra professionisti a R.L. | Explicit equivalence to source spelling `SD2 Engineering Services S.T.P. A R.L` | Obtain primary alias/legal-name evidence and record the structured relation |
+| SD2 Engineering Services società tra professionisti a R.L. | Resolved: the Turin government filing uses both the full legal form and `SD2 engineering services s.t.p. a r.l.` for the same firm, address and VAT | `SAME_LEGAL_ENTITY_AS` recorded; identity support only, not event-time eligibility |
 | Bolton Group S.r.l. | Exact legal parent-to-`Bolton BG Canada Inc.` relation; existing report assertions use shortened group/vehicle names | Obtain an explicit legal-entity relationship or supported alias chain |
 
-All 12 original approvals and four review files are preserved. The two flags do not assert that the original identities are false. Fourteen baseline queue tasks remain open; Backbase is a separate automated identity confirmation and is not counted among these 12.
+All 12 original approvals and four review files are preserved. The remaining Bolton flag does not assert that the original identity is false. Fourteen baseline queue tasks remain open; Backbase is a separate automated identity confirmation and is not counted among these 12.
 
 `identity_evidence_supported_curated_records` reports supported legal identities. `confirmations_requiring_evidence_review` exposes the legacy gaps. The compatibility field `modeling_ready_curated_records` is now zero, with `modeling_readiness_status = NOT_EVALUATED`; identity support alone does not confer training eligibility. Publisher authenticity and the truth of submitted structured assertions still require review; this code does not authenticate a website merely because an evidence type says "official".
 
-Historical batch JSON with the two gaps will fail the new import gate. Do not replay those batches as new confirmations until supporting evidence is added. Use the pinned disposition audit to assess their historical decisions.
+Batch 03 now carries explicit SD2 alias evidence and passes the current identity gate. Batch 04 still fails the parent-link gate for Bolton; do not replay that confirmation as a new supported decision until explicit parent evidence is added. Use the pinned disposition audit to assess historical decisions.
 
 ## Reproduction and validation
 
@@ -107,7 +107,7 @@ Local validation: **77 tests passed**. Regression coverage includes wrong-subjec
 
 ## Next work
 
-1. Resolve the SD2 alias and Bolton legal parent-link gaps, preserving all prior decisions.
+1. Resolve the remaining Bolton legal parent-link gap, preserving all prior decisions.
 2. Establish operational milestones for the 27 cases, starting with Bolton, TOPdesk, the Bayer environmental-science vehicle, the two TVM portfolio companies and inactive entities. Record first operations, evidence publication/availability and notification purpose separately, at the precision the sources support.
 3. For cases with defensible outcome dates and historical identity chains, construct matched controls and enforce publication cutoffs. Missing evidence remains unresolved; it does not become a negative label.
 4. Validate incremental predictive lift before assigning Expansion Likelihood weights. Keep Nova Scotia Fit and Evidence Confidence separate.
