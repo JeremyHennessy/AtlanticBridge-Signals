@@ -197,3 +197,22 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('cannot order establishment relative to the September 2023', case['audit_note'])
         self.assertIn('first Canadian training, consulting or service date', case['audit_note'])
 
+    def test_digitary_project_evidence_does_not_order_notification_or_first_service(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'DIGITARY CANADA INC.'
+        )
+        self.assertEqual(case['outcome_classification'], 'UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('CANADIAN_NATIONAL_PROJECT_AWARD_DURING_NOTIFICATION_MONTH', supports)
+        self.assertIn('CANADIAN_PROJECT_IMPLEMENTATION_START_MONTH', supports)
+        self.assertIn('CURRENT_CANADIAN_ENTITY_PROJECT_RELATIONSHIP', supports)
+        self.assertIn('do not establish whether the award preceded the notification within June', case['audit_note'])
+        self.assertIn('exact first Canadian service/operation date', case['audit_note'])
+
