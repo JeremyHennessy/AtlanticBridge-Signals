@@ -156,3 +156,24 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('not proof of Canadian operations', case['audit_note'])
         self.assertIn('France as ultimate control', case['audit_note'])
 
+    def test_sioo_establishment_evidence_does_not_create_first_operation_date(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'Sioo Wood Protection Industry Canada Inc.'
+        )
+        self.assertEqual(
+            case['outcome_classification'],
+            'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED',
+        )
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('CANADIAN_ESTABLISHMENT_BY_2023_06_21', supports)
+        self.assertIn('CANADA_MARKET_INTENT_PREESTABLISHMENT_NOT_OPERATIONAL_PROOF', supports)
+        self.assertIn('Neither source gives', case['audit_note'])
+        self.assertIn('first sale', case['audit_note'])
+
