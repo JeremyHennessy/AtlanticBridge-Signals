@@ -184,7 +184,10 @@ async function verifyAllRowsAndDrawers(page, label) {
     }
 
     await page.locator("#drawer-close").click();
-    await page.locator("#case-drawer").waitFor({ state: "hidden", timeout: 5000 });
+    await page.waitForFunction(() => {
+      const drawer = document.querySelector("#case-drawer");
+      return drawer && drawer.getAttribute("aria-hidden") === "true" && !drawer.classList.contains("open");
+    }, null, { timeout: 5000 });
   }
 }
 
