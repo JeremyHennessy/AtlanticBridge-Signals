@@ -24,10 +24,10 @@ Registry projections intentionally contain corporate names, status and activitie
 
 | Finding | Cases | Treatment |
 |---|---:|---|
-| Prior Canadian presence supported by primary or regulatory material | 3 | Bolton, TOPdesk and Bayer Environmental Science: exclude their notification months as assumed first-entry dates |
+| Prior Canadian presence supported by primary or regulatory material | 4 | Bolton, TOPdesk, Bayer Environmental Science and Reebelo: exclude their notification months as assumed first-entry dates |
 | Prior commercial presence supported only by secondary material | 0 | TOPdesk is upgraded by the City of Toronto's primary annual report evidence |
 | Establishment/project-development/current footprint corroborated beyond registry | 3 | LINET founding; Britishvolt project development; Pegasi Ontario continuation/current Toronto footprint. Exact first operations remain unresolved |
-| Registry establishment only; operating outcome unresolved | 21 | Require dated operational and notification-purpose evidence |
+| Registry establishment only; operating outcome unresolved | 20 | Require dated operational and notification-purpose evidence |
 | Exact first Canadian operating dates established | 0 | No positive first-entry labels promoted |
 | Cases eligible for first-entry model training from this audit | 0 | Unresolved is not a negative outcome |
 
@@ -39,6 +39,8 @@ All 27 selected federal events are incorporations. Twenty-five occurred before t
 
 **Bayer Environmental Science:** a [PMRA-approved 2018 Canadian commercial label](https://www.ca.envu.com/-/media/prfcanada/product-sds-and-labels/signature-xtra-stressgard---english-label---13june2018.ashx) for registration 32800 identifies Bayer CropScience Inc. in Calgary. Bayer's [March 2022 sale announcement](https://www.bayer.com/media/en-us/bayer-to-sell-its-environmental-science-professional-business-to-cinven-for-26-billion-us-dollars/) describes Environmental Science Professional as an existing business being sold to Cinven. Health Canada's [2024 regulatory decision](https://www.canada.ca/en/health-canada/services/consumer-product-safety/reports-publications/pesticides-pest-management/decisions-updates/special-registration-decision/2024/fosetyl-aluminum.html) lists the same registration 32800 under 2022 Environmental Science CA Inc. The evidence therefore supports pre-existing Canadian business activity and a transfer/reorganization interpretation, not a first Canadian market entry in April 2022. Exact first operations and the legal purpose of the notification remain unset.
 
+**Reebelo Canada:** Reebelo's official [Canada help centre](https://help.reebelo.ca/hc/en-us/articles/20328511773081-What-is-Reebelo), dated 2023-07-05, states that the marketplace was already selling in Canada. This predates the August 2023 Investment Canada notification and therefore excludes that notification month as an assumed first Canadian market entry. The source does not establish the exact first Canadian sale or customer date, so `first_canadian_operations_date` remains unset and the case remains ineligible for first-entry model training.
+
 **TVM / Ocellaris and Acanthas:** a [2019 SEC Form D](https://www.sec.gov/Archives/edgar/data/1767198/000176719819000001/xslFormDX01/primary_doc.xml) confirms the exact Investment Canada named investor, TVM Life Science Ventures VIII SCSp, as a Luxembourg venture-capital fund formed in 2018, with CIK 0001767198. TVM's official [Ocellaris portfolio page](https://tvm-capital.com/portfolio/ocellaris-pharma/) instead says Ocellaris is fully financed by TVM Life Science Innovation II SCSp, and its [strategy page](https://tvm-capital.com/strategy-approach/) assigns Acanthas to TVM LSI II. The exact named-investor identity can therefore be confirmed independently, but the Ventures VIII-to-Innovation II-to-portfolio-company relationship is not established. Neither case is promoted to a model outcome.
 
 **LINET:** [official group news dated 2019-10-21](https://www.wi-bo.com/de/Linet/news/news-and-press-releases/2019/New-Subsidiary-in-Canada-will-Share-Clinical-Experience) corroborates founding on 2019-02-21 and describes forthcoming Canadian support and partner coordination. The publication falls in the notification month. It does not prove that this evidence was publicly available before operations began.
@@ -47,7 +49,7 @@ All 27 selected federal events are incorporations. Twenty-five occurred before t
 
 **Pegasi IAM Canada:** Corporations Canada records the federal corporation as `Inactive - Discontinued`, with a 2021-07-06 discontinuance to Ontario rather than a dissolution. Pegasi's [current official site](https://pegasi.fi/) lists a Toronto office at 2 Bloor Street West, Suite 2120. This corrects the interpretation of the inactive federal status and corroborates an eventual Canadian footprint. Because the company-site evidence is current and undated historically, it does not prove when Canadian operations began or whether operations preceded the July 2021 notification.
 
-The case review is complete as a disposition of the available evidence, not an exhaustive reconstruction of every operating history. Twenty-one cases remain registry-only; other rows have stronger descriptive evidence but still lack a model-eligible first-entry date. Acquisition, reorganization, delayed notification, never-started operations and first operating entry are not assigned without supporting evidence.
+The case review is complete as a disposition of the available evidence, not an exhaustive reconstruction of every operating history. Twenty cases remain registry-only; other rows have stronger descriptive evidence but still lack a model-eligible first-entry date. Acquisition, reorganization, delayed notification, never-started operations and first operating entry are not assigned without supporting evidence.
 
 ## Every case
 
@@ -76,7 +78,7 @@ The case review is complete as a disposition of the available evidence, not an e
 | Roberto Sancristobal Llobell / Sanllo Canada Inc | [14292910](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14292910.json?lang=eng) | 2022-10 | 2022-08-16 | 46 | Unresolved |
 | Anastasios Lianos / Knitly Inc. | [14719808](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14719808.json?lang=eng) | 2023-02 | 2023-01-30 | 2 | Unresolved |
 | Sioo Wood Protection Industry AB / Sioo Wood Protection Industry Canada Inc. | [14274431](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14274431.json?lang=eng) | 2023-07 | 2022-08-09 | 326 | Unresolved |
-| Quista Technology Pte. Ltd. / Reebelo Canada, Inc. | [15053404](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15053404.json?lang=eng) | 2023-08 | 2023-05-24 | 69 | Unresolved |
+| Quista Technology Pte. Ltd. / Reebelo Canada, Inc. | [15053404](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15053404.json?lang=eng) | 2023-08 | 2023-05-24 | 69 | Pre-notification Canadian sales supported by official Reebelo evidence |
 | Leadership Pipeline Institute Canada Inc. | [15266092](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15266092.json?lang=eng) | 2023-09 | 2023-08-09 | 23 | Unresolved |
 | Tiandingfeng Canada Nonwovens Co., Ltd. | [14895142](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/14895142.json?lang=eng) | 2023-10 | 2023-03-30 | 185 | Unresolved |
 | K-Rouge Holding Inc. | [15924669](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/15924669.json?lang=eng) | 2024-04 | 2024-04-05 | -4 | Unresolved |
