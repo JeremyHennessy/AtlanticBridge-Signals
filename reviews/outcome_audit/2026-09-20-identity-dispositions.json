@@ -1,9 +1,9 @@
 {
   "baseline_commit": "72a7884160914287c939eb52fd2b1e0495a115e3",
-  "scope": "Four committed review batches; identity support only, not outcome/model eligibility",
+  "scope": "Four original committed review batches plus evidence supplements; identity support only, not outcome/model eligibility",
   "confirmed_reviews_preserved": 12,
-  "supported": 11,
-  "requires_evidence_review": 1,
+  "supported": 12,
+  "requires_evidence_review": 0,
   "decisions": [
     {
       "queue_id": "8aad2070e8db08c276a79ffd9ee622ed2dbeb7254d2ab9c588da51bc1b8f4751",
@@ -121,9 +121,10 @@
       "task_type": "CANADIAN_VEHICLE_PARENT",
       "resolved_subject_name": "Bolton Group S.r.l.",
       "historical_decision": "CONFIRMED",
-      "gate_status": "REQUIRES_EVIDENCE_REVIEW",
-      "gate_reason": "Parent confirmation requires primary evidence linking the resolved parent to the queued investor",
-      "review_file": "reviews/curated_identity/2026-09-20-primary-batch-04.json"
+      "gate_status": "SUPPORTED",
+      "gate_reason": "",
+      "review_file": "reviews/curated_identity/2026-09-20-primary-batch-04.json",
+      "supporting_review_file": "reviews/curated_identity/2026-09-20-primary-batch-08.json"
     }
   ]
 }

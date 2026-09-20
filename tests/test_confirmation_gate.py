@@ -76,7 +76,7 @@ class ConfirmationGateTests(unittest.TestCase):
         for filename in ("2026-09-19-primary-batch-01.json", "2026-09-19-primary-batch-02.json",
                          "2026-09-20-primary-batch-03.json", "2026-09-20-primary-batch-04.json",
                          "2026-09-20-primary-batch-05.json", "2026-09-20-primary-batch-06.json",
-                         "2026-09-20-primary-batch-07.json"):
+                         "2026-09-20-primary-batch-07.json", "2026-09-20-primary-batch-08.json"):
             path = root / "reviews/curated_identity" / filename
             for item in json.loads(path.read_text()):
                 evidence = [{
@@ -85,8 +85,38 @@ class ConfirmationGateTests(unittest.TestCase):
                 } for e in item["evidence"]]
                 issue = confirmation_evidence_issue(queue[item["queue_id"]], item["decision"], evidence)
                 (flagged if issue else supported).append(item["decision"]["resolved_subject_name"])
-        self.assertEqual(len(supported), 15)
+        self.assertEqual(len(supported), 16)
+        # Batch 04 remains a preserved historical decision whose original citations
+        # are insufficient under the tightened gate. Batch 08 supplies a new,
+        # independently supported decision without rewriting Batch 04.
         self.assertEqual(set(flagged), {"Bolton Group S.r.l."})
+
+    def test_bolton_supplement_resolves_current_disposition_without_rewriting_batch04(self):
+        root = Path(__file__).resolve().parents[1]
+        baseline = json.loads((root / "reviews/outcome_audit/2026-09-20-baseline-queue.json").read_text())
+        queue = {r["queue_id"]: r for r in baseline["queue"]}
+        old = json.loads((root / "reviews/curated_identity/2026-09-20-primary-batch-04.json").read_text())[0]
+        supplement = json.loads((root / "reviews/curated_identity/2026-09-20-primary-batch-08.json").read_text())[0]
+
+        def issue(item):
+            evidence = [{
+                "relationship_type": "", "related_subject_type": "UNKNOWN",
+                "related_subject_name": "", "identifier_type": "", "identifier_value": "", **e,
+            } for e in item["evidence"]]
+            return confirmation_evidence_issue(queue[item["queue_id"]], item["decision"], evidence)
+
+        self.assertTrue(issue(old))
+        self.assertEqual(issue(supplement), "")
+        dispositions = json.loads(
+            (root / "reviews/outcome_audit/2026-09-20-identity-dispositions.json").read_text()
+        )
+        self.assertEqual(dispositions["requires_evidence_review"], 0)
+        bolton = next(d for d in dispositions["decisions"] if d["investor_name"] == "Bolton BG Canada Inc.")
+        self.assertEqual(bolton["gate_status"], "SUPPORTED")
+        self.assertEqual(
+            bolton["supporting_review_file"],
+            "reviews/curated_identity/2026-09-20-primary-batch-08.json",
+        )
 
     def test_explicit_primary_alias_and_punctuation_are_supported(self):
         self.payload["decision"]["resolved_subject_name"] = "Example Holding GmbH"
