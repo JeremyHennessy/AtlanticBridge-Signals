@@ -109,3 +109,33 @@ The repository pins two smaller durable files:
 
 After those files are pinned, the workflow rebuilds the complete live history and
 requires exact manifest and review-queue reproduction.
+
+
+## Accepted live proof — Control Cohort 001
+
+The accepted live build on exact branch head before pinning used the complete
+Investment Canada history and produced:
+
+- **681** source pages across **36** buckets;
+- **32,369** unique records from **33,106** source appearances;
+- **737** duplicate source appearances deduplicated by stable identity;
+- source snapshot-manifest SHA-256:
+  `ee6eb157b2431cf5ed4d7f674e11f3bf4632b3ad650a2fc95582ce674ddd0238`;
+- **7/7** audited `TRUE_NEW_ENTRY_CANDIDATE` rows with complete 24-month follow-up;
+- **21** raw risk-set assignments covering **21** distinct future-entrant entities;
+- **8** country + activity-overlap matches and **13** country-only fallbacks;
+- **21/21** identity rows `UNREVIEWED`;
+- **0** backtest-eligible controls;
+- **0** negative labels.
+
+Accepted run: https://github.com/JeremyHennessy/AtlanticBridge-Signals/actions/runs/35544368650
+
+The pinned manifest records the canonical full-payload SHA-256
+`8649a3f0ccbaa749a23c07bc48e62d1b64aa71dadf62aed0fc55d4e96e140888`.
+The pinned identity-review queue SHA-256 is
+`c0aa14e81ac71c3cffe48420bb3066c5c8baf0991517bcc3cfff11b86a484e20`.
+
+Inspection of the raw queue confirmed that the named-investor field can contain
+natural persons and Canadian vehicles despite an EU country-of-ultimate-control
+attribute. This is treated as evidence that the separate identity gate is
+required, not as a reason to introduce heuristic suffix filtering.
