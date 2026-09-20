@@ -81,7 +81,7 @@ jobs:
 
       - name: Verify hosted desktop and iPhone UI
         env:
-          UI_BASE_URL: ${{ needs.deploy.outputs.page_url }}
+          UI_BASE_URL: ${{ needs.deploy.outputs.page_url }}ui/
         run: node tests/ui_visual_acceptance.mjs
 
       - name: Upload hosted acceptance screenshots
