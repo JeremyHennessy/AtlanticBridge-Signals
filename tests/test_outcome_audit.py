@@ -174,6 +174,6 @@ class OutcomeAuditTests(unittest.TestCase):
         supports = {e['supports'] for e in case['additional_evidence']}
         self.assertIn('CANADIAN_ESTABLISHMENT_BY_2023_06_21', supports)
         self.assertIn('CANADA_MARKET_INTENT_PREESTABLISHMENT_NOT_OPERATIONAL_PROOF', supports)
-        self.assertIn('does not', case['audit_note'].lower())
+        self.assertIn('Neither source gives', case['audit_note'])
         self.assertIn('first sale', case['audit_note'])
 
