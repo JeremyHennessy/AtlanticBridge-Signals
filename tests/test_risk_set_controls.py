@@ -177,6 +177,14 @@ class RiskSetControlTests(unittest.TestCase):
         self.assertEqual(first["controls"][1]["investor_name"], "Late Candidate GmbH")
         self.assertEqual(first["controls"][1]["match_tier"], "COUNTRY_ACTIVITY")
         self.assertTrue(all(not row["negative_label_eligible"] for row in first["controls"]))
+        self.assertTrue(all(
+            row["identity_qualification_status"] == "UNREVIEWED"
+            for row in first["controls"]
+        ))
+        self.assertTrue(all(
+            not row["backtest_control_eligible"]
+            for row in first["controls"]
+        ))
 
     def test_future_candidate_may_serve_as_earlier_risk_set_control(self):
         payload = build_risk_set_controls(
@@ -243,7 +251,27 @@ class RiskSetControlTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["candidate_count"], 2)
         self.assertEqual(payload["summary"]["candidates_with_complete_followup"], 1)
         self.assertEqual(payload["summary"]["negative_labels_created"], 0)
+        self.assertEqual(
+            payload["summary"]["identity_unreviewed_assignments"],
+            payload["summary"]["risk_set_candidate_assignments"],
+        )
+        self.assertEqual(
+            payload["summary"]["backtest_control_eligible_assignments"],
+            0,
+        )
         validate_risk_set_controls(payload)
+
+    def test_validator_rejects_unreviewed_candidate_promoted_to_backtest(self):
+        payload = build_risk_set_controls(
+            self.records,
+            self.cohorts,
+            self.audit,
+            horizon_months=24,
+            max_controls=2,
+        )
+        payload["candidates"][0]["controls"][0]["backtest_control_eligible"] = True
+        with self.assertRaisesRegex(ValueError, "cannot be backtest controls"):
+            validate_risk_set_controls(payload)
 
     def test_validator_rejects_control_inside_horizon(self):
         payload = build_risk_set_controls(
