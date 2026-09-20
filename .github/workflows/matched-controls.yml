@@ -1,0 +1,53 @@
+name: Matched controls research build
+
+on:
+  push:
+    branches:
+      - "feature/matched-controls-*"
+    paths:
+      - "src/atlanticbridge/matched_controls.py"
+      - "scripts/build_matched_controls.py"
+      - "reviews/outcome_audit/2026-09-20-outcome-cohorts.json"
+      - ".github/workflows/matched-controls.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: python -m pip install -e .
+      - name: Unit tests
+        run: python -m unittest tests.test_matched_controls -v
+      - name: Build live research snapshot
+        run: |
+          DB="$RUNNER_TEMP/controls.sqlite"
+          python -m atlanticbridge init-db --db "$DB"
+          python -m atlanticbridge ingest-investment-canada --db "$DB" --history --workers 4 > artifacts-ica.json
+          python -m atlanticbridge ingest-cordis --db "$DB" > artifacts-cordis.json
+          python scripts/build_matched_controls.py \
+            --db "$DB" \
+            --cases reviews/outcome_audit/2026-09-20-cases.json \
+            --cohorts reviews/outcome_audit/2026-09-20-outcome-cohorts.json \
+            --output matched-controls.json \
+            --per-case 3
+      - name: Upload research evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: matched-controls-${{ github.sha }}
+          path: |
+            matched-controls.json
+            artifacts-ica.json
+            artifacts-cordis.json
+          retention-days: 30
+          if-no-files-found: warn
