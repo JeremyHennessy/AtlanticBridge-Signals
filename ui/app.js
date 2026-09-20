@@ -21,6 +21,8 @@ const els = {
   coverageBeforeBar: document.querySelector("#coverage-before-bar"),
   coverageSame: document.querySelector("#coverage-same"),
   coverageSameBar: document.querySelector("#coverage-same-bar"),
+  coveragePublication: document.querySelector("#coverage-publication"),
+  coveragePublicationBar: document.querySelector("#coverage-publication-bar"),
   medianLead: document.querySelector("#median-lead"),
   sourceTypes: document.querySelector("#source-types"),
   drawer: document.querySelector("#case-drawer"),
@@ -66,6 +68,25 @@ function classificationClass(value) {
     return "status-establishment";
   }
   return "status-unresolved";
+}
+
+function formatPublicationStatus(value) {
+  const labels = {
+    VERIFIED_BEFORE_NOTIFICATION_MONTH: "Public before notification",
+    VERIFIED_DURING_NOTIFICATION_MONTH: "Public during notification month",
+    VERIFIED_AFTER_NOTIFICATION_MONTH: "Public after notification",
+    OVERLAPS_NOTIFICATION_MONTH: "Publication window overlaps notification",
+    UNVERIFIED: "Historical availability unverified",
+  };
+  return labels[value] || value || "Historical availability unverified";
+}
+
+function publicationStatusClass(value) {
+  if (value === "VERIFIED_BEFORE_NOTIFICATION_MONTH") return "publication-before";
+  if (value === "VERIFIED_DURING_NOTIFICATION_MONTH") return "publication-during";
+  if (value === "VERIFIED_AFTER_NOTIFICATION_MONTH") return "publication-after";
+  if (value === "OVERLAPS_NOTIFICATION_MONTH") return "publication-overlaps";
+  return "publication-unverified";
 }
 
 function formatSourceType(value) {
@@ -155,6 +176,9 @@ function renderMetrics() {
   const samePct = summary.case_count
     ? (summary.same_notification_month / summary.case_count) * 100
     : 0;
+  const publicationPct = summary.case_count
+    ? (summary.cases_with_verified_pre_notification_evidence / summary.case_count) * 100
+    : 0;
 
   els.coverageBefore.textContent =
     `${summary.before_notification_month}/${summary.case_count}`;
@@ -162,6 +186,9 @@ function renderMetrics() {
     `${summary.same_notification_month}/${summary.case_count}`;
   els.coverageBeforeBar.style.width = `${beforePct}%`;
   els.coverageSameBar.style.width = `${samePct}%`;
+  els.coveragePublication.textContent =
+    `${summary.cases_with_verified_pre_notification_evidence}/${summary.case_count}`;
+  els.coveragePublicationBar.style.width = `${publicationPct}%`;
   els.medianLead.textContent =
     summary.median_days_before_notification_month === null
       ? "—"
@@ -251,6 +278,9 @@ function renderEvidence(evidence) {
         .map((item) => {
           const url = safeUrl(item.source_url);
           const primaryDate = item.event_date || item.source_date;
+          const publicDate = item.publicly_available_date
+            ? formatDate(item.publicly_available_date)
+            : "Unverified";
           return `
             <article class="evidence-card">
               <div class="evidence-topline">
@@ -258,6 +288,12 @@ function renderEvidence(evidence) {
                 <span class="evidence-date">${escapeHtml(formatDate(primaryDate))}</span>
               </div>
               <p class="evidence-claim">${escapeHtml(item.claim || "No claim text recorded.")}</p>
+              <div class="evidence-publication">
+                <span class="publication-chip ${publicationStatusClass(item.publication_status)}">
+                  ${escapeHtml(formatPublicationStatus(item.publication_status))}
+                </span>
+                <span class="publication-date">Public date: ${escapeHtml(publicDate)}</span>
+              </div>
               <div class="evidence-support">${escapeHtml(item.supports || "Evidence role unclassified")}</div>
               ${
                 url
