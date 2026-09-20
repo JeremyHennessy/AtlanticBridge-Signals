@@ -1355,7 +1355,11 @@
           "claim": "Invest Toronto states that Global Affairs Canada introduced TOPdesk and that Invest Toronto assisted with establishment of TOPdesk's first Canadian location in Toronto in 2015.",
           "event_date": "2015",
           "event_date_precision": "YEAR",
-          "supports": "EXISTING_CANADIAN_PRESENCE"
+          "supports": "EXISTING_CANADIAN_PRESENCE",
+          "publicly_available_date": "2016-06-07",
+          "publicly_available_date_precision": "DAY",
+          "publicly_available_date_basis": "Conservative latest-by cutoff: City of Toronto City Council agenda for the June 7, 2016 meeting publicly considered EX15.3 and linked this annual report as Attachment 1",
+          "publicly_available_date_source_url": "https://secure.toronto.ca/council/report.do?meeting=2016.CC19&type=agenda"
         }
       ]
     },
