@@ -171,6 +171,9 @@ The console currently provides:
 - GLEIF direct/ultimate accounting-parent relationship or reporting-exception evidence
 - Persistent curated identity-review queue with primary-source evidence and audited decisions
 - Explicit publication-cutoff gate that fails closed before historical model eligibility
+- Audited outcome cohort partition with censored `TRUE_NEW_ENTRY_CANDIDATE` research rows
+- Future-entrant 24-month risk-set candidate generator with zero negative-label semantics
+- Pinned risk-set manifest and explicit 21-entity legal-identity review queue
 - Read-only evidence console UI generated deterministically from audited case/identity files
 - source snapshots with SHA-256 hashes
 - deterministic record IDs/hashes
@@ -178,11 +181,11 @@ The console currently provides:
 
 ## Next source sequence
 
-1. Continue the 27-case operational-history audit; keep Ocellaris/Acanthas excluded while TVM Ventures VIII ↔ Innovation II legal-name equivalence remains unverified
-2. Obtain Luxembourg name-history evidence for the TVM legal-alias question and authorized provincial registry access for unresolved non-federal entry entities
-3. Historical CIPO bulk backfill once secure bulk transport is available
-4. Build matched non-entrant controls and event-time backtests on confirmed identities before any score weights
+1. Qualify the 21 pinned future-entrant risk-set entities with explicit foreign legal-entity evidence; natural persons, Canadian vehicles, ambiguous names and unsupported identities remain backtest-ineligible
+2. Run source-specific event-time backtests only after each signal source has proven historical publication-time semantics; current CORDIS snapshots remain blocked from historical timing until that clock is established
+3. Continue registry-specific evidence work: Luxembourg TVM name history, authorized provincial registry access, and historical CIPO bulk transport when available
+4. Assign no Expansion Likelihood weights until identity-qualified controls and publication-safe signal backtests demonstrate incremental predictive lift
 
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).
 
-The outcome audit and confirmation-gate changes are documented in [docs/OUTCOME_TIMING_AUDIT.md](docs/OUTCOME_TIMING_AUDIT.md). Publication-cutoff semantics are documented in [docs/OUTCOME_PUBLICATION_GATE.md](docs/OUTCOME_PUBLICATION_GATE.md).
+The outcome audit and confirmation-gate changes are documented in [docs/OUTCOME_TIMING_AUDIT.md](docs/OUTCOME_TIMING_AUDIT.md). Publication-cutoff semantics are documented in [docs/OUTCOME_PUBLICATION_GATE.md](docs/OUTCOME_PUBLICATION_GATE.md). Risk-set control semantics and identity qualification are documented in [docs/RISK_SET_CONTROLS.md](docs/RISK_SET_CONTROLS.md).
