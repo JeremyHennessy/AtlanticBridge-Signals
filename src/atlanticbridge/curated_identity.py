@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .foreign_identity import ensure_foreign_identity_schema
+from .entry_identity import normalize_legal_name
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS curated_identity_queue (
@@ -511,18 +512,66 @@ def _insert_evidence(
     return evidence_id
 
 
-def _primary_evidence_count(conn: sqlite3.Connection, queue_id: str) -> int:
-    return int(
-        conn.execute(
-            """
-            SELECT COUNT(*)
-            FROM curated_identity_evidence
-            WHERE queue_id = ?
-              AND is_primary_source = 1
-            """,
-            (queue_id,),
-        ).fetchone()[0]
-    )
+PARENT_RELATIONSHIPS = {
+    "DIRECT_PARENT_OF", "ULTIMATE_PARENT_OF", "GROUP_HOLDING_PARENT_OF",
+    "DIRECT_ACCOUNTING_PARENT_OF", "ULTIMATE_ACCOUNTING_PARENT_OF",
+}
+
+
+def confirmation_evidence_issue(queue, decision, evidence) -> str:
+    """Validate reviewed assertions; this does not authenticate a publisher's URL.
+
+    Only evidence explicitly attached to this decision may support confirmation.
+    Name normalization removes punctuation/spacing, never legal suffixes or words.
+    Aliases need an explicit primary-source SAME_LEGAL_ENTITY_AS assertion.
+    """
+    primary = [e for e in evidence if e["evidence_type"] in PRIMARY_EVIDENCE_TYPES]
+    if not primary:
+        return "CONFIRMED decisions require cited primary-source evidence"
+    subject_type = _clean(decision.get("resolved_subject_type")).upper()
+    name = normalize_legal_name(_clean(decision.get("resolved_subject_name")))
+    jurisdiction = _clean(decision.get("resolved_jurisdiction")).upper()
+    if subject_type not in {"LEGAL_ENTITY", "NATURAL_PERSON"} or not name:
+        return "CONFIRMED decisions require a subject type and name"
+    if subject_type == "LEGAL_ENTITY" and not jurisdiction:
+        return "CONFIRMED LEGAL_ENTITY decisions require resolved_jurisdiction"
+    if not _clean(decision.get("basis") or decision.get("decision_basis")):
+        return "CONFIRMED decisions require a non-empty basis"
+    matching = [e for e in primary if (
+        e["subject_type"] == subject_type
+        and normalize_legal_name(e["subject_name"]) == name
+        and (subject_type == "NATURAL_PERSON"
+             or _clean(e["jurisdiction"]).upper() == jurisdiction)
+    )]
+    if not matching:
+        return "Primary evidence must match the resolved subject type, name and jurisdiction"
+    identifier_type = _clean(decision.get("resolved_identifier_type")).upper()
+    identifier_value = _clean(decision.get("resolved_identifier_value"))
+    if bool(identifier_type) != bool(identifier_value):
+        return "Resolved identifier requires both type and value"
+    if identifier_type and not any(
+        _clean(e["identifier_type"]).upper() == identifier_type
+        and _clean(e["identifier_value"]) == identifier_value for e in matching
+    ):
+        return "Resolved identifier must be supported by matching primary evidence"
+    target = normalize_legal_name(queue["investor_name"])
+    if queue["task_type"] == "NAMED_INVESTOR_IDENTITY":
+        if name != target and not any(
+            e["relationship_type"] == "SAME_LEGAL_ENTITY_AS"
+            and e["related_subject_type"] == subject_type
+            and normalize_legal_name(e["related_subject_name"]) == target
+            for e in matching
+        ):
+            return "Resolved name differs from the queued investor; primary alias evidence required"
+    else:
+        if subject_type != "LEGAL_ENTITY" or not any(
+            e["relationship_type"] in PARENT_RELATIONSHIPS
+            and e["related_subject_type"] == "LEGAL_ENTITY"
+            and normalize_legal_name(e["related_subject_name"]) == target
+            for e in matching
+        ):
+            return "Parent confirmation requires primary evidence linking the resolved parent to the queued investor"
+    return ""
 
 
 def _apply_decision(
@@ -544,7 +593,7 @@ def _apply_decision(
 
     queue = conn.execute(
         """
-        SELECT task_type
+        SELECT task_type, investor_name
         FROM curated_identity_queue
         WHERE queue_id = ?
         """,
@@ -564,10 +613,15 @@ def _apply_decision(
     basis = _clean(decision.get("basis"))
 
     if state == "CONFIRMED":
-        if _primary_evidence_count(conn, queue_id) < 1:
-            raise ValueError(
-                "CONFIRMED curated identity decisions require primary-source evidence"
-            )
+        cited = [dict(row) for row in conn.execute(
+            "SELECT * FROM curated_identity_evidence WHERE queue_id = ?",
+            (queue_id,),
+        ) if row["evidence_id"] in evidence_ids]
+        issue = confirmation_evidence_issue(queue, {
+            **decision, "resolved_subject_name": subject_name,
+        }, cited)
+        if issue:
+            raise ValueError(issue)
         if subject_type not in {"LEGAL_ENTITY", "NATURAL_PERSON"}:
             raise ValueError(
                 "CONFIRMED curated identity decisions require "
@@ -693,6 +747,18 @@ def apply_curated_identity_review(
                 raise ValueError(f"Unknown curated identity queue_id: {queue_id}")
 
             inserted_ids: list[str] = []
+            referenced_ids = item.get("evidence_ids") or []
+            if not isinstance(referenced_ids, list) or not all(
+                isinstance(value, str) for value in referenced_ids
+            ):
+                raise ValueError("evidence_ids must be a list of existing evidence IDs")
+            for evidence_id in referenced_ids:
+                if conn.execute(
+                    "SELECT 1 FROM curated_identity_evidence WHERE evidence_id = ? AND queue_id = ?",
+                    (evidence_id, queue_id),
+                ).fetchone() is None:
+                    raise ValueError("Referenced evidence must belong to this queue item")
+                inserted_ids.append(evidence_id)
             evidence_rows = item.get("evidence") or []
             if not isinstance(evidence_rows, list):
                 raise ValueError("Curated identity evidence must be a list")
@@ -787,6 +853,7 @@ def curated_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
             """
             SELECT
                 queue_id,
+                decision_at,
                 priority,
                 task_type,
                 review_status,
@@ -834,6 +901,27 @@ def curated_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
         )
     ]
 
+    # Reassess legacy confirmations without rewriting reviewed decisions.
+    for item in queue:
+        item["confirmation_gate_status"] = "NOT_CONFIRMED"
+        item["confirmation_gate_reason"] = ""
+        if item["review_status"] == "CONFIRMED":
+            decision = conn.execute(
+                "SELECT * FROM curated_identity_decisions WHERE queue_id = ? "
+                "ORDER BY rowid DESC LIMIT 1", (item["queue_id"],),
+            ).fetchone()
+            ids = set(json.loads(decision["evidence_ids_json"])) if decision else set()
+            evidence = [dict(row) for row in conn.execute(
+                "SELECT * FROM curated_identity_evidence WHERE queue_id = ?",
+                (item["queue_id"],),
+            ) if row["evidence_id"] in ids]
+            issue = confirmation_evidence_issue(item, item, evidence)
+            item["confirmation_gate_status"] = "REQUIRES_EVIDENCE_REVIEW" if issue else "SUPPORTED"
+            item["confirmation_gate_reason"] = issue
+    supported = sum(
+        item["confirmation_gate_status"] == "SUPPORTED"
+        and item["resolved_subject_type"] == "LEGAL_ENTITY" for item in queue
+    )
     total = sum(int(row["records"]) for row in counts)
     confirmed = next(
         (
@@ -882,6 +970,12 @@ def curated_identity_summary(conn: sqlite3.Connection) -> dict[str, object]:
         "status_counts": counts,
         "task_counts": task_counts,
         "evidence_type_counts": evidence_counts,
-        "modeling_ready_curated_records": confirmed_legal_entities,
+        "identity_evidence_supported_curated_records": supported,
+        "confirmations_requiring_evidence_review": sum(
+            item["confirmation_gate_status"] == "REQUIRES_EVIDENCE_REVIEW" for item in queue
+        ),
+        # Compatibility key now fails closed: identity is not modeling eligibility.
+        "modeling_ready_curated_records": 0,
+        "modeling_readiness_status": "NOT_EVALUATED",
         "queue": queue,
     }

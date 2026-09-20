@@ -354,7 +354,7 @@ def _lead_timing(certification_month: str, event_date: str):
     source_date = date.fromisoformat(event_date)
     lead_days = (outcome_date - source_date).days
     if source_date < outcome_date:
-        return "PRE_ENTRY", lead_days
+        return "BEFORE_NOTIFICATION_MONTH", lead_days
     if source_date.year == outcome_date.year and source_date.month == outcome_date.month:
         return "SAME_MONTH", lead_days
     return "AFTER_OUTCOME_MONTH_START", lead_days
@@ -619,7 +619,7 @@ def run_entry_identity_resolution(
     leads = [
         row["lead_days"]
         for row in confirmed
-        if row["timing_status"] == "PRE_ENTRY"
+        if row["timing_status"] == "BEFORE_NOTIFICATION_MONTH"
         and row["lead_days"] is not None
     ]
 
@@ -645,7 +645,7 @@ def run_entry_identity_resolution(
         "unresolved_by_province": _unresolved_by_province(conn, run_id),
         "investor_role_counts": dict(sorted(role_counts.items())),
         "timing_status_counts": dict(sorted(timing_counts.items())),
-        "pre_entry_lead_days": {
+        "notification_lead_days": {
             "count": len(leads),
             "median": statistics.median(leads) if leads else None,
             "p25": (

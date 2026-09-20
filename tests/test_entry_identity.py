@@ -72,7 +72,7 @@ class EntryIdentityTests(unittest.TestCase):
 
     def test_pre_entry_timing(self):
         status, days = _lead_timing("2024-03", "2023-08-15")
-        self.assertEqual(status, "PRE_ENTRY")
+        self.assertEqual(status, "BEFORE_NOTIFICATION_MONTH")
         self.assertGreater(days, 180)
 
         status, days = _lead_timing("2024-03", "2024-03-15")

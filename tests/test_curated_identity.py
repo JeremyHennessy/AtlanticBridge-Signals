@@ -239,7 +239,9 @@ class CuratedIdentityTests(unittest.TestCase):
         self.assertEqual(summary["confirmed_reviews"], 1)
         self.assertEqual(summary["confirmed_legal_entities"], 1)
         self.assertEqual(summary["confirmed_natural_persons"], 0)
-        self.assertEqual(summary["modeling_ready_curated_records"], 1)
+        self.assertEqual(summary["identity_evidence_supported_curated_records"], 1)
+        self.assertEqual(summary["modeling_ready_curated_records"], 0)
+        self.assertEqual(summary["modeling_readiness_status"], "NOT_EVALUATED")
         row = summary["queue"][0]
         self.assertEqual(row["review_status"], "CONFIRMED")
         self.assertEqual(row["primary_evidence_count"], 1)

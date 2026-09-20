@@ -1,0 +1,40 @@
+name: Outcome audit acceptance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["fix/outcome-audit-identity-gate-20260920"]
+    paths:
+      - "src/**"
+      - "scripts/export_outcome_audit.py"
+      - ".github/workflows/outcome-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Reconstruct outcomes and confirmed registry identities
+        run: |
+          mkdir -p audit-output
+          python -m atlanticbridge ingest-investment-canada --db audit-output/audit.sqlite --history > audit-output/history.json
+          python -m atlanticbridge resolve-entry-identities --db audit-output/audit.sqlite --start-month 2019-01 --end-month 2025-12 --gold-limit 100 > audit-output/identity.json
+          python scripts/export_outcome_audit.py --db audit-output/audit.sqlite --output audit-output/cohort.json
+      - name: Retain reproducible audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: outcome-audit-${{ github.sha }}
+          path: audit-output/
+          retention-days: 90
+          if-no-files-found: error
