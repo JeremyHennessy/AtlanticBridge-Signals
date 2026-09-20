@@ -6,6 +6,7 @@ import unittest
 from atlanticbridge.risk_set_controls import (
     activity_similarity,
     add_months,
+    build_control_identity_review_queue,
     build_risk_set_controls,
     validate_risk_set_controls,
 )
@@ -260,6 +261,37 @@ class RiskSetControlTests(unittest.TestCase):
             0,
         )
         validate_risk_set_controls(payload)
+
+    def test_identity_review_queue_is_deduplicated_and_unreviewed(self):
+        payload = build_risk_set_controls(
+            self.records,
+            self.cohorts,
+            self.audit,
+            horizon_months=24,
+            max_controls=5,
+        )
+        review = build_control_identity_review_queue(payload)
+        entity_keys = [
+            row["control_entity_key"]
+            for row in review["records"]
+        ]
+        self.assertEqual(len(entity_keys), len(set(entity_keys)))
+        self.assertEqual(review["record_count"], len(entity_keys))
+        self.assertEqual(review["backtest_control_eligible"], 0)
+        self.assertTrue(all(
+            row["identity_qualification_status"] == "UNREVIEWED"
+            and not row["backtest_control_eligible"]
+            for row in review["records"]
+        ))
+        late = next(
+            row for row in review["records"]
+            if row["investor_name"] == "Late Candidate GmbH"
+        )
+        self.assertEqual(late["investor_locality"], "Berlin")
+        self.assertEqual(
+            late["assigned_candidate_outcome_ids"],
+            [self.candidate.record_id],
+        )
 
     def test_validator_rejects_unreviewed_candidate_promoted_to_backtest(self):
         payload = build_risk_set_controls(
