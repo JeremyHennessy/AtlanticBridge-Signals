@@ -1,9 +1,6 @@
 name: Probe Open Curated Identity Queue
 
 on:
-  push:
-    branches:
-      - "feature/curated-reviews-016"
   workflow_dispatch:
 
 permissions:
