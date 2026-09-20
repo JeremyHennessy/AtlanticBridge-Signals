@@ -26,8 +26,8 @@ Registry projections intentionally contain corporate names, status and activitie
 |---|---:|---|
 | Prior Canadian presence supported by primary or regulatory material | 3 | Bolton, TOPdesk and Bayer Environmental Science: exclude their notification months as assumed first-entry dates |
 | Prior commercial presence supported only by secondary material | 0 | TOPdesk is upgraded by the City of Toronto's primary annual report evidence |
-| Subsidiary founding corroborated by company news | 1 | LINET: legal founding confirmed; first operations still unresolved |
-| Registry establishment only; operating outcome unresolved | 23 | Require dated operational and notification-purpose evidence |
+| Establishment/project-development activity corroborated beyond registry | 2 | LINET founding; Britishvolt pre-notification Canadian project development. Exact first operations remain unresolved |
+| Registry establishment only; operating outcome unresolved | 22 | Require dated operational and notification-purpose evidence |
 | Exact first Canadian operating dates established | 0 | No positive first-entry labels promoted |
 | Cases eligible for first-entry model training from this audit | 0 | Unresolved is not a negative outcome |
 
@@ -43,7 +43,9 @@ All 27 selected federal events are incorporations. Twenty-five occurred before t
 
 **LINET:** [official group news dated 2019-10-21](https://www.wi-bo.com/de/Linet/news/news-and-press-releases/2019/New-Subsidiary-in-Canada-will-Share-Clinical-Experience) corroborates founding on 2019-02-21 and describes forthcoming Canadian support and partner coordination. The publication falls in the notification month. It does not prove that this evidence was publicly available before operations began.
 
-The case review is complete as a disposition of the available evidence, not an exhaustive reconstruction of every operating history. The 24 unresolved cases have explicit next research questions in the JSON. Acquisition, reorganization, delayed notification, never-started operations and first operating entry are not assigned without supporting evidence.
+**Britishvolt Canada:** the federal [Registry of Lobbyists](https://lobbycanada.gc.ca/app/secure/ocl/lrs/do/vwRg?cno=368941&regId=910086) shows a Canadian company registration beginning 2021-03-09, before the June 2021 Investment Canada notification, seeking federal support for construction of a battery manufacturing plant. EY's [13 March 2023 administrators' proposals](https://www.ey.com/content/dam/ey-unified-site/ey-com/en-uk/campaigns/administrations/documents/ey-pbv-proposals.pdf) report that the Canadian company employed one person, was set up to explore the potential for a Canadian battery manufacturing facility, and remained in early-stage development. This establishes Canadian project-development presence but not a completed manufacturing entry or an exact first-operating date. The federal corporation was later dissolved on 2025-01-10.
+
+The case review is complete as a disposition of the available evidence, not an exhaustive reconstruction of every operating history. Twenty-two cases remain registry-only; other rows have stronger descriptive evidence but still lack a model-eligible first-entry date. Acquisition, reorganization, delayed notification, never-started operations and first operating entry are not assigned without supporting evidence.
 
 ## Every case
 
@@ -63,7 +65,7 @@ The case review is complete as a disposition of the available evidence, not an e
 | Max Neusser / HANECS Canada Inc. | [12689481](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12689481.json?lang=eng) | 2021-02 | 2021-01-28 | 4 | Unresolved |
 | conTeyor International NV / conTeyor Canada Ltd. | [12527430](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12527430.json?lang=eng) | 2021-03 | 2020-11-27 | 94 | Unresolved |
 | Trillium Supply Chain Inc. | [11681460](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/11681460.json?lang=eng) | 2021-04 | 2019-10-15 | 534 | Unresolved |
-| Power by Britishvolt Limited / Britishvolt Canada Inc. | [12720914](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12720914.json?lang=eng) | 2021-06 | 2021-02-08 | 113 | Unresolved |
+| Power by Britishvolt Limited / Britishvolt Canada Inc. | [12720914](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12720914.json?lang=eng) | 2021-06 | 2021-02-08 | 113 | Pre-notification project development corroborated; manufacturing entry unresolved |
 | Pegasi Oy / Pegasi IAM Canada Inc. | [13072681](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13072681.json?lang=eng) | 2021-07 | 2021-06-03 | 28 | Unresolved |
 | Aiut sp. z.o.o. / Aiut Inc. | [12934345](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/12934345.json?lang=eng) | 2021-08 | 2021-04-18 | 105 | Unresolved |
 | Bayer CropScience Inc. / 2022 Environmental Science CA Inc. | [13679624](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/13679624.json?lang=eng) | 2022-04 | 2022-01-13 | 78 | Existing Canadian business; transfer/reorganization supported |
@@ -112,6 +114,6 @@ Local validation: **77 tests passed**. Regression coverage includes wrong-subjec
 ## Next work
 
 1. Resolve the remaining Bolton legal parent-link gap, preserving all prior decisions.
-2. Resolve the TVM Ventures VIII versus Innovation II portfolio relationship before classifying Ocellaris or Acanthas, then establish operational milestones for inactive entities and the remaining unresolved cases. TOPdesk and Bayer Environmental Science are now excluded as assumed notification-month first entries; their exact first-operating dates and notification purposes remain unresolved. Record first operations, evidence publication/availability and notification purpose separately, at the precision the sources support.
+2. Resolve the TVM Ventures VIII versus Innovation II portfolio relationship before classifying Ocellaris or Acanthas, then establish operational milestones for the remaining inactive entities and unresolved cases. TOPdesk and Bayer Environmental Science are now excluded as assumed notification-month first entries; their exact first-operating dates and notification purposes remain unresolved. Record first operations, evidence publication/availability and notification purpose separately, at the precision the sources support.
 3. For cases with defensible outcome dates and historical identity chains, construct matched controls and enforce publication cutoffs. Missing evidence remains unresolved; it does not become a negative label.
 4. Validate incremental predictive lift before assigning Expansion Likelihood weights. Keep Nova Scotia Fit and Evidence Confidence separate.
