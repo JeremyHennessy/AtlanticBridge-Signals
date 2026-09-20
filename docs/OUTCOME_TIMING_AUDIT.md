@@ -17,6 +17,7 @@ Machine-readable evidence and decisions:
 - [Baseline acceptance summary and queue](../reviews/outcome_audit/2026-09-20-baseline.json)
 - [All 27 reviewed cases](../reviews/outcome_audit/2026-09-20-cases.json), including notification node IDs, source URLs, source hashes, corporation-name/activity projections and individual follow-up notes
 - [All 12 historical identity approval dispositions](../reviews/outcome_audit/2026-09-20-identity-dispositions.json)
+- [Interval-censored operation windows](../reviews/outcome_audit/2026-09-20-operation-windows.json), preserving operating-by/coarse-period bounds separately from the exact first-operation target; see [OPERATION_WINDOW_AUDIT.md](OPERATION_WINDOW_AUDIT.md)
 
 Registry projections intentionally contain corporate names, status and activities. Their accompanying raw-response hashes identify the complete fetched response; projections are not represented as the complete hashed payload. The acceptance workflow retains complete source responses separately for 90 days.
 
