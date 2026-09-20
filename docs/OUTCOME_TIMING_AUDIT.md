@@ -91,6 +91,12 @@ The case review is complete as a disposition of the available evidence, not an e
 | Vaxxinova International B.V. / Vaxxinova Canada, Inc. | [16220801](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/16220801.json?lang=eng) | 2025-05 | 2024-07-18 | 287 | Unresolved |
 | Bolton BG Canada Inc. | [9996672](https://www.ic.gc.ca/app/scr/cc/CorporationsCanada/api/corporations/9996672.json?lang=eng) | 2025-10 | 2016-11-24 | 3233 | Prior presence supported |
 
+## TVM Ventures VIII / Innovation II fund-chain disposition
+
+The Ocellaris and Acanthas records now carry a dedicated cross-name fund-chain audit. Bukwang's contemporaneous 2019 investor material calls its LP participation **TVM Life Science Innovation II**, while its later filed annual report labels the asset Innovation II and states that the LP contract was entered into with **TVM Life Science Ventures VIII**. A 2019 Minnesota Life statement independently reports Innovation II with **TVM Life Science Ventures VIII (GP) S.a.r.l.** in the manager/general-partner field. SEC filings separately establish the 2019 Ventures VIII legal name/GP and the January 2020 Innovation II legal name/GP.
+
+This supports a cross-name economic commitment and the TVM portfolio relationship, but not a legal `SAME_LEGAL_ENTITY_AS` assertion or formal rename. Both Canadian outcomes remain `UNRESOLVED`, with no first-operation date and no model eligibility. See [TVM_FUND_CHAIN_AUDIT.md](TVM_FUND_CHAIN_AUDIT.md).
+
 ## Identity evidence gate
 
 The previous gate accepted any primary evidence on a queue item, including evidence about another subject. Confirmation now requires explicitly cited evidence matching the resolved subject type, full normalized legal name, jurisdiction and any declared identifier. Normalization removes punctuation and spacing, not words or legal suffixes. A changed name requires an explicit primary-source `SAME_LEGAL_ENTITY_AS` assertion. Parent tasks require an explicit allowed parent relationship to the exact queued legal entity. Contradictory cited identity attributes fail confirmation.
@@ -123,7 +129,7 @@ Local validation: **77 tests passed**. Regression coverage includes wrong-subjec
 
 ## Next work
 
-1. Resolve the TVM Ventures VIII versus Innovation II portfolio relationship before classifying Ocellaris or Acanthas, preserving the distinction between the named Investment Canada investor and the portfolio fund shown by TVM.
-2. Establish operational milestones for the remaining inactive entities and unresolved cases. TOPdesk and Bayer Environmental Science are now excluded as assumed notification-month first entries; their exact first-operating dates and notification purposes remain unresolved. Record first operations, evidence publication/availability and notification purpose separately, at the precision the sources support.
+1. Continue operational-history reconstruction for the remaining inactive entities and unresolved cases. Ocellaris and Acanthas stay excluded: their cross-name TVM fund commitment is supported, but Luxembourg legal-name equivalence and first operations remain unverified.
+2. Obtain Luxembourg register/name-history evidence before recording any TVM Ventures VIII ↔ Innovation II legal alias; do not block unrelated case research on that registry-specific question. TOPdesk and Bayer Environmental Science are now excluded as assumed notification-month first entries; their exact first-operating dates and notification purposes remain unresolved. Record first operations, evidence publication/availability and notification purpose separately, at the precision the sources support.
 3. For cases with defensible outcome dates and historical identity chains, construct matched controls and enforce publication cutoffs. Missing evidence remains unresolved; it does not become a negative label.
 4. Validate incremental predictive lift before assigning Expansion Likelihood weights. Keep Nova Scotia Fit and Evidence Confidence separate.

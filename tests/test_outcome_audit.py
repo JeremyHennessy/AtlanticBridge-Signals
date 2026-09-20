@@ -63,3 +63,26 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertEqual(summary['timing_status_counts'], [{'timing_status': 'BEFORE_NOTIFICATION_MONTH', 'records': 27}])
         self.assertTrue(all(r['timing_status'] == 'BEFORE_NOTIFICATION_MONTH' for r in summary['gold_cohort']))
         self.assertEqual(self.conn.execute("SELECT COUNT(*) FROM entry_identity_matches WHERE timing_status = 'PRE_ENTRY'").fetchone()[0], 27)
+
+    def test_tvm_cross_name_fund_evidence_does_not_promote_outcomes(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        cases = [
+            case for case in payload['cases']
+            if case['investor_name'] == 'TVM Life Science Ventures VIII SCSp'
+        ]
+        self.assertEqual(
+            {case['canadian_business_name'] for case in cases},
+            {'Ocellaris Pharma Inc.', 'Acanthas Pharma Inc.'},
+        )
+        for case in cases:
+            self.assertEqual(case['outcome_classification'], 'UNRESOLVED')
+            self.assertIsNone(case['first_canadian_operations_date'])
+            self.assertFalse(case['model_eligible'])
+            supports = {e['supports'] for e in case['additional_evidence']}
+            self.assertIn('CROSS_NAME_FUND_COMMITMENT_SUPPORTED', supports)
+            self.assertIn('LEGAL_ENTITY_EQUIVALENCE_UNVERIFIED', supports)
+            self.assertIn('no legal SAME_LEGAL_ENTITY_AS', case['audit_note'])
+

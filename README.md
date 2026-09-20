@@ -149,8 +149,8 @@ python -m atlanticbridge apply-curated-identity-review \
 
 ## Next source sequence
 
-1. Resolve the TVM Ventures VIII/Innovation II portfolio relationship and continue the 27-case operational-history audit
-2. Obtain authorized provincial registry access for unresolved non-federal entry entities
+1. Continue the 27-case operational-history audit; keep Ocellaris/Acanthas excluded while TVM Ventures VIII ↔ Innovation II legal-name equivalence remains unverified
+2. Obtain Luxembourg name-history evidence for the TVM legal-alias question and authorized provincial registry access for unresolved non-federal entry entities
 3. Historical CIPO bulk backfill once secure bulk transport is available
 4. Build matched non-entrant controls and event-time backtests on confirmed identities before any score weights
 
