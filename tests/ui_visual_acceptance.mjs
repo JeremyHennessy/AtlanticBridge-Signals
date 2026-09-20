@@ -273,6 +273,7 @@ async function runIphone() {
   const row = page.locator(`#cases-body tr.case-row[data-case-id="${firstWithEvidence.id}"]`);
   await row.click();
   await page.locator("#case-drawer.open").waitFor({ state: "visible", timeout: 5000 });
+  await page.waitForTimeout(250);
   const drawerBox = await page.locator("#case-drawer").boundingBox();
   record(
     "iphone: drawer fits viewport",
