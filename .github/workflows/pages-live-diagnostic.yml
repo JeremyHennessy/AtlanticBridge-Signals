@@ -1,0 +1,38 @@
+name: Pages live path diagnostic
+
+on:
+  push:
+    branches: ["test/pages-live-path-diagnostic-*"]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe deployed paths
+        run: |
+          set +e
+          for url in \
+            "https://jeremyhennessy.github.io/AtlanticBridge-Signals/" \
+            "https://jeremyhennessy.github.io/AtlanticBridge-Signals/index.html" \
+            "https://jeremyhennessy.github.io/AtlanticBridge-Signals/app.js" \
+            "https://jeremyhennessy.github.io/AtlanticBridge-Signals/data/dashboard.json" \
+            "https://jeremyhennessy.github.io/AtlanticBridge-Signals/ui/" \
+            "https://jeremyhennessy.github.io/AtlanticBridge-Signals/ui/index.html" \
+            "https://jeremyhennessy.github.io/AtlanticBridge-Signals/ui/app.js" \
+            "https://jeremyhennessy.github.io/AtlanticBridge-Signals/ui/data/dashboard.json" \
+            "https://jeremyhennessy.github.io/atlanticbridge-signals/" \
+            "https://jeremyhennessy.github.io/atlanticbridge-signals/data/dashboard.json"
+          do
+            echo "===== $url ====="
+            curl -sS -L -D /tmp/headers -o /tmp/body "$url"
+            status=$(awk 'toupper($1) ~ /^HTTP\// {code=$2} END{print code}' /tmp/headers)
+            ctype=$(grep -i "^content-type:" /tmp/headers | tail -1 | tr -d "\r")
+            final=$(curl -sS -L -o /dev/null -w "%{url_effective}" "$url")
+            bytes=$(wc -c < /tmp/body)
+            echo "status=$status final=$final bytes=$bytes $ctype"
+            head -c 180 /tmp/body | tr "\n" " "
+            echo
+          done
