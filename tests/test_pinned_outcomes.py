@@ -79,6 +79,17 @@ class PinnedOutcomeTests(unittest.TestCase):
         self.assertEqual(evidence['OFFICIAL_FEDERAL_REGISTRY_EVENT']['supports'], 'DISCONTINUED_TO_ONTARIO_NOT_DISSOLVED')
         self.assertEqual(evidence['OFFICIAL_COMPANY_SITE']['supports'], 'CURRENT_CANADIAN_OFFICE_FOOTPRINT_NOT_EVENT_TIME')
 
+    def test_reebelo_was_commercially_present_before_august_2023_notification(self):
+        case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == '5a207dc535fcf72737ecad67b62415bef3e25cd284e702ca1c3e2a2c8e73b8f6')
+        self.assertEqual(case['outcome_classification'], 'EXISTING_CANADIAN_PRESENCE')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        evidence = {e['source_type']: e for e in case['additional_evidence']}
+        self.assertEqual(evidence['OFFICIAL_COMPANY_HELP_CENTER']['event_date'], '2023-07-05')
+        self.assertEqual(evidence['OFFICIAL_COMPANY_HELP_CENTER']['supports'], 'COMMERCIAL_PRESENCE_BY_DATE_NOT_FIRST_ENTRY_DATE')
+        self.assertEqual(evidence['OFFICIAL_GOVERNMENT_IP_RECORD']['source_date'], '2023-01-13')
+        self.assertEqual(evidence['OFFICIAL_GOVERNMENT_IP_RECORD']['supports'], 'PRE_NOTIFICATION_CANADA_MARKET_INTENT_NOT_OPERATIONS')
+
     def test_refresh_verifies_both_sources_and_fails_on_event_change(self):
         c = self.payload['cases'][0]
         record = SimpleNamespace(record_id=c['outcome_record_id'], is_new_business=True,
