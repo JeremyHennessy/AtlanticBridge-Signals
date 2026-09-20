@@ -27,6 +27,10 @@ A company with an acquisition or any other Investment Canada record inside the
 risk window is excluded even if its first new-business notification occurs
 later.
 
+A later audited entry candidate may serve as a control for an earlier candidate
+before its own event. This is intentional risk-set sampling: control status is
+time-indexed, not a permanent company label.
+
 ## Interpretation
 
 A matched control means only:
