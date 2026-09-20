@@ -1,0 +1,129 @@
+[
+  {
+    "queue_id": "9435366147374ee6d27b870f5b4ee988353f618e4218d8056a887ee7f184445e",
+    "evidence": [
+      {
+        "evidence_type": "OFFICIAL_COMPANY_SITE",
+        "source_url": "https://www.bayer.com/sites/default/files/2025-06/bayer-modern-slavery-submission-reporting-year-2024.pdf",
+        "source_title": "Bayer Modern Slavery Statement 2024 - Canadian Annex",
+        "source_publisher": "Bayer AG",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "Bayer AG",
+        "jurisdiction": "DE",
+        "identifier_type": "",
+        "identifier_value": "",
+        "relationship_type": "ULTIMATE_PARENT_OF",
+        "related_subject_type": "LEGAL_ENTITY",
+        "related_subject_name": "Bayer CropScience Inc.",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Bayer's official Canadian annex states that Bayer Inc. and Bayer CropScience Inc. are Canadian operating entities in the Bayer Group and that their ultimate parent is Bayer AG."
+      }
+    ],
+    "decision": {
+      "state": "CONFIRMED",
+      "resolved_subject_type": "LEGAL_ENTITY",
+      "resolved_subject_name": "Bayer AG",
+      "resolved_jurisdiction": "DE",
+      "resolved_identifier_type": "",
+      "resolved_identifier_value": "",
+      "basis": "Official Bayer group filing explicitly identifies Bayer AG as the ultimate parent of Bayer CropScience Inc."
+    }
+  },
+  {
+    "queue_id": "e01b2c3c9b3bc7aeeece31312cc9b3a770a32d83b5f72ee7439c3ba08981d9af",
+    "evidence": [
+      {
+        "evidence_type": "OFFICIAL_COMPANY_SITE",
+        "source_url": "https://reebelo.sg/policies/terms-of-service",
+        "source_title": "Terms of Service - Reebelo Singapore",
+        "source_publisher": "Quista Technology Pte. Ltd. / Reebelo",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "QUISTA TECHNOLOGY PTE. LTD.",
+        "jurisdiction": "SG",
+        "identifier_type": "UEN",
+        "identifier_value": "201933043D",
+        "relationship_type": "",
+        "related_subject_type": "UNKNOWN",
+        "related_subject_name": "",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Official Reebelo terms identify QUISTA TECHNOLOGY PTE. LTD. as a Singapore-incorporated company, company number 201933043D, with registered office at 68 Circular Road #02-01, Singapore 049422."
+      },
+      {
+        "evidence_type": "OFFICIAL_GOVERNMENT_FILING",
+        "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/2237254",
+        "source_title": "REEBELO — Canadian trademark application 2237254",
+        "source_publisher": "Canadian Intellectual Property Office",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "QUISTA TECHNOLOGY PTE. LTD.",
+        "jurisdiction": "SG",
+        "identifier_type": "CIPO_APPLICATION",
+        "identifier_value": "2237254",
+        "relationship_type": "",
+        "related_subject_type": "UNKNOWN",
+        "related_subject_name": "",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Official CIPO record lists QUISTA TECHNOLOGY PTE. LTD., 68 Circular Road #02-01, Singapore 049422, as the old owner of the REEBELO mark."
+      }
+    ],
+    "decision": {
+      "state": "CONFIRMED",
+      "resolved_subject_type": "LEGAL_ENTITY",
+      "resolved_subject_name": "QUISTA TECHNOLOGY PTE. LTD.",
+      "resolved_jurisdiction": "SG",
+      "resolved_identifier_type": "UEN",
+      "resolved_identifier_value": "201933043D",
+      "basis": "Official company terms and an independent CIPO government filing confirm the named Singapore legal entity and address."
+    }
+  },
+  {
+    "queue_id": "739437765a0e4825a42fefda65fd5eeaecf4633576bdae0fb8a5d7094d97d109",
+    "evidence": [
+      {
+        "evidence_type": "OFFICIAL_GOVERNMENT_FILING",
+        "source_url": "https://trasparenza.cittametropolitana.torino.it/media/10392/download",
+        "source_title": "Atto DD 777 - Città Metropolitana di Torino",
+        "source_publisher": "Città Metropolitana di Torino",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "SD2 Engineering Services società tra professionisti a R.L.",
+        "jurisdiction": "IT",
+        "identifier_type": "VAT",
+        "identifier_value": "12368010018",
+        "relationship_type": "",
+        "related_subject_type": "UNKNOWN",
+        "related_subject_name": "",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Official Turin metropolitan-government procurement act identifies SD2 Engineering Services società tra professionisti a R.L., Via Pianezza 13, Torino, P.IVA 12368010018."
+      },
+      {
+        "evidence_type": "OFFICIAL_COMPANY_SITE",
+        "source_url": "https://www.sd2engineering.com/",
+        "source_title": "SD2 Engineering Services - official company website",
+        "source_publisher": "SD2 Engineering Services",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "SD2 Engineering Services S.r.l.",
+        "jurisdiction": "IT",
+        "identifier_type": "",
+        "identifier_value": "",
+        "relationship_type": "",
+        "related_subject_type": "UNKNOWN",
+        "related_subject_name": "",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "Official company website identifies SD2 Engineering Services S.r.l. at Via Pianezza 13, 10149 Torino, matching the government procurement record and Investment Canada locality."
+      }
+    ],
+    "decision": {
+      "state": "CONFIRMED",
+      "resolved_subject_type": "LEGAL_ENTITY",
+      "resolved_subject_name": "SD2 Engineering Services società tra professionisti a R.L.",
+      "resolved_jurisdiction": "IT",
+      "resolved_identifier_type": "VAT",
+      "resolved_identifier_value": "12368010018",
+      "basis": "Official government procurement evidence and the company's official site corroborate the named Turin engineering legal entity."
+    }
+  }
+]
