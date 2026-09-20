@@ -4,6 +4,8 @@ from collections import Counter
 from pathlib import Path
 import json
 
+from atlanticbridge.outcome_evidence import evidence_publication_status
+
 ROOT = Path(__file__).resolve().parents[1]
 CASES_PATH = ROOT / "reviews" / "outcome_audit" / "2026-09-20-cases.json"
 IDENTITY_PATH = ROOT / "reviews" / "outcome_audit" / "2026-09-20-identity-dispositions.json"
@@ -21,11 +23,21 @@ def build_payload() -> dict:
         for case in cases
         for evidence in case.get("additional_evidence", [])
     )
+    publication_status_counts = Counter()
+    cases_with_verified_pre_notification_evidence = 0
 
     ui_cases = []
     for case in cases:
         evidence = []
+        verified_pre_notification_evidence_count = 0
         for item in case.get("additional_evidence", []):
+            publication_status = evidence_publication_status(
+                item,
+                case["notification_month"],
+            )
+            publication_status_counts[publication_status] += 1
+            if publication_status == "VERIFIED_BEFORE_NOTIFICATION_MONTH":
+                verified_pre_notification_evidence_count += 1
             evidence.append(
                 {
                     "source_url": item.get("source_url"),
@@ -36,8 +48,22 @@ def build_payload() -> dict:
                     "event_date_precision": item.get("event_date_precision"),
                     "claim": item.get("claim"),
                     "supports": item.get("supports"),
+                    "publicly_available_date": item.get("publicly_available_date"),
+                    "publicly_available_date_precision": item.get(
+                        "publicly_available_date_precision"
+                    ),
+                    "publicly_available_date_basis": item.get(
+                        "publicly_available_date_basis"
+                    ),
+                    "publicly_available_date_source_url": item.get(
+                        "publicly_available_date_source_url"
+                    ),
+                    "publication_status": publication_status,
                 }
             )
+
+        if verified_pre_notification_evidence_count:
+            cases_with_verified_pre_notification_evidence += 1
 
         ui_cases.append(
             {
@@ -56,6 +82,8 @@ def build_payload() -> dict:
                 "model_eligible": bool(case.get("model_eligible")),
                 "audit_note": case.get("audit_note"),
                 "evidence_count": len(evidence),
+                "verified_pre_notification_evidence_count":
+                    verified_pre_notification_evidence_count,
                 "evidence": evidence,
             }
         )
@@ -97,6 +125,11 @@ def build_payload() -> dict:
             "source_type_counts": dict(
                 source_type_counts.most_common()
             ),
+            "publication_status_counts": dict(
+                sorted(publication_status_counts.items())
+            ),
+            "cases_with_verified_pre_notification_evidence":
+                cases_with_verified_pre_notification_evidence,
         },
         "cases": ui_cases,
     }
