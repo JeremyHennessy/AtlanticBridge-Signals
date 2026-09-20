@@ -177,3 +177,23 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('Neither source gives', case['audit_note'])
         self.assertIn('first sale', case['audit_note'])
 
+    def test_leadership_establishment_year_does_not_order_notification_or_services(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'Leadership Pipeline Institute Canada Inc.'
+        )
+        self.assertEqual(
+            case['outcome_classification'],
+            'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED',
+        )
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('CANADIAN_SUBSIDIARY_ESTABLISHMENT_DURING_2023', supports)
+        self.assertIn('cannot order establishment relative to the September 2023', case['audit_note'])
+        self.assertIn('first Canadian training, consulting or service date', case['audit_note'])
+

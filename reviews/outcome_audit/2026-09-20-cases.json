@@ -1547,13 +1547,24 @@
       "federal_event_date": "2023-08-09",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 23,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Leadership Pipeline Institute A/S (CVR 29971463) is confirmed as the 100%-owning parent of Leadership Pipeline Institute Canada Inc. through its audited 2023 Danish annual report. Identity/ownership is resolved; a dated start of Canadian training, consulting or other local services remains unestablished, so incorporation is not treated as first operations.",
-      "additional_evidence": []
+      "audit_note": "Leadership Pipeline Institute A/S (CVR 29971463) is confirmed as the 100%-owning parent of Leadership Pipeline Institute Canada Inc. The audited 2023 annual report filed through Denmark's Virk states that during 2023 the group expanded with new subsidiaries in the UK and Canada, and Note 6 lists Leadership Pipeline Institute Canada Inc., Canada, with CAD 100 share capital and 100% ownership. This corroborates Canadian subsidiary establishment during 2023, but the report provides only year precision and was adopted in 2024, so it cannot order establishment relative to the September 2023 Investment Canada notification or establish the first Canadian training, consulting or service date. Keep first_canadian_operations_date unset and the case model-ineligible.",
+      "additional_evidence": [
+        {
+          "source_url": "https://regnskaber.virk.dk/36417992/amNsb3VkczovLzAzL2U2Lzc4LzY1LzJmL2M5ZjktNDY4MS1hOWFjLTQwNGNjNzVkZjA4NQ.pdf",
+          "source_type": "OFFICIAL_GOVERNMENT_FILING",
+          "source_date": "2024-05-31",
+          "source_date_basis": "Annual report adoption date; management review describes the 2023 financial year",
+          "event_date": "2023",
+          "event_date_precision": "YEAR",
+          "claim": "Leadership Pipeline Institute A/S states that during 2023 its business expanded with new subsidiaries in the UK and Canada; Note 6 identifies Leadership Pipeline Institute Canada Inc. as a 100%-owned Canadian subsidiary.",
+          "supports": "CANADIAN_SUBSIDIARY_ESTABLISHMENT_DURING_2023"
+        }
+      ]
     },
     {
       "outcome_record_id": "5640d5839f0068a44dcad83527bab4277e4b32fbb277f09cc1b67ec8d50b8584",
