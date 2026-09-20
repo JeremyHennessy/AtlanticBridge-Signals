@@ -880,13 +880,34 @@
       "federal_event_date": "2021-04-18",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 105,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "AIUT foreign identity is supported. First Canadian operational work and historical relationship to Aiut Inc. still need dated evidence.",
-      "additional_evidence": []
+      "audit_note": "AIUT's official company history records opening a Canadian branch in 2021. Its branch announcement identifies AIUT Inc. in Canada and describes a local competence centre providing direct customer support and ongoing project/service supervision. The accessible primary sources do not expose an exact branch-opening date, so the milestone cannot be ordered relative to the August 2021 notification and the exact first Canadian project or service date remains unresolved.",
+      "additional_evidence": [
+        {
+          "source_url": "https://aiut.com/en/about-us/",
+          "source_type": "OFFICIAL_COMPANY_HISTORY",
+          "source_date": "2021",
+          "source_date_basis": "Company-history milestone year; exact branch-opening date is not stated",
+          "claim": "AIUT's official history records opening a branch in Canada in 2021.",
+          "event_date": "2021",
+          "event_date_precision": "YEAR",
+          "supports": "CANADIAN_BRANCH_ESTABLISHMENT_YEAR_ONLY"
+        },
+        {
+          "source_url": "https://aiut.com/us/aiut-has-opened-a-new-branch-in-canada/",
+          "source_type": "OFFICIAL_COMPANY_ANNOUNCEMENT",
+          "source_date": null,
+          "source_date_basis": "Accessible page does not expose an exact publication date",
+          "claim": "AIUT identifies AIUT Inc. in Canada and describes a local competence centre providing direct customer support and supervision of company projects.",
+          "event_date": "2021",
+          "event_date_precision": "YEAR",
+          "supports": "LOCAL_CANADIAN_PROJECT_SERVICE_CAPABILITY_YEAR_ONLY"
+        }
+      ]
     },
     {
       "outcome_record_id": "814a591396e8a1ef40318eefe89e7c27c15c6bcdabb0dbe5100da163c89c4b58",

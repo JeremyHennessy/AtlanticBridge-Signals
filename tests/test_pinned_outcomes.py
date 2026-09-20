@@ -56,6 +56,19 @@ class PinnedOutcomeTests(unittest.TestCase):
         self.assertEqual(evidence['OFFICIAL_GOVERNMENT_REGULATORY_DECISION']['registration_number'], '32800')
         self.assertEqual(evidence['OFFICIAL_GOVERNMENT_REGULATORY_DECISION']['supports'], 'PRODUCT_REGISTRATION_CONTINUITY_POST_TRANSFER')
 
+    def test_aiut_branch_establishment_is_year_only_and_not_ordered_before_notification(self):
+        case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == 'd49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c')
+        self.assertEqual(case['outcome_classification'], 'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        evidence = {e['source_type']: e for e in case['additional_evidence']}
+        self.assertEqual(evidence['OFFICIAL_COMPANY_HISTORY']['event_date'], '2021')
+        self.assertEqual(evidence['OFFICIAL_COMPANY_HISTORY']['event_date_precision'], 'YEAR')
+        self.assertEqual(
+            evidence['OFFICIAL_COMPANY_ANNOUNCEMENT']['supports'],
+            'LOCAL_CANADIAN_PROJECT_SERVICE_CAPABILITY_YEAR_ONLY',
+        )
+
     def test_britishvolt_is_project_development_not_assumed_manufacturing_entry(self):
         case = next(c for c in self.payload['cases'] if c['outcome_record_id'] == 'a13912957fb3e46e6b11603fb55da3d3cc080240b51814ff8a3b937eebcf046a')
         self.assertEqual(case['outcome_classification'], 'ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED')
