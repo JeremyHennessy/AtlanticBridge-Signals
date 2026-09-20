@@ -1,0 +1,49 @@
+name: Outcome audit acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      full_history:
+        description: Rebuild the full historical cohort as well as refreshing pinned cases
+        type: boolean
+        default: false
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/atlanticbridge/curated_identity.py"
+      - "src/atlanticbridge/entry_identity.py"
+      - "scripts/*outcome*.py"
+      - "reviews/outcome_audit/**"
+      - ".github/workflows/outcome-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Refresh all pinned notification and registry cases
+        run: python scripts/refresh_outcome_cases.py --output audit-output/pinned
+      - name: Reconstruct full historical cohort
+        if: ${{ inputs.full_history == true }}
+        run: |
+          python -m atlanticbridge ingest-investment-canada --db audit-output/audit.sqlite --history > audit-output/history.json
+          python -m atlanticbridge resolve-entry-identities --db audit-output/audit.sqlite --start-month 2019-01 --end-month 2025-12 --gold-limit 100 > audit-output/identity.json
+          python scripts/export_outcome_audit.py --db audit-output/audit.sqlite --output audit-output/cohort.json
+      - name: Retain reproducible audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: outcome-audit-${{ github.sha }}
+          path: audit-output/
+          retention-days: 90
+          if-no-files-found: error

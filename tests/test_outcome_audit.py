@@ -1,0 +1,65 @@
+from contextlib import redirect_stdout
+import hashlib
+from importlib.util import module_from_spec, spec_from_file_location
+import io
+import json
+from pathlib import Path
+import sqlite3
+import tempfile
+import unittest
+
+from atlanticbridge.entry_identity import ensure_entry_identity_schema, entry_identity_summary
+
+spec = spec_from_file_location('export_outcome_audit', Path(__file__).resolve().parents[1] / 'scripts/export_outcome_audit.py')
+audit = module_from_spec(spec)
+spec.loader.exec_module(audit)
+
+
+class OutcomeAuditTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.db = Path(self.tmp.name) / 'audit.sqlite'
+        self.conn = sqlite3.connect(self.db)
+        self.conn.row_factory = sqlite3.Row
+        ensure_entry_identity_schema(self.conn)
+        self.conn.execute('CREATE TABLE investment_canada_notifications (record_id TEXT, source_url TEXT, investor_node_id TEXT, notification_type TEXT)')
+        self.conn.execute("INSERT INTO entry_identity_runs VALUES ('run', '2019-01', '2025-12', 'a', 1, 'b', 1, 27, 140, 20, '2026-09-20')")
+        columns = self.conn.execute('PRAGMA table_info(entry_identity_matches)').fetchall()
+        raw = json.dumps({'activities': [{'activity': {'activity': 'Incorporation', 'date': '2019-02-21'}}]})
+        for i in range(27):
+            row = {c['name']: 0 if c['type'] == 'INTEGER' else '' for c in columns}
+            row.update(run_id='run', outcome_record_id=str(i), certification_month='2019-10',
+                       investor_name=f'Investor {i}', source_businesses_json='[]',
+                       detail_status='FEDERAL_ENTITY_CONFIRMED', detail_raw_json=raw,
+                       detail_raw_hash=hashlib.sha256(raw.encode()).hexdigest(),
+                       federal_event_type='Incorporation', federal_event_date='2019-02-21',
+                       timing_status='PRE_ENTRY', lead_days_to_outcome_month_start=222,
+                       gold_selected=int(i < 20), gold_rank=i+1)
+            self.conn.execute(f"INSERT INTO entry_identity_matches ({','.join(row)}) VALUES ({','.join('?' for _ in row)})", list(row.values()))
+            self.conn.execute('INSERT INTO investment_canada_notifications VALUES (?, ?, ?, ?)', (str(i), 'https://example.test', str(i), 'New Business'))
+        self.conn.commit()
+
+    def tearDown(self):
+        self.conn.close()
+        self.tmp.cleanup()
+
+    def test_all_confirmations_exported_without_gold_sample_truncation(self):
+        with redirect_stdout(io.StringIO()):
+            payload = audit.export_audit(self.db, Path(self.tmp.name) / 'result.json')
+        self.assertEqual(payload['case_count'], 27)
+        self.assertEqual(len({c['outcome_record_id'] for c in payload['cases']}), 27)
+        self.assertTrue(all(not c['model_eligible'] and c['first_canadian_operations_date'] is None for c in payload['cases']))
+        self.assertEqual(payload['cases'][0]['notification_timing'], 'BEFORE_NOTIFICATION_MONTH')
+        self.assertEqual(payload['cases'][0]['days_before_notification_month'], 222)
+
+    def test_tampered_registry_payload_fails_export(self):
+        self.conn.execute("UPDATE entry_identity_matches SET detail_raw_json = '{}' WHERE outcome_record_id = '0'")
+        self.conn.commit()
+        with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+            audit.export_audit(self.db, Path(self.tmp.name) / 'bad.json')
+
+    def test_legacy_summary_corrects_label_without_rewriting_stored_evidence(self):
+        summary = entry_identity_summary(self.conn)
+        self.assertEqual(summary['timing_status_counts'], [{'timing_status': 'BEFORE_NOTIFICATION_MONTH', 'records': 27}])
+        self.assertTrue(all(r['timing_status'] == 'BEFORE_NOTIFICATION_MONTH' for r in summary['gold_cohort']))
+        self.assertEqual(self.conn.execute("SELECT COUNT(*) FROM entry_identity_matches WHERE timing_status = 'PRE_ENTRY'").fetchone()[0], 27)

@@ -29,6 +29,8 @@ The initial positive outcome is:
 
 Acquisitions are retained but treated as a separate outcome class.
 
+These are notification labels, not yet validated first-entry labels. A company may already have Canadian operations before a new-business notification. Before a record enters a first-entry evaluation, audit its prior Canadian presence, the meaning of the notified business event, and the public availability dates of candidate signals. Incorporation, amalgamation and continuance dates are distinct from first-operation dates. Unresolved cases are excluded from model eligibility, not relabelled as negative outcomes.
+
 ## First analysis design
 
 1. Ingest the complete paginated Investment Canada historical index and deduplicate source views using stable source node IDs.

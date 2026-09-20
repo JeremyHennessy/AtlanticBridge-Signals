@@ -17,6 +17,8 @@ The first outcome source is the **Investment Canada Act Decisions and Notificati
 - No score is accepted without source-backed evidence.
 - Raw source text is preserved before normalization.
 - Historical predictive value is measured before weights are assigned.
+- A notification month is not a verified first-operation date. Federal timing is reported against the notification month only.
+- Identity confirmation is separate from model eligibility; historical outcome and evidence-availability review are still required.
 - Failed or unavailable sources remain unverified; they never become zero.
 - Source absence is not interpreted as a negative event without completeness proof.
 
@@ -136,7 +138,7 @@ python -m atlanticbridge apply-curated-identity-review \
 - CanadaBuys federal award notices with normalized EU-27 supplier evidence
 - Statistics Canada monthly major-EU and annual full-EU trade context for Nova Scotia + Canada benchmarks
 - Federal entry-entity resolution using active + inactive Corporations Canada legal names
-- Official federal corporation detail verification and pre-entry certificate timing
+- Official federal corporation detail verification and notification-relative certificate timing
 - Reviewable federal entry-entity gold cohort
 - Named-investor legal-entity resolution requiring exact legal name + source locality, with Canadian and foreign entities separated
 - GLEIF direct/ultimate accounting-parent relationship or reporting-exception evidence
@@ -147,9 +149,11 @@ python -m atlanticbridge apply-curated-identity-review \
 
 ## Next source sequence
 
-1. Curate primary-source evidence for the unresolved identity queue
+1. Audit notification outcomes against actual Canadian presence and resolve flagged identity-evidence gaps
 2. Obtain authorized provincial registry access for unresolved non-federal entry entities
 3. Historical CIPO bulk backfill once secure bulk transport is available
 4. Build matched non-entrant controls and event-time backtests on confirmed identities before any score weights
 
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).
+
+The outcome audit and confirmation-gate changes are documented in [docs/OUTCOME_TIMING_AUDIT.md](docs/OUTCOME_TIMING_AUDIT.md).
