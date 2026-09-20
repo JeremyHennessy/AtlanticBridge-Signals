@@ -1,0 +1,33 @@
+[
+  {
+    "queue_id": "f84424bc5bce5078d67ec8ac76f9ee5db6dfefeaa49f9c7106d0f9f1af979d40",
+    "evidence": [
+      {
+        "evidence_type": "OFFICIAL_GOVERNMENT_FILING",
+        "source_url": "https://regnskaber.virk.dk/36417992/amNsb3VkczovLzAzL2U2Lzc4LzY1LzJmL2M5ZjktNDY4MS1hOWFjLTQwNGNjNzVkZjA4NQ.pdf",
+        "source_title": "Leadership Pipeline Institute A/S - Annual Report for 2023",
+        "source_publisher": "Danish Business Authority / Virk",
+        "subject_type": "LEGAL_ENTITY",
+        "subject_name": "Leadership Pipeline Institute A/S",
+        "jurisdiction": "DK",
+        "identifier_type": "CVR",
+        "identifier_value": "29971463",
+        "relationship_type": "DIRECT_PARENT_OF",
+        "related_subject_type": "LEGAL_ENTITY",
+        "related_subject_name": "Leadership Pipeline Institute Canada Inc.",
+        "related_identifier_type": "",
+        "related_identifier_value": "",
+        "evidence_note": "The audited 2023 annual report for Leadership Pipeline Institute A/S, CVR 29971463, presents Note 6 under the parent company financial statements as Investments in subsidiaries and lists Leadership Pipeline Institute Canada Inc., Canada, share capital CAD 100, ownership 100%."
+      }
+    ],
+    "decision": {
+      "state": "CONFIRMED",
+      "resolved_subject_type": "LEGAL_ENTITY",
+      "resolved_subject_name": "Leadership Pipeline Institute A/S",
+      "resolved_jurisdiction": "DK",
+      "resolved_identifier_type": "CVR",
+      "resolved_identifier_value": "29971463",
+      "basis": "The audited Danish annual report filed through Virk identifies Leadership Pipeline Institute A/S, CVR 29971463, as the parent-company investor in Leadership Pipeline Institute Canada Inc. with 100% ownership."
+    }
+  }
+]
