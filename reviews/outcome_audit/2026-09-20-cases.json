@@ -1323,13 +1323,24 @@
       "federal_event_date": "2023-05-24",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 69,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "The named foreign entity is Singapore-incorporated while the notification reports German ultimate control. Preserve that distinction and verify first Canadian trading separately.",
-      "additional_evidence": []
+      "audit_note": "Reebelo's official Canada help centre published 2023-07-05 states that Reebelo currently sells in Canada. That establishes Canadian commercial availability before the August 2023 Investment Canada notification, so the notification is not treated as first Canadian market entry. The exact first sale/customer date remains unestablished. Preserve the Singapore legal-entity identity separately from Investment Canada's Germany ultimate-control field.",
+      "additional_evidence": [
+        {
+          "source_url": "https://help.reebelo.ca/hc/en-us/articles/20328511773081-What-is-Reebelo",
+          "source_type": "OFFICIAL_COMPANY_HELP_CENTRE",
+          "source_date": "2023-07-05",
+          "source_date_basis": "Publication date shown by Reebelo Canada help centre",
+          "claim": "Reebelo states that it currently sells in Canada.",
+          "event_date": "2023-07-05",
+          "event_date_precision": "DAY",
+          "supports": "PRE_NOTIFICATION_CANADIAN_COMMERCIAL_PRESENCE"
+        }
+      ]
     },
     {
       "outcome_record_id": "ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
