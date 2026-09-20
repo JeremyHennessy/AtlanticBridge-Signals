@@ -4,7 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "index.html"\n      - "ui/**"
+      - "index.html"
+      - "ui/**"
       - "scripts/build_ui_payload.py"
       - "reviews/outcome_audit/**"
       - "tests/ui_visual_acceptance.mjs"
