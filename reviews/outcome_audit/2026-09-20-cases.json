@@ -56,13 +56,34 @@
       "federal_event_date": "2018-11-01",
       "notification_timing": "BEFORE_NOTIFICATION_MONTH",
       "days_before_notification_month": 61,
-      "outcome_classification": "UNRESOLVED",
+      "outcome_classification": "EXISTING_CANADIAN_PRESENCE",
       "first_canadian_operations_date": null,
       "registry_evidence_available_before_first_operations": null,
       "model_eligible": false,
       "exclusion_reason": "First-operation outcome date and event-time feature availability not established",
-      "audit_note": "Foreign named identity was confirmed separately by GLEIF in the baseline. The 2018 corporation event does not establish first Canadian banking customers or staffed operations.",
-      "additional_evidence": []
+      "audit_note": "Backbase's official Toronto location page states that its Canadian head office has been scaling since 2018. Central 1's official 2018-10-29 Forge launch states that the Canadian digital-banking platform was built using Backbase technology. These sources establish Backbase Canadian office/commercial presence before the January 2019 Investment Canada notification. They do not establish the exact first Canadian office-opening, customer-contract or operating date, so first_canadian_operations_date remains unset.",
+      "additional_evidence": [
+        {
+          "source_url": "https://www.backbase.com/careers/locations/toronto",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "source_date": null,
+          "source_date_basis": "Current Backbase Toronto location page with a historical year assertion",
+          "claim": "Backbase states that its Canadian head office has been scaling since 2018.",
+          "event_date": "2018",
+          "event_date_precision": "YEAR",
+          "supports": "EXISTING_CANADIAN_OFFICE_BY_2018"
+        },
+        {
+          "source_url": "https://central1.com/in_the_news/central-1-transforms-the-digital-banking-experience-with-the-launch-of-forge/",
+          "source_type": "OFFICIAL_CLIENT_ANNOUNCEMENT",
+          "source_date": "2018-10-29",
+          "source_date_basis": "Publication date shown by Central 1",
+          "claim": "Central 1 launched the Canada-focused Forge digital banking platform built using Backbase technology.",
+          "event_date": "2018-10-29",
+          "event_date_precision": "DAY",
+          "supports": "CANADIAN_COMMERCIAL_DEPLOYMENT_BEFORE_NOTIFICATION"
+        }
+      ]
     },
     {
       "outcome_record_id": "e122ed0fde4c6afba88baf455e7321f1de2d35f2e5380659dc873b6c124465aa",
