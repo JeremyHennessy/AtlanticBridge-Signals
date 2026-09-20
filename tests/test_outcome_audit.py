@@ -102,3 +102,22 @@ class OutcomeAuditTests(unittest.TestCase):
         self.assertIn('CANADIAN_RECRUITMENT_ACTIVITY_BY_2022_09', supports)
         self.assertIn('does not establish the first Canadian operating date', case['audit_note'])
 
+    def test_sanllo_market_evidence_does_not_promote_outcome_or_identity(self):
+        root = Path(__file__).resolve().parents[1]
+        payload = json.loads(
+            (root / 'reviews/outcome_audit/2026-09-20-cases.json').read_text()
+        )
+        case = next(
+            case for case in payload['cases']
+            if case['canadian_business_name'] == 'Sanllo Canada Inc'
+        )
+        self.assertEqual(case['outcome_classification'], 'UNRESOLVED')
+        self.assertIsNone(case['first_canadian_operations_date'])
+        self.assertFalse(case['model_eligible'])
+        supports = {e['supports'] for e in case['additional_evidence']}
+        self.assertIn('FOREIGN_SIDE_SANLLO_MANAGEMENT_CHAIN_PREENTRY', supports)
+        self.assertIn('CANADIAN_PRODUCE_TRADE_MEMBERSHIP_BY_2022_11_15', supports)
+        self.assertIn('CANADA_MARKET_TRADEMARK_ACTIVITY_BY_2022_11_24', supports)
+        self.assertIn('does not establish direct ownership of Sanllo Canada', case['audit_note'])
+        self.assertIn('named-investor relationship', case['audit_note'])
+
