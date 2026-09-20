@@ -1,9 +1,6 @@
 name: Validate Curated Identity Batch 03
 
 on:
-  push:
-    branches:
-      - "feature/curated-reviews-016"
   workflow_dispatch:
 
 permissions:
