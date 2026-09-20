@@ -35,10 +35,10 @@ jobs:
       - name: Install project
         run: python -m pip install -e .
 
-      - name: Rebuild deterministic UI payload
+      - name: Verify and rebuild deterministic UI payload
         run: |
+          python -m unittest tests.test_ui_payload -v
           python scripts/build_ui_payload.py
-          git diff --exit-code -- ui/data/dashboard.json
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
