@@ -42,6 +42,26 @@ class CIPOJournalTests(unittest.TestCase):
         self.assertIn("edition=12-12", issue.html_url)
         self.assertIn("year=2018", issue.html_url)
 
+    def test_archive_parser_supports_legacy_non_table_layout(self):
+        html = """
+        <div>Publication Date</div>
+        <div>Full Version</div>
+        <div>2000-01-05</div>
+        <div><a href="/opic-cipo/tmj/eng/05Jan2000_en.pdf">PDF 1.47 MB</a></div>
+        <div>2000-01-12</div>
+        <div><a href="/opic-cipo/tmj/eng/12Jan2000_en.pdf">PDF 1.93 MB</a></div>
+        """
+        issues = parse_archive(
+            html,
+            year=2000,
+            source_url="https://cipo.ic.gc.ca/opic-cipo/tmj/eng/archive.html?year=2000",
+        )
+        self.assertEqual(
+            [issue.publication_date for issue in issues],
+            [date(2000, 1, 5), date(2000, 1, 12)],
+        )
+        self.assertTrue(issues[0].pdf_url.endswith("05Jan2000_en.pdf"))
+
     def test_application_locator_stays_inside_advertised_section(self):
         text = """
         Table of contents
