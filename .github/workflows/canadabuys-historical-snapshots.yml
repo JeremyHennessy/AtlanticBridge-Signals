@@ -1,0 +1,162 @@
+name: CanadaBuys historical signal acceptance
+
+on:
+  pull_request:
+    paths:
+      - "scripts/collect_backtest_canadabuys.py"
+      - "tests/test_canadabuys_backtest_collector.py"
+      - "reviews/backtests/2026-09-21-backtest-entities.json"
+      - "reviews/backtests/2026-09-21-signal-source-semantics.json"
+      - "reviews/backtests/2026-09-21-cipo-accepted-positive-evidence.json"
+      - "reviews/backtests/2026-09-21-cipo-supplemental-evidence.json"
+      - "scripts/build_event_time_snapshots.py"
+      - "src/atlanticbridge/event_time_signals.py"
+      - ".github/workflows/canadabuys-historical-snapshots.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Unit tests
+        run: |
+          python -m unittest \
+            tests.test_canadabuys_backtest_collector \
+            tests.test_event_time_signals -v
+
+      - name: Restore CanadaBuys historical cache
+        uses: actions/cache@v4
+        with:
+          path: control-output/canadabuys-cache
+          key: canadabuys-backtest-2012-2024-20260921-v1
+
+      - name: Collect historical CanadaBuys award evidence
+        run: |
+          mkdir -p control-output
+          python scripts/collect_backtest_canadabuys.py \
+            --output control-output/canadabuys-signal-evidence.json
+
+      - name: Build combined event-time snapshots
+        run: |
+          python scripts/build_event_time_snapshots.py \
+            --evidence reviews/backtests/2026-09-21-cipo-accepted-positive-evidence.json \
+            --evidence reviews/backtests/2026-09-21-cipo-supplemental-evidence.json \
+            --evidence control-output/canadabuys-signal-evidence.json \
+            --combined-evidence-output control-output/signal-evidence.json \
+            --output control-output/event-time-snapshots.json
+
+      - name: Validate CanadaBuys source coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          evidence = json.loads(
+              Path("control-output/canadabuys-signal-evidence.json").read_text()
+          )
+          snapshots = json.loads(
+              Path("control-output/event-time-snapshots.json").read_text()
+          )
+
+          assert evidence["summary"]["entity_count"] == 12
+          assert len(evidence["source_metadata"]["files"]) == 3
+          assert evidence["summary"]["entities_with_undated_matches"] == 0
+          assert evidence["summary"]["complete_coverage_entities"] == 12
+          assert all(
+              row["coverage_status"] == "COMPLETE_EXACT_ALIAS_HISTORY"
+              for row in evidence["coverage"]
+          )
+          assert all(
+              row["coverage_start_date"] == "2012-02-03"
+              and row["coverage_end_date"] == "2024-03-31"
+              for row in evidence["coverage"]
+          )
+          assert all(
+              file_row["row_count"] > 0
+              and file_row["bytes"] > 0
+              and file_row["sha256"]
+              for file_row in evidence["source_metadata"]["files"]
+          )
+
+          assert snapshots["summary"]["entity_count"] == 12
+          assert snapshots["summary"]["signal_family_count"] == 5
+          assert snapshots["summary"]["snapshot_row_count"] == 240
+
+          cipo = [
+              row for row in snapshots["snapshots"]
+              if row["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
+          ]
+          assert len(cipo) == 48
+          assert sum(row["state"] == "PRESENT" for row in cipo) == 12
+          assert not any(
+              row["state"] == "ABSENT_WITH_PROVEN_COVERAGE"
+              for row in cipo
+          )
+
+          canadabuys = [
+              row for row in snapshots["snapshots"]
+              if row["signal_family"] == "CANADABUYS_AWARD"
+          ]
+          assert len(canadabuys) == 48
+          eligible = [
+              row for row in canadabuys
+              if row["reason"] != "FOREIGN_IDENTITY_NOT_ELIGIBLE"
+          ]
+          ineligible = [
+              row for row in canadabuys
+              if row["reason"] == "FOREIGN_IDENTITY_NOT_ELIGIBLE"
+          ]
+          assert len(eligible) == 40
+          assert len(ineligible) == 8
+          assert all(
+              row["state"] in {"PRESENT", "ABSENT_WITH_PROVEN_COVERAGE"}
+              for row in eligible
+          )
+          assert all(
+              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
+              for row in ineligible
+          )
+
+          disabled = [
+              row for row in snapshots["snapshots"]
+              if row["signal_family"] in {
+                  "FEDERAL_CORPORATION_EVENT",
+                  "CORDIS_CANADA_RELATIONSHIP",
+                  "TED_CONTRACT_AWARD",
+              }
+          ]
+          assert len(disabled) == 144
+          assert all(
+              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
+              for row in disabled
+          )
+
+          assert snapshots["summary"]["evaluable_rows_by_signal"]["CIPO_CANADIAN_TRADEMARK"] == 12
+          assert snapshots["summary"]["evaluable_rows_by_signal"]["CANADABUYS_AWARD"] == 40
+          assert snapshots["summary"]["state_counts"]["UNKNOWN_UNVERIFIED_COVERAGE"] == 188
+          PY
+
+      - name: Retain CanadaBuys signal proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canadabuys-backtest-snapshots-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            control-output/canadabuys-signal-evidence.json
+            control-output/signal-evidence.json
+            control-output/event-time-snapshots.json
+          retention-days: 90
+          if-no-files-found: error
