@@ -11,6 +11,7 @@ on:
       - "reviews/backtests/2026-09-21-backtest-001.manifest.json"
       - "reviews/backtests/2026-09-21-backtest-entities.json"
       - "reviews/backtests/2026-09-21-signal-source-semantics.json"
+      - "reviews/backtests/2026-09-21-ted-historical-manifest.json"
       - "docs/BACKTEST_001.md"
       - ".github/workflows/backtest-001.yml"
   workflow_dispatch:
