@@ -47,6 +47,7 @@ jobs:
         run: |
           python scripts/build_event_time_snapshots.py \
             --evidence control-output/cipo-signal-evidence.json \
+            --evidence reviews/backtests/2026-09-21-cipo-supplemental-evidence.json \
             --combined-evidence-output control-output/signal-evidence.json \
             --output control-output/event-time-snapshots.json
 
@@ -57,14 +58,23 @@ jobs:
           from pathlib import Path
 
           evidence = json.loads(Path("control-output/cipo-signal-evidence.json").read_text())
+          supplemental = json.loads(
+              Path("reviews/backtests/2026-09-21-cipo-supplemental-evidence.json").read_text()
+          )
           snapshots = json.loads(Path("control-output/event-time-snapshots.json").read_text())
 
           assert evidence["summary"]["entity_count"] == 12, evidence["summary"]
           assert len(evidence["coverage"]) == 12
           assert all(
-              row["coverage_status"] == "COMPLETE_EXACT_ALIAS_HISTORY"
+              row["coverage_status"] == "PRESENCE_ONLY_KNOWN_GAP"
               for row in evidence["coverage"]
           )
+          assert evidence["known_coverage_gap"]["application_number"] == "1799092"
+          assert evidence["known_coverage_gap"]["absence_inference_allowed"] is False
+          assert not any(
+              row["application_number"] == "1799092"
+              for row in evidence["records"]
+          ), "Pinned bulk file unexpectedly contains known gap application"
 
           linet = [
               row for row in evidence["records"]
@@ -75,12 +85,12 @@ jobs:
           assert linet, "Expected LINET application 1336566 advertised 2008-02-20"
 
           sioo = [
-              row for row in evidence["records"]
+              row for row in supplemental["records"]
               if row["entity_id"].startswith("entrant:97847c78")
               and row["application_number"] == "1799092"
               and row["publicly_available_date"] == "2018-12-12"
           ]
-          assert sioo, "Expected Sioo application 1799092 advertised 2018-12-12"
+          assert sioo, "Expected official Sioo application 1799092 advertised 2018-12-12"
 
           assert snapshots["summary"]["entity_count"] == 12
           assert snapshots["summary"]["signal_family_count"] == 5
@@ -90,10 +100,27 @@ jobs:
               row for row in snapshots["snapshots"]
               if row["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
           ]
-          linet_rows = [row for row in cipo_rows if row["entity_id"].startswith("entrant:78bccec3")]
-          sioo_rows = [row for row in cipo_rows if row["entity_id"].startswith("entrant:97847c78")]
+          assert not any(
+              row["state"] == "ABSENT_WITH_PROVEN_COVERAGE"
+              for row in cipo_rows
+          ), "Known CIPO coverage gap prohibits absence inference"
+
+          linet_rows = [
+              row for row in cipo_rows
+              if row["entity_id"].startswith("entrant:78bccec3")
+          ]
+          sioo_rows = [
+              row for row in cipo_rows
+              if row["entity_id"].startswith("entrant:97847c78")
+          ]
+          andriani_rows = [
+              row for row in cipo_rows
+              if row["entity_id"] == "control:node:212932"
+          ]
           assert {row["state"] for row in linet_rows} == {"PRESENT"}
           assert {row["state"] for row in sioo_rows} == {"PRESENT"}
+          assert {row["earliest_public_date"] for row in sioo_rows} == {"2018-12-12"}
+          assert {row["state"] for row in andriani_rows} == {"PRESENT"}
 
           unresolved = [
               row for row in cipo_rows
@@ -101,7 +128,20 @@ jobs:
               or row["entity_id"].startswith("entrant:023105d8")
           ]
           assert unresolved
-          assert all(row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE" for row in unresolved)
+          assert all(
+              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
+              for row in unresolved
+          )
+
+          missing_cipo = [
+              row for row in cipo_rows
+              if row["state"] != "PRESENT"
+          ]
+          assert missing_cipo
+          assert all(
+              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
+              for row in missing_cipo
+          )
 
           other_sources = [
               row for row in snapshots["snapshots"]
