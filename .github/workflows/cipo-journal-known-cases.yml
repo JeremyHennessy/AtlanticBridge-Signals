@@ -1,0 +1,86 @@
+name: CIPO Journal known-case proof
+
+on:
+  push:
+    branches:
+      - "research/cipo-journal-completeness-*"
+  workflow_dispatch:
+
+concurrency:
+  group: cipo-journal-known-case-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  journal-known-cases:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install project and PDF text extractor
+        run: |
+          python -m pip install -e .
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+      - name: Unit tests
+        run: python -m unittest tests.test_cipo_journal -v
+      - name: Probe official Journal archive and known cases
+        run: |
+          mkdir -p journal-output
+          python scripts/probe_cipo_journal.py \
+            --output journal-output/cipo-journal-known-case-proof.json
+      - name: Validate authoritative recovery gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload=json.loads(Path("journal-output/cipo-journal-known-case-proof.json").read_text())
+          inventory=payload["inventory"]
+          summary=payload["summary"]
+          cases={row["case_id"]: row for row in payload["known_cases"]}
+
+          assert inventory["start_date"] == "2000-01-05"
+          assert inventory["requested_end_date"] == "2023-05-31"
+          assert inventory["end_date"] == "2023-05-31"
+          assert inventory["year_count"] == 24
+          assert inventory["issue_count"] > 1150, inventory["issue_count"]
+          assert len(inventory["canonical_issue_sha256"]) == 64
+
+          assert summary["required_case_count"] == 3
+          assert summary["required_cases_recovered"] == 3
+          assert summary["absence_inference_allowed"] is False
+
+          required={
+              "LINET_1336566": ("1336566", "2008-02-20", "Linet spol. S.r.o."),
+              "SIOO_1799092": ("1799092", "2018-12-12", "SIOO WOODPROTECTION AB"),
+              "ANDRIANI_1702825": ("1702825", "2016-07-06", "MOLINO ANDRIANI S.r.l."),
+          }
+          for case_id,(application,date,applicant) in required.items():
+              row=cases[case_id]
+              assert row["application_number"] == application
+              assert row["publication_date"] == date
+              assert row["expected_applicant"] == applicant
+              assert row["retrieval_method"] in {
+                  "OFFICIAL_JOURNAL_HTML",
+                  "OFFICIAL_JOURNAL_PDF_PDFTOTEXT",
+              }
+
+          andriani=cases["ANDRIANI_1702825"]
+          assert andriani["relation"] == "SOURCE_BACKED_LEGAL_NAME_PREDECESSOR_SAME_COMPANY"
+          assert andriani["legal_name_history"]["historical_name"] == "Molino Andriani S.r.l."
+          assert andriani["legal_name_history"]["current_name"] == "Andriani S.p.A."
+          PY
+      - name: Upload compact Journal proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cipo-journal-known-case-${{ github.sha }}
+          path: journal-output/
+          retention-days: 90
+          if-no-files-found: error
