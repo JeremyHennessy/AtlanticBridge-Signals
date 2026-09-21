@@ -59,11 +59,7 @@ def request_url(url: str) -> str:
     parts = urlsplit(url)
     encoded_path = quote(
         parts.path,
-        safe="/%:@!def fetch(
-    url: str,
-    *,
-    binary: bool = False,
-'()*+,;=-._~",
+        safe="/%:@!$&()*+,;=-._~",
     )
     return urlunsplit(
         (
@@ -74,7 +70,6 @@ def request_url(url: str) -> str:
             parts.fragment,
         )
     )
-
 
 def fetch(
     url: str,
