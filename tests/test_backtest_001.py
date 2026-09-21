@@ -30,11 +30,11 @@ class Backtest001Tests(unittest.TestCase):
         summary = self.result["summary"]
         self.assertEqual(summary["signal_family_count"], 5)
         self.assertEqual(summary["signals_with_any_present_evidence"], 1)
-        self.assertEqual(summary["signals_with_proven_absence_coverage"], 1)
+        self.assertEqual(summary["signals_with_proven_absence_coverage"], 2)
         self.assertEqual(summary["signals_with_estimable_false_rates"], 0)
         self.assertEqual(
             summary["signals_with_identity_eligible_estimable_false_rates"],
-            1,
+            2,
         )
         self.assertEqual(
             summary["signals_with_both_positive_and_absence_evidence"],
@@ -214,11 +214,63 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(high_or_medium["false_positive_rate"], 0.0)
         self.assertEqual(high_or_medium["false_negative_rate"], 1.0)
 
+    def test_ted_proves_absence_only_for_identity_eligible_subset(self):
+        signal = next(
+            row for row in self.result["signals"]
+            if row["signal_family"] == "TED_CONTRACT_AWARD"
+        )
+        self.assertEqual(signal["state_counts"]["PRESENT"], 0)
+        self.assertEqual(
+            signal["state_counts"]["ABSENT_WITH_PROVEN_COVERAGE"],
+            40,
+        )
+        self.assertEqual(
+            signal["state_counts"]["UNKNOWN_UNVERIFIED_COVERAGE"],
+            8,
+        )
+        self.assertEqual(signal["source_availability"]["observable_rows"], 40)
+        self.assertEqual(
+            signal["source_availability"]["observable_fraction"],
+            0.833333,
+        )
+
+        for metric in signal["offset_metrics"]:
+            self.assertEqual(metric["entrant_prevalence"]["present"], 0)
+            self.assertEqual(
+                metric["entrant_prevalence"]["absent_with_proven_coverage"],
+                5,
+            )
+            self.assertEqual(metric["entrant_prevalence"]["unknown"], 2)
+            self.assertEqual(metric["control_prevalence"]["present"], 0)
+            self.assertEqual(
+                metric["control_prevalence"]["absent_with_proven_coverage"],
+                5,
+            )
+            self.assertEqual(metric["control_prevalence"]["unknown"], 0)
+
+        high_or_medium = next(
+            row for row in signal["identity_confidence_sensitivity"]
+            if row["identity_tier"] == "HIGH_OR_MEDIUM"
+            and row["offset_months"] == 3
+        )
+        self.assertEqual(high_or_medium["entrant_entities"], 5)
+        self.assertEqual(
+            high_or_medium["entrant_absent_with_proven_coverage"],
+            5,
+        )
+        self.assertEqual(high_or_medium["false_positive_rate"], 0.0)
+        self.assertEqual(high_or_medium["false_negative_rate"], 1.0)
+        self.assertEqual(
+            high_or_medium["error_rate_status"],
+            "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET",
+        )
+
     def test_still_unverified_signal_families_remain_unknown(self):
         for signal in self.result["signals"]:
             if signal["signal_family"] in {
                 "CIPO_CANADIAN_TRADEMARK",
                 "CANADABUYS_AWARD",
+                "TED_CONTRACT_AWARD",
             }:
                 continue
             self.assertEqual(signal["state_counts"]["PRESENT"], 0)
