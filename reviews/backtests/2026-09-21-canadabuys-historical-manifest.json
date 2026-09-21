@@ -13,7 +13,9 @@
   "semantic_window": {
     "unique_reference_amendment_keys": 105200,
     "canonical_key_sha256": "a05978ab90d7fd7776175bc3cfa208fe3428e2b994fc8e4c17cb08d26a4099f6",
-    "exact_reviewed_alias_matches": 0
+    "exact_reviewed_alias_matches": 0,
+    "coverage_start_date": "2012-02-03",
+    "max_backtest_cutoff_exclusive": "2023-06-01"
   },
   "accepted_source_files": [
     {
