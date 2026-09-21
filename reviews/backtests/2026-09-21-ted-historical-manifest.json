@@ -34,5 +34,9 @@
   "query_semantics_boundary": "TED's winner-name '=' query is not treated as full legal-name equality. It is a candidate-retrieval superset. Every returned winner-name is normalized and exact-postfiltered to the reviewed legal alias before a record can become PRESENT.",
   "interpretation_boundary": "A non-hit proves absence only for the narrow exact-reviewed-alias TED winner signal within the bounded 2012-01-01 through 2023-05-31 query window after all alias candidate results are completely retrieved. It does not prove absence of procurement under other legal names, consortium participation, subcontracting, or non-TED procurement.",
   "coverage_end_exclusive": "2023-06-01",
-  "representation_rule": "Coverage upper bounds use an exclusive end: coverage_end_exclusive=2023-06-01 represents evidence coverage through 2023-05-31."
+  "representation_rule": "Coverage upper bounds use an exclusive end: coverage_end_exclusive=2023-06-01 represents evidence coverage through 2023-05-31.",
+  "accepted_evidence_artifact": {
+    "path": "reviews/backtests/source_proofs/2026-09-21-ted-evidence.json",
+    "sha256": null
+  }
 }
