@@ -30,9 +30,13 @@ jobs:
             tests.test_ted_historical_probe \
             -v
 
-      - name: Run exact-winner TED historical probe
+      - name: Capture raw exact-query winner fields
         run: |
           mkdir -p control-output
+          python scripts/diagnose_ted_query.py
+
+      - name: Run exact-winner TED historical probe
+        run: |
           python scripts/probe_ted_historical.py \
             --output control-output/ted-historical-proof.json
 
