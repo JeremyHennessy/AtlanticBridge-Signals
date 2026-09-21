@@ -143,8 +143,15 @@ def download(
     raise AssertionError("unreachable")
 
 
+CIPO_CSV_FIELD_SIZE_LIMIT = 16 * 1024 * 1024
+
+
 def iter_zip_rows(path: Path):
-    with ZipFile(path) as archive:
+    previous_limit = csv.field_size_limit()
+    if previous_limit < CIPO_CSV_FIELD_SIZE_LIMIT:
+        csv.field_size_limit(CIPO_CSV_FIELD_SIZE_LIMIT)
+    try:
+        with ZipFile(path) as archive:
         members = [
             name
             for name in archive.namelist()
@@ -153,14 +160,22 @@ def iter_zip_rows(path: Path):
         ]
         if not members:
             raise ValueError(f"no CSV/TXT member found in {path}")
-        for member in sorted(members):
-            with archive.open(member) as raw:
-                text = io.TextIOWrapper(raw, encoding="utf-8-sig", errors="replace", newline="")
-                reader = csv.DictReader(text, delimiter="|")
-                if not reader.fieldnames:
-                    raise ValueError(f"missing header in {path}:{member}")
-                for row in reader:
-                    yield member, row
+            for member in sorted(members):
+                with archive.open(member) as raw:
+                    text = io.TextIOWrapper(
+                        raw,
+                        encoding="utf-8-sig",
+                        errors="replace",
+                        newline="",
+                    )
+                    reader = csv.DictReader(text, delimiter="|")
+                    if not reader.fieldnames:
+                        raise ValueError(f"missing header in {path}:{member}")
+                    for row in reader:
+                        yield member, row
+    finally:
+        if previous_limit < CIPO_CSV_FIELD_SIZE_LIMIT:
+            csv.field_size_limit(previous_limit)
 
 
 def build_alias_index(entities_payload: dict[str, object]):
