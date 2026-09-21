@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-09-21",
+  "global_rule": "A missing source hit is never a negative signal unless both entity identity and source coverage are proven for the full historical query scope.",
+  "snapshot_states": [
+    "PRESENT",
+    "ABSENT_WITH_PROVEN_COVERAGE",
+    "UNKNOWN_UNVERIFIED_COVERAGE"
+  ],
+  "sources": [
+    {
+      "signal_family": "CIPO_CANADIAN_TRADEMARK",
+      "status": "ENABLED_FOR_LIVE_BACKFILL",
+      "publication_clock": "CIPO TM_Event action code 42 (Advertised): publication in the Trademarks Journal.",
+      "coverage_rule": "A complete scan of the pinned CIPO TM_Interested_Party and TM_Event researcher datasets for explicit aliases. Only Party Type Code 1 (Applicant) is used for attribution to avoid backdating later ownership changes. No exact applicant row in a successfully scanned full file is ABSENT_WITH_PROVEN_COVERAGE.",
+      "identity_rule": "Requires foreign_signal_identity_eligible=true. Exact reviewed aliases only; no fuzzy matching.",
+      "fixed_dataset_date": "2025-01-28",
+      "interested_party_url": "https://opic-cipo.ca/cipo/client_downloads/TM_CSV_2025_01_28/TM_interested_party_2025-01-28.zip",
+      "event_url": "https://opic-cipo.ca/cipo/client_downloads/TM_CSV_2025_01_28/TM_event_2025-01-28.zip"
+    },
+    {
+      "signal_family": "FEDERAL_CORPORATION_EVENT",
+      "status": "DISABLED_UNVERIFIED_PUBLICATION_CLOCK",
+      "publication_clock": null,
+      "coverage_rule": "Current Corporations Canada detail proves legal events, but the project has not established a strict historical public-availability clock for those events. Current observations cannot be backdated.",
+      "snapshot_default": "UNKNOWN_UNVERIFIED_COVERAGE"
+    },
+    {
+      "signal_family": "CORDIS_CANADA_RELATIONSHIP",
+      "status": "DISABLED_UNVERIFIED_FIRST_PUBLICATION_CLOCK",
+      "publication_clock": null,
+      "coverage_rule": "CORDIS bulk data contains project/content-update dates but no proven first-publication timestamp for historical leakage control in the current implementation.",
+      "snapshot_default": "UNKNOWN_UNVERIFIED_COVERAGE"
+    },
+    {
+      "signal_family": "TED_CONTRACT_AWARD",
+      "status": "LIVE_QUERY_PROBE_REQUIRED",
+      "publication_clock": "TED notice publication-date when an exact winner identity match is returned.",
+      "coverage_rule": "Search API is public and supports publication-date and winner-name fields. Backtest absence becomes evaluable only after exact-name query syntax and complete result retrieval are live-proven for the requested historical window.",
+      "snapshot_default": "UNKNOWN_UNVERIFIED_COVERAGE"
+    },
+    {
+      "signal_family": "CANADABUYS_AWARD",
+      "status": "DISABLED_HISTORICAL_COVERAGE_NOT_COLLECTED",
+      "publication_clock": "Award notice publication date is explicit for collected records.",
+      "coverage_rule": "Current collector covers only the current fiscal-year award CSV. It cannot prove historical absence for 2017–2023 event-time windows.",
+      "snapshot_default": "UNKNOWN_UNVERIFIED_COVERAGE"
+    }
+  ]
+}
