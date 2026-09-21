@@ -1,23 +1,18 @@
-name: Historical signal snapshot acceptance
+name: Event-time snapshot composition acceptance
 
 on:
   pull_request:
     paths:
       - "src/atlanticbridge/event_time_signals.py"
-      - "scripts/collect_backtest_cipo.py"
       - "scripts/build_event_time_snapshots.py"
       - "tests/test_event_time_signals.py"
-      - "tests/test_cipo_backtest_collector.py"
-      - "tests/test_canadabuys_backtest_collector.py"
-      - "scripts/collect_backtest_canadabuys.py"
-      - "tests/test_ted.py"
-      - "tests/test_ted_backtest_collector.py"
-      - "scripts/collect_backtest_ted.py"
       - "reviews/backtests/2026-09-21-backtest-entities.json"
       - "reviews/backtests/2026-09-21-signal-source-semantics.json"
       - "reviews/backtests/2026-09-21-cipo-supplemental-evidence.json"
+      - "reviews/backtests/2026-09-21-cipo-researcher-manifest.json"
       - "reviews/backtests/2026-09-21-canadabuys-historical-manifest.json"
       - "reviews/backtests/2026-09-21-ted-historical-manifest.json"
+      - "reviews/backtests/source_proofs/**"
       - ".github/workflows/historical-signal-snapshots.yml"
   workflow_dispatch:
 
@@ -25,274 +20,79 @@ permissions:
   contents: read
 
 jobs:
-  snapshots:
+  compose:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install
         run: python -m pip install -e .
-
-      - name: Unit tests
+      - name: Event-time unit tests
+        run: python -m unittest tests.test_event_time_signals -v
+      - name: Build snapshots from accepted source proofs
         run: |
-          python -m unittest \
-            tests.test_event_time_signals \
-            tests.test_cipo_backtest_collector \
-            tests.test_canadabuys_backtest_collector \
-            tests.test_ted \
-            tests.test_ted_backtest_collector \
-            -v
-
-      - name: Restore pinned CIPO bulk cache
-        uses: actions/cache@v4
-        with:
-          path: control-output/cipo-cache
-          key: cipo-researcher-2025-01-28-v1
-
-      - name: Collect complete CIPO applicant history
-        run: |
-          mkdir -p control-output
-          python scripts/collect_backtest_cipo.py \
-            --output control-output/cipo-signal-evidence.json
-
-      - name: Restore CanadaBuys historical cache
-        uses: actions/cache@v4
-        with:
-          path: control-output/canadabuys-cache
-          key: canadabuys-award-history-20260921-v1
-
-      - name: Collect complete CanadaBuys exact-alias history
-        run: |
-          python scripts/collect_backtest_canadabuys.py \
-            --output control-output/canadabuys-signal-evidence.json
-
-      - name: Collect complete TED exact-alias winner history
-        run: |
-          python scripts/collect_backtest_ted.py \
-            --output control-output/ted-signal-evidence.json
-
-      - name: Build event-time snapshots
-        run: |
+          mkdir -p composition-output
           python scripts/build_event_time_snapshots.py \
-            --evidence control-output/cipo-signal-evidence.json \
+            --evidence reviews/backtests/source_proofs/2026-09-21-cipo-researcher-evidence.json \
             --evidence reviews/backtests/2026-09-21-cipo-supplemental-evidence.json \
-            --evidence control-output/canadabuys-signal-evidence.json \
-            --evidence control-output/ted-signal-evidence.json \
-            --combined-evidence-output control-output/signal-evidence.json \
-            --output control-output/event-time-snapshots.json
-
-      - name: Validate historical CIPO proof
+            --evidence reviews/backtests/source_proofs/2026-09-21-canadabuys-evidence.json \
+            --evidence reviews/backtests/source_proofs/2026-09-21-ted-evidence.json \
+            --combined-evidence-output composition-output/signal-evidence.json \
+            --output composition-output/event-time-snapshots.json
+      - name: Validate composed source boundaries
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          evidence = json.loads(Path("control-output/cipo-signal-evidence.json").read_text())
-          canadabuys = json.loads(
-              Path("control-output/canadabuys-signal-evidence.json").read_text()
-          )
-          canadabuys_manifest = json.loads(
-              Path(
-                  "reviews/backtests/2026-09-21-canadabuys-historical-manifest.json"
-              ).read_text()
-          )
-          supplemental = json.loads(
-              Path("reviews/backtests/2026-09-21-cipo-supplemental-evidence.json").read_text()
-          )
-          ted = json.loads(
-              Path("control-output/ted-signal-evidence.json").read_text()
-          )
-          ted_manifest = json.loads(
-              Path(
-                  "reviews/backtests/2026-09-21-ted-historical-manifest.json"
-              ).read_text()
-          )
-          snapshots = json.loads(Path("control-output/event-time-snapshots.json").read_text())
+          snapshots=json.loads(Path("composition-output/event-time-snapshots.json").read_text())
+          cipo=json.loads(Path("reviews/backtests/source_proofs/2026-09-21-cipo-researcher-evidence.json").read_text())
+          canada=json.loads(Path("reviews/backtests/source_proofs/2026-09-21-canadabuys-evidence.json").read_text())
+          ted=json.loads(Path("reviews/backtests/source_proofs/2026-09-21-ted-evidence.json").read_text())
 
-          assert evidence["summary"]["entity_count"] == 12, evidence["summary"]
-          assert len(evidence["coverage"]) == 12
-          assert all(
-              row["coverage_status"] == "PRESENCE_ONLY_KNOWN_GAP"
-              for row in evidence["coverage"]
-          )
-          assert evidence["known_coverage_gap"]["application_number"] == "1799092"
-          assert evidence["known_coverage_gap"]["absence_inference_allowed"] is False
-          assert not any(
-              row["application_number"] == "1799092"
-              for row in evidence["records"]
-          ), "Pinned bulk file unexpectedly contains known gap application"
+          assert cipo["known_coverage_gap"]["application_number"] == "1799092"
+          assert cipo["known_coverage_gap"]["absence_inference_allowed"] is False
+          assert all(row["coverage_status"] == "PRESENCE_ONLY_KNOWN_GAP" for row in cipo["coverage"])
+          assert len(cipo["records"]) == 5
 
-          linet = [
-              row for row in evidence["records"]
-              if row["entity_id"].startswith("entrant:78bccec3")
-              and row["application_number"] == "1336566"
-              and row["publicly_available_date"] == "2008-02-20"
-          ]
-          assert linet, "Expected LINET application 1336566 advertised 2008-02-20"
+          assert canada["semantic_window"]["unique_reference_amendment_keys"] == 105200
+          assert canada["semantic_window"]["exact_reviewed_alias_matches"] == 0
+          assert all(row["coverage_end_exclusive"] == "2023-06-01" for row in canada["coverage"])
 
-          sioo = [
-              row for row in supplemental["records"]
-              if row["entity_id"].startswith("entrant:97847c78")
-              and row["application_number"] == "1799092"
-              and row["publicly_available_date"] == "2018-12-12"
-          ]
-          assert sioo, "Expected official Sioo application 1799092 advertised 2018-12-12"
+          assert ted["summary"]["entity_alias_query_count"] == 14
+          assert ted["summary"]["evidence_record_count"] == 0
+          assert all(row["coverage_end_exclusive"] == "2023-06-01" for row in ted["coverage"])
 
-          assert canadabuys["summary"]["entity_count"] == 12
-          assert canadabuys["summary"]["source_file_count"] == 3
-          assert canadabuys["summary"]["deduplicated_exact_match_records"] == 0
-          assert canadabuys["summary"]["entities_with_exact_match"] == 0
-          assert (
-              canadabuys["semantic_window"]
-              == canadabuys_manifest["semantic_window"]
-          )
-          assert len(canadabuys["coverage"]) == 12
-          assert all(
-              row["absence_coverage_proven"] is True
-              and row["coverage_start_date"] == "2012-02-03"
-              for row in canadabuys["coverage"]
-          )
-
-          assert snapshots["summary"]["entity_count"] == 12
-          assert snapshots["summary"]["signal_family_count"] == 5
-          assert snapshots["summary"]["snapshot_row_count"] == 240
-          assert ted["summary"] == {
-              "complete_entity_query_sets": 12,
-              "entities_with_evidence": 0,
-              "entity_alias_query_count": 14,
+          assert snapshots["summary"] == {
               "entity_count": 12,
-              "evidence_record_count": 0,
-          }
-          assert ted["coverage_window"] == {
-              "start_date": "2012-01-01",
-              "end_date": "2023-05-31",
-              "end_exclusive": "2023-06-01",
-          }
-          assert all(
-              row["absence_coverage_proven"] is True
-              and row["coverage_start_date"] == "2012-01-01"
-              and row["coverage_end_exclusive"] == "2023-06-01"
-              for row in ted["coverage"]
-          )
-          assert ted_manifest["proof_summary"]["exact_reviewed_alias_evidence_records"] == 0
-
-          assert snapshots["summary"]["state_counts"] == {
-              "ABSENT_WITH_PROVEN_COVERAGE": 80,
-              "PRESENT": 12,
-              "UNKNOWN_UNVERIFIED_COVERAGE": 148,
-          }
-          assert snapshots["summary"]["evaluable_rows_by_signal"] == {
-              "CANADABUYS_AWARD": 40,
-              "CIPO_CANADIAN_TRADEMARK": 12,
-              "TED_CONTRACT_AWARD": 40,
+              "signal_family_count": 5,
+              "snapshot_row_count": 240,
+              "state_counts": {
+                  "ABSENT_WITH_PROVEN_COVERAGE": 80,
+                  "PRESENT": 12,
+                  "UNKNOWN_UNVERIFIED_COVERAGE": 148,
+              },
+              "evaluable_rows_by_signal": {
+                  "CANADABUYS_AWARD": 40,
+                  "CIPO_CANADIAN_TRADEMARK": 12,
+                  "TED_CONTRACT_AWARD": 40,
+              },
           }
 
-          cipo_rows = [
-              row for row in snapshots["snapshots"]
-              if row["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
-          ]
-          assert not any(
-              row["state"] == "ABSENT_WITH_PROVEN_COVERAGE"
-              for row in cipo_rows
-          ), "Known CIPO coverage gap prohibits absence inference"
-
-          linet_rows = [
-              row for row in cipo_rows
-              if row["entity_id"].startswith("entrant:78bccec3")
-          ]
-          sioo_rows = [
-              row for row in cipo_rows
-              if row["entity_id"].startswith("entrant:97847c78")
-          ]
-          andriani_rows = [
-              row for row in cipo_rows
-              if row["entity_id"] == "control:node:212932"
-          ]
-          assert {row["state"] for row in linet_rows} == {"PRESENT"}
-          assert {row["state"] for row in sioo_rows} == {"PRESENT"}
-          assert {row["earliest_public_date"] for row in sioo_rows} == {"2018-12-12"}
-          assert {row["state"] for row in andriani_rows} == {"PRESENT"}
-
-          unresolved = [
-              row for row in cipo_rows
-              if row["entity_id"].startswith("entrant:653b0de3")
-              or row["entity_id"].startswith("entrant:023105d8")
-          ]
-          assert unresolved
-          assert all(
-              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
-              for row in unresolved
-          )
-
-          missing_cipo = [
-              row for row in cipo_rows
-              if row["state"] != "PRESENT"
-          ]
-          assert missing_cipo
-          assert all(
-              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
-              for row in missing_cipo
-          )
-
-          canadabuys_rows = [
-              row for row in snapshots["snapshots"]
-              if row["signal_family"] == "CANADABUYS_AWARD"
-          ]
-          assert len(canadabuys_rows) == 48
-          assert sum(
-              row["state"] == "ABSENT_WITH_PROVEN_COVERAGE"
-              for row in canadabuys_rows
-          ) == 40
-          assert sum(
-              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
-              for row in canadabuys_rows
-          ) == 8
-          assert not any(
-              row["state"] == "PRESENT"
-              for row in canadabuys_rows
-          )
-
-          ted_rows = [
-              row for row in snapshots["snapshots"]
-              if row["signal_family"] == "TED_CONTRACT_AWARD"
-          ]
-          assert len(ted_rows) == 48
-          assert sum(
-              row["state"] == "ABSENT_WITH_PROVEN_COVERAGE"
-              for row in ted_rows
-          ) == 40
-          assert sum(
-              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
-              for row in ted_rows
-          ) == 8
-          assert not any(
-              row["state"] == "PRESENT"
-              for row in ted_rows
-          )
-
-          still_unverified = [
-              row for row in snapshots["snapshots"]
-              if row["signal_family"] in {
-                  "FEDERAL_CORPORATION_EVENT",
-                  "CORDIS_CANADA_RELATIONSHIP",
-              }
-          ]
-          assert all(
-              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
-              for row in still_unverified
-          )
+          cipo_rows=[row for row in snapshots["snapshots"] if row["signal_family"]=="CIPO_CANADIAN_TRADEMARK"]
+          assert not any(row["state"]=="ABSENT_WITH_PROVEN_COVERAGE" for row in cipo_rows)
+          assert {row["state"] for row in cipo_rows if row["entity_id"].startswith("entrant:78bccec3")} == {"PRESENT"}
+          assert {row["state"] for row in cipo_rows if row["entity_id"].startswith("entrant:97847c78")} == {"PRESENT"}
+          assert {row["state"] for row in cipo_rows if row["entity_id"]=="control:node:212932"} == {"PRESENT"}
           PY
-
-      - name: Retain historical signal proof
+      - name: Upload compact composition proof
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: historical-signal-snapshots-${{ github.event.pull_request.head.sha || github.sha }}
-          path: control-output/
+          name: event-time-composition-${{ github.event.pull_request.head.sha || github.sha }}
+          path: composition-output/
           retention-days: 90
           if-no-files-found: error

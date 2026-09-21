@@ -1,0 +1,57 @@
+name: TED source proof
+
+on:
+  pull_request:
+    paths:
+      - "src/atlanticbridge/sources/ted.py"
+      - "scripts/collect_backtest_ted.py"
+      - "scripts/build_source_proof_artifact.py"
+      - "tests/test_ted.py"
+      - "tests/test_ted_backtest_collector.py"
+      - "tests/test_source_proof_artifact.py"
+      - "reviews/backtests/2026-09-21-backtest-entities.json"
+      - "reviews/backtests/source_proofs/2026-09-21-ted-evidence.json"
+      - ".github/workflows/source-proof-ted.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ted-source-proof-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ted-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Unit tests
+        run: python -m unittest tests.test_ted tests.test_ted_backtest_collector tests.test_source_proof_artifact -v
+      - name: Collect TED proof
+        run: |
+          mkdir -p source-output source-proof-output
+          python scripts/collect_backtest_ted.py \
+            --output source-output/ted-live.json
+      - name: Normalize and compare accepted TED proof
+        run: |
+          python scripts/build_source_proof_artifact.py \
+            --source ted \
+            --input source-output/ted-live.json \
+            --output source-proof-output/ted-evidence.json \
+            --expected reviews/backtests/source_proofs/2026-09-21-ted-evidence.json
+          sha256sum source-proof-output/ted-evidence.json
+      - name: Upload compact TED proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ted-source-proof-${{ github.event.pull_request.head.sha || github.sha }}
+          path: source-proof-output/
+          retention-days: 90
+          if-no-files-found: error

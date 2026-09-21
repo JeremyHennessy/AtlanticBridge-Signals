@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "signal_family": "CIPO_CANADIAN_TRADEMARK",
+  "proof_kind": "RESEARCHER_DATASET_PRESENCE_ONLY",
+  "accepted_baseline": {
+    "workflow_run_id": 35598731713,
+    "workflow_head_sha": "9a8a66b215a9de20f92ede3dd9f2345b76cd6c4c",
+    "artifact_id": 10637993808,
+    "artifact_digest": "sha256:dff79ccf17dfac2d0c03069807a1a8eeb93f9516b629c82bf47c3efd853af3d6"
+  },
+  "accepted_evidence_artifact": {
+    "path": "reviews/backtests/source_proofs/2026-09-21-cipo-researcher-evidence.json",
+    "sha256": "75be3a61a18f206e590ec2009f0d240671e4eef10ecee4282cc4b4f2a28b6c6e"
+  },
+  "source_dataset": {
+    "dataset_date": "2025-01-28",
+    "interested_party_sha256": "5a601e656dcd7f93289ca0745a209337922913471311cff7f2b0bd8f775f5d2e",
+    "event_sha256": "879cd11746a82c5c3c743f00eb5cf2bbf83f557fd741d5ef6216098459dde8a2"
+  },
+  "proof_summary": {
+    "entity_count": 12,
+    "interested_party_rows_scanned": 5349993,
+    "applicant_rows_scanned": 1232437,
+    "matched_application_count": 24,
+    "event_rows_scanned": 23244288,
+    "matched_event_rows": 344,
+    "advertised_evidence_count": 19,
+    "composition_earliest_evidence_records": 5
+  },
+  "known_coverage_gap": {
+    "application_number": "1799092",
+    "applicant": "SIOO WOODPROTECTION AB",
+    "advertised_date": "2018-12-12",
+    "bulk_dataset_contains_application": false,
+    "absence_inference_allowed": false
+  },
+  "interpretation_boundary": "This researcher-dataset proof is presence-only. A missing exact applicant/Advertised record is UNKNOWN because official application 1799092 is absent from the researcher files. It cannot support negative inference.",
+  "acceptance_contract": "Live CIPO researcher collection must normalize byte-for-byte to the accepted evidence artifact; the manifest hash is validated separately without recollecting the source."
+}
