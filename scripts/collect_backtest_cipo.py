@@ -8,6 +8,7 @@ import io
 import json
 from pathlib import Path
 import re
+import ssl
 import time
 import unicodedata
 from urllib.error import HTTPError, URLError
@@ -30,6 +31,12 @@ USER_AGENT = (
     "AtlanticBridge-Signals/0.1 "
     "(historical backtest research; "
     "https://github.com/JeremyHennessy/AtlanticBridge-Signals)"
+)
+RAPIDSSL_INTERMEDIATE_URL = (
+    "https://cacerts.digicert.com/RapidSSLTLSRSACAG1.crt.pem"
+)
+RAPIDSSL_INTERMEDIATE_SHA256 = (
+    "4422e963ee53cd58cc9f85cd40bf5ffec0095fdf1a154535661c1c06bcadc69b"
 )
 
 
@@ -57,12 +64,40 @@ def find_field(row: dict[str, str], prefix: str) -> str:
     return str(matches[0] or "").strip()
 
 
+def build_cipo_ssl_context(cache_dir: Path) -> tuple[ssl.SSLContext, dict[str, str]]:
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    pem_path = cache_dir / "RapidSSLTLSRSACAG1.crt.pem"
+    request = Request(
+        RAPIDSSL_INTERMEDIATE_URL,
+        headers={"User-Agent": USER_AGENT, "Accept": "application/x-pem-file,*/*"},
+    )
+    with urlopen(request, timeout=60) as response:
+        pem_bytes = response.read()
+    pem_text = pem_bytes.decode("ascii")
+    der = ssl.PEM_cert_to_DER_cert(pem_text)
+    fingerprint = hashlib.sha256(der).hexdigest()
+    if fingerprint != RAPIDSSL_INTERMEDIATE_SHA256:
+        raise ValueError(
+            "DigiCert RapidSSL intermediate fingerprint mismatch: "
+            f"{fingerprint} != {RAPIDSSL_INTERMEDIATE_SHA256}"
+        )
+    pem_path.write_bytes(pem_bytes)
+
+    context = ssl.create_default_context()
+    context.load_verify_locations(cafile=str(pem_path))
+    return context, {
+        "intermediate_url": RAPIDSSL_INTERMEDIATE_URL,
+        "intermediate_sha256": fingerprint,
+    }
+
+
 def download(
     url: str,
     destination: Path,
     *,
     attempts: int = 4,
     timeout: int = 180,
+    ssl_context: ssl.SSLContext | None = None,
 ) -> dict[str, object]:
     destination.parent.mkdir(parents=True, exist_ok=True)
     temp = destination.with_suffix(destination.suffix + ".part")
@@ -77,7 +112,11 @@ def download(
                     "Accept": "application/zip,application/octet-stream,*/*;q=0.8",
                 },
             )
-            with urlopen(request, timeout=timeout) as response, temp.open("wb") as out:
+            with urlopen(
+                request,
+                timeout=timeout,
+                context=ssl_context,
+            ) as response, temp.open("wb") as out:
                 while True:
                     chunk = response.read(1024 * 1024)
                     if not chunk:
@@ -332,14 +371,24 @@ def main() -> int:
     interested_path = cache / "TM_interested_party_2025-01-28.zip"
     event_path = cache / "TM_event_2025-01-28.zip"
 
-    interested_meta = download(args.interested_party_url, interested_path)
-    event_meta = download(args.event_url, event_path)
+    ssl_context, tls_metadata = build_cipo_ssl_context(cache)
+    interested_meta = download(
+        args.interested_party_url,
+        interested_path,
+        ssl_context=ssl_context,
+    )
+    event_meta = download(
+        args.event_url,
+        event_path,
+        ssl_context=ssl_context,
+    )
     payload = collect(
         entities_payload=entities,
         interested_party_zip=interested_path,
         event_zip=event_path,
         source_metadata={
             "dataset_date": "2025-01-28",
+            "tls_chain_repair": tls_metadata,
             "interested_party": interested_meta,
             "event": event_meta,
         },
