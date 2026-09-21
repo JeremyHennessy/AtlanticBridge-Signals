@@ -20,6 +20,29 @@ def _copy_rows(rows: object) -> list[dict[str, object]]:
     return result
 
 
+def _earliest_records(rows: object) -> list[dict[str, object]]:
+    records = _copy_rows(rows)
+    by_entity: dict[str, dict[str, object]] = {}
+    for row in records:
+        entity_id = str(row.get("entity_id") or "")
+        available = str(row.get("publicly_available_date") or "")
+        if not entity_id or not available:
+            raise ValueError("evidence records require entity_id and public date")
+        existing = by_entity.get(entity_id)
+        if existing is None or available < str(
+            existing.get("publicly_available_date") or ""
+        ):
+            by_entity[entity_id] = row
+    return sorted(
+        by_entity.values(),
+        key=lambda row: (
+            str(row.get("entity_id") or ""),
+            str(row.get("publicly_available_date") or ""),
+            str(row.get("evidence_id") or ""),
+        ),
+    )
+
+
 def normalize_cipo(payload: dict[str, object]) -> dict[str, object]:
     return {
         "schema_version": 1,
@@ -29,7 +52,7 @@ def normalize_cipo(payload: dict[str, object]) -> dict[str, object]:
         "source_metadata": payload["source_metadata"],
         "summary": payload["summary"],
         "coverage": _copy_rows(payload["coverage"]),
-        "records": _copy_rows(payload["records"]),
+        "records": _earliest_records(payload["records"]),
     }
 
 
@@ -97,8 +120,7 @@ def normalize_ted(payload: dict[str, object]) -> dict[str, object]:
         },
         "summary": payload["summary"],
         "coverage": coverage,
-        "query_proof": query_proof,
-        "records": records,
+        "records": _earliest_records(records),
     }
 
 
