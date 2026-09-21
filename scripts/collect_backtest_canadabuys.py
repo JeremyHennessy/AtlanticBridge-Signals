@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
-from datetime import date
+from datetime import date, timedelta
 import hashlib
 import json
 from pathlib import Path
@@ -110,6 +110,29 @@ def build_payload(
         raise ValueError(
             "CanadaBuys source window does not cover every requested cutoff: "
             f"{min(cutoff_dates)}..{max(cutoff_dates)}"
+        )
+
+    intervals = sorted(
+        (
+            date.fromisoformat(str(source["coverage_start"])),
+            date.fromisoformat(str(source["coverage_end"])),
+        )
+        for source in source_files
+    )
+    cursor = source_start
+    for interval_start, interval_end in intervals:
+        if interval_end < cursor:
+            continue
+        if interval_start > cursor:
+            raise ValueError(
+                "CanadaBuys source coverage gap: "
+                f"{cursor}..{interval_start - timedelta(days=1)}"
+            )
+        cursor = max(cursor, interval_end + timedelta(days=1))
+    if cursor <= source_end:
+        raise ValueError(
+            "CanadaBuys source coverage ends before required window: "
+            f"{cursor}..{source_end}"
         )
 
     csv.field_size_limit(max(csv.field_size_limit(), CSV_FIELD_LIMIT))
