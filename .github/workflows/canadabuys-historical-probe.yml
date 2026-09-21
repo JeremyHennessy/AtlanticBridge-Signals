@@ -1,0 +1,77 @@
+name: CanadaBuys historical coverage probe
+
+on:
+  push:
+    branches:
+      - "research/canadabuys-historical-proof-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Unit tests
+        run: python -m unittest tests.test_canadabuys_historical_probe -v
+
+      - name: Restore CanadaBuys source cache
+        uses: actions/cache@v4
+        with:
+          path: control-output/canadabuys-cache
+          key: canadabuys-award-history-20260921-v1
+
+      - name: Scan official historical award corpus
+        run: |
+          mkdir -p control-output
+          python scripts/probe_canadabuys_historical.py \
+            --output control-output/canadabuys-historical-proof.json
+
+      - name: Validate source coverage boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(
+              Path("control-output/canadabuys-historical-proof.json").read_text()
+          )
+          assert payload["summary"]["entity_count"] == 12
+          assert payload["summary"]["source_file_count"] == 3
+          assert len(payload["coverage"]) == 12
+          assert all(
+              row["coverage_start_date"] == "2012-02-03"
+              for row in payload["coverage"]
+          )
+
+          scans = {row["source_label"]: row for row in payload["source_scans"]}
+          assert set(scans) == {
+              "LEGACY_2012_TO_2022_08",
+              "FISCAL_2022_2023_BRIDGE",
+              "COMPLETE_2022_08_ONWARD",
+          }
+          assert scans["LEGACY_2012_TO_2022_08"]["max_publication_date"] <= "2022-08-06"
+          assert scans["COMPLETE_2022_08_ONWARD"]["min_publication_date"] >= "2022-08-08"
+          assert scans["FISCAL_2022_2023_BRIDGE"]["min_publication_date"] <= "2022-08-07"
+          assert scans["FISCAL_2022_2023_BRIDGE"]["max_publication_date"] >= "2022-08-08"
+          PY
+
+      - name: Retain CanadaBuys historical proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canadabuys-historical-proof-${{ github.sha }}
+          path: control-output/
+          retention-days: 90
+          if-no-files-found: error
