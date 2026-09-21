@@ -7,12 +7,12 @@ from unittest.mock import patch
 from atlanticbridge.sources.ted import (
     TEDSearchResult,
     build_award_query,
-    build_exact_winner_query,
-    build_exact_winner_search_body,
+    build_winner_candidate_query,
+    build_winner_candidate_search_body,
     build_search_body,
     parse_notice,
     search_awards,
-    search_awards_exact_winner,
+    search_winner_candidates,
 )
 from atlanticbridge.ted_store import ingest_ted_search_result, ted_summary
 
@@ -43,8 +43,8 @@ def _single_winner_notice(number: str = "49657-2024") -> dict[str, object]:
 
 
 class TEDTests(unittest.TestCase):
-    def test_exact_winner_query_quotes_name_and_date_range(self):
-        query = build_exact_winner_query(
+    def test_winner_candidate_query_quotes_name_and_date_range(self):
+        query = build_winner_candidate_query(
             "Global Wind Service A/S",
             "2012-01-01",
             "2023-05-31",
@@ -52,16 +52,16 @@ class TEDTests(unittest.TestCase):
         self.assertIn("publication-date = (20120101 <> 20230531)", query)
         self.assertIn('winner-name = "Global Wind Service A/S"', query)
 
-    def test_exact_winner_query_rejects_unsafe_quote(self):
+    def test_winner_candidate_query_rejects_unsafe_quote(self):
         with self.assertRaisesRegex(ValueError, "quote/backslash"):
-            build_exact_winner_query(
+            build_winner_candidate_query(
                 'Bad "Name"',
                 "2012-01-01",
                 "2023-05-31",
             )
 
-    def test_exact_winner_search_body_uses_all_scope(self):
-        body = build_exact_winner_search_body(
+    def test_winner_candidate_search_body_uses_all_scope(self):
+        body = build_winner_candidate_search_body(
             "Andriani S.p.A.",
             "2012-01-01",
             "2023-05-31",
@@ -73,7 +73,7 @@ class TEDTests(unittest.TestCase):
         self.assertFalse(body["checkQuerySyntax"])
 
     @patch("atlanticbridge.sources.ted._post_json")
-    def test_exact_winner_search_requires_complete_retrieval(self, post_json):
+    def test_winner_candidate_search_requires_complete_retrieval(self, post_json):
         post_json.side_effect = [
             {
                 "timedOut": False,
@@ -89,7 +89,7 @@ class TEDTests(unittest.TestCase):
                 "notices": [_single_winner_notice("C-2024")],
             },
         ]
-        result = search_awards_exact_winner(
+        result = search_winner_candidates(
             "Prätorius GmbH",
             "2024-01-25",
             "2024-01-25",
