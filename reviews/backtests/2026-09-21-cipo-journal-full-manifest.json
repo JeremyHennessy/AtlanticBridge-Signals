@@ -11,7 +11,7 @@
   },
   "accepted_evidence_artifact": {
     "path": "reviews/backtests/source_proofs/2026-09-21-cipo-journal-evidence.json",
-    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    "sha256": "7cbd62fedbe410fc6c2c79c69b5337d5b2092b9a6f7c21b8e240c851d12589fe"
   },
   "inventory": {
     "start_date": "2000-01-05",
