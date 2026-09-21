@@ -8,7 +8,7 @@ from pathlib import Path
 import unicodedata
 
 from atlanticbridge.event_time_signals import cutoff_exclusive, OFFSETS_MONTHS
-from atlanticbridge.sources.ted import search_awards_exact_winner
+from atlanticbridge.sources.ted import search_winner_candidates
 
 
 SIGNAL_FAMILY = "TED_CONTRACT_AWARD"
@@ -69,7 +69,7 @@ def collect(
                 continue
             normalized_aliases.append(normalized)
 
-            result = search_awards_exact_winner(
+            result = search_winner_candidates(
                 alias,
                 coverage_start.isoformat(),
                 end_date.isoformat(),
@@ -83,20 +83,8 @@ def collect(
             if len(result.notices) != result.total_notice_count:
                 all_queries_complete = False
 
-            alias_queries.append(
-                {
-                    "alias": alias,
-                    "normalized_alias": normalized,
-                    "query": result.query,
-                    "query_hash": result.query_hash,
-                    "response_hash": result.response_hash,
-                    "total_notice_count": result.total_notice_count,
-                    "returned_notice_count": len(result.notices),
-                    "complete": (
-                        len(result.notices) == result.total_notice_count
-                    ),
-                }
-            )
+            exact_notice_count = 0
+            nonexact_candidate_count = 0
 
             for notice in result.notices:
                 mention_names = [
@@ -107,13 +95,10 @@ def collect(
                     normalize_name(value) for value in mention_names if value
                 }
                 if normalized not in mention_normalized:
-                    raise ValueError(
-                        "TED exact-winner query returned notice without the exact "
-                        f"winner alias: entity={entity_id} alias={alias!r} "
-                        f"notice={notice.publication_number} "
-                        f"winner_names={mention_names!r}"
-                    )
+                    nonexact_candidate_count += 1
+                    continue
 
+                exact_notice_count += 1
                 publication_date = str(notice.publication_date or "")[:10]
                 parsed = date.fromisoformat(publication_date)
                 if parsed < coverage_start or parsed > end_date:
@@ -139,7 +124,8 @@ def collect(
                         "publicly_available_date_precision": "DAY",
                         "publicly_available_date_basis": (
                             "TED notice publication-date returned by the official "
-                            "Search API for an exact winner-name query."
+                            "winner-name candidate query, then exact-normalized "
+                            "against the reviewed legal-entity alias."
                         ),
                         "winner_names": sorted(set(mention_names)),
                         "matched_aliases": [],
@@ -159,12 +145,30 @@ def collect(
                     matched_aliases.append(alias)
                     matched_aliases.sort()
 
+            alias_queries.append(
+                {
+                    "alias": alias,
+                    "normalized_alias": normalized,
+                    "query": result.query,
+                    "query_hash": result.query_hash,
+                    "response_hash": result.response_hash,
+                    "candidate_notice_count": result.total_notice_count,
+                    "returned_candidate_notice_count": len(result.notices),
+                    "exact_notice_count": exact_notice_count,
+                    "nonexact_candidate_count": nonexact_candidate_count,
+                    "complete": (
+                        len(result.notices) == result.total_notice_count
+                    ),
+                }
+            )
+
         coverage.append(
             {
                 "entity_id": entity_id,
                 "signal_family": SIGNAL_FAMILY,
                 "coverage_status": (
-                    "COMPLETE_EXACT_WINNER_ALIAS_HISTORY_SINCE_2012"
+                    "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_"
+                    "SINCE_2012"
                     if all_queries_complete
                     else "INCOMPLETE_QUERY_RETRIEVAL"
                 ),
@@ -204,9 +208,12 @@ def collect(
             "foreign legal-entity alias."
         ),
         "coverage_definition": (
-            "Each reviewed exact alias is queried independently over the complete "
-            "bounded 2012-01-01 through Backtest 001 maximum-cutoff window. "
-            "Absence is only absence of this exact-alias TED winner signal."
+            "Each reviewed alias is used in TED's winner-name field query as a "
+            "candidate-retrieval superset over the bounded 2012-01-01 through "
+            "Backtest 001 maximum-cutoff window. Every returned winner-name is "
+            "then post-filtered to exact normalized legal-entity equality. "
+            "Absence is only absence of that exact-alias TED winner signal after "
+            "complete retrieval of every alias candidate query."
         ),
         "coverage_window": {
             "start_date": coverage_start.isoformat(),
@@ -233,7 +240,7 @@ def collect(
 
 
 def live_query_control() -> dict[str, object]:
-    result = search_awards_exact_winner(
+    result = search_winner_candidates(
         "Siemens AG",
         "2023-01-01",
         "2023-12-31",
@@ -251,13 +258,20 @@ def live_query_control() -> dict[str, object]:
         raise RuntimeError("TED live control query was incomplete")
 
     normalized = normalize_name("Siemens AG")
+    exact_notice_count = 0
+    nonexact_candidate_count = 0
     for notice in result.notices:
         names = [mention.winner_name for mention in notice.winner_mentions()]
-        if normalized not in {normalize_name(name) for name in names}:
-            raise RuntimeError(
-                "TED live exact-winner query returned a notice without exact "
-                f"Siemens AG winner identity: {notice.publication_number}"
-            )
+        if normalized in {normalize_name(name) for name in names}:
+            exact_notice_count += 1
+        else:
+            nonexact_candidate_count += 1
+
+    if exact_notice_count <= 0:
+        raise RuntimeError(
+            "TED live candidate query did not return any exact Siemens AG winner "
+            "after post-filtering"
+        )
 
     return {
         "winner_name": "Siemens AG",
@@ -266,8 +280,10 @@ def live_query_control() -> dict[str, object]:
         "query": result.query,
         "query_hash": result.query_hash,
         "response_hash": result.response_hash,
-        "total_notice_count": result.total_notice_count,
-        "returned_notice_count": len(result.notices),
+        "candidate_notice_count": result.total_notice_count,
+        "returned_candidate_notice_count": len(result.notices),
+        "exact_notice_count": exact_notice_count,
+        "nonexact_candidate_count": nonexact_candidate_count,
         "complete": True,
     }
 
