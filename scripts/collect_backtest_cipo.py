@@ -152,14 +152,14 @@ def iter_zip_rows(path: Path):
         csv.field_size_limit(CIPO_CSV_FIELD_SIZE_LIMIT)
     try:
         with ZipFile(path) as archive:
-        members = [
-            name
-            for name in archive.namelist()
-            if not name.endswith("/")
-            and name.lower().endswith((".csv", ".txt"))
-        ]
-        if not members:
-            raise ValueError(f"no CSV/TXT member found in {path}")
+            members = [
+                name
+                for name in archive.namelist()
+                if not name.endswith("/")
+                and name.lower().endswith((".csv", ".txt"))
+            ]
+            if not members:
+                raise ValueError(f"no CSV/TXT member found in {path}")
             for member in sorted(members):
                 with archive.open(member) as raw:
                     text = io.TextIOWrapper(
@@ -176,7 +176,6 @@ def iter_zip_rows(path: Path):
     finally:
         if previous_limit < CIPO_CSV_FIELD_SIZE_LIMIT:
             csv.field_size_limit(previous_limit)
-
 
 def build_alias_index(entities_payload: dict[str, object]):
     entities = entities_payload.get("entities")
