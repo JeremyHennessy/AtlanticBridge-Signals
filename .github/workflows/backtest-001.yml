@@ -11,6 +11,7 @@ on:
       - "reviews/backtests/2026-09-21-backtest-001.manifest.json"
       - "reviews/backtests/2026-09-21-backtest-entities.json"
       - "reviews/backtests/2026-09-21-signal-source-semantics.json"
+      - "reviews/backtests/2026-09-21-cipo-journal-full-manifest.json"
       - "reviews/backtests/2026-09-21-ted-historical-manifest.json"
       - "docs/BACKTEST_001.md"
       - ".github/workflows/backtest-001.yml"
@@ -55,26 +56,48 @@ jobs:
           summary = result["summary"]
           assert summary["signal_family_count"] == 5
           assert summary["signals_with_any_present_evidence"] == 1
-          assert summary["signals_with_proven_absence_coverage"] == 2
+          assert summary["signals_with_proven_absence_coverage"] == 3
           assert summary["signals_with_estimable_false_rates"] == 0
           assert (
               summary["signals_with_identity_eligible_estimable_false_rates"]
-              == 2
+              == 3
           )
-          assert summary["signals_with_both_positive_and_absence_evidence"] == 0
-          assert summary["expansion_score_1_0_weighting_allowed"] is False
+          assert summary["signals_with_both_positive_and_absence_evidence"] == 1
+          assert summary["expansion_score_1_0_weighting_allowed"] is True
 
           cipo = next(
               row for row in result["signals"]
               if row["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
           )
-          assert cipo["state_counts"]["PRESENT"] == 12
-          assert cipo["state_counts"]["ABSENT_WITH_PROVEN_COVERAGE"] == 0
-          assert cipo["state_counts"]["UNKNOWN_UNVERIFIED_COVERAGE"] == 36
+          assert cipo["state_counts"] == {
+              "PRESENT": 12,
+              "ABSENT_WITH_PROVEN_COVERAGE": 28,
+              "UNKNOWN_UNVERIFIED_COVERAGE": 8,
+          }
+          assert cipo["source_availability"]["observable_rows"] == 40
+          cipo_high = [
+              row for row in cipo["identity_confidence_sensitivity"]
+              if row["identity_tier"] == "HIGH"
+          ]
+          assert cipo_high
           assert all(
-              row["error_rates"]["false_positive_rate"] is None
-              and row["error_rates"]["false_negative_rate"] is None
-              for row in cipo["offset_metrics"]
+              row["false_positive_rate"] == 0.2
+              and row["false_negative_rate"] == 0.5
+              and row["error_rate_status"]
+                  == "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET"
+              for row in cipo_high
+          )
+          cipo_high_or_medium = [
+              row for row in cipo["identity_confidence_sensitivity"]
+              if row["identity_tier"] == "HIGH_OR_MEDIUM"
+          ]
+          assert cipo_high_or_medium
+          assert all(
+              row["false_positive_rate"] == 0.2
+              and row["false_negative_rate"] == 0.6
+              and row["error_rate_status"]
+                  == "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET"
+              for row in cipo_high_or_medium
           )
 
           canadabuys = next(

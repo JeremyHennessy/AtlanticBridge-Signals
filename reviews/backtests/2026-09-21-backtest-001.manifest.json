@@ -2,11 +2,11 @@
   "schema_version": 1,
   "design": "BACKTEST_001_ACCEPTED_RESULT_MANIFEST",
   "accepted_run": {
-    "workflow_run_id": 35578801032,
-    "workflow_head_sha": "bcb348fb8b19c8f925aa13a487834862a89091ff",
-    "artifact_id": 10628912738,
-    "artifact_digest": "sha256:e51886f634eb00371e4a7c9893d1fc9fcf4fd0c8fe28565d1a19cc4a0dd957c3",
-    "generated_result_sha256": "3c9370b7d9ae30cb967828495011c6045cd4c9f53a243347575b1d790cd47861",
+    "workflow_run_id": 35661907983,
+    "workflow_head_sha": "89d43fc052067a8b8810a26af6bc193e38c16259",
+    "artifact_id": 10667139607,
+    "artifact_digest": "sha256:625d5fa5713c8dc38be7b23fc640fc0fdbad9510588c151a7a72ff615917bbe9",
+    "generated_result_sha256": "7e591fd4cff3f282bb8151a5e41fb51bbc4fbec8de0996eb9bb579c79b2f5001",
     "acceptance_status": "GREEN"
   },
   "cohort": {
@@ -17,17 +17,17 @@
   "summary": {
     "signal_family_count": 5,
     "signals_with_any_present_evidence": 1,
-    "signals_with_proven_absence_coverage": 2,
+    "signals_with_proven_absence_coverage": 3,
     "signals_with_estimable_false_rates": 0,
-    "signals_with_identity_eligible_estimable_false_rates": 2,
-    "signals_with_both_positive_and_absence_evidence": 0,
-    "expansion_score_1_0_weighting_allowed": false
+    "signals_with_identity_eligible_estimable_false_rates": 3,
+    "signals_with_both_positive_and_absence_evidence": 1,
+    "expansion_score_1_0_weighting_allowed": true
   },
   "signal_state_counts": {
     "CIPO_CANADIAN_TRADEMARK": {
       "PRESENT": 12,
-      "ABSENT_WITH_PROVEN_COVERAGE": 0,
-      "UNKNOWN_UNVERIFIED_COVERAGE": 36
+      "ABSENT_WITH_PROVEN_COVERAGE": 28,
+      "UNKNOWN_UNVERIFIED_COVERAGE": 8
     },
     "CANADABUYS_AWARD": {
       "PRESENT": 0,
@@ -64,7 +64,7 @@
       "false_positive_rate": 0
     }
   },
-  "score_gate_reason": "No signal currently has both verified positive evidence and proven historical absence coverage with estimable identity-qualified false rates. Score weights must remain disabled.",
+  "score_gate_reason": null,
   "identity_eligible_ted": {
     "high": {
       "entrant_entities": 4,
@@ -77,6 +77,28 @@
       "control_entities": 5,
       "false_negative_rate": 1,
       "false_positive_rate": 0
+    }
+  },
+  "identity_eligible_cipo": {
+    "high": {
+      "entrant_entities": 4,
+      "control_entities": 5,
+      "entrant_present": 2,
+      "entrant_absent_with_proven_coverage": 2,
+      "control_present": 1,
+      "control_absent_with_proven_coverage": 4,
+      "false_negative_rate": 0.5,
+      "false_positive_rate": 0.2
+    },
+    "high_or_medium": {
+      "entrant_entities": 5,
+      "control_entities": 5,
+      "entrant_present": 2,
+      "entrant_absent_with_proven_coverage": 3,
+      "control_present": 1,
+      "control_absent_with_proven_coverage": 4,
+      "false_negative_rate": 0.6,
+      "false_positive_rate": 0.2
     }
   }
 }

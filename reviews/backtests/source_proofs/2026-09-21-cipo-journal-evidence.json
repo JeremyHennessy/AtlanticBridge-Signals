@@ -1,0 +1,234 @@
+{
+  "coverage": [
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["ANTEA S.R.L."],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "entrant:653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "identity_eligible": false,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["LINET SPOL. S.R.O."],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["FRAMEWORK COMPUTER CONSULTANTS LIMITED","FRAMEWORK COMPUTER CONSULTANTS LTD"],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "entrant:56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["HANECS GmbH"],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "entrant:023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "identity_eligible": false,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["AIUT SP. Z O.O."],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "entrant:d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["SIOO WOOD PROTECTION AB","Sioo Wood Protection Industry AB"],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["LEADERSHIP PIPELINE INSTITUTE A/S"],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "entrant:ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["ANDRIANI SPA","MOLINO ANDRIANI S.r.l."],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "control:node:212932",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["GILARDONI SPA"],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "control:node:212990",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["SD2 ENGINEERING SERVICES STP A RL"],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "control:node:212045",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["SENZOMATIC S.R.O."],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "control:node:241151",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_reviewed": ["GLOBAL WIND SERVICE A/S"],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2000-01-05",
+      "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31",
+      "entity_id": "control:node:242990",
+      "identity_eligible": true,
+      "signal_family": "CIPO_CANADIAN_TRADEMARK"
+    }
+  ],
+  "coverage_definition": "All 1,221 official Journal issues in the accepted inventory are fetched and their Advertised Applications sections parsed. A non-hit is absence only for the reviewed alias set and only when every issue is complete and no alias occurrence is ambiguous.",
+  "inventory": {
+    "canonical_issue_sha256": "8a89eccf0c368e82de4fcd62bea62481930210b7ddf2c182b18e7f45e7521a2d",
+    "end_date": "2023-05-31",
+    "end_exclusive": "2023-06-01",
+    "issue_audit_canonical_sha256": "bd1d09250124fb2281a711d9c544a4dc2c0cfff2206952de1b161e63ca6adf88",
+    "issue_count": 1221,
+    "start_date": "2000-01-05"
+  },
+  "known_required_cases": [
+    {"application_number":"1336566","publication_date":"2008-02-20"},
+    {"application_number":"1799092","publication_date":"2018-12-12"},
+    {"application_number":"1702825","publication_date":"2016-07-06"}
+  ],
+  "proof_kind": "OFFICIAL_JOURNAL_FULL_COMPLETENESS",
+  "records": [
+    {
+      "alias_kind":"HISTORICAL_LEGAL_NAME",
+      "application_number":"1702825",
+      "entity_id":"control:node:212932",
+      "evidence_id":"9dc620d27b89f15185e82a3b6fb46e45c386ef408a4aac49baf6ba033a2f1b05",
+      "match_method":"OFFICIAL_JOURNAL_EXACT_REVIEWED_ALIAS_APPLICANT",
+      "matched_alias":"MOLINO ANDRIANI S.r.l.",
+      "matched_applicant_text":"MOLINO ANDRIANI S.r.l., Via Niccolò Copernico - Zona Industriale, 70024 Gravina Di Puglia (BA), ITALY",
+      "publicly_available_date":"2016-07-06",
+      "publicly_available_date_basis":"Official CIPO Trademarks Journal publication date; exact reviewed applicant alias in the Advertised Applications section.",
+      "publicly_available_date_precision":"DAY",
+      "signal_family":"CIPO_CANADIAN_TRADEMARK",
+      "source_url":"https://cipo.ic.gc.ca/opic-cipo/tmj/eng/view.html?edition=07-06&file=Journal_en.html&year=2016"
+    },
+    {
+      "alias_kind":"CURRENT_REVIEWED_ALIAS",
+      "application_number":"1890756",
+      "entity_id":"entrant:653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "evidence_id":"a52678fd6b802846731b1cf872bafd1116c59351aa5279c4a923448f63e55a2c",
+      "match_method":"OFFICIAL_JOURNAL_EXACT_REVIEWED_ALIAS_APPLICANT",
+      "matched_alias":"ANTEA S.R.L.",
+      "matched_applicant_text":"ANTEA S.R.L. VIA SAN CRISPINO N. 82 35129 PADOVA ITALY",
+      "publicly_available_date":"2020-03-18",
+      "publicly_available_date_basis":"Official CIPO Trademarks Journal publication date; exact reviewed applicant alias in the Advertised Applications section.",
+      "publicly_available_date_precision":"DAY",
+      "signal_family":"CIPO_CANADIAN_TRADEMARK",
+      "source_url":"https://cipo.ic.gc.ca/opic-cipo/tmj/eng/view.html?edition=03-18&file=Journal_en.html&year=2020"
+    },
+    {
+      "alias_kind":"CURRENT_REVIEWED_ALIAS",
+      "application_number":"1336563",
+      "entity_id":"entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "evidence_id":"6e65b25f7fbb674ce8eb3ad6f49861cda5c767266932eda173b2525ddb25b935",
+      "match_method":"OFFICIAL_JOURNAL_EXACT_REVIEWED_ALIAS_APPLICANT",
+      "matched_alias":"LINET SPOL. S.R.O.",
+      "matched_applicant_text":"Linet spol. S.r.o., (r)elevcice 5, 274 01 ou de maladie afin que les clients conservent le style de vie qu’ils Slan″, CZECH REPUBLIC",
+      "publicly_available_date":"2008-02-13",
+      "publicly_available_date_basis":"Official CIPO Trademarks Journal publication date; exact reviewed applicant alias in the Advertised Applications section.",
+      "publicly_available_date_precision":"DAY",
+      "signal_family":"CIPO_CANADIAN_TRADEMARK",
+      "source_url":"https://cipo.ic.gc.ca/opic-cipo/tmj/eng/13fevrier2008.pdf?year=2008&edition=02-13"
+    },
+    {
+      "alias_kind":"CURRENT_REVIEWED_ALIAS",
+      "application_number":"1798937",
+      "entity_id":"entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "evidence_id":"a6fa1f852c8e03e59561d1eb9cc968fbf012d517ec6a666dd29ad7efe2bf78d7",
+      "match_method":"OFFICIAL_JOURNAL_EXACT_REVIEWED_ALIAS_APPLICANT",
+      "matched_alias":"SIOO WOOD PROTECTION AB",
+      "matched_applicant_text":"Sioo Woodprotection AB, Von Utfallsgatan 20, 1tr, SE-415 05 Göteborg, SWEDEN",
+      "publicly_available_date":"2018-12-12",
+      "publicly_available_date_basis":"Official CIPO Trademarks Journal publication date; exact reviewed applicant alias in the Advertised Applications section.",
+      "publicly_available_date_precision":"DAY",
+      "signal_family":"CIPO_CANADIAN_TRADEMARK",
+      "source_url":"https://cipo.ic.gc.ca/opic-cipo/tmj/eng/view.html?edition=12-12&file=Journal_en.html&year=2018"
+    },
+    {
+      "alias_kind":"CURRENT_REVIEWED_ALIAS",
+      "application_number":"1909303",
+      "entity_id":"entrant:d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "evidence_id":"885f9c6758309403a42f16aee24cb34fd8a743dcab5f27c41affb435ee1f9479",
+      "match_method":"OFFICIAL_JOURNAL_EXACT_REVIEWED_ALIAS_APPLICANT",
+      "matched_alias":"AIUT SP. Z O.O.",
+      "matched_applicant_text":"AIUT Sp. z o.o. ul. Wyczólkowskiego 113 44109 Gliwice POLAND",
+      "publicly_available_date":"2021-11-03",
+      "publicly_available_date_basis":"Official CIPO Trademarks Journal publication date; exact reviewed applicant alias in the Advertised Applications section.",
+      "publicly_available_date_precision":"DAY",
+      "signal_family":"CIPO_CANADIAN_TRADEMARK",
+      "source_url":"https://cipo.ic.gc.ca/opic-cipo/tmj/eng/view.html?edition=11-03&file=Journal_en.html&year=2021"
+    }
+  ],
+  "schema_version": 1,
+  "signal_definition": "At least one application in the official English CIPO Trademarks Journal Advertised Applications section from 2000-01-05 through 2023-05-31 where the publication-time applicant begins with an exact reviewed current or source-backed historical legal alias.",
+  "source_family": "CIPO_CANADIAN_TRADEMARK",
+  "summary": {
+    "absence_inference_allowed": true,
+    "application_rows_scanned": 824204,
+    "complete_issue_count": 1221,
+    "composition_earliest_evidence_records": 5,
+    "entities_with_exact_match": 5,
+    "exact_match_record_count": 16,
+    "issue_count": 1221,
+    "issue_failure_count": 0,
+    "parser_modes": {
+      "LEGACY_NUMBER_DATE_APPLICANT": 804,
+      "MODERN_APPLICATION_NUMBER_APPLICANT": 417
+    },
+    "retrieval_methods": {
+      "OFFICIAL_JOURNAL_HTML": 412,
+      "OFFICIAL_JOURNAL_PDF_PDFTOTEXT": 809
+    },
+    "shard_count": 6,
+    "unresolved_alias_occurrence_count": 0
+  }
+}

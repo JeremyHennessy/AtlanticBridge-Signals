@@ -30,57 +30,99 @@ class Backtest001Tests(unittest.TestCase):
         summary = self.result["summary"]
         self.assertEqual(summary["signal_family_count"], 5)
         self.assertEqual(summary["signals_with_any_present_evidence"], 1)
-        self.assertEqual(summary["signals_with_proven_absence_coverage"], 2)
+        self.assertEqual(summary["signals_with_proven_absence_coverage"], 3)
         self.assertEqual(summary["signals_with_estimable_false_rates"], 0)
         self.assertEqual(
             summary["signals_with_identity_eligible_estimable_false_rates"],
-            2,
+            3,
         )
         self.assertEqual(
             summary["signals_with_both_positive_and_absence_evidence"],
-            0,
+            1,
         )
-        self.assertFalse(summary["expansion_score_1_0_weighting_allowed"])
-        self.assertTrue(summary["score_gate_reason"])
+        self.assertTrue(summary["expansion_score_1_0_weighting_allowed"])
+        self.assertIsNone(summary["score_gate_reason"])
 
-    def test_cipo_is_presence_only_and_never_claims_absence(self):
+    def test_cipo_journal_proves_identity_qualified_presence_and_absence(self):
         cipo = next(
             row for row in self.result["signals"]
             if row["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
         )
-        self.assertFalse(cipo["absence_coverage_proven"])
+        self.assertTrue(cipo["absence_coverage_proven"])
         self.assertEqual(cipo["state_counts"]["PRESENT"], 12)
         self.assertEqual(
             cipo["state_counts"]["ABSENT_WITH_PROVEN_COVERAGE"],
-            0,
+            28,
         )
         self.assertEqual(
             cipo["state_counts"]["UNKNOWN_UNVERIFIED_COVERAGE"],
-            36,
+            8,
+        )
+        self.assertEqual(cipo["source_availability"]["observable_rows"], 40)
+        self.assertEqual(
+            cipo["source_availability"]["observable_fraction"],
+            0.833333,
         )
 
         for metric in cipo["offset_metrics"]:
             self.assertEqual(metric["entrant_prevalence"]["present"], 2)
-            self.assertEqual(metric["entrant_prevalence"]["unknown"], 5)
+            self.assertEqual(
+                metric["entrant_prevalence"]["absent_with_proven_coverage"],
+                3,
+            )
+            self.assertEqual(metric["entrant_prevalence"]["unknown"], 2)
             self.assertEqual(metric["control_prevalence"]["present"], 1)
-            self.assertEqual(metric["control_prevalence"]["unknown"], 4)
             self.assertEqual(
-                metric["entrant_prevalence"]["status"],
-                "NOT_ESTIMABLE_UNKNOWN_SOURCE_COVERAGE",
+                metric["control_prevalence"]["absent_with_proven_coverage"],
+                4,
             )
-            self.assertEqual(
-                metric["control_prevalence"]["status"],
-                "NOT_ESTIMABLE_UNKNOWN_SOURCE_COVERAGE",
-            )
+            self.assertEqual(metric["control_prevalence"]["unknown"], 0)
+            self.assertEqual(metric["source_observable_rows"], 10)
+            self.assertEqual(metric["source_total_rows"], 12)
+            self.assertEqual(metric["source_observable_fraction"], 0.833333)
             self.assertEqual(
                 metric["error_rates"]["status"],
                 "NOT_ESTIMABLE_SOURCE_ABSENCE_UNPROVEN",
             )
-            self.assertIsNone(metric["error_rates"]["false_positive_rate"])
-            self.assertIsNone(metric["error_rates"]["false_negative_rate"])
-            self.assertEqual(metric["source_observable_rows"], 3)
-            self.assertEqual(metric["source_total_rows"], 12)
-            self.assertEqual(metric["source_observable_fraction"], 0.25)
+
+        high = next(
+            row for row in cipo["identity_confidence_sensitivity"]
+            if row["identity_tier"] == "HIGH"
+            and row["offset_months"] == 3
+        )
+        self.assertEqual(high["entrant_entities"], 4)
+        self.assertEqual(high["entrant_present"], 2)
+        self.assertEqual(high["entrant_absent_with_proven_coverage"], 2)
+        self.assertEqual(high["entrant_unknown"], 0)
+        self.assertEqual(high["control_entities"], 5)
+        self.assertEqual(high["control_present"], 1)
+        self.assertEqual(high["control_absent_with_proven_coverage"], 4)
+        self.assertEqual(high["control_unknown"], 0)
+        self.assertEqual(high["false_positive_rate"], 0.2)
+        self.assertEqual(high["false_negative_rate"], 0.5)
+        self.assertEqual(
+            high["error_rate_status"],
+            "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET",
+        )
+
+        high_or_medium = next(
+            row for row in cipo["identity_confidence_sensitivity"]
+            if row["identity_tier"] == "HIGH_OR_MEDIUM"
+            and row["offset_months"] == 3
+        )
+        self.assertEqual(high_or_medium["entrant_entities"], 5)
+        self.assertEqual(high_or_medium["entrant_present"], 2)
+        self.assertEqual(
+            high_or_medium["entrant_absent_with_proven_coverage"],
+            3,
+        )
+        self.assertEqual(high_or_medium["entrant_unknown"], 0)
+        self.assertEqual(high_or_medium["false_positive_rate"], 0.2)
+        self.assertEqual(high_or_medium["false_negative_rate"], 0.6)
+        self.assertEqual(
+            high_or_medium["error_rate_status"],
+            "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET",
+        )
 
     def test_cipo_positive_rates_are_explicit_lower_bounds(self):
         cipo = next(
@@ -115,7 +157,7 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(controls["n"], 1)
         self.assertEqual(controls["median_days"], 1121.0)
 
-    def test_identity_confidence_sensitivity_is_preserved(self):
+    def test_cipo_identity_confidence_sensitivity_is_preserved(self):
         cipo = next(
             row for row in self.result["signals"]
             if row["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
@@ -129,9 +171,13 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(high_3["entrant_entities"], 4)
         self.assertEqual(high_3["entrant_present"], 2)
         self.assertEqual(high_3["entrant_present_lower_bound"], 0.5)
+        self.assertEqual(high_3["entrant_absent_with_proven_coverage"], 2)
         self.assertEqual(high_3["control_entities"], 5)
         self.assertEqual(high_3["control_present"], 1)
         self.assertEqual(high_3["control_present_lower_bound"], 0.2)
+        self.assertEqual(high_3["control_absent_with_proven_coverage"], 4)
+        self.assertEqual(high_3["false_positive_rate"], 0.2)
+        self.assertEqual(high_3["false_negative_rate"], 0.5)
 
         eligible_3 = next(
             row for row in sensitivity
@@ -141,6 +187,12 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(eligible_3["entrant_entities"], 5)
         self.assertEqual(eligible_3["entrant_present"], 2)
         self.assertEqual(eligible_3["entrant_present_lower_bound"], 0.4)
+        self.assertEqual(
+            eligible_3["entrant_absent_with_proven_coverage"],
+            3,
+        )
+        self.assertEqual(eligible_3["false_positive_rate"], 0.2)
+        self.assertEqual(eligible_3["false_negative_rate"], 0.6)
 
     def test_canadabuys_proves_absence_only_for_identity_eligible_subset(self):
         signal = next(

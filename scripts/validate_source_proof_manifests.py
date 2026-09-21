@@ -8,6 +8,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACTS = (
     (
+        ROOT / "reviews/backtests/2026-09-21-cipo-journal-full-manifest.json",
+        ROOT / "reviews/backtests/source_proofs/2026-09-21-cipo-journal-evidence.json",
+    ),
+    (
         ROOT / "reviews/backtests/2026-09-21-cipo-researcher-manifest.json",
         ROOT / "reviews/backtests/source_proofs/2026-09-21-cipo-researcher-evidence.json",
     ),
