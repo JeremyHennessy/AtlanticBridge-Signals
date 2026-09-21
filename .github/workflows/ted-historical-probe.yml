@@ -51,8 +51,10 @@ jobs:
           )
           control = payload["live_query_control"]
           assert control["winner_name"] == "Siemens AG"
-          assert control["total_notice_count"] > 0
-          assert control["returned_notice_count"] == control["total_notice_count"]
+          assert control["candidate_notice_count"] > 0
+          assert control["returned_candidate_notice_count"] == control["candidate_notice_count"]
+          assert control["exact_notice_count"] > 0
+          assert control["nonexact_candidate_count"] > 0
           assert control["complete"] is True
 
           summary = payload["summary"]
@@ -70,7 +72,7 @@ jobs:
               assert proof["queries"]
               assert all(
                   row["complete"] is True
-                  and row["returned_notice_count"] == row["total_notice_count"]
+                  and row["returned_candidate_notice_count"] == row["candidate_notice_count"]
                   for row in proof["queries"]
               )
           PY
