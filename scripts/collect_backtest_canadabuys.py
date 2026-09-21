@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 import hashlib
 import json
 from pathlib import Path
@@ -240,6 +240,17 @@ def collect(
         ),
     )
 
+    coverage_end_dates = [
+        date.fromisoformat(str(scan["max_publication_date"]))
+        for scan in scans
+        if scan.get("max_publication_date")
+    ]
+    if not coverage_end_dates:
+        raise ValueError("CanadaBuys source scans produced no publication dates")
+    coverage_end_exclusive = (
+        max(coverage_end_dates) + timedelta(days=1)
+    ).isoformat()
+
     coverage = []
     for entity in entities_payload["entities"]:
         entity_id = str(entity["entity_id"])
@@ -251,11 +262,13 @@ def collect(
                     "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_"
                     "HISTORY_2012_ONWARD"
                 ),
+                "absence_coverage_proven": True,
                 "identity_eligible": bool(
                     entity.get("foreign_signal_identity_eligible")
                 ),
                 "aliases_normalized": normalized_aliases[entity_id],
                 "coverage_start_date": "2012-02-03",
+                "coverage_end_exclusive": coverage_end_exclusive,
                 "coverage_sources": [
                     "LEGACY_2012_TO_2022_08",
                     "FISCAL_2022_2023_BRIDGE",
@@ -270,7 +283,8 @@ def collect(
         "collected_at": datetime.now(timezone.utc).isoformat(),
         "source_definition": (
             "Exact reviewed foreign legal-entity alias appears as supplierLegalName "
-            "in the authoritative federal CanadaBuys award-notice corpus."
+            "in the authoritative federal CanadaBuys award-notice corpus on or after "
+            "2012-02-03 and before the event-time cutoff."
         ),
         "coverage_definition": (
             "Union of the official legacy 2012-to-2022-08 file, overlapping "
