@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "design": "BACKTEST_001_ACCEPTED_EVENT_TIME_INPUT",
+  "accepted_snapshot_provenance": {
+    "workflow_run_id": 35552301164,
+    "workflow_head_sha": "6d5ef1b60fc6299e65c008bac1d5cad85f0cec1b",
+    "artifact_id": 10618813727,
+    "artifact_digest": "sha256:4202d1b13679f63092a81ebd990d0067c29d9fbbb646feaac2079000c55552ad",
+    "event_time_snapshots_sha256": "fa2b4edfd4b9556afc7f1d74adac10c3382ea57df3a38de04b9b4ec21b86905",
+    "accepted_snapshot_summary": {
+      "entity_count": 12,
+      "signal_family_count": 5,
+      "snapshot_row_count": 240,
+      "state_counts": {
+        "PRESENT": 12,
+        "UNKNOWN_UNVERIFIED_COVERAGE": 228
+      },
+      "evaluable_rows_by_signal": {
+        "CIPO_CANADIAN_TRADEMARK": 12
+      }
+    }
+  },
+  "target_boundary": "Candidate notification month is a censored event-time anchor, not a proven first-operation date. Controls are time-indexed future entrants, not permanent negatives.",
+  "signals": [
+    {
+      "signal_family": "CIPO_CANADIAN_TRADEMARK",
+      "observation_mode": "PRESENCE_ONLY_KNOWN_COVERAGE_GAP",
+      "absence_coverage_proven": false,
+      "evidence_provenance": "Accepted PR #66 CIPO applicant/Advertised reconstruction plus pinned official Sioo application 1799092 supplemental evidence.",
+      "earliest_public_evidence": [
+        {
+          "entity_id": "control:node:212932",
+          "earliest_public_date": "2016-07-06",
+          "application_number": "1702825"
+        },
+        {
+          "entity_id": "entrant:653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+          "earliest_public_date": "2020-03-18",
+          "application_number": "1890756"
+        },
+        {
+          "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+          "earliest_public_date": "2008-02-13",
+          "application_number": "1336563"
+        },
+        {
+          "entity_id": "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+          "earliest_public_date": "2018-12-12",
+          "application_number": "1799092"
+        },
+        {
+          "entity_id": "entrant:d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+          "earliest_public_date": "2021-11-03",
+          "application_number": "1909303"
+        }
+      ]
+    },
+    {
+      "signal_family": "FEDERAL_CORPORATION_EVENT",
+      "observation_mode": "UNKNOWN_UNVERIFIED_PUBLICATION_CLOCK",
+      "absence_coverage_proven": false
+    },
+    {
+      "signal_family": "CORDIS_CANADA_RELATIONSHIP",
+      "observation_mode": "UNKNOWN_UNVERIFIED_FIRST_PUBLICATION_CLOCK",
+      "absence_coverage_proven": false
+    },
+    {
+      "signal_family": "TED_CONTRACT_AWARD",
+      "observation_mode": "UNKNOWN_LIVE_QUERY_PROOF_REQUIRED",
+      "absence_coverage_proven": false
+    },
+    {
+      "signal_family": "CANADABUYS_AWARD",
+      "observation_mode": "UNKNOWN_HISTORICAL_COVERAGE_NOT_COLLECTED",
+      "absence_coverage_proven": false
+    }
+  ]
+}
