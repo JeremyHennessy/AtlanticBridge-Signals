@@ -12,7 +12,7 @@ SCRIPT = ROOT / "scripts/collect_backtest_canadabuys.py"
 SPEC = importlib.util.spec_from_file_location("probe_canadabuys_historical", SCRIPT)
 assert SPEC and SPEC.loader
 collector = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(probe)
+SPEC.loader.exec_module(collector)
 
 
 class CanadaBuysBacktestCollectorTests(unittest.TestCase):
