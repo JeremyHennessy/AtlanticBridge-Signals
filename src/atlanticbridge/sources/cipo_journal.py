@@ -9,7 +9,7 @@ import tempfile
 import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -55,6 +55,22 @@ def normalize_application_number(value: str) -> str:
     return "".join(char for char in (value or "") if char.isdigit())
 
 
+def request_url(url: str) -> str:
+    parts = urlsplit(url)
+    encoded_path = quote(
+        parts.path,
+        safe="/%:@!$&()*+,;=-._~",
+    )
+    return urlunsplit(
+        (
+            parts.scheme,
+            parts.netloc,
+            encoded_path,
+            parts.query,
+            parts.fragment,
+        )
+    )
+
 def fetch(
     url: str,
     *,
@@ -63,7 +79,7 @@ def fetch(
     timeout: int = 120,
 ) -> bytes | str:
     request = Request(
-        url,
+        request_url(url),
         headers={
             "User-Agent": USER_AGENT,
             "Accept": (
@@ -274,6 +290,244 @@ def _advertised_section(text: str) -> str:
             end_candidates.append(pos)
     end = min(end_candidates) if end_candidates else len(text)
     return text[start:end]
+
+
+_OLD_APPLICATION_START_RE = re.compile(
+    r"(?m)(?:^[ \t]*|[ \t]{6,})"
+    r"(\d{1,3}(?:,\d{3}){1,2})\.[ \t]+"
+    r"(\d{4}/\d{2}/\d{2})\.[ \t]+"
+)
+_MODERN_APPLICATION_START_RE = re.compile(
+    r"(?i)Application\s+Number\s+([\d,\s]+)"
+)
+
+
+def advertised_section(text: str) -> str:
+    old_start = _OLD_APPLICATION_START_RE.search(text)
+    if old_start:
+        end_candidates = []
+        for pattern in (
+            r"(?im)^\s*Enregistrements\s*/?\s*Registrations\s*$",
+            r"(?im)^\s*Registrations\s*$",
+            r"(?im)^\s*Registrations Amended\s*$",
+            r"(?im)^\s*Enregistrements modifiés\s*$",
+        ):
+            match = re.search(pattern, text[old_start.start() :])
+            if match:
+                end_candidates.append(old_start.start() + match.start())
+        end = min(end_candidates) if end_candidates else len(text)
+        return text[old_start.start() : end]
+
+    folded = text.casefold()
+    if not any(
+        label in folded
+        for label in ("advertised applications", "applications advertised")
+    ):
+        raise ValueError("Journal Advertised applications section heading not found")
+
+    section = _advertised_section(text)
+    if section == text:
+        raise ValueError("Journal Advertised applications section was not isolated")
+    return section
+
+
+def _modern_applicant_text(block: str) -> str:
+    lines = [line.strip() for line in block.splitlines()]
+    for index, line in enumerate(lines):
+        if line.casefold() != "applicant":
+            continue
+        applicant_lines = []
+        for candidate in lines[index + 1 :]:
+            if not candidate:
+                continue
+            folded = candidate.casefold()
+            if folded in {
+                "representative for service",
+                "agent",
+                "trademark",
+                "trade-mark",
+                "goods",
+                "services",
+                "claims",
+            }:
+                break
+            if folded.startswith("application number"):
+                break
+            applicant_lines.append(candidate)
+        return " ".join(applicant_lines)
+    return ""
+
+
+def _old_applicant_text(block: str, *, prefix_end: int) -> str:
+    tail = block[prefix_end:]
+    end = len(tail)
+    for marker in (
+        "Representative for Service",
+        "Représentant pour Signification",
+        "WARES:",
+        "MARCHANDISES:",
+        "SERVICES:",
+        "TRADE-MARK:",
+        "MARQUE DE COMMERCE:",
+    ):
+        value = tail.find(marker)
+        if value >= 0:
+            end = min(end, value)
+    return " ".join(tail[:end].split())
+
+
+def extract_advertised_application_blocks(
+    text: str,
+) -> tuple[str, list[dict[str, str]]]:
+    section = advertised_section(text)
+
+    modern = list(_MODERN_APPLICATION_START_RE.finditer(section))
+    if modern:
+        rows = []
+        for index, match in enumerate(modern):
+            end = modern[index + 1].start() if index + 1 < len(modern) else len(section)
+            block = section[match.start() : end]
+            application = normalize_application_number(match.group(1))
+            applicant = _modern_applicant_text(block)
+            rows.append(
+                {
+                    "application_number": application,
+                    "applicant": applicant,
+                    "raw_block": block,
+                }
+            )
+        return "MODERN_APPLICATION_NUMBER_APPLICANT", rows
+
+    old = list(_OLD_APPLICATION_START_RE.finditer(section))
+    if old:
+        rows = []
+        for index, match in enumerate(old):
+            end = old[index + 1].start() if index + 1 < len(old) else len(section)
+            block = section[match.start() : end]
+            application = normalize_application_number(match.group(1))
+            applicant = _old_applicant_text(
+                block,
+                prefix_end=match.end() - match.start(),
+            )
+            rows.append(
+                {
+                    "application_number": application,
+                    "applicant": applicant,
+                    "raw_block": block,
+                }
+            )
+        return "LEGACY_NUMBER_DATE_APPLICANT", rows
+
+    raise ValueError("Journal Advertised applications section format not recognized")
+
+
+def scan_issue_aliases(
+    text: str,
+    *,
+    aliases: list[dict[str, str]],
+) -> dict[str, object]:
+    parser_mode, applications = extract_advertised_application_blocks(text)
+    section = advertised_section(text)
+    normalized_section = normalize_name(section)
+
+    matches: list[dict[str, str]] = []
+    unresolved: list[dict[str, str]] = []
+    occurrence_aliases: set[str] = set()
+
+    for alias in aliases:
+        entity_id = str(alias["entity_id"])
+        alias_value = str(alias["alias"])
+        normalized = normalize_name(alias_value)
+        if not normalized or normalized not in normalized_section:
+            continue
+        occurrence_aliases.add(normalized)
+
+        applicant_matches = []
+        for application in applications:
+            applicant = str(application["applicant"])
+            applicant_normalized = normalize_name(applicant)
+            if applicant_normalized.startswith(normalized):
+                applicant_matches.append(
+                    {
+                        "entity_id": entity_id,
+                        "alias": alias_value,
+                        "alias_kind": str(alias.get("alias_kind") or ""),
+                        "application_number": str(application["application_number"]),
+                        "applicant": applicant,
+                    }
+                )
+
+        if applicant_matches:
+            matches.extend(applicant_matches)
+        else:
+            unresolved.append(
+                {
+                    "entity_id": entity_id,
+                    "alias": alias_value,
+                    "alias_kind": str(alias.get("alias_kind") or ""),
+                    "reason": "ALIAS_OCCURS_IN_ADVERTISED_SECTION_BUT_NOT_VERIFIED_AS_APPLICANT",
+                }
+            )
+
+    dedup: dict[tuple[str, str, str], dict[str, str]] = {}
+    for row in matches:
+        key = (
+            row["entity_id"],
+            row["application_number"],
+            normalize_name(row["applicant"]),
+        )
+        existing = dedup.get(key)
+        if existing is None:
+            dedup[key] = row
+        elif row["alias_kind"] == "HISTORICAL_LEGAL_NAME":
+            dedup[key] = row
+
+    application_material = "\n".join(
+        "\x1f".join(
+            [
+                str(row["application_number"]),
+                normalize_name(str(row["applicant"])),
+            ]
+        )
+        for row in applications
+    ) + "\n"
+
+    return {
+        "parser_mode": parser_mode,
+        "application_count": len(applications),
+        "advertised_section_sha256": hashlib.sha256(
+            section.encode("utf-8")
+        ).hexdigest(),
+        "applications_canonical_sha256": hashlib.sha256(
+            application_material.encode("utf-8")
+        ).hexdigest(),
+        "alias_occurrence_count": len(occurrence_aliases),
+        "matches": sorted(
+            dedup.values(),
+            key=lambda row: (
+                row["entity_id"],
+                row["application_number"],
+                row["alias"],
+            ),
+        ),
+        "unresolved_alias_occurrences": unresolved,
+        "complete_for_exact_alias_absence": not unresolved,
+    }
+
+
+def issue_text_for_scan(
+    issue: JournalIssue,
+) -> tuple[str, str, str]:
+    if issue.year >= 2013:
+        html = html_issue_text(issue)
+        if html:
+            return "OFFICIAL_JOURNAL_HTML", issue.html_url, html
+
+    return (
+        "OFFICIAL_JOURNAL_PDF_PDFTOTEXT",
+        issue.pdf_url,
+        pdf_issue_text(issue),
+    )
 
 
 def locate_known_application(
