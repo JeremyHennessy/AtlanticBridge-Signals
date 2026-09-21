@@ -10,20 +10,16 @@
   "sources": [
     {
       "signal_family": "CIPO_CANADIAN_TRADEMARK",
-      "status": "PRESENCE_ONLY_KNOWN_COVERAGE_GAP",
-      "publication_clock": "CIPO TM_Event action code 42 (Advertised): publication in the Trademarks Journal.",
-      "coverage_rule": "The pinned researcher datasets and the live owner search both omit known official application 1799092 even though the CIPO detail page identifies SIOO WOODPROTECTION AB as Applicant and Advertised 2018-12-12. Therefore explicit Applicant + Advertised hits are usable as PRESENT, but a missing exact-alias hit is UNKNOWN and must never be converted to ABSENT.",
-      "identity_rule": "Requires foreign_signal_identity_eligible=true. Exact reviewed aliases only; no fuzzy matching.",
-      "fixed_dataset_date": "2025-01-28",
-      "interested_party_url": "https://opic-cipo.ca/cipo/client_downloads/TM_CSV_2025_01_28/TM_interested_party_2025-01-28.zip",
-      "event_url": "https://opic-cipo.ca/cipo/client_downloads/TM_CSV_2025_01_28/TM_event_2025-01-28.zip",
-      "snapshot_default": "UNKNOWN_UNVERIFIED_COVERAGE",
-      "known_coverage_gap": {
-        "application_number": "1799092",
-        "official_detail_url": "https://ised-isde.canada.ca/cipo/trademark-search/1799092",
-        "advertised_date": "2018-12-12",
-        "absence_inference_allowed": false
-      }
+      "status": "ENABLED_COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY",
+      "publication_clock": "Official CIPO Trademarks Journal publication date for the Advertised Applications section.",
+      "coverage_rule": "All 1,221 official English Journal issues from 2000-01-05 through 2023-05-31 are fetched and their Advertised Applications sections parsed. Non-hits become absence only for reviewed current legal aliases and source-backed historical legal-name aliases, and only because every issue completed with zero unresolved alias occurrences.",
+      "identity_rule": "Requires foreign_signal_identity_eligible=true. Exact reviewed current aliases plus primary-source-backed historical legal names only; no fuzzy/group inference.",
+      "signal_definition": "At least one application in the official CIPO Trademarks Journal Advertised Applications section before the event-time cutoff where the publication-time applicant matches a reviewed current or source-backed historical legal alias.",
+      "coverage_start_date": "2000-01-05",
+      "coverage_end_exclusive": "2023-06-01",
+      "authoritative_inventory_issue_count": 1221,
+      "authoritative_inventory_sha256": "8a89eccf0c368e82de4fcd62bea62481930210b7ddf2c182b18e7f45e7521a2d",
+      "absence_inference_allowed": true
     },
     {
       "signal_family": "FEDERAL_CORPORATION_EVENT",
