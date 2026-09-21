@@ -301,7 +301,17 @@ def advertised_section(text: str) -> str:
         end = min(end_candidates) if end_candidates else len(text)
         return text[old_start.start() : end]
 
-    return _advertised_section(text)
+    folded = text.casefold()
+    if not any(
+        label in folded
+        for label in ("advertised applications", "applications advertised")
+    ):
+        raise ValueError("Journal Advertised applications section heading not found")
+
+    section = _advertised_section(text)
+    if section == text:
+        raise ValueError("Journal Advertised applications section was not isolated")
+    return section
 
 
 def _modern_applicant_text(block: str) -> str:
