@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "accepted_probe": {
+    "workflow_run_id": 35555757843,
+    "workflow_head_sha": "f3c7d2f2f259ffb37715d63991b54125c5c10355",
+    "artifact_id": 10620490154,
+    "artifact_digest": "sha256:9c0583f0c28c65fac6f198efb5b8318435dd3e8bfc2f14bb05a80c88f4877372"
+  },
+  "signal_family": "CANADABUYS_AWARD",
+  "signal_definition": "At least one federal award-notice row on or after 2012-02-03 and before the event-time cutoff where supplierLegalName exactly normalizes to a reviewed foreign legal-entity alias.",
+  "coverage_start_date": "2012-02-03",
+  "max_backtest_cutoff_exclusive": "2023-06-01",
+  "semantic_window": {
+    "unique_reference_amendment_keys": 105200,
+    "canonical_key_sha256": "a05978ab90d7fd7776175bc3cfa208fe3428e2b994fc8e4c17cb08d26a4099f6",
+    "exact_reviewed_alias_matches": 0,
+    "coverage_start_date": "2012-02-03",
+    "max_backtest_cutoff_exclusive": "2023-06-01"
+  },
+  "accepted_source_files": [
+    {
+      "source_label": "LEGACY_2012_TO_2022_08",
+      "rows_scanned": 106416,
+      "rows_in_semantic_window": 102034,
+      "min_publication_date": "2012-02-03",
+      "max_publication_date": "2022-08-05",
+      "download_sha256": "34f33ba0f7bfd3fe7c06211f33e35ca2b8f846e402fc260ff6c808df45119cf4",
+      "record_key_sequence_sha256": "f48b96770c5c8f20a2f6422554c1fa6a65f57ab5962ea6bf4a2cf7876f15a2eb"
+    },
+    {
+      "source_label": "FISCAL_2022_2023_BRIDGE",
+      "rows_scanned": 5644,
+      "rows_in_semantic_window": 4330,
+      "min_publication_date": "2022-04-01",
+      "max_publication_date": "2023-03-31",
+      "download_sha256": "d39d85beb79c3c5d9b180da1462507c0145cd891903fbac343091e7b4ef29f5b",
+      "record_key_sequence_sha256": "95659d23258b6ee04404a546670d57ff6c9ec48942bb79333e38934a61fd7b52"
+    },
+    {
+      "source_label": "COMPLETE_2022_08_ONWARD",
+      "rows_scanned_at_acceptance": 28198,
+      "rows_in_semantic_window": 3159,
+      "min_publication_date": "2022-08-08",
+      "max_publication_date_at_acceptance": "2026-09-19",
+      "download_sha256_at_acceptance": "b85e028e9d368026f346c94846a4d1bbbcc59696eefec4425d09916ae42db0db",
+      "record_key_sequence_sha256_at_acceptance": "2067182dd9cbf80156632a2e723c66febe5df99057763d63404aa1e5824931f8",
+      "volatile_after_backtest_window": true
+    }
+  ],
+  "interpretation_boundary": "Zero exact reviewed-alias matches proves absence only for this narrow federal award-notice exact-alias signal since 2012-02-03. It does not prove absence of procurement under other legal names, provincial/municipal procurement, subcontracting, or Canadian commercial activity."
+}

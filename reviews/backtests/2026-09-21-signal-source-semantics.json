@@ -48,10 +48,12 @@
     },
     {
       "signal_family": "CANADABUYS_AWARD",
-      "status": "DISABLED_HISTORICAL_COVERAGE_NOT_COLLECTED",
-      "publication_clock": "Award notice publication date is explicit for collected records.",
-      "coverage_rule": "Current collector covers only the current fiscal-year award CSV. It cannot prove historical absence for 2017–2023 event-time windows.",
-      "snapshot_default": "UNKNOWN_UNVERIFIED_COVERAGE"
+      "status": "ENABLED_COMPLETE_EXACT_ALIAS_HISTORY_SINCE_2012",
+      "publication_clock": "For a base award notice, publicationDate. For an amended row, use the later of publicationDate and amendmentDate so amended supplier/content fields are not backdated.",
+      "coverage_rule": "Exact reviewed foreign legal-entity aliases are scanned against supplierLegalName across the authoritative federal award-notice corpus from 2012-02-03 onward: legacy 2012-to-2022-08, an overlapping 2022-2023 bridge file, and the complete 2022-08-08-onward CanadaBuys file. Absence applies only to this exact-alias federal-award signal since 2012, not to procurement relationships under other legal names or outside this federal corpus.",
+      "identity_rule": "Requires foreign_signal_identity_eligible=true. Exact reviewed aliases only; no fuzzy/group inference.",
+      "signal_definition": "At least one federal CanadaBuys award-notice row on or after 2012-02-03 and before the event-time cutoff where supplierLegalName exactly normalizes to a reviewed foreign legal-entity alias.",
+      "coverage_start_date": "2012-02-03"
     }
   ]
 }

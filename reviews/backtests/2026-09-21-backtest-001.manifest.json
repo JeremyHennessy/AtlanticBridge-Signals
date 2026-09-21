@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "design": "BACKTEST_001_ACCEPTED_RESULT_MANIFEST",
+  "accepted_run": {
+    "workflow_run_id": 35556333959,
+    "workflow_head_sha": "65103d2ec8b307b87ba89c6113035c35627226f1",
+    "artifact_id": 10620615711,
+    "artifact_digest": "sha256:2a2fb5b4f4ac328a48b6235b0f42eb892f400b3561097869fc2ec32665917e9e",
+    "generated_result_sha256": "fd00881cf210bfdca2fec4dfdd8f71b099dc08da24450f5a47e9234f51e24e84"
+  },
+  "cohort": {
+    "entrant_entities": 7,
+    "time_indexed_control_entities": 5,
+    "permanent_negative_labels": 0
+  },
+  "summary": {
+    "signal_family_count": 5,
+    "signals_with_any_present_evidence": 1,
+    "signals_with_proven_absence_coverage": 1,
+    "signals_with_estimable_false_rates": 0,
+    "signals_with_identity_eligible_estimable_false_rates": 1,
+    "signals_with_both_positive_and_absence_evidence": 0,
+    "expansion_score_1_0_weighting_allowed": false
+  },
+  "signal_state_counts": {
+    "CIPO_CANADIAN_TRADEMARK": {
+      "PRESENT": 12,
+      "ABSENT_WITH_PROVEN_COVERAGE": 0,
+      "UNKNOWN_UNVERIFIED_COVERAGE": 36
+    },
+    "CANADABUYS_AWARD": {
+      "PRESENT": 0,
+      "ABSENT_WITH_PROVEN_COVERAGE": 40,
+      "UNKNOWN_UNVERIFIED_COVERAGE": 8
+    },
+    "FEDERAL_CORPORATION_EVENT": {
+      "PRESENT": 0,
+      "ABSENT_WITH_PROVEN_COVERAGE": 0,
+      "UNKNOWN_UNVERIFIED_COVERAGE": 48
+    },
+    "CORDIS_CANADA_RELATIONSHIP": {
+      "PRESENT": 0,
+      "ABSENT_WITH_PROVEN_COVERAGE": 0,
+      "UNKNOWN_UNVERIFIED_COVERAGE": 48
+    },
+    "TED_CONTRACT_AWARD": {
+      "PRESENT": 0,
+      "ABSENT_WITH_PROVEN_COVERAGE": 0,
+      "UNKNOWN_UNVERIFIED_COVERAGE": 48
+    }
+  },
+  "identity_eligible_canadabuys": {
+    "high": {
+      "entrant_entities": 4,
+      "control_entities": 5,
+      "false_negative_rate": 1,
+      "false_positive_rate": 0
+    },
+    "high_or_medium": {
+      "entrant_entities": 5,
+      "control_entities": 5,
+      "false_negative_rate": 1,
+      "false_positive_rate": 0
+    }
+  },
+  "score_gate_reason": "No signal currently has both verified positive evidence and proven historical absence coverage with estimable identity-qualified false rates. Score weights must remain disabled."
+}
