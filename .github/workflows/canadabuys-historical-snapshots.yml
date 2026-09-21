@@ -1,6 +1,9 @@
 name: CanadaBuys historical signal acceptance
 
 on:
+  push:
+    branches:
+      - "research/canadabuys-historical-snapshots-20260921"
   pull_request:
     paths:
       - "scripts/collect_backtest_canadabuys.py"
