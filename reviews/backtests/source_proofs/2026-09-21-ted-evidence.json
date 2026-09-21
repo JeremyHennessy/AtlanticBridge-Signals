@@ -1,0 +1,178 @@
+{
+  "coverage": [
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "anteasrl"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "entrant:653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "identity_eligible": false,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "linetspolsro"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 2,
+      "aliases_normalized": [
+        "frameworkcomputerconsultantslimited",
+        "frameworkcomputerconsultantsltd"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "entrant:56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "hanecsgmbh"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "entrant:023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "identity_eligible": false,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "aiutspzoo"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "entrant:d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 2,
+      "aliases_normalized": [
+        "sioowoodprotectionab",
+        "sioowoodprotectionindustryab"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "leadershippipelineinstituteas"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "entrant:ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "andrianispa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:212932",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "gilardonispa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:212990",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "sd2engineeringservicesstparl"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:212045",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "senzomaticsro"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:241151",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "globalwindserviceas"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:242990",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    }
+  ],
+  "coverage_definition": "Each reviewed alias is used in TED's winner-name query as a candidate retrieval superset over the complete bounded backtest window. Every returned winner-name is post-filtered to exact normalized equality. Absence is only absence of that narrow exact-alias winner signal after complete retrieval of every alias candidate query.",
+  "coverage_window": {
+    "end_exclusive": "2023-06-01",
+    "start_date": "2012-01-01"
+  },
+  "records": [],
+  "schema_version": 1,
+  "signal_definition": "At least one TED notice published on or after 2012-01-01 and before the event-time cutoff where a returned winner-name exactly normalizes to a reviewed foreign legal-entity alias.",
+  "source_family": "TED_CONTRACT_AWARD",
+  "summary": {
+    "complete_entity_query_sets": 12,
+    "entities_with_evidence": 0,
+    "entity_alias_query_count": 14,
+    "entity_count": 12,
+    "evidence_record_count": 0
+  }
+}
