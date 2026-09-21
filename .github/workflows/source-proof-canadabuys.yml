@@ -8,7 +8,6 @@ on:
       - "tests/test_canadabuys_backtest_collector.py"
       - "tests/test_source_proof_artifact.py"
       - "reviews/backtests/2026-09-21-backtest-entities.json"
-      - "reviews/backtests/2026-09-21-canadabuys-historical-manifest.json"
       - "reviews/backtests/source_proofs/2026-09-21-canadabuys-evidence.json"
       - ".github/workflows/source-proof-canadabuys.yml"
   workflow_dispatch:
