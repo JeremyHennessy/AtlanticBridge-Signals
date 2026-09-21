@@ -1,0 +1,123 @@
+name: Historical signal snapshot acceptance
+
+on:
+  pull_request:
+    paths:
+      - "src/atlanticbridge/event_time_signals.py"
+      - "scripts/collect_backtest_cipo.py"
+      - "scripts/build_event_time_snapshots.py"
+      - "tests/test_event_time_signals.py"
+      - "reviews/backtests/**"
+      - ".github/workflows/historical-signal-snapshots.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Unit tests
+        run: python -m unittest tests.test_event_time_signals -v
+
+      - name: Restore pinned CIPO bulk cache
+        uses: actions/cache@v4
+        with:
+          path: control-output/cipo-cache
+          key: cipo-researcher-2025-01-28-v1
+
+      - name: Collect complete CIPO applicant history
+        run: |
+          mkdir -p control-output
+          python scripts/collect_backtest_cipo.py \
+            --output control-output/cipo-signal-evidence.json
+
+      - name: Build event-time snapshots
+        run: |
+          python scripts/build_event_time_snapshots.py \
+            --evidence control-output/cipo-signal-evidence.json \
+            --combined-evidence-output control-output/signal-evidence.json \
+            --output control-output/event-time-snapshots.json
+
+      - name: Validate historical CIPO proof
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          evidence = json.loads(Path("control-output/cipo-signal-evidence.json").read_text())
+          snapshots = json.loads(Path("control-output/event-time-snapshots.json").read_text())
+
+          assert evidence["summary"]["entity_count"] == 12, evidence["summary"]
+          assert len(evidence["coverage"]) == 12
+          assert all(
+              row["coverage_status"] == "COMPLETE_EXACT_ALIAS_HISTORY"
+              for row in evidence["coverage"]
+          )
+
+          linet = [
+              row for row in evidence["records"]
+              if row["entity_id"].startswith("entrant:78bccec3")
+              and row["application_number"] == "1336566"
+              and row["publicly_available_date"] == "2008-02-20"
+          ]
+          assert linet, "Expected LINET application 1336566 advertised 2008-02-20"
+
+          sioo = [
+              row for row in evidence["records"]
+              if row["entity_id"].startswith("entrant:97847c78")
+              and row["application_number"] == "1799092"
+              and row["publicly_available_date"] == "2018-12-12"
+          ]
+          assert sioo, "Expected Sioo application 1799092 advertised 2018-12-12"
+
+          assert snapshots["summary"]["entity_count"] == 12
+          assert snapshots["summary"]["signal_family_count"] == 5
+          assert snapshots["summary"]["snapshot_row_count"] == 240
+
+          cipo_rows = [
+              row for row in snapshots["snapshots"]
+              if row["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
+          ]
+          linet_rows = [row for row in cipo_rows if row["entity_id"].startswith("entrant:78bccec3")]
+          sioo_rows = [row for row in cipo_rows if row["entity_id"].startswith("entrant:97847c78")]
+          assert {row["state"] for row in linet_rows} == {"PRESENT"}
+          assert {row["state"] for row in sioo_rows} == {"PRESENT"}
+
+          unresolved = [
+              row for row in cipo_rows
+              if row["entity_id"].startswith("entrant:653b0de3")
+              or row["entity_id"].startswith("entrant:023105d8")
+          ]
+          assert unresolved
+          assert all(row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE" for row in unresolved)
+
+          other_sources = [
+              row for row in snapshots["snapshots"]
+              if row["signal_family"] != "CIPO_CANADIAN_TRADEMARK"
+          ]
+          assert all(
+              row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
+              for row in other_sources
+          )
+          PY
+
+      - name: Retain historical signal proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: historical-signal-snapshots-${{ github.event.pull_request.head.sha || github.sha }}
+          path: control-output/
+          retention-days: 90
+          if-no-files-found: error
