@@ -22,6 +22,9 @@ jobs:
           python -m pip install -e .
           sudo apt-get update
           sudo apt-get install -y poppler-utils
+      - name: Journal parser regressions
+        run: python -m unittest tests.test_cipo_journal -v
+
       - name: Capture LINET blocks
         run: python scripts/debug_cipo_linet_layout.py
       - name: Upload debug artifact
