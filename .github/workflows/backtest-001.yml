@@ -8,6 +8,7 @@ on:
       - "tests/test_backtest_001.py"
       - "reviews/backtests/2026-09-21-backtest-001-input.json"
       - "reviews/backtests/2026-09-21-backtest-001.json"
+      - "reviews/backtests/2026-09-21-backtest-001.manifest.json"
       - "reviews/backtests/2026-09-21-backtest-entities.json"
       - "reviews/backtests/2026-09-21-signal-source-semantics.json"
       - "docs/BACKTEST_001.md"
@@ -43,6 +44,7 @@ jobs:
       - name: Validate fail-closed result
         run: |
           python - <<'PY'
+          import hashlib
           import json
           from pathlib import Path
 
@@ -96,6 +98,33 @@ jobs:
                   == "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET"
               for row in high_or_medium
           )
+
+          manifest = json.loads(
+              Path(
+                  "reviews/backtests/2026-09-21-backtest-001.manifest.json"
+              ).read_text()
+          )
+          result_bytes = Path(
+              "backtest-output/2026-09-21-backtest-001.json"
+          ).read_bytes()
+          result_sha256 = hashlib.sha256(result_bytes).hexdigest()
+          assert (
+              result_sha256
+              == manifest["accepted_run"]["generated_result_sha256"]
+          ), (
+              result_sha256,
+              manifest["accepted_run"]["generated_result_sha256"],
+          )
+          assert summary == {
+              **manifest["summary"],
+              "score_gate_reason": manifest["score_gate_reason"],
+          }
+
+          state_counts = {
+              row["signal_family"]: row["state_counts"]
+              for row in result["signals"]
+          }
+          assert state_counts == manifest["signal_state_counts"]
 
           pinned = Path("reviews/backtests/2026-09-21-backtest-001.json")
           if pinned.exists():
