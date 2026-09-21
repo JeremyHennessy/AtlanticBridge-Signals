@@ -14,6 +14,7 @@ from atlanticbridge.sources.cipo_journal import (
     normalize_application_number,
     normalize_name,
     parse_archive,
+    request_url,
     scan_issue_aliases,
 )
 
@@ -135,6 +136,63 @@ class CIPOJournalTests(unittest.TestCase):
         reversed_hash = inventory_sha256(list(reversed(issues)))
         self.assertEqual(first, second)
         self.assertNotEqual(first, reversed_hash)
+
+    def test_request_url_percent_encodes_non_ascii_path_only(self):
+        value = (
+            "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/"
+            "9août2000.pdf?year=2000&edition=08-09"
+        )
+        encoded = request_url(value)
+        self.assertEqual(
+            encoded,
+            (
+                "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/"
+                "9ao%C3%BBt2000.pdf?year=2000&edition=08-09"
+            ),
+        )
+        self.assertIn("?year=2000&edition=08-09", encoded)
+
+    def test_request_url_preserves_existing_percent_encoding(self):
+        value = "https://example.test/path%20with%20spaces/file.pdf"
+        self.assertEqual(request_url(value), value)
+
+    def test_legacy_two_column_midline_application_is_parsed(self):
+        text = """
+        1,336,520. 2007/02/22. Cassina S.p.A., Via Busnelli 1
+        unrelated left column text                                  1,336,563. 2007/02/22. Linet spol. S.r.o., (r)elevcice 5, 274 01
+        more unrelated text                                         Slan, CZECH REPUBLIC Representative for Service/
+        additional text                                             CASSAN MACLEAN, OTTAWA
+
+        1,336,708. 2007/02/19. Ball Horticultural Company, USA
+        WARES:
+        Plants
+
+        Registrations
+        """
+        result = scan_issue_aliases(
+            text,
+            aliases=[
+                {
+                    "entity_id": "linet",
+                    "alias": "LINET spol. s.r.o.",
+                    "alias_kind": "CURRENT_REVIEWED_ALIAS",
+                }
+            ],
+        )
+        self.assertEqual(
+            result["parser_mode"],
+            "LEGACY_NUMBER_DATE_APPLICANT",
+        )
+        matches = [
+            row
+            for row in result["matches"]
+            if row["application_number"] == "1336563"
+        ]
+        self.assertEqual(len(matches), 1)
+        self.assertTrue(
+            matches[0]["applicant"].casefold().startswith("linet spol. s.r.o.")
+        )
+        self.assertTrue(result["complete_for_exact_alias_absence"])
 
     def test_missing_advertised_section_fails_closed(self):
         with self.assertRaisesRegex(
