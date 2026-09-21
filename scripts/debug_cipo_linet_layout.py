@@ -4,9 +4,10 @@ from datetime import date
 import json
 from pathlib import Path
 
+import re
+
 from atlanticbridge.sources.cipo_journal import (
     JournalIssue,
-    extract_advertised_application_blocks,
     pdf_issue_text,
 )
 
@@ -47,26 +48,29 @@ def main() -> int:
             html_url=html_url(case["publication_date"]),
         )
         text = pdf_issue_text(issue)
-        parser_mode, applications = extract_advertised_application_blocks(text)
-        target = next(
-            (
-                row
-                for row in applications
-                if row["application_number"] == case["application_number"]
-            ),
-            None,
+        digits = case["application_number"]
+        parts = []
+        first = len(digits) % 3
+        if first:
+            parts.append(digits[:first])
+        for offset in range(first, len(digits), 3):
+            parts.append(digits[offset : offset + 3])
+        pattern = re.compile(
+            r"[\\s,]*".join(re.escape(part) for part in parts)
         )
-        if target is None:
+        match = pattern.search(text)
+        if match is None:
             raise RuntimeError(
-                f"application not parsed: {case['application_number']}"
+                f"application number not found in PDF text: {digits}"
             )
+        left = max(0, match.start() - 5000)
+        right = min(len(text), match.end() + 12000)
         output.append(
             {
-                "application_number": case["application_number"],
+                "application_number": digits,
                 "publication_date": case["publication_date"].isoformat(),
-                "parser_mode": parser_mode,
-                "parsed_applicant": target["applicant"],
-                "raw_block": target["raw_block"][:12000],
+                "match_start": match.start(),
+                "raw_context": text[left:right],
             }
         )
 
