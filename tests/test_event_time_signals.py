@@ -199,6 +199,93 @@ class EventTimeSignalTests(unittest.TestCase):
             for row in payload["snapshots"]
         ))
 
+    def test_bounded_explicit_absence_coverage_allows_absence(self):
+        entities = {
+            "cutoff_rule": "test",
+            "entities": [
+                {
+                    "entity_id": "e",
+                    "role": "CONTROL",
+                    "candidate_outcome_id": "c",
+                    "anchor_month": "2020-01",
+                    "identity_confidence": "HIGH",
+                    "foreign_signal_identity_eligible": True,
+                }
+            ],
+        }
+        semantics = {
+            "sources": [
+                {"signal_family": "S", "status": "ENABLED"}
+            ]
+        }
+        payload = build_event_time_snapshots(
+            entities_payload=entities,
+            semantics_payload=semantics,
+            evidence_payload={
+                "coverage": [
+                    {
+                        "entity_id": "e",
+                        "signal_family": "S",
+                        "coverage_status": "COMPLETE_BOUNDED_HISTORY",
+                        "absence_coverage_proven": True,
+                        "coverage_start_date": "2012-02-03",
+                        "coverage_end_exclusive": "2026-09-20",
+                    }
+                ],
+                "records": [],
+            },
+        )
+        self.assertTrue(all(
+            row["state"] == "ABSENT_WITH_PROVEN_COVERAGE"
+            and row["absence_coverage_proven"]
+            for row in payload["snapshots"]
+        ))
+
+    def test_bounded_coverage_before_source_start_fails_closed(self):
+        entities = {
+            "cutoff_rule": "test",
+            "entities": [
+                {
+                    "entity_id": "e",
+                    "role": "CONTROL",
+                    "candidate_outcome_id": "c",
+                    "anchor_month": "2013-01",
+                    "identity_confidence": "HIGH",
+                    "foreign_signal_identity_eligible": True,
+                }
+            ],
+        }
+        semantics = {
+            "sources": [
+                {"signal_family": "S", "status": "ENABLED"}
+            ]
+        }
+        payload = build_event_time_snapshots(
+            entities_payload=entities,
+            semantics_payload=semantics,
+            evidence_payload={
+                "coverage": [
+                    {
+                        "entity_id": "e",
+                        "signal_family": "S",
+                        "coverage_status": "COMPLETE_BOUNDED_HISTORY",
+                        "absence_coverage_proven": True,
+                        "coverage_start_date": "2012-02-03",
+                        "coverage_end_exclusive": "2026-09-20",
+                    }
+                ],
+                "records": [],
+            },
+        )
+        states_by_offset = {
+            row["offset_months"]: row["state"]
+            for row in payload["snapshots"]
+        }
+        self.assertEqual(
+            states_by_offset[24],
+            "UNKNOWN_UNVERIFIED_COVERAGE",
+        )
+
     def test_unresolved_identity_fails_closed_even_with_source_coverage(self):
         entities = {
             "cutoff_rule": "test",
