@@ -465,9 +465,25 @@ def scan_issue_aliases(
         elif row["alias_kind"] == "HISTORICAL_LEGAL_NAME":
             dedup[key] = row
 
+    application_material = "\n".join(
+        "\x1f".join(
+            [
+                str(row["application_number"]),
+                normalize_name(str(row["applicant"])),
+            ]
+        )
+        for row in applications
+    ) + "\n"
+
     return {
         "parser_mode": parser_mode,
         "application_count": len(applications),
+        "advertised_section_sha256": hashlib.sha256(
+            section.encode("utf-8")
+        ).hexdigest(),
+        "applications_canonical_sha256": hashlib.sha256(
+            application_material.encode("utf-8")
+        ).hexdigest(),
         "alias_occurrence_count": len(occurrence_aliases),
         "matches": sorted(
             dedup.values(),
