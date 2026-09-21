@@ -96,7 +96,7 @@ def _expert_phrase(value: str) -> str:
     return f'"{cleaned}"'
 
 
-def build_exact_winner_query(
+def build_winner_candidate_query(
     winner_name: str,
     start_date: str,
     end_date: str,
@@ -117,7 +117,7 @@ def build_exact_winner_query(
     )
 
 
-def build_exact_winner_search_body(
+def build_winner_candidate_search_body(
     winner_name: str,
     start_date: str,
     end_date: str,
@@ -135,7 +135,7 @@ def build_exact_winner_search_body(
         raise ValueError("scope must be ACTIVE, ALL, or LATEST")
 
     return {
-        "query": build_exact_winner_query(winner_name, start_date, end_date),
+        "query": build_winner_candidate_query(winner_name, start_date, end_date),
         "fields": list(AWARD_FIELDS),
         "page": page,
         "limit": page_size,
@@ -368,7 +368,7 @@ def parse_notice(payload: dict[str, object]) -> TEDNoticeRecord:
     )
 
 
-def search_awards_exact_winner(
+def search_winner_candidates(
     winner_name: str,
     start_date: str,
     end_date: str,
@@ -379,7 +379,7 @@ def search_awards_exact_winner(
     timeout: int = 60,
     attempts: int = 3,
 ) -> TEDSearchResult:
-    first_body = build_exact_winner_search_body(
+    first_body = build_winner_candidate_search_body(
         winner_name,
         start_date,
         end_date,
@@ -399,7 +399,7 @@ def search_awards_exact_winner(
         payload = _post_json(body, timeout=timeout, attempts=attempts)
 
         if payload.get("timedOut") is True:
-            raise RuntimeError("TED exact-winner search timed out and may be incomplete")
+            raise RuntimeError("TED winner-candidate search timed out and may be incomplete")
 
         raw_notices = payload.get("notices") or []
         if not isinstance(raw_notices, list):
@@ -414,7 +414,7 @@ def search_awards_exact_winner(
             total_notice_count = int(payload["totalNoticeCount"])
             if total_notice_count > _MAX_PAGE_RESULTS:
                 raise ValueError(
-                    "TED exact-winner result count exceeds the 15,000-result "
+                    "TED winner-candidate result count exceeds the 15,000-result "
                     "PAGE_NUMBER cap; split the date window"
                 )
 
@@ -428,14 +428,14 @@ def search_awards_exact_winner(
         page += 1
         if page * page_size > _MAX_PAGE_RESULTS:
             raise ValueError(
-                "TED exact-winner pagination reached the 15,000-result cap"
+                "TED winner-candidate pagination reached the 15,000-result cap"
             )
 
     if total_notice_count is None:
         total_notice_count = len(notices)
     if len(notices) != total_notice_count:
         raise RuntimeError(
-            f"TED exact-winner retrieval incomplete: "
+            f"TED winner-candidate retrieval incomplete: "
             f"{len(notices)} != {total_notice_count}"
         )
 
