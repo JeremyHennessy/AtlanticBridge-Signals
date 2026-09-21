@@ -41,10 +41,13 @@
     },
     {
       "signal_family": "TED_CONTRACT_AWARD",
-      "status": "LIVE_QUERY_PROBE_REQUIRED",
-      "publication_clock": "TED notice publication-date when an exact winner identity match is returned.",
-      "coverage_rule": "Search API is public and supports publication-date and winner-name fields. Backtest absence becomes evaluable only after exact-name query syntax and complete result retrieval are live-proven for the requested historical window.",
-      "snapshot_default": "UNKNOWN_UNVERIFIED_COVERAGE"
+      "status": "ENABLED_COMPLETE_CANDIDATE_QUERY_EXACT_POSTFILTER_SINCE_2012",
+      "publication_clock": "TED notice publication-date.",
+      "coverage_rule": "Each reviewed legal-entity alias is queried across the official TED Search API from 2012-01-01 through the Backtest 001 maximum cutoff. The server-side winner-name query is treated only as a candidate-retrieval superset; every returned winner-name is client-side normalized and exact-postfiltered to the reviewed alias. Absence is allowed only after complete retrieval of every alias query and zero exact postfilter matches before the cutoff.",
+      "identity_rule": "Requires foreign_signal_identity_eligible=true. Reviewed exact aliases only; server-side candidate matches that do not exactly normalize to the reviewed alias are discarded.",
+      "signal_definition": "At least one TED award notice published on or after 2012-01-01 and before the event-time cutoff where a returned winner-name exactly normalizes to a reviewed foreign legal-entity alias.",
+      "coverage_start_date": "2012-01-01",
+      "candidate_query_semantics": "winner-name field query is a retrieval superset, not trusted as exact legal-name equality; exactness is enforced after retrieval."
     },
     {
       "signal_family": "CANADABUYS_AWARD",

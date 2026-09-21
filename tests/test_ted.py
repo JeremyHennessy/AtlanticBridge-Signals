@@ -7,9 +7,12 @@ from unittest.mock import patch
 from atlanticbridge.sources.ted import (
     TEDSearchResult,
     build_award_query,
+    build_winner_candidate_query,
+    build_winner_candidate_search_body,
     build_search_body,
     parse_notice,
     search_awards,
+    search_winner_candidates,
 )
 from atlanticbridge.ted_store import ingest_ted_search_result, ted_summary
 
@@ -40,6 +43,62 @@ def _single_winner_notice(number: str = "49657-2024") -> dict[str, object]:
 
 
 class TEDTests(unittest.TestCase):
+    def test_winner_candidate_query_quotes_name_and_date_range(self):
+        query = build_winner_candidate_query(
+            "Global Wind Service A/S",
+            "2012-01-01",
+            "2023-05-31",
+        )
+        self.assertIn("publication-date = (20120101 <> 20230531)", query)
+        self.assertIn('winner-name = "Global Wind Service A/S"', query)
+
+    def test_winner_candidate_query_rejects_unsafe_quote(self):
+        with self.assertRaisesRegex(ValueError, "quote/backslash"):
+            build_winner_candidate_query(
+                'Bad "Name"',
+                "2012-01-01",
+                "2023-05-31",
+            )
+
+    def test_winner_candidate_search_body_uses_all_scope(self):
+        body = build_winner_candidate_search_body(
+            "Andriani S.p.A.",
+            "2012-01-01",
+            "2023-05-31",
+            page=1,
+            page_size=250,
+        )
+        self.assertEqual(body["scope"], "ALL")
+        self.assertFalse(body["onlyLatestVersions"])
+        self.assertFalse(body["checkQuerySyntax"])
+
+    @patch("atlanticbridge.sources.ted._post_json")
+    def test_winner_candidate_search_requires_complete_retrieval(self, post_json):
+        post_json.side_effect = [
+            {
+                "timedOut": False,
+                "totalNoticeCount": 3,
+                "notices": [
+                    _single_winner_notice("A-2024"),
+                    _single_winner_notice("B-2024"),
+                ],
+            },
+            {
+                "timedOut": False,
+                "totalNoticeCount": 3,
+                "notices": [_single_winner_notice("C-2024")],
+            },
+        ]
+        result = search_winner_candidates(
+            "Prätorius GmbH",
+            "2024-01-25",
+            "2024-01-25",
+            page_size=2,
+        )
+        self.assertEqual(result.total_notice_count, 3)
+        self.assertEqual(len(result.notices), 3)
+        self.assertEqual(post_json.call_count, 2)
+
     def test_award_query_same_day_and_range(self):
         same_day = build_award_query("2024-01-25", "2024-01-25")
         self.assertIn("publication-date = 20240125", same_day)
