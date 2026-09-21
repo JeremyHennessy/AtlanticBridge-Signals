@@ -139,6 +139,46 @@ def parse_archive(html: str, *, year: int, source_url: str) -> list[JournalIssue
         )
         seen_dates.add(published)
 
+    # Older archive pages (notably 2000-era pages) do not use table
+    # rows. Fall back to the publication-date text node followed by the next
+    # PDF anchor. The archive order itself supplies the association; dates are
+    # never inferred from a weekly calendar.
+    for text_node in soup.find_all(string=True):
+        raw = str(text_node).strip()
+        match = _DATE_RE.fullmatch(raw)
+        if not match:
+            continue
+        published = date.fromisoformat(match.group(0))
+        if published.year != year or published in seen_dates:
+            continue
+
+        parent = text_node.parent
+        if parent is None:
+            continue
+        anchor = parent.find_next(
+            "a",
+            href=lambda value: bool(
+                value and ".pdf" in str(value).casefold()
+            ),
+        )
+        if anchor is None:
+            continue
+        href = str(anchor.get("href") or "")
+        if not href:
+            continue
+        pdf_url = urljoin(source_url, href)
+        issues.append(
+            JournalIssue(
+                publication_date=published,
+                pdf_url=pdf_url,
+                html_url=HTML_URL.format(
+                    edition=published.strftime("%m-%d"),
+                    year=published.year,
+                ),
+            )
+        )
+        seen_dates.add(published)
+
     issues.sort(key=lambda issue: issue.publication_date)
     if not issues:
         raise ValueError(f"no CIPO Journal issues parsed for {year}")
