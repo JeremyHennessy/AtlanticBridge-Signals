@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "signal_family": "TED_CONTRACT_AWARD",
+  "accepted_probe": {
+    "workflow_run_id": 35578080608,
+    "workflow_head_sha": "a6289050066c12562b8346cf028cdf44220ef8f1",
+    "artifact_id": 10627954244,
+    "artifact_digest": "sha256:126e2012d3c1e03423efacc1e39100a35b3b9193219e2fb36ea111cdd9966d59",
+    "generated_proof_sha256": "a783b2b9a769e5c6d4a217cea8afec7d2e248ce8b02d34210662ed7d44a18e84"
+  },
+  "signal_definition": "At least one TED notice published on or after 2012-01-01 and before the event-time cutoff where a winner-name returned by the official winner-name candidate query exactly normalizes to a reviewed foreign legal-entity alias.",
+  "coverage_start_date": "2012-01-01",
+  "max_backtest_cutoff_exclusive": "2023-06-01",
+  "coverage_end_date": "2023-05-31",
+  "proof_summary": {
+    "entity_count": 12,
+    "normalized_alias_query_count": 14,
+    "complete_entity_query_sets": 12,
+    "exact_reviewed_alias_evidence_records": 0,
+    "entities_with_exact_evidence": 0,
+    "query_proof_canonical_sha256": "2c869c876a5eb0827ce91a8007b4cb2ad66f175926596023a0a796356383679e",
+    "coverage_canonical_sha256": "9eb5fe31f58bb13bc8e45ef6f7f1ccabd01df8efe211462325ccab09927496f0"
+  },
+  "live_query_control": {
+    "winner_name": "Siemens AG",
+    "start_date": "2023-01-01",
+    "end_date": "2023-12-31",
+    "candidate_notice_count": 5,
+    "exact_notice_count": 3,
+    "nonexact_candidate_count": 2,
+    "complete": true,
+    "query_hash": "c6db620d7688bf9ab699c139fb33c9a58994548d309c72c417228ebbefba9142",
+    "response_hash": "dbfc3a3886a9756a8c20963a26b016b2d25e4724b97e241b8b78e0611b775e0a"
+  },
+  "query_semantics_boundary": "TED's winner-name '=' query is not treated as full legal-name equality. It is a candidate-retrieval superset. Every returned winner-name is normalized and exact-postfiltered to the reviewed legal alias before a record can become PRESENT.",
+  "interpretation_boundary": "A non-hit proves absence only for the narrow exact-reviewed-alias TED winner signal within the bounded 2012-01-01 through 2023-05-31 query window after all alias candidate results are completely retrieved. It does not prove absence of procurement under other legal names, consortium participation, subcontracting, or non-TED procurement."
+}
