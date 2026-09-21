@@ -66,6 +66,10 @@ class CIPOJournalTests(unittest.TestCase):
         text = """
         Table of contents
         Advertised applications
+        Applications to extend the statement of goods or services
+        Registered trademarks
+
+        Advertised applications
 
         Application Number 1,799,092
         Filing Date 2016-09-07
