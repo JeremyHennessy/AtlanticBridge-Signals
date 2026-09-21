@@ -67,8 +67,11 @@
     },
     {
       "signal_family": "TED_CONTRACT_AWARD",
-      "observation_mode": "UNKNOWN_LIVE_QUERY_PROOF_REQUIRED",
-      "absence_coverage_proven": false
+      "observation_mode": "COMPLETE_CANDIDATE_QUERY_EXACT_POSTFILTER_SINCE_2012",
+      "absence_coverage_proven": true,
+      "absence_coverage_start_date": "2012-01-01",
+      "absence_coverage_end_exclusive": "2023-06-01",
+      "evidence_provenance": "Accepted TED historical proof run 35578080608; 14 normalized alias candidate queries across 12 entities, complete retrieval through 2023-05-31, zero exact reviewed-alias winner matches after client-side legal-name postfilter."
     },
     {
       "signal_family": "CANADABUYS_AWARD",
@@ -88,6 +91,16 @@
       "semantic_window_key_sha256": "a05978ab90d7fd7776175bc3cfa208fe3428e2b994fc8e4c17cb08d26a4099f6",
       "semantic_window_unique_keys": 105200,
       "exact_reviewed_alias_matches": 0
+    },
+    "TED_CONTRACT_AWARD": {
+      "workflow_run_id": 35578080608,
+      "workflow_head_sha": "a6289050066c12562b8346cf028cdf44220ef8f1",
+      "artifact_id": 10627954244,
+      "artifact_digest": "sha256:126e2012d3c1e03423efacc1e39100a35b3b9193219e2fb36ea111cdd9966d59",
+      "normalized_alias_query_count": 14,
+      "complete_entity_query_sets": 12,
+      "exact_reviewed_alias_matches": 0,
+      "query_proof_canonical_sha256": "2c869c876a5eb0827ce91a8007b4cb2ad66f175926596023a0a796356383679e"
     }
   }
 }
