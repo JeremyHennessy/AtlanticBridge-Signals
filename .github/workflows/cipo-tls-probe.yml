@@ -1,0 +1,22 @@
+name: CIPO TLS probe
+
+on:
+  push:
+    branches: ["research/event-time-snapshots-20260921"]
+    paths: [".github/workflows/cipo-tls-probe.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect TLS chain
+        run: |
+          set +e
+          echo "=== openssl chain ==="
+          timeout 20 openssl s_client -connect opic-cipo.ca:443 -servername opic-cipo.ca -showcerts </dev/null 2>&1
+          echo "=== curl ==="
+          curl -Iv --max-time 20 "https://opic-cipo.ca/cipo/client_downloads/TM_CSV_2025_01_28/TM_interested_party_2025-01-28.zip"
+          exit 0
