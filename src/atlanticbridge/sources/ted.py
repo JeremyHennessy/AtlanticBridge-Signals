@@ -87,6 +87,65 @@ def build_award_query(start_date: str, end_date: str) -> str:
     )
 
 
+def _expert_phrase(value: str) -> str:
+    cleaned = _clean(value)
+    if not cleaned:
+        raise ValueError("expert-search phrase must not be empty")
+    if '"' in cleaned or "\\" in cleaned:
+        raise ValueError("expert-search phrase contains unsupported quote/backslash")
+    return f'"{cleaned}"'
+
+
+def build_exact_winner_query(
+    winner_name: str,
+    start_date: str,
+    end_date: str,
+) -> str:
+    start = _validate_iso_date(start_date)
+    end = _validate_iso_date(end_date)
+    if end < start:
+        raise ValueError("end_date must be on or after start_date")
+
+    if start == end:
+        date_clause = f"publication-date = {start:%Y%m%d}"
+    else:
+        date_clause = f"publication-date = ({start:%Y%m%d} <> {end:%Y%m%d})"
+
+    return (
+        f"{date_clause} "
+        f"AND winner-name = {_expert_phrase(winner_name)}"
+    )
+
+
+def build_exact_winner_search_body(
+    winner_name: str,
+    start_date: str,
+    end_date: str,
+    *,
+    page: int,
+    page_size: int,
+    scope: str = "ALL",
+    only_latest_versions: bool = False,
+) -> dict[str, object]:
+    if page < 1:
+        raise ValueError("page must be at least 1")
+    if not 1 <= page_size <= 250:
+        raise ValueError("page_size must be between 1 and 250")
+    if scope not in {"ACTIVE", "ALL", "LATEST"}:
+        raise ValueError("scope must be ACTIVE, ALL, or LATEST")
+
+    return {
+        "query": build_exact_winner_query(winner_name, start_date, end_date),
+        "fields": list(AWARD_FIELDS),
+        "page": page,
+        "limit": page_size,
+        "scope": scope,
+        "checkQuerySyntax": False,
+        "paginationMode": "PAGE_NUMBER",
+        "onlyLatestVersions": only_latest_versions,
+    }
+
+
 def build_search_body(
     start_date: str,
     end_date: str,
@@ -306,6 +365,90 @@ def parse_notice(payload: dict[str, object]) -> TEDNoticeRecord:
         publication_date=_clean(payload.get("publication-date")),
         notice_type=_clean(payload.get("notice-type")),
         payload=payload,
+    )
+
+
+def search_awards_exact_winner(
+    winner_name: str,
+    start_date: str,
+    end_date: str,
+    *,
+    page_size: int = 250,
+    scope: str = "ALL",
+    only_latest_versions: bool = False,
+    timeout: int = 60,
+    attempts: int = 3,
+) -> TEDSearchResult:
+    first_body = build_exact_winner_search_body(
+        winner_name,
+        start_date,
+        end_date,
+        page=1,
+        page_size=page_size,
+        scope=scope,
+        only_latest_versions=only_latest_versions,
+    )
+    query_body_json = _canonical_json(first_body)
+    notices: list[TEDNoticeRecord] = []
+    total_notice_count: int | None = None
+    page = 1
+
+    while True:
+        body = dict(first_body)
+        body["page"] = page
+        payload = _post_json(body, timeout=timeout, attempts=attempts)
+
+        if payload.get("timedOut") is True:
+            raise RuntimeError("TED exact-winner search timed out and may be incomplete")
+
+        raw_notices = payload.get("notices") or []
+        if not isinstance(raw_notices, list):
+            raise ValueError("TED response 'notices' is not a list")
+
+        for item in raw_notices:
+            if not isinstance(item, dict):
+                raise ValueError("TED notice entry is not an object")
+            notices.append(parse_notice(item))
+
+        if total_notice_count is None and payload.get("totalNoticeCount") is not None:
+            total_notice_count = int(payload["totalNoticeCount"])
+            if total_notice_count > _MAX_PAGE_RESULTS:
+                raise ValueError(
+                    "TED exact-winner result count exceeds the 15,000-result "
+                    "PAGE_NUMBER cap; split the date window"
+                )
+
+        if not raw_notices:
+            break
+        if total_notice_count is not None and len(notices) >= total_notice_count:
+            break
+        if len(raw_notices) < page_size:
+            break
+
+        page += 1
+        if page * page_size > _MAX_PAGE_RESULTS:
+            raise ValueError(
+                "TED exact-winner pagination reached the 15,000-result cap"
+            )
+
+    if total_notice_count is None:
+        total_notice_count = len(notices)
+    if len(notices) != total_notice_count:
+        raise RuntimeError(
+            f"TED exact-winner retrieval incomplete: "
+            f"{len(notices)} != {total_notice_count}"
+        )
+
+    return TEDSearchResult(
+        start_date=start_date,
+        end_date=end_date,
+        scope=scope,
+        page_size=page_size,
+        only_latest_versions=only_latest_versions,
+        query=str(first_body["query"]),
+        query_body_json=query_body_json,
+        total_notice_count=total_notice_count,
+        notices=tuple(notices),
     )
 
 
