@@ -48,10 +48,18 @@
     },
     {
       "signal_family": "CANADABUYS_AWARD",
-      "status": "DISABLED_HISTORICAL_COVERAGE_NOT_COLLECTED",
-      "publication_clock": "Award notice publication date is explicit for collected records.",
-      "coverage_rule": "Current collector covers only the current fiscal-year award CSV. It cannot prove historical absence for 2017–2023 event-time windows.",
-      "snapshot_default": "UNKNOWN_UNVERIFIED_COVERAGE"
+      "status": "ENABLED_COMPLETE_EXACT_ALIAS_HISTORY_FOR_BACKTEST_WINDOW",
+      "publication_clock": "CanadaBuys award notice publicationDate-datePublication. Only records with an explicit parseable publication date can become PRESENT.",
+      "coverage_rule": "For Backtest 001, the authoritative legacy 2012-to-2022-08 award file plus fiscal-year 2022-2023 and 2023-2024 files form a continuous source window from 2012-02-03 through 2024-03-31. This covers every requested 24/12/6/3-month cutoff. Exact reviewed foreign legal-name supplier aliases are scanned across the complete source files. A no-hit may be ABSENT_WITH_PROVEN_COVERAGE only within this defined CanadaBuys award-notice source universe; it is not evidence of no Canadian procurement or no Canadian presence.",
+      "snapshot_default": "ABSENT_WITH_PROVEN_COVERAGE_WHEN_EXACT_ALIAS_HISTORY_COMPLETE",
+      "identity_rule": "Requires foreign_signal_identity_eligible=true. Exact reviewed foreign legal-name aliases only; no future Canadian subsidiary name and no fuzzy matching.",
+      "coverage_start_date": "2012-02-03",
+      "coverage_end_date": "2024-03-31",
+      "source_files": [
+        "https://canadabuys.canada.ca/opendata/pub/2012-2022-awardNoticeHistorical-avisAttributionHistorique.csv",
+        "https://canadabuys.canada.ca/opendata/pub/2022-2023-awardNotice-avisAttribution.csv",
+        "https://canadabuys.canada.ca/opendata/pub/2023-2024-awardNotice-avisAttribution.csv"
+      ]
     }
   ]
 }
