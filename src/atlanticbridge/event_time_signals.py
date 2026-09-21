@@ -66,6 +66,32 @@ def evidence_available_before(
     return interval_end < cutoff
 
 
+def coverage_supports_absence(
+    coverage_row: dict[str, object] | None,
+    cutoff: date,
+) -> bool:
+    if not coverage_row:
+        return False
+
+    status = str(coverage_row.get("coverage_status") or "")
+    if status == "COMPLETE_EXACT_ALIAS_HISTORY":
+        return True
+
+    if not bool(coverage_row.get("absence_coverage_proven")):
+        return False
+
+    start_value = str(coverage_row.get("coverage_start_date") or "").strip()
+    end_value = str(coverage_row.get("coverage_end_exclusive") or "").strip()
+    if not start_value or not end_value:
+        raise ValueError(
+            "absence_coverage_proven requires coverage_start_date and "
+            "coverage_end_exclusive"
+        )
+    start = date.fromisoformat(start_value)
+    end_exclusive = date.fromisoformat(end_value)
+    return start < cutoff <= end_exclusive
+
+
 def _coverage_index(
     evidence_payload: dict[str, object],
 ) -> dict[tuple[str, str], dict[str, object]]:
@@ -169,9 +195,9 @@ def build_event_time_snapshots(
                 elif available:
                     state = "PRESENT"
                     reason = "EXPLICIT_PUBLIC_EVIDENCE_BEFORE_CUTOFF"
-                elif coverage_status == "COMPLETE_EXACT_ALIAS_HISTORY":
+                elif coverage_supports_absence(coverage_row, cutoff):
                     state = "ABSENT_WITH_PROVEN_COVERAGE"
-                    reason = "COMPLETE_EXACT_ALIAS_HISTORY_NO_PRE_CUTOFF_EVIDENCE"
+                    reason = "PROVEN_SOURCE_COVERAGE_NO_PRE_CUTOFF_EVIDENCE"
                 else:
                     state = "UNKNOWN_UNVERIFIED_COVERAGE"
                     reason = str(
@@ -199,6 +225,9 @@ def build_event_time_snapshots(
                         "reason": reason,
                         "identity_confidence": entity["identity_confidence"],
                         "coverage_status": coverage_status,
+                        "absence_coverage_proven": (
+                            coverage_supports_absence(coverage_row, cutoff)
+                        ),
                         "evidence_count": len(available),
                         "evidence_ids": [
                             str(row.get("evidence_id") or "") for row in available
