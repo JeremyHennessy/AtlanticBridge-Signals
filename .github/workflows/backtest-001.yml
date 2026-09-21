@@ -54,11 +54,11 @@ jobs:
           summary = result["summary"]
           assert summary["signal_family_count"] == 5
           assert summary["signals_with_any_present_evidence"] == 1
-          assert summary["signals_with_proven_absence_coverage"] == 1
+          assert summary["signals_with_proven_absence_coverage"] == 2
           assert summary["signals_with_estimable_false_rates"] == 0
           assert (
               summary["signals_with_identity_eligible_estimable_false_rates"]
-              == 1
+              == 2
           )
           assert summary["signals_with_both_positive_and_absence_evidence"] == 0
           assert summary["expansion_score_1_0_weighting_allowed"] is False
@@ -97,6 +97,29 @@ jobs:
               and row["error_rate_status"]
                   == "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET"
               for row in high_or_medium
+          )
+
+          ted = next(
+              row for row in result["signals"]
+              if row["signal_family"] == "TED_CONTRACT_AWARD"
+          )
+          assert ted["state_counts"] == {
+              "PRESENT": 0,
+              "ABSENT_WITH_PROVEN_COVERAGE": 40,
+              "UNKNOWN_UNVERIFIED_COVERAGE": 8,
+          }
+          assert ted["source_availability"]["observable_rows"] == 40
+          ted_high_or_medium = [
+              row for row in ted["identity_confidence_sensitivity"]
+              if row["identity_tier"] == "HIGH_OR_MEDIUM"
+          ]
+          assert ted_high_or_medium
+          assert all(
+              row["false_positive_rate"] == 0.0
+              and row["false_negative_rate"] == 1.0
+              and row["error_rate_status"]
+                  == "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET"
+              for row in ted_high_or_medium
           )
 
           manifest = json.loads(
