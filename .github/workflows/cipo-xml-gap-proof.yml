@@ -1,0 +1,59 @@
+name: CIPO full historical XML gap proof
+
+on:
+  push:
+    branches:
+      - "research/cipo-xml-gap-proof-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore target historical XML chunk
+        uses: actions/cache@v4
+        with:
+          path: control-output/cipo-xml-gap-cache
+          key: cipo-xml-global-2025-06-chunk-087-v1
+
+      - name: Prove omitted Sioo record in full historical XML
+        run: |
+          mkdir -p control-output
+          python scripts/probe_cipo_xml_gap.py \
+            --output control-output/cipo-xml-gap-proof.json
+
+      - name: Validate gap repair hypothesis
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(
+              Path("control-output/cipo-xml-gap-proof.json").read_text()
+          )
+          proof = payload["proof"]
+          assert proof["target_application"] == "1799092"
+          assert proof["contains_application_number"] is True
+          assert proof["contains_sioo_owner_text"] is True
+          assert proof["contains_advertised_date"] is True
+          assert proof["xml_bytes"] > 0
+          PY
+
+      - name: Retain XML gap proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cipo-xml-gap-proof-${{ github.sha }}
+          path: control-output/cipo-xml-gap-proof.json
+          retention-days: 90
+          if-no-files-found: error
