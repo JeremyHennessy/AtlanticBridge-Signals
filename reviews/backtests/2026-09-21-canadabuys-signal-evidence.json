@@ -1,0 +1,245 @@
+{
+  "absence_interpretation": "ABSENT means no exact reviewed foreign legal-name supplier mention in the covered CanadaBuys award-notice source history; it does not mean no Canadian procurement or no Canadian market activity.",
+  "accepted_live_proof": {
+    "workflow_run_id": 35553300848,
+    "workflow_head_sha": "5034cf2008bc684ff1f975981bba6c076d7da780"
+  },
+  "coverage": [
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "entrant:653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "exact_aliases_normalized": [
+        "anteasrl"
+      ],
+      "identity_eligible": false,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "exact_aliases_normalized": [
+        "linetspolsro"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "entrant:56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+      "exact_aliases_normalized": [
+        "frameworkcomputerconsultantslimited",
+        "frameworkcomputerconsultantsltd"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "entrant:023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "exact_aliases_normalized": [
+        "hanecsgmbh"
+      ],
+      "identity_eligible": false,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "entrant:d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "exact_aliases_normalized": [
+        "aiutspzoo"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "exact_aliases_normalized": [
+        "sioowoodprotectionab",
+        "sioowoodprotectionindustryab"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "entrant:ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "exact_aliases_normalized": [
+        "leadershippipelineinstituteas"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "control:node:212932",
+      "exact_aliases_normalized": [
+        "andrianispa"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "control:node:212990",
+      "exact_aliases_normalized": [
+        "gilardonispa"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "control:node:212045",
+      "exact_aliases_normalized": [
+        "sd2engineeringservicesstparl"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "control:node:241151",
+      "exact_aliases_normalized": [
+        "senzomaticsro"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "coverage_end_date": "2024-03-31",
+      "coverage_scope": "GOVERNMENT_OF_CANADA_AWARD_NOTICES_IN_CANADABUYS_SOURCE_FROM_2012_02_03",
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+      "entity_id": "control:node:242990",
+      "exact_aliases_normalized": [
+        "globalwindserviceas"
+      ],
+      "identity_eligible": true,
+      "matched_rows_without_publication_date": 0,
+      "requested_cutoff_max": "2023-06-01",
+      "requested_cutoff_min": "2017-08-01",
+      "signal_family": "CANADABUYS_AWARD"
+    }
+  ],
+  "records": [],
+  "schema_version": 1,
+  "source_definition": "Exact reviewed foreign-legal-name appearance as supplier in the authoritative Government of Canada CanadaBuys award-notice source.",
+  "source_family": "CANADABUYS_AWARD",
+  "source_metadata": {
+    "authority_page": "https://open.canada.ca/data/en/dataset/a1acb126-9ce8-40a9-b889-5da2b1dd20cb",
+    "coverage_end_date": "2024-03-31",
+    "coverage_start_date": "2012-02-03",
+    "files": [
+      {
+        "bytes": 270533568,
+        "declared_coverage_end": "2022-08-06",
+        "declared_coverage_start": "2012-02-03",
+        "observed_max_publication_date": "2022-08-05",
+        "observed_min_publication_date": "2012-02-03",
+        "row_count": 106416,
+        "sha256": "34f33ba0f7bfd3fe7c06211f33e35ca2b8f846e402fc260ff6c808df45119cf4",
+        "source_id": "legacy-2012-2022-08",
+        "url": "https://canadabuys.canada.ca/opendata/pub/2012-2022-awardNoticeHistorical-avisAttributionHistorique.csv"
+      },
+      {
+        "bytes": 19904547,
+        "declared_coverage_end": "2023-03-31",
+        "declared_coverage_start": "2022-04-01",
+        "observed_max_publication_date": "2023-03-31",
+        "observed_min_publication_date": "2022-04-01",
+        "row_count": 5644,
+        "sha256": "d39d85beb79c3c5d9b180da1462507c0145cd891903fbac343091e7b4ef29f5b",
+        "source_id": "fy-2022-2023",
+        "url": "https://canadabuys.canada.ca/opendata/pub/2022-2023-awardNotice-avisAttribution.csv"
+      },
+      {
+        "bytes": 19758499,
+        "declared_coverage_end": "2024-03-31",
+        "declared_coverage_start": "2023-04-01",
+        "observed_max_publication_date": "2024-03-31",
+        "observed_min_publication_date": "2023-04-01",
+        "row_count": 5768,
+        "sha256": "1f6d0922276cfbb4af76072725c111d967fb05905a5fb8aefa3a07049adc889b",
+        "source_id": "fy-2023-2024",
+        "url": "https://canadabuys.canada.ca/opendata/pub/2023-2024-awardNotice-avisAttribution.csv"
+      }
+    ],
+    "supporting_documentation": "https://donnees-data.tpsgc-pwgsc.gc.ca/ba2/ac-cb/soutien-support-eng.html"
+  },
+  "summary": {
+    "complete_coverage_entities": 12,
+    "entities_with_undated_matches": 0,
+    "entity_count": 12,
+    "evidence_count": 0,
+    "invalid_publication_rows": 0,
+    "matched_rows": 0,
+    "rows_scanned": 117828
+  }
+}
