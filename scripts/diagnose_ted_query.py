@@ -3,11 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from atlanticbridge.sources.ted import search_awards_exact_winner
+from atlanticbridge.sources.ted import search_winner_candidates
 
 
 def main() -> int:
-    result = search_awards_exact_winner(
+    result = search_winner_candidates(
         "Siemens AG",
         "2023-01-01",
         "2023-12-31",
