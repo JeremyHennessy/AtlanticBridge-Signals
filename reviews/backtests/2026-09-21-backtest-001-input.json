@@ -24,9 +24,9 @@
   "signals": [
     {
       "signal_family": "CIPO_CANADIAN_TRADEMARK",
-      "observation_mode": "PRESENCE_ONLY_KNOWN_COVERAGE_GAP",
-      "absence_coverage_proven": false,
-      "evidence_provenance": "Accepted PR #66 CIPO applicant/Advertised reconstruction plus pinned official Sioo application 1799092 supplemental evidence.",
+      "observation_mode": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY",
+      "absence_coverage_proven": true,
+      "evidence_provenance": "Accepted authoritative CIPO Journal full-scan run 35649028833: 1,221/1,221 issues complete, 824,204 advertised application rows parsed, zero issue failures, zero unresolved alias occurrences, and 16 exact reviewed applicant matches across five entities.",
       "earliest_public_evidence": [
         {
           "entity_id": "control:node:212932",
@@ -46,14 +46,16 @@
         {
           "entity_id": "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
           "earliest_public_date": "2018-12-12",
-          "application_number": "1799092"
+          "application_number": "1798937"
         },
         {
           "entity_id": "entrant:d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
           "earliest_public_date": "2021-11-03",
           "application_number": "1909303"
         }
-      ]
+      ],
+      "absence_coverage_start_date": "2000-01-05",
+      "absence_coverage_end_exclusive": "2023-06-01"
     },
     {
       "signal_family": "FEDERAL_CORPORATION_EVENT",
@@ -101,6 +103,20 @@
       "complete_entity_query_sets": 12,
       "exact_reviewed_alias_matches": 0,
       "query_proof_canonical_sha256": "2c869c876a5eb0827ce91a8007b4cb2ad66f175926596023a0a796356383679e"
+    },
+    "CIPO_CANADIAN_TRADEMARK": {
+      "workflow_run_id": 35649028833,
+      "workflow_head_sha": "681162fcd5f184b894414753b5d22b58cfc93a09",
+      "artifact_id": 10662606618,
+      "artifact_digest": "sha256:80730cdb63bf06a7b82ab52dc4e30d5cbb1dfd90a30d3c9b9826eaf1d28d36c2",
+      "full_proof_sha256": "acb382d610443a1079bb70b013e9433b2bbbdd106a848f3785fcaa03fbde55e4",
+      "inventory_issue_count": 1221,
+      "inventory_sha256": "8a89eccf0c368e82de4fcd62bea62481930210b7ddf2c182b18e7f45e7521a2d",
+      "application_rows_scanned": 824204,
+      "exact_match_records": 16,
+      "issue_failures": 0,
+      "unresolved_alias_occurrences": 0,
+      "absence_inference_allowed": true
     }
   }
 }
