@@ -72,8 +72,22 @@
     },
     {
       "signal_family": "CANADABUYS_AWARD",
-      "observation_mode": "UNKNOWN_HISTORICAL_COVERAGE_NOT_COLLECTED",
-      "absence_coverage_proven": false
+      "observation_mode": "COMPLETE_EXACT_ALIAS_HISTORY_SINCE_2012",
+      "absence_coverage_proven": true,
+      "absence_coverage_start_date": "2012-02-03",
+      "absence_coverage_end_exclusive": "2023-06-01",
+      "evidence_provenance": "Accepted CanadaBuys historical proof run 35555757843; 105,200 unique reference/amendment keys in the Backtest 001 window, zero reviewed exact-alias supplier matches."
     }
-  ]
+  ],
+  "additional_source_provenance": {
+    "CANADABUYS_AWARD": {
+      "workflow_run_id": 35555757843,
+      "workflow_head_sha": "f3c7d2f2f259ffb37715d63991b54125c5c10355",
+      "artifact_id": 10620490154,
+      "artifact_digest": "sha256:9c0583f0c28c65fac6f198efb5b8318435dd3e8bfc2f14bb05a80c88f4877372",
+      "semantic_window_key_sha256": "a05978ab90d7fd7776175bc3cfa208fe3428e2b994fc8e4c17cb08d26a4099f6",
+      "semantic_window_unique_keys": 105200,
+      "exact_reviewed_alias_matches": 0
+    }
+  }
 }
