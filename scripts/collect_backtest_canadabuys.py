@@ -28,6 +28,8 @@ BRIDGE_2022_2023_URL = (
 )
 SIGNAL_FAMILY = "CANADABUYS_AWARD"
 CSV_FIELD_SIZE_LIMIT = 16 * 1024 * 1024
+COVERAGE_START_DATE = date(2012, 2, 3)
+MAX_BACKTEST_CUTOFF_EXCLUSIVE = date(2023, 6, 1)
 
 
 def normalize_name(value: str) -> str:
@@ -94,6 +96,8 @@ def scan_file(
     min_publication: date | None = None
     max_publication: date | None = None
     exact_matches: list[dict[str, object]] = []
+    semantic_window_keys: set[tuple[str, str]] = set()
+    semantic_window_rows = 0
     key_hash = hashlib.sha256()
 
     for record in iter_awards_csv(path, source_url=source_url):
@@ -120,12 +124,18 @@ def scan_file(
             ).encode("utf-8")
         )
 
+        available = public_availability_date(record)
+        if COVERAGE_START_DATE <= available < MAX_BACKTEST_CUTOFF_EXCLUSIVE:
+            semantic_window_rows += 1
+            semantic_window_keys.add(
+                (record.reference_number, record.amendment_number)
+            )
+
         normalized_supplier = normalize_name(record.supplier_legal_name)
         entity_ids = alias_to_entities.get(normalized_supplier)
         if not entity_ids:
             continue
 
-        available = public_availability_date(record)
         for entity_id in sorted(entity_ids):
             exact_matches.append(
                 {
@@ -154,6 +164,8 @@ def scan_file(
         "source_label": source_label,
         "source_url": source_url,
         "row_count": row_count,
+        "semantic_window_row_count": semantic_window_rows,
+        "_semantic_window_keys": semantic_window_keys,
         "min_publication_date": (
             min_publication.isoformat() if min_publication else None
         ),
@@ -185,6 +197,7 @@ def collect(
 
     downloads: list[dict[str, object]] = []
     scans: list[dict[str, object]] = []
+    semantic_window_keys: set[tuple[str, str]] = set()
     try:
         for label, url, filename in source_specs:
             path = cache_dir / filename
@@ -197,14 +210,16 @@ def collect(
                     "bytes": download_meta.byte_count,
                 }
             )
-            scans.append(
-                scan_file(
-                    path,
-                    source_url=url,
-                    source_label=label,
-                    alias_to_entities=alias_to_entities,
-                )
+            scan = scan_file(
+                path,
+                source_url=url,
+                source_label=label,
+                alias_to_entities=alias_to_entities,
             )
+            scan_keys = scan.pop("_semantic_window_keys")
+            assert isinstance(scan_keys, set)
+            semantic_window_keys.update(scan_keys)
+            scans.append(scan)
     finally:
         if previous_limit < CSV_FIELD_SIZE_LIMIT:
             csv.field_size_limit(previous_limit)
@@ -239,6 +254,27 @@ def collect(
             str(row["amendment_number"]),
         ),
     )
+
+    semantic_material = "\n".join(
+        f"{reference}\x1f{amendment}"
+        for reference, amendment in sorted(semantic_window_keys)
+    )
+    semantic_window = {
+        "coverage_start_date": COVERAGE_START_DATE.isoformat(),
+        "max_backtest_cutoff_exclusive":
+            MAX_BACKTEST_CUTOFF_EXCLUSIVE.isoformat(),
+        "unique_reference_amendment_keys": len(semantic_window_keys),
+        "canonical_key_sha256": hashlib.sha256(
+            semantic_material.encode("utf-8")
+        ).hexdigest(),
+        "exact_reviewed_alias_matches": sum(
+            1
+            for row in records
+            if COVERAGE_START_DATE
+            <= date.fromisoformat(str(row["publicly_available_date"]))
+            < MAX_BACKTEST_CUTOFF_EXCLUSIVE
+        ),
+    }
 
     coverage_end_dates = [
         date.fromisoformat(str(scan["max_publication_date"]))
@@ -294,6 +330,7 @@ def collect(
         ),
         "downloads": downloads,
         "source_scans": scans,
+        "semantic_window": semantic_window,
         "summary": {
             "entity_count": len(entities_payload["entities"]),
             "source_file_count": len(scans),
