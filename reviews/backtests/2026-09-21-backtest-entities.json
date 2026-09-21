@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-09-21",
+  "offsets_months": [
+    24,
+    12,
+    6,
+    3
+  ],
+  "anchor_rule": "Candidate notification month is a censored event-time anchor only. It is not asserted to be first Canadian operations.",
+  "cutoff_rule": "For offset N, cutoff_exclusive is the first day of the anchor month minus N calendar months. Evidence is usable only when its public-availability interval ends strictly before cutoff_exclusive.",
+  "identity_rule": "Foreign-source signals are evaluated only for an exact or explicitly reviewed foreign legal-entity identity. Unresolved parent/group mappings remain UNKNOWN rather than absent.",
+  "entities": [
+    {
+      "entity_id": "entrant:653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "role": "ENTRANT",
+      "candidate_outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "anchor_month": "2019-08",
+      "display_name": "Antea Canada Inc.",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": null,
+      "identity_status": "UNRESOLVED_FOREIGN_PARENT",
+      "identity_confidence": "LOW",
+      "exact_aliases": [
+        "ANTEA S.R.L."
+      ],
+      "foreign_signal_identity_eligible": false,
+      "note": "Canadian entity is audited, but the Italian parent/control chain is not sufficiently resolved. ANTEA S.R.L. matches are retained only as review evidence and are not scored."
+    },
+    {
+      "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "role": "ENTRANT",
+      "candidate_outcome_id": "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "anchor_month": "2019-10",
+      "display_name": "LINET spol. s.r.o.",
+      "ultimate_control_country": "Czechia",
+      "foreign_legal_name": "LINET spol. s.r.o.",
+      "identity_status": "EXACT_NAMED_FOREIGN_INVESTOR",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "LINET spol. s.r.o.",
+        "LINET spol. s r.o.",
+        "LINET SPOL. S.R.O."
+      ],
+      "foreign_signal_identity_eligible": true
+    },
+    {
+      "entity_id": "entrant:56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+      "role": "ENTRANT",
+      "candidate_outcome_id": "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+      "anchor_month": "2020-06",
+      "display_name": "FRAMEWORK COMPUTER CONSULTANTS LTD",
+      "ultimate_control_country": "Ireland",
+      "foreign_legal_name": "FRAMEWORK COMPUTER CONSULTANTS LTD",
+      "identity_status": "EXACT_NAMED_FOREIGN_INVESTOR_GROUP_RELATIONSHIP_PARTIAL",
+      "identity_confidence": "MEDIUM",
+      "exact_aliases": [
+        "FRAMEWORK COMPUTER CONSULTANTS LTD",
+        "FRAMEWORK COMPUTER CONSULTANTS LIMITED"
+      ],
+      "foreign_signal_identity_eligible": true,
+      "note": "Investment Canada names the foreign investor directly; the relationship to the Digitary brand/Canadian legal entity is not fully reconstructed, so sensitivity analysis must separate MEDIUM from HIGH identity rows."
+    },
+    {
+      "entity_id": "entrant:023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "role": "ENTRANT",
+      "candidate_outcome_id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "anchor_month": "2021-02",
+      "display_name": "HANECS Canada Inc.",
+      "ultimate_control_country": "Germany",
+      "foreign_legal_name": null,
+      "identity_status": "UNRESOLVED_FOREIGN_PARENT",
+      "identity_confidence": "LOW",
+      "exact_aliases": [
+        "HANECS GmbH"
+      ],
+      "foreign_signal_identity_eligible": false,
+      "note": "Max Neusser is corroborated as a HANECS GmbH executive, but the legal investor-to-HANECS Canada chain remains unresolved."
+    },
+    {
+      "entity_id": "entrant:d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "role": "ENTRANT",
+      "candidate_outcome_id": "d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "anchor_month": "2021-08",
+      "display_name": "AIUT sp. z o.o.",
+      "ultimate_control_country": "Poland",
+      "foreign_legal_name": "AIUT sp. z o.o.",
+      "identity_status": "EXACT_NAMED_FOREIGN_INVESTOR",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "AIUT sp. z o.o.",
+        "AIUT sp. z.o.o.",
+        "AIUT SP. Z O.O."
+      ],
+      "foreign_signal_identity_eligible": true
+    },
+    {
+      "entity_id": "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "role": "ENTRANT",
+      "candidate_outcome_id": "97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "anchor_month": "2023-07",
+      "display_name": "Sioo Wood Protection Industry AB",
+      "ultimate_control_country": "Sweden",
+      "foreign_legal_name": "Sioo Wood Protection Industry AB",
+      "identity_status": "EXACT_NAMED_FOREIGN_INVESTOR",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "Sioo Wood Protection Industry AB",
+        "SIOO WOODPROTECTION AB",
+        "SIOO WOOD PROTECTION AB"
+      ],
+      "foreign_signal_identity_eligible": true
+    },
+    {
+      "entity_id": "entrant:ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "role": "ENTRANT",
+      "candidate_outcome_id": "ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "anchor_month": "2023-09",
+      "display_name": "Leadership Pipeline Institute A/S",
+      "ultimate_control_country": "Denmark",
+      "foreign_legal_name": "Leadership Pipeline Institute A/S",
+      "identity_status": "CONFIRMED_FOREIGN_PARENT",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "Leadership Pipeline Institute A/S",
+        "LEADERSHIP PIPELINE INSTITUTE A/S"
+      ],
+      "foreign_signal_identity_eligible": true
+    },
+    {
+      "entity_id": "control:node:212932",
+      "role": "CONTROL",
+      "candidate_outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "anchor_month": "2019-08",
+      "display_name": "Andriani S.p.A.",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "Andriani S.p.A.",
+      "identity_status": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "Andriani S.p.A.",
+        "ANDRIANI S.P.A.",
+        "ANDRIANI SPA"
+      ],
+      "foreign_signal_identity_eligible": true,
+      "later_new_business_month": "2023-03"
+    },
+    {
+      "entity_id": "control:node:212990",
+      "role": "CONTROL",
+      "candidate_outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "anchor_month": "2019-08",
+      "display_name": "Gilardoni S.p.A.",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "GILARDONI S.P.A. a Socio Unico",
+      "identity_status": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "Gilardoni S.p.A.",
+        "GILARDONI S.P.A.",
+        "GILARDONI SPA"
+      ],
+      "foreign_signal_identity_eligible": true,
+      "later_new_business_month": "2023-03"
+    },
+    {
+      "entity_id": "control:node:212045",
+      "role": "CONTROL",
+      "candidate_outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "anchor_month": "2019-08",
+      "display_name": "SD2 Engineering Services S.T.P. a R.L.",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "SD2 Engineering Services S.T.P. a R.L.",
+      "identity_status": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "SD2 Engineering Services S.T.P. a R.L.",
+        "SD2 ENGINEERING SERVICES S.T.P. A R.L",
+        "SD2 ENGINEERING SERVICES STP A RL"
+      ],
+      "foreign_signal_identity_eligible": true,
+      "later_new_business_month": "2022-04"
+    },
+    {
+      "entity_id": "control:node:241151",
+      "role": "CONTROL",
+      "candidate_outcome_id": "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "anchor_month": "2019-10",
+      "display_name": "SENZOMATIC, s.r.o.",
+      "ultimate_control_country": "Czechia",
+      "foreign_legal_name": "SENZOMATIC, s.r.o.",
+      "identity_status": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "SENZOMATIC, s.r.o.",
+        "SENZOMATIC s.r.o.",
+        "SENZOMATIC S.R.O."
+      ],
+      "foreign_signal_identity_eligible": true,
+      "later_new_business_month": "2026-02"
+    },
+    {
+      "entity_id": "control:node:242990",
+      "role": "CONTROL",
+      "candidate_outcome_id": "ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "anchor_month": "2023-09",
+      "display_name": "Global Wind Service A/S",
+      "ultimate_control_country": "Denmark",
+      "foreign_legal_name": "Global Wind Service A/S",
+      "identity_status": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
+      "identity_confidence": "HIGH",
+      "exact_aliases": [
+        "Global Wind Service A/S",
+        "GLOBAL WIND SERVICE A/S"
+      ],
+      "foreign_signal_identity_eligible": true,
+      "later_new_business_month": "2026-04"
+    }
+  ]
+}
