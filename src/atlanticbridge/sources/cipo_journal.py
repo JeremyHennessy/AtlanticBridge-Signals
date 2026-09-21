@@ -246,17 +246,31 @@ def locate_known_application(
             continue
 
         after = section[match.end() : right]
-        applicant_match = re.search(
-            r"(?is)\bApplicant\b\s*(.{1,800}?)(?="
-            r"\b(?:Representative|Agent|Trademark|Trade-mark|Goods|Services|Claims)\b"
-            r"|\n\s*Application\s+Number\b|$)",
-            after,
-        )
-        applicant_text = (
-            " ".join(applicant_match.group(1).split())
-            if applicant_match
-            else expected_applicant
-        )
+        applicant_text = expected_applicant
+        lines = [line.strip() for line in after.splitlines()]
+        for index, line in enumerate(lines):
+            if line.casefold() != "applicant":
+                continue
+            applicant_lines = []
+            for candidate in lines[index + 1 :]:
+                if not candidate:
+                    continue
+                if candidate.casefold() in {
+                    "representative for service",
+                    "agent",
+                    "trademark",
+                    "trade-mark",
+                    "goods",
+                    "services",
+                    "claims",
+                }:
+                    break
+                applicant_lines.append(candidate)
+                if expected in normalize_name(" ".join(applicant_lines)):
+                    break
+            if applicant_lines:
+                applicant_text = " ".join(applicant_lines)
+                break
         return {
             "application_number": normalize_application_number(application_number),
             "expected_applicant": expected_applicant,
