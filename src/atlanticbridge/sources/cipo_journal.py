@@ -244,14 +244,22 @@ def _application_pattern(application_number: str) -> re.Pattern[str]:
 
 def _advertised_section(text: str) -> str:
     folded = text.casefold()
-    starts = [
-        folded.find("advertised applications"),
-        folded.find("applications advertised"),
-    ]
-    starts = [value for value in starts if value >= 0]
+    starts: list[int] = []
+    for label in ("advertised applications", "applications advertised"):
+        offset = 0
+        while True:
+            value = folded.find(label, offset)
+            if value < 0:
+                break
+            starts.append(value)
+            offset = value + len(label)
     if not starts:
         return text
-    start = min(starts)
+
+    # Modern HTML Journals repeat this label in the table of contents and at
+    # the actual application section. The last occurrence is the section
+    # heading; starting at the first would truncate at the next TOC item.
+    start = max(starts)
 
     end_candidates = []
     for label in (
