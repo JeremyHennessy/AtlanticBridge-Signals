@@ -1,0 +1,129 @@
+name: CIPO full historical XML exact-applicant proof
+
+on:
+  push:
+    branches:
+      - "research/cipo-xml-full-scan-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Scanner unit tests
+        run: python -m unittest tests.test_cipo_xml_history_scan -v
+
+  scan:
+    needs: unit
+    strategy:
+      fail-fast: false
+      matrix:
+        worker_id: [0, 1, 2, 3, 4]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Scan assigned historical XML archives
+        run: |
+          mkdir -p control-output/workers control-output/temp-${{ matrix.worker_id }}
+          python scripts/scan_cipo_xml_history.py \
+            --worker-id ${{ matrix.worker_id }} \
+            --worker-count 5 \
+            --temp-dir control-output/temp-${{ matrix.worker_id }} \
+            --output control-output/workers/worker-${{ matrix.worker_id }}.json
+
+      - name: Retain worker proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cipo-xml-worker-${{ matrix.worker_id }}-${{ github.sha }}
+          path: control-output/workers/worker-${{ matrix.worker_id }}.json
+          retention-days: 30
+          if-no-files-found: error
+
+  aggregate:
+    needs: scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download all worker proofs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cipo-xml-worker-*-${{ github.sha }}
+          path: control-output/worker-artifacts
+          merge-multiple: false
+
+      - name: Merge full historical proof
+        run: |
+          python scripts/merge_cipo_xml_history_scan.py \
+            --input-dir control-output/worker-artifacts \
+            --output control-output/cipo-xml-full-history.json
+
+      - name: Validate complete collection and known records
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(
+              Path("control-output/cipo-xml-full-history.json").read_text()
+          )
+          summary = payload["summary"]
+          assert summary["entity_count"] == 12
+          assert summary["worker_count"] == 5
+          assert summary["archive_sequence_count"] == 145
+          assert summary["xml_entries_scanned"] > 1_000_000
+          assert len(payload["coverage"]) == 12
+          assert all(
+              row["absence_coverage_proven"] is True
+              and row["coverage_start_date"] == "1980-01-01"
+              for row in payload["coverage"]
+          )
+
+          records = payload["records"]
+
+          def require(entity_prefix, app, date):
+              rows = [
+                  row for row in records
+                  if row["entity_id"].startswith(entity_prefix)
+                  and row["application_number"] == app
+                  and row["publicly_available_date"] == date
+              ]
+              assert rows, (entity_prefix, app, date)
+
+          require("entrant:78bccec3", "1336563", "2008-02-13")
+          require("entrant:97847c78", "1799092", "2018-12-12")
+          require("control:node:212932", "1702825", "2016-07-06")
+          require("entrant:d49cc68d", "1909303", "2021-11-03")
+          PY
+
+      - name: Retain complete CIPO proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: cipo-xml-full-history-${{ github.sha }}
+          path: control-output/cipo-xml-full-history.json
+          retention-days: 90
+          if-no-files-found: error
