@@ -2,11 +2,12 @@
   "schema_version": 1,
   "design": "BACKTEST_001_ACCEPTED_RESULT_MANIFEST",
   "accepted_run": {
-    "workflow_run_id": 35556333959,
-    "workflow_head_sha": "65103d2ec8b307b87ba89c6113035c35627226f1",
-    "artifact_id": 10620615711,
-    "artifact_digest": "sha256:2a2fb5b4f4ac328a48b6235b0f42eb892f400b3561097869fc2ec32665917e9e",
-    "generated_result_sha256": "fd00881cf210bfdca2fec4dfdd8f71b099dc08da24450f5a47e9234f51e24e84"
+    "workflow_run_id": 35578697740,
+    "workflow_head_sha": "b84a7e65c3c7021bd8bb40f9c49db0ea3ab1095f",
+    "artifact_id": 10629535399,
+    "artifact_digest": "sha256:3ab79f89c0831979e5951762c69ed742139e576f64077e95a99a092b0c42e9bc",
+    "generated_result_sha256": "3c9370b7d9ae30cb967828495011c6045cd4c9f53a243347575b1d790cd47861",
+    "acceptance_status": "PROVISIONAL_GENERATION_PENDING_GREEN_MANIFEST_RERUN"
   },
   "cohort": {
     "entrant_entities": 7,
@@ -16,9 +17,9 @@
   "summary": {
     "signal_family_count": 5,
     "signals_with_any_present_evidence": 1,
-    "signals_with_proven_absence_coverage": 1,
+    "signals_with_proven_absence_coverage": 2,
     "signals_with_estimable_false_rates": 0,
-    "signals_with_identity_eligible_estimable_false_rates": 1,
+    "signals_with_identity_eligible_estimable_false_rates": 2,
     "signals_with_both_positive_and_absence_evidence": 0,
     "expansion_score_1_0_weighting_allowed": false
   },
@@ -45,8 +46,8 @@
     },
     "TED_CONTRACT_AWARD": {
       "PRESENT": 0,
-      "ABSENT_WITH_PROVEN_COVERAGE": 0,
-      "UNKNOWN_UNVERIFIED_COVERAGE": 48
+      "ABSENT_WITH_PROVEN_COVERAGE": 40,
+      "UNKNOWN_UNVERIFIED_COVERAGE": 8
     }
   },
   "identity_eligible_canadabuys": {
@@ -63,5 +64,19 @@
       "false_positive_rate": 0
     }
   },
-  "score_gate_reason": "No signal currently has both verified positive evidence and proven historical absence coverage with estimable identity-qualified false rates. Score weights must remain disabled."
+  "score_gate_reason": "No signal currently has both verified positive evidence and proven historical absence coverage with estimable identity-qualified false rates. Score weights must remain disabled.",
+  "identity_eligible_ted": {
+    "high": {
+      "entrant_entities": 4,
+      "control_entities": 5,
+      "false_negative_rate": 1,
+      "false_positive_rate": 0
+    },
+    "high_or_medium": {
+      "entrant_entities": 5,
+      "control_entities": 5,
+      "false_negative_rate": 1,
+      "false_positive_rate": 0
+    }
+  }
 }
