@@ -165,7 +165,20 @@ def _state_for(
         return PRESENT
 
     if bool(signal_input.get("absence_coverage_proven")):
-        return ABSENT
+        start_value = str(
+            signal_input.get("absence_coverage_start_date") or ""
+        ).strip()
+        end_value = str(
+            signal_input.get("absence_coverage_end_exclusive") or ""
+        ).strip()
+        if not start_value or not end_value:
+            raise ValueError(
+                "absence_coverage_proven requires explicit start/end bounds"
+            )
+        start = date.fromisoformat(start_value)
+        end_exclusive = date.fromisoformat(end_value)
+        if start < cutoff <= end_exclusive:
+            return ABSENT
 
     if not family_mode:
         raise ValueError(
@@ -290,6 +303,8 @@ def build_backtest_001(
     signals_with_any_present = 0
     signals_with_proven_absence = 0
     signals_with_estimable_error_rates = 0
+    signals_with_identity_eligible_estimable_error_rates = 0
+    signals_with_both_positive_and_absence_evidence = 0
 
     for family in semantics:
         signal_input = signals[family]
@@ -351,6 +366,9 @@ def build_backtest_001(
         ):
             signals_with_estimable_error_rates += 1
 
+        if state_counts[PRESENT] and state_counts[ABSENT]:
+            signals_with_both_positive_and_absence_evidence += 1
+
         entrant_leads: list[int] = []
         control_leads: list[int] = []
         for entity_id, evidence_date in earliest.items():
@@ -382,6 +400,10 @@ def build_backtest_001(
                         tier_rows.append(row)
                 entrant_counts = _role_counts(tier_rows, "ENTRANT")
                 control_counts = _role_counts(tier_rows, "CONTROL")
+                subset_error_rates = _error_rate_metrics(
+                    entrant_counts,
+                    control_counts,
+                )
                 identity_sensitivity.append(
                     {
                         "identity_tier": tier,
@@ -392,14 +414,37 @@ def build_backtest_001(
                         ),
                         "entrant_entities": entrant_counts["entities"],
                         "entrant_present": entrant_counts["present"],
+                        "entrant_absent_with_proven_coverage":
+                            entrant_counts["absent_with_proven_coverage"],
+                        "entrant_unknown": entrant_counts["unknown"],
                         "control_present_lower_bound": _ratio(
                             control_counts["present"],
                             control_counts["entities"],
                         ),
                         "control_entities": control_counts["entities"],
                         "control_present": control_counts["present"],
+                        "control_absent_with_proven_coverage":
+                            control_counts["absent_with_proven_coverage"],
+                        "control_unknown": control_counts["unknown"],
+                        "false_positive_rate":
+                            subset_error_rates["false_positive_rate"],
+                        "false_negative_rate":
+                            subset_error_rates["false_negative_rate"],
+                        "error_rate_status": subset_error_rates["status"],
                     }
                 )
+
+        high_or_medium_rows = [
+            row
+            for row in identity_sensitivity
+            if row["identity_tier"] == "HIGH_OR_MEDIUM"
+        ]
+        if high_or_medium_rows and all(
+            row["error_rate_status"]
+            == "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET"
+            for row in high_or_medium_rows
+        ):
+            signals_with_identity_eligible_estimable_error_rates += 1
 
         output_signals.append(
             {
@@ -439,8 +484,8 @@ def build_backtest_001(
         )
 
     score_allowed = (
-        signals_with_estimable_error_rates >= 1
-        and signals_with_proven_absence >= 1
+        signals_with_identity_eligible_estimable_error_rates >= 1
+        and signals_with_both_positive_and_absence_evidence >= 1
     )
 
     return {
@@ -459,15 +504,19 @@ def build_backtest_001(
             "signals_with_proven_absence_coverage": signals_with_proven_absence,
             "signals_with_estimable_false_rates":
                 signals_with_estimable_error_rates,
+            "signals_with_identity_eligible_estimable_false_rates":
+                signals_with_identity_eligible_estimable_error_rates,
+            "signals_with_both_positive_and_absence_evidence":
+                signals_with_both_positive_and_absence_evidence,
             "expansion_score_1_0_weighting_allowed": score_allowed,
             "score_gate_reason": (
                 None
                 if score_allowed
                 else (
-                    "No signal currently has both defensible historical "
-                    "presence and absence coverage sufficient to estimate "
-                    "false-positive/false-negative rates. Score weights must "
-                    "remain disabled."
+                    "No signal currently has both verified positive evidence "
+                    "and proven historical absence coverage with estimable "
+                    "identity-qualified false rates. Score weights must remain "
+                    "disabled."
                 )
             ),
         },
