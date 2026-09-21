@@ -47,5 +47,9 @@
       "volatile_after_backtest_window": true
     }
   ],
-  "interpretation_boundary": "Zero exact reviewed-alias matches proves absence only for this narrow federal award-notice exact-alias signal since 2012-02-03. It does not prove absence of procurement under other legal names, provincial/municipal procurement, subcontracting, or Canadian commercial activity."
+  "interpretation_boundary": "Zero exact reviewed-alias matches proves absence only for this narrow federal award-notice exact-alias signal since 2012-02-03. It does not prove absence of procurement under other legal names, provincial/municipal procurement, subcontracting, or Canadian commercial activity.",
+  "accepted_evidence_artifact": {
+    "path": "reviews/backtests/source_proofs/2026-09-21-canadabuys-evidence.json",
+    "sha256": null
+  }
 }
