@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "design": "CIPO_JOURNAL_KNOWN_CASE_ACCEPTANCE",
+  "accepted_run": {
+    "workflow_run_id": 35606265041,
+    "workflow_head_sha": "0183cddaa8985f45f2aab51e149f7b7fee2d408b",
+    "artifact_id": 10642385135,
+    "artifact_digest": "sha256:dfb096fb87f9e58ef868f496a16281736951462587a404352d84b5028c109618",
+    "raw_proof_sha256": "357ef6deba685fdab101d7aa760b2e8797d19adb3c060a8240b20876259c85c2",
+    "normalized_proof_sha256": "5c77f53040ef409b0fa2d1b595f3314526b8145882a0a4b78fc4e6b35e732000"
+  },
+  "inventory": {
+    "start_date": "2000-01-05",
+    "end_date": "2023-05-31",
+    "year_count": 24,
+    "issue_count": 1221,
+    "canonical_issue_sha256": "8a89eccf0c368e82de4fcd62bea62481930210b7ddf2c182b18e7f45e7521a2d"
+  },
+  "required_cases": [
+    {
+      "case_id": "LINET_1336566",
+      "application_number": "1336566",
+      "publication_date": "2008-02-20",
+      "applicant": "Linet spol. S.r.o.",
+      "retrieval_method": "OFFICIAL_JOURNAL_PDF_PDFTOTEXT",
+      "source_url": "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/20fevrier2008.pdf?year=2008&edition=02-20"
+    },
+    {
+      "case_id": "SIOO_1799092",
+      "application_number": "1799092",
+      "publication_date": "2018-12-12",
+      "applicant": "SIOO WOODPROTECTION AB",
+      "retrieval_method": "OFFICIAL_JOURNAL_HTML",
+      "source_url": "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/view.html?edition=12-12&file=Journal_en.html&year=2018",
+      "known_researcher_dataset_gap": true
+    },
+    {
+      "case_id": "ANDRIANI_1702825",
+      "application_number": "1702825",
+      "publication_date": "2016-07-06",
+      "applicant": "MOLINO ANDRIANI S.r.l.",
+      "retrieval_method": "OFFICIAL_JOURNAL_HTML",
+      "source_url": "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/view.html?edition=07-06&file=Journal_en.html&year=2016",
+      "relation": "SOURCE_BACKED_LEGAL_NAME_PREDECESSOR_SAME_COMPANY",
+      "current_name": "Andriani S.p.A.",
+      "name_history_source": "https://www.andrianispa.com/en/andriani-spa-benefit-corporate/"
+    }
+  ],
+  "secondary_cases": [
+    {
+      "case_id": "LINET_1336563_SECONDARY",
+      "application_number": "1336563",
+      "publication_date": "2008-02-13",
+      "applicant": "Linet spol. S.r.o.",
+      "retrieval_method": "OFFICIAL_JOURNAL_PDF_PDFTOTEXT"
+    }
+  ],
+  "gate": {
+    "required_case_count": 3,
+    "required_cases_recovered": 3,
+    "total_cases_recovered": 4,
+    "absence_inference_allowed": false
+  },
+  "interpretation_boundary": "This milestone proves archive inventory and known-case recoverability only. No Journal non-hit may be interpreted as absence until every in-scope issue has been fetched, its advertised-applications section successfully parsed, and the full exact reviewed/historical alias scan is complete."
+}

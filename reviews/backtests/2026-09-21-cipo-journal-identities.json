@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-09-21",
+  "purpose": "Source-backed applicant identity aliases for CIPO Trademarks Journal historical completeness testing. Historical aliases are legal-name history, not fuzzy/group inference.",
+  "identity_rule": "A historical applicant alias is permitted only when a primary source explicitly links it to the reviewed legal entity. The Journal's publication-time applicant name is preserved as published.",
+  "cases": [
+    {
+      "case_id": "LINET_1336566",
+      "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "application_number": "1336566",
+      "journal_date": "2008-02-20",
+      "expected_applicant": "Linet spol. S.r.o.",
+      "accepted_applicant_aliases": [
+        "LINET spol. s.r.o.",
+        "LINET spol. s r.o.",
+        "LINET SPOL. S.R.O."
+      ],
+      "relation": "EXACT_REVIEWED_FOREIGN_LEGAL_ENTITY",
+      "required": true,
+      "source_urls": [
+        "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/archive.html?year=2008",
+        "https://ised-isde.canada.ca/cipo/trademark-search/1336566"
+      ]
+    },
+    {
+      "case_id": "SIOO_1799092",
+      "entity_id": "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "application_number": "1799092",
+      "journal_date": "2018-12-12",
+      "expected_applicant": "SIOO WOODPROTECTION AB",
+      "accepted_applicant_aliases": [
+        "Sioo Wood Protection Industry AB",
+        "SIOO WOODPROTECTION AB",
+        "SIOO WOOD PROTECTION AB"
+      ],
+      "relation": "EXACT_REVIEWED_FOREIGN_LEGAL_ENTITY",
+      "required": true,
+      "source_urls": [
+        "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/archive.html?year=2018",
+        "https://ised-isde.canada.ca/cipo/trademark-search/1799092"
+      ],
+      "note": "Known researcher-dataset coverage gap; recovery from the official Journal is mandatory."
+    },
+    {
+      "case_id": "ANDRIANI_1702825",
+      "entity_id": "control:node:212932",
+      "application_number": "1702825",
+      "journal_date": "2016-07-06",
+      "expected_applicant": "MOLINO ANDRIANI S.r.l.",
+      "accepted_applicant_aliases": [
+        "Andriani S.p.A.",
+        "ANDRIANI S.P.A.",
+        "ANDRIANI SPA",
+        "MOLINO ANDRIANI S.r.l.",
+        "Molino Andriani S.r.l."
+      ],
+      "relation": "SOURCE_BACKED_LEGAL_NAME_PREDECESSOR_SAME_COMPANY",
+      "required": true,
+      "legal_name_history": {
+        "historical_name": "Molino Andriani S.r.l.",
+        "current_name": "Andriani S.p.A.",
+        "transformation_year": 2016,
+        "source_url": "https://www.andrianispa.com/en/andriani-spa-benefit-corporate/",
+        "source_claim": "Andriani states that Molino Andriani S.r.l. was transformed into Andriani S.p.A. through a share-capital increase in 2016."
+      },
+      "source_urls": [
+        "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/archive.html?year=2016",
+        "https://www.andrianispa.com/en/andriani-spa-benefit-corporate/"
+      ]
+    },
+    {
+      "case_id": "LINET_1336563_SECONDARY",
+      "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "application_number": "1336563",
+      "journal_date": "2008-02-13",
+      "expected_applicant": "Linet spol. S.r.o.",
+      "accepted_applicant_aliases": [
+        "LINET spol. s.r.o.",
+        "LINET spol. s r.o.",
+        "LINET SPOL. S.R.O."
+      ],
+      "relation": "EXACT_REVIEWED_FOREIGN_LEGAL_ENTITY",
+      "required": false,
+      "source_urls": [
+        "https://cipo.ic.gc.ca/opic-cipo/tmj/eng/archive.html?year=2008",
+        "https://ised-isde.canada.ca/cipo/trademark-search/1336563"
+      ]
+    }
+  ]
+}
