@@ -1,0 +1,228 @@
+{
+  "coverage": [
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "anteasrl"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "entrant:653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "identity_eligible": false,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "linetspolsro"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "frameworkcomputerconsultantslimited",
+        "frameworkcomputerconsultantsltd"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "entrant:56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "hanecsgmbh"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "entrant:023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "identity_eligible": false,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "aiutspzoo"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "entrant:d49cc68d114ebff32d526d924d166521cafb364df2294f39f84877747895506c",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "sioowoodprotectionab",
+        "sioowoodprotectionindustryab"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "leadershippipelineinstituteas"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "entrant:ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "andrianispa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:212932",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "gilardonispa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:212990",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "sd2engineeringservicesstparl"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:212045",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "senzomaticsro"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:241151",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "globalwindserviceas"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:242990",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    }
+  ],
+  "coverage_definition": "Union of the official legacy 2012-to-2022-08 file, overlapping 2022-2023 fiscal bridge file, and all-awards 2022-08-08-onward file. Non-hits are absence only for the narrow exact-alias signal, not proof that the corporate group had no federal procurement relationship.",
+  "records": [],
+  "schema_version": 1,
+  "semantic_window": {
+    "canonical_key_sha256": "a05978ab90d7fd7776175bc3cfa208fe3428e2b994fc8e4c17cb08d26a4099f6",
+    "coverage_start_date": "2012-02-03",
+    "exact_reviewed_alias_matches": 0,
+    "max_backtest_cutoff_exclusive": "2023-06-01",
+    "unique_reference_amendment_keys": 105200
+  },
+  "source_definition": "Exact reviewed foreign legal-entity alias appears as supplierLegalName in the authoritative federal CanadaBuys award-notice corpus on or after 2012-02-03 and before the event-time cutoff.",
+  "source_family": "CANADABUYS_AWARD",
+  "summary": {
+    "entity_count": 12,
+    "semantic_window_exact_reviewed_alias_matches": 0,
+    "semantic_window_unique_reference_amendment_keys": 105200,
+    "source_file_count": 3
+  }
+}
