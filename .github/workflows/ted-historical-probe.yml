@@ -1,0 +1,81 @@
+name: TED historical coverage probe
+
+on:
+  push:
+    branches:
+      - "research/ted-history-proof-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Unit tests
+        run: |
+          python -m unittest \
+            tests.test_ted \
+            tests.test_ted_historical_probe \
+            -v
+
+      - name: Run exact-winner TED historical probe
+        run: |
+          mkdir -p control-output
+          python scripts/probe_ted_historical.py \
+            --output control-output/ted-historical-proof.json
+
+      - name: Validate live TED query and coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(
+              Path("control-output/ted-historical-proof.json").read_text()
+          )
+          control = payload["live_query_control"]
+          assert control["winner_name"] == "Siemens AG"
+          assert control["total_notice_count"] > 0
+          assert control["returned_notice_count"] == control["total_notice_count"]
+          assert control["complete"] is True
+
+          summary = payload["summary"]
+          assert summary["entity_count"] == 12
+          assert summary["complete_entity_query_sets"] == 12
+          assert len(payload["coverage"]) == 12
+          assert all(
+              row["absence_coverage_proven"] is True
+              and row["coverage_start_date"] == "2012-01-01"
+              and row["coverage_end_date"] == "2023-05-31"
+              for row in payload["coverage"]
+          )
+
+          for proof in payload["query_proof"]:
+              assert proof["queries"]
+              assert all(
+                  row["complete"] is True
+                  and row["returned_notice_count"] == row["total_notice_count"]
+                  for row in proof["queries"]
+              )
+          PY
+
+      - name: Retain TED proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ted-historical-proof-${{ github.sha }}
+          path: control-output/
+          retention-days: 90
+          if-no-files-found: error
