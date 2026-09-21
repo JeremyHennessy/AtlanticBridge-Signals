@@ -328,7 +328,7 @@ def collect(
             {
                 "entity_id": entity_id,
                 "signal_family": SIGNAL_FAMILY,
-                "coverage_status": "COMPLETE_EXACT_ALIAS_HISTORY",
+                "coverage_status": "PRESENCE_ONLY_KNOWN_GAP",
                 "identity_eligible": bool(
                     entity.get("foreign_signal_identity_eligible")
                 ),
@@ -344,11 +344,27 @@ def collect(
         "source_family": SIGNAL_FAMILY,
         "collected_at": datetime.now(timezone.utc).isoformat(),
         "coverage_definition": (
-            "Complete exact-alias scan of the pinned CIPO researcher "
+            "Presence-only exact-alias scan of the pinned CIPO researcher "
             "TM_Interested_Party dataset for Party Type 1 Applicant, joined to "
             "TM_Event action code 42 Advertised. Later owner/current-owner rows "
-            "are deliberately excluded to prevent ownership backdating."
+            "are deliberately excluded to prevent ownership backdating. "
+            "Absence is not inferable because the pinned researcher dataset and "
+            "live owner search both omit known official application 1799092."
         ),
+        "known_coverage_gap": {
+            "application_number": "1799092",
+            "entity_id": (
+                "entrant:97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9"
+            ),
+            "official_detail_url": (
+                "https://ised-isde.canada.ca/cipo/trademark-search/1799092"
+            ),
+            "applicant": "SIOO WOODPROTECTION AB",
+            "advertised_date": "2018-12-12",
+            "bulk_dataset_contains_application": False,
+            "live_owner_search_contains_application": False,
+            "absence_inference_allowed": False,
+        },
         "source_metadata": source_metadata,
         "summary": {
             "entity_count": len(entities_payload["entities"]),
