@@ -10,7 +10,7 @@
   },
   "accepted_evidence_artifact": {
     "path": "reviews/backtests/source_proofs/2026-09-21-cipo-researcher-evidence.json",
-    "sha256": null
+    "sha256": "75be3a61a18f206e590ec2009f0d240671e4eef10ecee4282cc4b4f2a28b6c6e"
   },
   "source_dataset": {
     "dataset_date": "2025-01-28",
@@ -34,5 +34,6 @@
     "bulk_dataset_contains_application": false,
     "absence_inference_allowed": false
   },
-  "interpretation_boundary": "This researcher-dataset proof is presence-only. A missing exact applicant/Advertised record is UNKNOWN because official application 1799092 is absent from the researcher files. It cannot support negative inference."
+  "interpretation_boundary": "This researcher-dataset proof is presence-only. A missing exact applicant/Advertised record is UNKNOWN because official application 1799092 is absent from the researcher files. It cannot support negative inference.",
+  "acceptance_contract": "Live CIPO researcher collection must normalize byte-for-byte to the accepted evidence artifact; the manifest hash is validated separately without recollecting the source."
 }
