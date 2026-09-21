@@ -2,12 +2,12 @@
   "schema_version": 1,
   "design": "BACKTEST_001_ACCEPTED_RESULT_MANIFEST",
   "accepted_run": {
-    "workflow_run_id": 35661802065,
-    "workflow_head_sha": "0bcd8fbdde2178bae12b7e8fcff76b39a3fe2eef",
-    "artifact_id": 10667412816,
-    "artifact_digest": "sha256:eb59f37e24ed0649305bdeaf6e8bd38b4f59c02552aff91b2c21b93c71c1d282",
+    "workflow_run_id": 35661907983,
+    "workflow_head_sha": "89d43fc052067a8b8810a26af6bc193e38c16259",
+    "artifact_id": 10667139607,
+    "artifact_digest": "sha256:625d5fa5713c8dc38be7b23fc640fc0fdbad9510588c151a7a72ff615917bbe9",
     "generated_result_sha256": "7e591fd4cff3f282bb8151a5e41fb51bbc4fbec8de0996eb9bb579c79b2f5001",
-    "acceptance_status": "PROVISIONAL_GENERATION_PENDING_GREEN_MANIFEST_RERUN"
+    "acceptance_status": "GREEN"
   },
   "cohort": {
     "entrant_entities": 7,
