@@ -8,8 +8,7 @@ on:
       - "tests/test_event_time_signals.py"
       - "reviews/backtests/2026-09-21-backtest-entities.json"
       - "reviews/backtests/2026-09-21-signal-source-semantics.json"
-      - "reviews/backtests/2026-09-21-cipo-supplemental-evidence.json"
-      - "reviews/backtests/2026-09-21-cipo-researcher-manifest.json"
+      - "reviews/backtests/2026-09-21-cipo-journal-full-manifest.json"
       - "reviews/backtests/2026-09-21-canadabuys-historical-manifest.json"
       - "reviews/backtests/2026-09-21-ted-historical-manifest.json"
       - "reviews/backtests/source_proofs/**"
@@ -36,8 +35,7 @@ jobs:
         run: |
           mkdir -p composition-output
           python scripts/build_event_time_snapshots.py \
-            --evidence reviews/backtests/source_proofs/2026-09-21-cipo-researcher-evidence.json \
-            --evidence reviews/backtests/2026-09-21-cipo-supplemental-evidence.json \
+            --evidence reviews/backtests/source_proofs/2026-09-21-cipo-journal-evidence.json \
             --evidence reviews/backtests/source_proofs/2026-09-21-canadabuys-evidence.json \
             --evidence reviews/backtests/source_proofs/2026-09-21-ted-evidence.json \
             --combined-evidence-output composition-output/signal-evidence.json \
@@ -49,14 +47,19 @@ jobs:
           from pathlib import Path
 
           snapshots=json.loads(Path("composition-output/event-time-snapshots.json").read_text())
-          cipo=json.loads(Path("reviews/backtests/source_proofs/2026-09-21-cipo-researcher-evidence.json").read_text())
+          cipo=json.loads(Path("reviews/backtests/source_proofs/2026-09-21-cipo-journal-evidence.json").read_text())
           canada=json.loads(Path("reviews/backtests/source_proofs/2026-09-21-canadabuys-evidence.json").read_text())
           ted=json.loads(Path("reviews/backtests/source_proofs/2026-09-21-ted-evidence.json").read_text())
 
-          assert cipo["known_coverage_gap"]["application_number"] == "1799092"
-          assert cipo["known_coverage_gap"]["absence_inference_allowed"] is False
-          assert all(row["coverage_status"] == "PRESENCE_ONLY_KNOWN_GAP" for row in cipo["coverage"])
+          assert cipo["proof_kind"] == "OFFICIAL_JOURNAL_FULL_COMPLETENESS"
+          assert cipo["inventory"]["issue_count"] == 1221
+          assert cipo["inventory"]["canonical_issue_sha256"] == "8a89eccf0c368e82de4fcd62bea62481930210b7ddf2c182b18e7f45e7521a2d"
+          assert cipo["summary"]["absence_inference_allowed"] is True
+          assert cipo["summary"]["issue_failure_count"] == 0
+          assert cipo["summary"]["unresolved_alias_occurrence_count"] == 0
           assert len(cipo["records"]) == 5
+          assert all(row["absence_coverage_proven"] is True for row in cipo["coverage"])
+          assert all(row["coverage_end_exclusive"] == "2023-06-01" for row in cipo["coverage"])
 
           assert canada["semantic_window"]["unique_reference_amendment_keys"] == 105200
           assert canada["semantic_window"]["exact_reviewed_alias_matches"] == 0
@@ -71,22 +74,27 @@ jobs:
               "signal_family_count": 5,
               "snapshot_row_count": 240,
               "state_counts": {
-                  "ABSENT_WITH_PROVEN_COVERAGE": 80,
+                  "ABSENT_WITH_PROVEN_COVERAGE": 108,
                   "PRESENT": 12,
-                  "UNKNOWN_UNVERIFIED_COVERAGE": 148,
+                  "UNKNOWN_UNVERIFIED_COVERAGE": 120,
               },
               "evaluable_rows_by_signal": {
                   "CANADABUYS_AWARD": 40,
-                  "CIPO_CANADIAN_TRADEMARK": 12,
+                  "CIPO_CANADIAN_TRADEMARK": 40,
                   "TED_CONTRACT_AWARD": 40,
               },
           }
 
           cipo_rows=[row for row in snapshots["snapshots"] if row["signal_family"]=="CIPO_CANADIAN_TRADEMARK"]
-          assert not any(row["state"]=="ABSENT_WITH_PROVEN_COVERAGE" for row in cipo_rows)
+          assert sum(row["state"]=="PRESENT" for row in cipo_rows) == 12
+          assert sum(row["state"]=="ABSENT_WITH_PROVEN_COVERAGE" for row in cipo_rows) == 28
+          assert sum(row["state"]=="UNKNOWN_UNVERIFIED_COVERAGE" for row in cipo_rows) == 8
           assert {row["state"] for row in cipo_rows if row["entity_id"].startswith("entrant:78bccec3")} == {"PRESENT"}
           assert {row["state"] for row in cipo_rows if row["entity_id"].startswith("entrant:97847c78")} == {"PRESENT"}
           assert {row["state"] for row in cipo_rows if row["entity_id"]=="control:node:212932"} == {"PRESENT"}
+          assert {row["state"] for row in cipo_rows if row["entity_id"].startswith("entrant:56361c05")} == {"ABSENT_WITH_PROVEN_COVERAGE"}
+          assert {row["state"] for row in cipo_rows if row["entity_id"].startswith("entrant:d49cc68d")} == {"ABSENT_WITH_PROVEN_COVERAGE"}
+          assert {row["state"] for row in cipo_rows if row["entity_id"].startswith("entrant:ff03646b")} == {"ABSENT_WITH_PROVEN_COVERAGE"}
           PY
       - name: Upload compact composition proof
         if: always()
