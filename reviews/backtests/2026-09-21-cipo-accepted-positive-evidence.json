@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source_family": "CIPO_CANADIAN_TRADEMARK",
+  "purpose": "Minimal durable positive evidence from the accepted full CIPO researcher-dataset scan. Only rows that change Backtest 001 event-time states are retained; missing rows imply no absence coverage.",
+  "accepted_live_proof": {
+    "workflow_run_id": 35552301164,
+    "workflow_head_sha": "6d5ef1b60fc6299e65c008bac1d5cad85f0cec1b",
+    "interested_party_sha256": "5a601e656dcd7f93289ca0745a209337922913471311cff7f2b0bd8f775f5d2e",
+    "event_sha256": "879cd11746a82c5c3c743f00eb5cf2bbf83f557fd741d5ef6216098459dde8a2",
+    "interested_party_rows_scanned": 5349993,
+    "event_rows_scanned": 23244288
+  },
+  "summary": {
+    "entity_count": 2,
+    "evidence_count": 2,
+    "absence_coverage_rows": 0
+  },
+  "coverage": [],
+  "records": [
+    {
+      "application_number": "1702825",
+      "entity_id": "control:node:212932",
+      "evidence_id": "b0ede63e0704ba86aa1311345e88f1540595909ed810aacc6e3af37ab3f9d6f7",
+      "journal_reference": "Vol.63 Issue 3219",
+      "match_method": "EXACT_REVIEWED_ALIAS_APPLICANT",
+      "matched_applicant_name": "ANDRIANI S.P.A.",
+      "party_type_code": "1",
+      "publicly_available_date": "2016-07-06",
+      "publicly_available_date_basis": "CIPO researcher TM_Event action code 42 (Advertised), published in the Trademarks Journal",
+      "publicly_available_date_precision": "DAY",
+      "signal_family": "CIPO_CANADIAN_TRADEMARK",
+      "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1702825"
+    },
+    {
+      "application_number": "1336563",
+      "entity_id": "entrant:78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+      "evidence_id": "4e1ec791387bbb5e4abe74bf176b52fce401bf7b3b80ea882789df59ba2770be",
+      "journal_reference": "Vol.55 Issue 2781",
+      "match_method": "EXACT_REVIEWED_ALIAS_APPLICANT",
+      "matched_applicant_name": "Linet spol. S.r.o.",
+      "party_type_code": "1",
+      "publicly_available_date": "2008-02-13",
+      "publicly_available_date_basis": "CIPO researcher TM_Event action code 42 (Advertised), published in the Trademarks Journal",
+      "publicly_available_date_precision": "DAY",
+      "signal_family": "CIPO_CANADIAN_TRADEMARK",
+      "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1336563"
+    }
+  ]
+}
