@@ -20,7 +20,7 @@ class SourceProofArtifactTests(unittest.TestCase):
             "source_metadata": {"dataset_date": "2025-01-28", "sha256": "x"},
             "summary": {"entity_count": 12},
             "coverage": [{"entity_id": "e"}],
-            "records": [{"evidence_id": "r"}],
+            "records": [{"evidence_id": "r", "entity_id": "e", "publicly_available_date": "2020-01-01"}],
         }
         normalized = normalize_cipo(payload)
         self.assertNotIn("collected_at", normalized)
