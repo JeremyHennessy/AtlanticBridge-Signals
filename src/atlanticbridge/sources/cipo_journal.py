@@ -277,11 +277,11 @@ def _advertised_section(text: str) -> str:
 
 
 _OLD_APPLICATION_START_RE = re.compile(
-    r"(?m)^\\s*(\\d{1,3}(?:,\\d{3}){1,2})\\.\\s+"
-    r"(\\d{4}/\\d{2}/\\d{2})\\.\\s+"
+    r"(?m)^\s*(\d{1,3}(?:,\d{3}){1,2})\.\s+"
+    r"(\d{4}/\d{2}/\d{2})\.\s+"
 )
 _MODERN_APPLICATION_START_RE = re.compile(
-    r"(?i)Application\\s+Number\\s+([\\d,\\s]+)"
+    r"(?i)Application\s+Number\s+([\d,\s]+)"
 )
 
 
@@ -290,10 +290,10 @@ def advertised_section(text: str) -> str:
     if old_start:
         end_candidates = []
         for pattern in (
-            r"(?im)^\\s*Enregistrements\\s*/?\\s*Registrations\\s*$",
-            r"(?im)^\\s*Registrations\\s*$",
-            r"(?im)^\\s*Registrations Amended\\s*$",
-            r"(?im)^\\s*Enregistrements modifiés\\s*$",
+            r"(?im)^\s*Enregistrements\s*/?\s*Registrations\s*$",
+            r"(?im)^\s*Registrations\s*$",
+            r"(?im)^\s*Registrations Amended\s*$",
+            r"(?im)^\s*Enregistrements modifiés\s*$",
         ):
             match = re.search(pattern, text[old_start.start() :])
             if match:
