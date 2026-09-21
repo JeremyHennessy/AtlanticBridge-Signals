@@ -109,6 +109,96 @@ class EventTimeSignalTests(unittest.TestCase):
             for row in payload["snapshots"]
         ))
 
+    def test_presence_only_known_gap_never_allows_absence(self):
+        entities = {
+            "cutoff_rule": "test",
+            "entities": [
+                {
+                    "entity_id": "e",
+                    "role": "CONTROL",
+                    "candidate_outcome_id": "c",
+                    "anchor_month": "2020-01",
+                    "identity_confidence": "HIGH",
+                    "foreign_signal_identity_eligible": True,
+                }
+            ],
+        }
+        semantics = {
+            "sources": [
+                {
+                    "signal_family": "S",
+                    "status": "PRESENCE_ONLY_KNOWN_COVERAGE_GAP",
+                }
+            ]
+        }
+        payload = build_event_time_snapshots(
+            entities_payload=entities,
+            semantics_payload=semantics,
+            evidence_payload={
+                "coverage": [
+                    {
+                        "entity_id": "e",
+                        "signal_family": "S",
+                        "coverage_status": "PRESENCE_ONLY_KNOWN_GAP",
+                    }
+                ],
+                "records": [],
+            },
+        )
+        self.assertTrue(all(
+            row["state"] == "UNKNOWN_UNVERIFIED_COVERAGE"
+            for row in payload["snapshots"]
+        ))
+
+    def test_presence_is_usable_even_when_absence_coverage_is_unproven(self):
+        entities = {
+            "cutoff_rule": "test",
+            "entities": [
+                {
+                    "entity_id": "e",
+                    "role": "ENTRANT",
+                    "candidate_outcome_id": "c",
+                    "anchor_month": "2020-01",
+                    "identity_confidence": "HIGH",
+                    "foreign_signal_identity_eligible": True,
+                }
+            ],
+        }
+        semantics = {
+            "sources": [
+                {
+                    "signal_family": "S",
+                    "status": "PRESENCE_ONLY_KNOWN_COVERAGE_GAP",
+                }
+            ]
+        }
+        payload = build_event_time_snapshots(
+            entities_payload=entities,
+            semantics_payload=semantics,
+            evidence_payload={
+                "coverage": [
+                    {
+                        "entity_id": "e",
+                        "signal_family": "S",
+                        "coverage_status": "PRESENCE_ONLY_KNOWN_GAP",
+                    }
+                ],
+                "records": [
+                    {
+                        "entity_id": "e",
+                        "signal_family": "S",
+                        "publicly_available_date": "2010-01-01",
+                        "publicly_available_date_precision": "DAY",
+                        "evidence_id": "x",
+                    }
+                ],
+            },
+        )
+        self.assertTrue(all(
+            row["state"] == "PRESENT"
+            for row in payload["snapshots"]
+        ))
+
     def test_unresolved_identity_fails_closed_even_with_source_coverage(self):
         entities = {
             "cutoff_rule": "test",
