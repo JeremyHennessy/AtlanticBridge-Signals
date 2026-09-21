@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "scripts/validate_source_proof_manifests.py"
+      - "reviews/backtests/2026-09-21-cipo-journal-full-manifest.json"
       - "reviews/backtests/2026-09-21-cipo-researcher-manifest.json"
       - "reviews/backtests/2026-09-21-canadabuys-historical-manifest.json"
       - "reviews/backtests/2026-09-21-ted-historical-manifest.json"
