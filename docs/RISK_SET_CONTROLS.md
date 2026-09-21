@@ -139,3 +139,14 @@ Inspection of the raw queue confirmed that the named-investor field can contain
 natural persons and Canadian vehicles despite an EU country-of-ultimate-control
 attribute. This is treated as evidence that the separate identity gate is
 required, not as a reason to introduce heuristic suffix filtering.
+
+
+## Identity qualification result
+
+The raw 21-entity queue has now been reviewed explicitly. See
+[CONTROL_IDENTITY_REVIEW.md](CONTROL_IDENTITY_REVIEW.md).
+
+Result: 5 QUALIFIED, 14 REJECTED, 2 UNRESOLVED. Only the five qualified foreign
+operating legal entities enter the first time-indexed backtest control set. Four
+of seven candidate strata remain without an eligible control rather than being
+filled by an unsupported identity. No negative labels are created.

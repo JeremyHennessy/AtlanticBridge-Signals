@@ -114,6 +114,11 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    semantic_payload = dict(payload)
+    semantic_source_proof = dict(payload["source_proof"])
+    semantic_source_proof.pop("snapshot_manifest_sha256", None)
+    semantic_payload["source_proof"] = semantic_source_proof
+
     manifest = {
         "schema_version": 1,
         "design": payload["design"],
@@ -121,6 +126,9 @@ def main() -> int:
         "max_controls_per_candidate": payload["max_controls_per_candidate"],
         "payload_canonical_sha256": hashlib.sha256(
             _canonical_json(payload).encode("utf-8")
+        ).hexdigest(),
+        "semantic_payload_canonical_sha256": hashlib.sha256(
+            _canonical_json(semantic_payload).encode("utf-8")
         ).hexdigest(),
         "identity_review_queue_canonical_sha256": hashlib.sha256(
             _canonical_json(review_queue).encode("utf-8")

@@ -79,17 +79,57 @@ jobs:
                       "control-output/2026-09-20-risk-set-control-identity-review.json"
                   ).read_text()
               )
-              if generated_manifest != expected_manifest:
-                  raise SystemExit(
-                      "Pinned risk-set manifest differs from the complete-history build"
-                  )
               if generated_review != expected_review:
                   raise SystemExit(
                       "Pinned control identity-review queue differs from the build"
                   )
+
+              for field in (
+                  "design",
+                  "horizon_months",
+                  "max_controls_per_candidate",
+                  "summary",
+              ):
+                  if generated_manifest.get(field) != expected_manifest.get(field):
+                      raise SystemExit(
+                          f"Pinned risk-set manifest semantic field differs: {field}"
+                      )
+
+              volatile_source_fields = {"snapshot_manifest_sha256"}
+              expected_source = {
+                  key: value
+                  for key, value in expected_manifest["source_proof"].items()
+                  if key not in volatile_source_fields
+              }
+              generated_source = {
+                  key: value
+                  for key, value in generated_manifest["source_proof"].items()
+                  if key not in volatile_source_fields
+              }
+              if generated_source != expected_source:
+                  raise SystemExit(
+                      "Pinned risk-set source coverage differs from live build"
+                  )
+
+              expected_semantic_hash = expected_manifest.get(
+                  "semantic_payload_canonical_sha256"
+              )
+              generated_semantic_hash = generated_manifest.get(
+                  "semantic_payload_canonical_sha256"
+              )
+              if not expected_semantic_hash:
+                  raise SystemExit(
+                      "Pinned manifest lacks semantic payload hash; "
+                      f"generated={generated_semantic_hash}"
+                  )
+              if generated_semantic_hash != expected_semantic_hash:
+                  raise SystemExit(
+                      "Pinned risk-set semantic payload differs from live build"
+                  )
           PY
 
       - name: Retain control proof
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: risk-set-controls-${{ github.event.pull_request.head.sha || github.sha }}

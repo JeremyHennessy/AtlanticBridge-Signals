@@ -26,5 +26,6 @@
     "identity_unreviewed_assignments": 21,
     "negative_labels_created": 0,
     "risk_set_candidate_assignments": 21
-  }
+  },
+  "semantic_payload_canonical_sha256": "c45a3cce911eee7486907010ab4ad966752bf43fcf3d884a6e54b67087fab4bf"
 }
