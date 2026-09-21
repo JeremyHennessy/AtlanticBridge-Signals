@@ -9,7 +9,7 @@ import tempfile
 import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -55,6 +55,22 @@ def normalize_application_number(value: str) -> str:
     return "".join(char for char in (value or "") if char.isdigit())
 
 
+def request_url(url: str) -> str:
+    parts = urlsplit(url)
+    encoded_path = quote(
+        parts.path,
+        safe="/%:@!$&()*+,;=-._~",
+    )
+    return urlunsplit(
+        (
+            parts.scheme,
+            parts.netloc,
+            encoded_path,
+            parts.query,
+            parts.fragment,
+        )
+    )
+
 def fetch(
     url: str,
     *,
@@ -63,7 +79,7 @@ def fetch(
     timeout: int = 120,
 ) -> bytes | str:
     request = Request(
-        url,
+        request_url(url),
         headers={
             "User-Agent": USER_AGENT,
             "Accept": (
@@ -277,8 +293,9 @@ def _advertised_section(text: str) -> str:
 
 
 _OLD_APPLICATION_START_RE = re.compile(
-    r"(?m)^\s*(\d{1,3}(?:,\d{3}){1,2})\.\s+"
-    r"(\d{4}/\d{2}/\d{2})\.\s+"
+    r"(?m)(?:^[ \t]*|[ \t]{6,})"
+    r"(\d{1,3}(?:,\d{3}){1,2})\.[ \t]+"
+    r"(\d{4}/\d{2}/\d{2})\.[ \t]+"
 )
 _MODERN_APPLICATION_START_RE = re.compile(
     r"(?i)Application\s+Number\s+([\d,\s]+)"
