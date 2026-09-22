@@ -1481,42 +1481,6 @@
       ]
     },
     {
-      "id": "node:242323",
-      "display_name": "innoscripta SE",
-      "investor_name": "Innoscripta SE",
-      "investor_locality": "Munich",
-      "ultimate_control_country": "Germany",
-      "foreign_legal_name": "innoscripta SE",
-      "foreign_legal_identifier": "HANDELSREGISTER · HRB 302244",
-      "identity_confidence": "HIGH",
-      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
-      "later_new_business_month": "2026-03",
-      "accepted_backtest_control_eligible": false,
-      "negative_label_eligible": false,
-      "matched_candidates": [
-        {
-          "outcome_id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
-          "canadian_business_name": "HANECS Canada Inc.",
-          "investor_name": "Max Neusser",
-          "notification_month": "2021-02",
-          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
-        }
-      ],
-      "rationale": "Innoscripta's official 2025 annual report identifies innoscripta SE in Munich with HRB 302244 and documents its operating software/platform business. Investment Canada later names Innoscripta SE, Munich in a March 2026 new-business notification.",
-      "identity_evidence": [
-        {
-          "source_url": "https://www.innoscripta.com/EN_innoscripta_GB_2025.pdf",
-          "source_type": "OFFICIAL_COMPANY_REPORT",
-          "claim": "Official annual report identifies innoscripta SE, Arnulfstraße 60, Munich, HRB 302244 and describes its R&D software platform business."
-        },
-        {
-          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/i",
-          "source_type": "OFFICIAL_INVESTMENT_CANADA",
-          "claim": "March 2026 new-business record names Innoscripta SE, Munich, Germany as investor."
-        }
-      ]
-    },
-    {
       "id": "node:213011",
       "display_name": "RWE Supply & Trading GmbH",
       "investor_name": "RWE Supply and Trading GmbH",
@@ -1595,6 +1559,42 @@
           "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/s?page=6",
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "April 2023 new-business record names SKS Welding Systems GmbH, Kaiserslautern, Germany as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:242323",
+      "display_name": "innoscripta SE",
+      "investor_name": "Innoscripta SE",
+      "investor_locality": "Munich",
+      "ultimate_control_country": "Germany",
+      "foreign_legal_name": "innoscripta SE",
+      "foreign_legal_identifier": "HANDELSREGISTER · HRB 302244",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2026-03",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+          "canadian_business_name": "HANECS Canada Inc.",
+          "investor_name": "Max Neusser",
+          "notification_month": "2021-02",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "Innoscripta's official 2025 annual report identifies innoscripta SE in Munich with HRB 302244 and documents its operating software/platform business. Investment Canada later names Innoscripta SE, Munich in a March 2026 new-business notification.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.innoscripta.com/EN_innoscripta_GB_2025.pdf",
+          "source_type": "OFFICIAL_COMPANY_REPORT",
+          "claim": "Official annual report identifies innoscripta SE, Arnulfstraße 60, Munich, HRB 302244 and describes its R&D software platform business."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/i",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "March 2026 new-business record names Innoscripta SE, Munich, Germany as investor."
         }
       ]
     },
@@ -1722,47 +1722,6 @@
       ]
     },
     {
-      "id": "node:238423",
-      "display_name": "General Medical Merate S.p.A.",
-      "investor_name": "General Medical Merate S.p.A.",
-      "investor_locality": "Seriate",
-      "ultimate_control_country": "Italy",
-      "foreign_legal_name": "General Medical Merate S.p.A.",
-      "foreign_legal_identifier": "VAT · 00225500164",
-      "identity_confidence": "HIGH",
-      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
-      "later_new_business_month": "2025-10",
-      "accepted_backtest_control_eligible": false,
-      "negative_label_eligible": false,
-      "matched_candidates": [
-        {
-          "outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
-          "canadian_business_name": "Antea Canada Inc.",
-          "investor_name": "Antea Canada Inc.",
-          "notification_month": "2019-08",
-          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
-        }
-      ],
-      "rationale": "General Medical Merate's official site identifies the exact Italian S.p.A. and VAT number and documents decades of radiological-equipment design and production. Investment Canada later names General Medical Merate S.p.A., Seriate in October 2025.",
-      "identity_evidence": [
-        {
-          "source_url": "https://www.gmmspa.com/",
-          "source_type": "OFFICIAL_COMPANY_SITE",
-          "claim": "Official GMM site identifies General Medical Merate S.p.A., Seriate, Italy, VAT 00225500164 and displays its medical imaging product business."
-        },
-        {
-          "source_url": "https://www.gmmspa.com/about-us/history-and-achievements/",
-          "source_type": "OFFICIAL_COMPANY_SITE",
-          "claim": "Official history states General Medical Merate S.p.A. has designed and produced radiological diagnostic systems for decades."
-        },
-        {
-          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=0&wbdisable=true",
-          "source_type": "OFFICIAL_INVESTMENT_CANADA",
-          "claim": "October 2025 new-business record names General Medical Merate S.p.A., Seriate, Italy as investor."
-        }
-      ]
-    },
-    {
       "id": "node:212990",
       "display_name": "GILARDONI S.P.A. a Socio Unico",
       "investor_name": "Gilardoni S.p.A.",
@@ -1800,6 +1759,47 @@
           "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=2&wbdisable=true",
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "March 2023 new-business record names Gilardoni S.p.A. as the Italian investor."
+        }
+      ]
+    },
+    {
+      "id": "node:238423",
+      "display_name": "General Medical Merate S.p.A.",
+      "investor_name": "General Medical Merate S.p.A.",
+      "investor_locality": "Seriate",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "General Medical Merate S.p.A.",
+      "foreign_legal_identifier": "VAT · 00225500164",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2025-10",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+          "canadian_business_name": "Antea Canada Inc.",
+          "investor_name": "Antea Canada Inc.",
+          "notification_month": "2019-08",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "General Medical Merate's official site identifies the exact Italian S.p.A. and VAT number and documents decades of radiological-equipment design and production. Investment Canada later names General Medical Merate S.p.A., Seriate in October 2025.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.gmmspa.com/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official GMM site identifies General Medical Merate S.p.A., Seriate, Italy, VAT 00225500164 and displays its medical imaging product business."
+        },
+        {
+          "source_url": "https://www.gmmspa.com/about-us/history-and-achievements/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official history states General Medical Merate S.p.A. has designed and produced radiological diagnostic systems for decades."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=0&wbdisable=true",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "October 2025 new-business record names General Medical Merate S.p.A., Seriate, Italy as investor."
         }
       ]
     },
