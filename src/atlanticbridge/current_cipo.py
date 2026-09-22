@@ -63,6 +63,9 @@ def observe_current_owners(entities: list[dict], session, *, detail_limit: int =
                     time.sleep(delay)
                 try:
                     detail = session.fetch_detail(record.record_id)
+                    if (not detail.application_number.isdigit()
+                            or detail.application_number != record.application_number):
+                        raise ValueError('Detail application number does not match the search record')
                     entry['details_checked'] += 1
                     if detail.match_status(name) != 'EXACT_DETAIL_OWNER':
                         continue

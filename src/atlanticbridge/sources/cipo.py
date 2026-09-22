@@ -150,7 +150,7 @@ class CIPOSession:
                 retryable = exc.code == 429 or 500 <= exc.code <= 599
                 if not retryable or attempt >= self.attempts:
                     raise
-            except (TimeoutError, URLError):
+            except (TimeoutError, URLError) as exc:
                 if attempt >= self.attempts:
                     raise
             time.sleep(self.backoff_seconds * (2 ** (attempt - 1)))
@@ -323,7 +323,9 @@ def _row_facts(soup: BeautifulSoup) -> tuple[dict[str, str], dict[str, tuple[str
 
     for row in soup.select("div.row"):
         header = row.find("h3")
-        if header is None:
+        # Only consume headings owned by this row. An outer layout row may
+        # contain the entire facts panel and an unrelated final column.
+        if header is None or header.find_parent("div", class_="row") is not row:
             continue
         label = _clean(header.get_text(" ", strip=True)).rstrip(":")
         if not label or label in facts:
