@@ -1,7 +1,7 @@
 """Portable monitoring state using the accepted Ledger, with no public source bodies.
 
-Persistent fingerprints and clocks support operational change detection. Restricted
-raw documents stay in access-controlled Actions artifacts (90-day retention); this
+Persistent fingerprints and clocks support operational change detection. Full
+raw documents stay in Actions artifacts (90-day retention); this
 checkpoint alone is deliberately ineligible as a historical backtest snapshot.
 """
 from __future__ import annotations

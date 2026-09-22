@@ -2,7 +2,7 @@
 let workStore = null, workDirty = false, workHash = "", workCompanyId = "", workImport = null;
 let workQuery = "", workStatus = "", workDue = false, workError = "", workConflict = false;
 
-function workCompanies() { return ABWorkspace.groupCompanies(state.live); }
+function workCompanies() { const groups=ABWorkspace.groupCompanies(state.live);for(const [id,p] of ABReviewed.groups(reviewedCatalog)){if(!groups.has(id))groups.set(id,p);}return groups; }
 function workEntry(id) { return workStore?.get(id) || null; }
 function workMessage(message, failed = false) {
   const notice = $("workspace-storage-notice");
@@ -61,6 +61,7 @@ function liveFreshnessText() {
 }
 function renderCompany(id) {
   workCompanyId=id;workDirty=false;workConflict=false;
+  const reviewed=reviewedProject(id);if(reviewed){renderReviewedCompany(reviewed);return;}
   const company=workCompanies().get(id), saved=workEntry(id);
   const root=$("company-content");
   if (!company && !saved) {
@@ -115,10 +116,11 @@ async function saveCompanyWork(event) {
   const id=workCompanyId;
   if (workError || workConflict) {$("work-save-state").textContent=workError || "Another tab changed the worklist. Your draft is retained; reload to compare before saving.";return;}
   const company=workCompanies().get(id);
-  const previous=workEntry(id) || ABWorkspace.blankEntry(id,company,state.live);
+  const feed=workFeedFor(id);
+  const previous=workEntry(id) || ABWorkspace.blankEntry(id,company,feed);
   const entry={...previous,status:$("work-status").value,notes:$("work-notes").value,next_action:$("work-action").value,due_date:$("work-date").value,updated_at:new Date().toISOString()};
   if(company) Object.assign(entry,{company_name:company.company_name,country:company.country,latest_public_date:company.latest_public_date,
-    snapshot_observed_at:state.live.source?.observed_at || "",source_url:state.live.source?.source_url || "",source_sha256:state.live.source?.source_sha256 || ""});
+    snapshot_observed_at:feed.source?.observed_at || "",source_url:feed.source?.source_url || "",source_sha256:feed.source?.source_sha256 || ""});
   $("work-save").disabled=true;
   try {
     await workLocked(()=>workStore.put(entry));
@@ -142,7 +144,7 @@ function renderWorklist() {
     const company=companies.get(entry.id),name=company?.company_name || entry.company_name || "Unresolved saved supplier";
     const due=entry.due_date ? formatDate(entry.due_date) : "No date set";
     const overdue=entry.due_date && entry.due_date<today && entry.status!=="closed";
-    return `<article class="worklist-row" data-worklist-id="${escapeHtml(entry.id)}"><div><a class="work-company-link" href="${companyHash(entry.id)}">${escapeHtml(name)}</a><p class="small muted">${escapeHtml(company?.country || entry.country || "Address country unverified")}</p><p class="small">${company ? `${company.signals.length} available source notices` : "Not in the available feed; saved work retained"}</p></div><div><span class="status-chip">${escapeHtml(ABWorkspace.STATUSES[entry.status])}</span><p class="small${overdue?" work-overdue":""}">${overdue?"Overdue · ":""}${escapeHtml(due)}</p></div><div><p class="small"><strong>Next action</strong></p><p>${escapeHtml(entry.next_action || "No next action recorded")}</p><p class="small muted">Your workflow—not a source or confidence label.</p></div><button class="text-button" type="button" data-remove-work="${escapeHtml(entry.id)}">Remove<span class="sr-only"> ${escapeHtml(name)}</span></button></article>`;
+    return `<article class="worklist-row" data-worklist-id="${escapeHtml(entry.id)}"><div><a class="work-company-link" href="${companyHash(entry.id)}">${escapeHtml(name)}</a><p class="small muted">${escapeHtml(company?.country || entry.country || "Address country unverified")}</p><p class="small">${company ? `${company.signals.length} ${company.reviewed?"reviewed historical events":"available source notices"}` : "Not in the available feed; saved work retained"}</p></div><div><span class="status-chip">${escapeHtml(ABWorkspace.STATUSES[entry.status])}</span><p class="small${overdue?" work-overdue":""}">${overdue?"Overdue · ":""}${escapeHtml(due)}</p></div><div><p class="small"><strong>Next action</strong></p><p>${escapeHtml(entry.next_action || "No next action recorded")}</p><p class="small muted">Your workflow—not a source or confidence label.</p></div><button class="text-button" type="button" data-remove-work="${escapeHtml(entry.id)}">Remove<span class="sr-only"> ${escapeHtml(name)}</span></button></article>`;
   }).join(""):`<div class="empty-state"><h2>${all.length?"No saved companies match these filters.":"Start a company investigation."}</h2><p>${all.length?"Reset the worklist filters to see your saved work.":"Open a company from Signals, record a next action, and save it here. Existing watch stars are preserved."}</p><a class="button" href="#signals">Explore signals</a><button class="button" type="button" id="worklist-empty-reset">Reset worklist filters</button></div>`;
   $("worklist-empty-reset")?.addEventListener("click",resetWorklist);
   $("work-export").disabled=!!workError;$("work-backup").disabled=!!workError;
