@@ -558,6 +558,7 @@ function resetResearchFilters() {
 }
 
 function renderResearch() {
+  if(!state.data)return;
   const allRows = state.data.research_cohort || [];
   const rows = filteredResearch();
   $("research-count").textContent = allRows.length;
@@ -627,6 +628,7 @@ function savedButton(item) {
   return `<button class="save-button" type="button" data-save="${escapeHtml(item.id)}" aria-pressed="${saved}" aria-label="${saved ? "Unsave" : "Save"} ${escapeHtml(item.canadian_business_name)}" title="${saved ? "Remove from saved cases" : "Save in this browser"}">${saved ? "★" : "☆"}</button>`;
 }
 function renderCases() {
+  if(!state.data){els.caseCountLabel.textContent="Data unavailable—not zero cases";return;}
   const cases = filteredCases();
   els.caseCountLabel.textContent = `${cases.length} of ${state.data.cases.length} historical cases${state.view === "saved" ? " · saved in this browser" : ""}`;
   document.querySelectorAll("[data-view]").forEach(button => button.setAttribute("aria-pressed",String(button.dataset.view === state.view)));
@@ -662,6 +664,7 @@ function syncControls() {
 }
 function showToast(message) { clearTimeout(toastTimer);$("toast").textContent=message;$("toast").hidden=false;toastTimer=setTimeout(()=>{$("toast").hidden=true;},5000); }
 function loadSaved() {
+  if(!state.data)return;
   try {
     const value=JSON.parse(localStorage.getItem(SAVE_KEY)||"[]");
     if (!Array.isArray(value)) throw new Error("Invalid saved list");
@@ -669,6 +672,7 @@ function loadSaved() {
   } catch (_) {state.saved=new Set();showToast("Saved cases could not be loaded. You can still explore all the evidence.");}
 }
 function toggleSaved(id) {
+  if(!state.data)return;
   if (!state.data.cases.some(x=>x.id===id)) return;
   const next=new Set(state.saved);next.has(id)?next.delete(id):next.add(id);
   try {localStorage.setItem(SAVE_KEY,JSON.stringify([...next]));} catch (_) {showToast("This browser could not save the case. Nothing was saved; use the case link instead.");return;}

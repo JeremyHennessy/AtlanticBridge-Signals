@@ -70,6 +70,7 @@ export async function verifyWorkspace(browser,options,base,label,out,check) {
   await hash(p,'#worklist');await fits(p,label,check);
   await p.locator('#worklist-due').check();
   check(`${label}: due work filter and overdue badge`,await p.locator('[data-worklist-id]').count()===1 && (await p.locator('#worklist-rows').innerText()).includes('Overdue'));
+  await p.screenshot({path:path.join(out,`${label}-worklist-fixture.png`),fullPage:true});
   const backupDownload=p.waitForEvent('download');await p.locator('#work-backup').click();const backup=await backupDownload;const backupText=fs.readFileSync(await backup.path(),'utf8');
   check(`${label}: actual JSON backup contains saved notes`,JSON.parse(backupText).entries[0].notes===note);
   const csvDownload=p.waitForEvent('download');await p.locator('#work-export').click();const csv=fs.readFileSync(await (await csvDownload).path(),'utf8');
@@ -95,6 +96,10 @@ export async function verifyWorkspace(browser,options,base,label,out,check) {
   await context.route('**/data/dashboard.json',r=>r.fulfill({status:503,body:'unavailable'}));
   await p.reload({waitUntil:'networkidle'});await p.locator('#retry-load').waitFor();await hash(p,'#worklist');
   check(`${label}: historical source failure does not erase worklist`,await p.locator('[data-worklist-id]').count()===2);
+  await hash(p,'#companies');await p.locator('#case-search').fill('cannot search unavailable history');
+  await hash(p,'#research');await p.locator('#research-search').fill('cannot search unavailable research');
+  check(`${label}: unavailable historical controls fail closed`,errors.length===0,errors.join(' | '));
+  await hash(p,'#worklist');
   await context.route('**/data/live-signals.json',r=>r.fulfill({status:503,body:'unavailable'}));
   await p.reload({waitUntil:'networkidle'});await p.locator('#retry-load').waitFor();
   check(`${label}: both evidence feeds unavailable but saved work retained`,await p.locator('[data-worklist-id]').count()===2);
