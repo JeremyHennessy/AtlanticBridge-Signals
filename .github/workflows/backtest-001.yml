@@ -81,7 +81,10 @@ jobs:
           ]
           assert cipo_high
           assert all(
-              row["false_positive_rate"] == 0.2
+              row["control_entities"] == 2
+              and row["control_present"] == 0
+              and row["control_absent_with_proven_coverage"] == 2
+              and row["false_positive_rate"] == 0.0
               and row["false_negative_rate"] == 0.5
               and row["error_rate_status"]
                   == "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET"
@@ -93,7 +96,10 @@ jobs:
           ]
           assert cipo_high_or_medium
           assert all(
-              row["false_positive_rate"] == 0.2
+              row["control_entities"] == 2
+              and row["control_present"] == 0
+              and row["control_absent_with_proven_coverage"] == 2
+              and row["false_positive_rate"] == 0.0
               and row["false_negative_rate"] == 0.6
               and row["error_rate_status"]
                   == "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET"
