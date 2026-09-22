@@ -158,7 +158,7 @@ async function run(label,type,options) {
     check(`${label}: 40-company universe`,await page.locator("#metric-browsable").innerText()===String(dashboard.summary.browsable_company_count));
     check(`${label}: research result count`,await page.locator("#research-result-count").innerText()===`${dashboard.research_cohort.length} of ${dashboard.research_cohort.length} companies`);
     const researchText=await page.locator("#research-view").innerText();
-    check(`${label}: research role boundary`,researchText.includes("not current prospects") && researchText.includes("Accepted controls") && researchText.includes("Identity-qualified"));
+    check(`${label}: research role boundary`,(await page.locator(".research-page-heading").innerText()).includes("not current prospects") && await page.locator("#research-accepted-count").innerText()==="4" && await page.locator("#research-qualified-count").innerText()==="9");
     check(`${label}: research signal pills`,await page.locator(".research-signal-pill").count()===dashboard.research_cohort.length*3);
     check(`${label}: research signal boundaries`,researchText.includes("Present") && researchText.includes("Proven absent") && researchText.includes("Unknown"));
     await page.locator("#research-cipo-filter").selectOption("PRESENT");
