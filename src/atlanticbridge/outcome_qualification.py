@@ -60,6 +60,7 @@ def parse_review_document(body: bytes, source: dict) -> list[dict]:
         'avanade-halifax-20220628': ('h1.page-title', 'article.article--full .field--name-body'),
         'nature-farnham-plan-20220315': ('h1', 'article.news-release'),
         'roquette-rd-20200619': ('h1.page__heading', 'article.page__content'),
+        'enel-issuer-alberta-operating-20200521': ('h1', 'main free-text section[data-content]'),
     }
     pair = (layout.get('title_selector'), layout.get('content_selector'))
     if pair != allowed.get(source['id']):
@@ -78,6 +79,18 @@ def parse_review_document(body: bytes, source: dict) -> list[dict]:
         # Keep that source text, not unrelated site headers or a fabricated date.
         for header in region.select('header'):
             header.name = 'div'
+    if source['id'] == 'enel-issuer-alberta-operating-20200521':
+        if layout != {'title_selector': 'h1', 'content_selector': 'main free-text section[data-content]',
+                      'date_selector': 'main article-header time', 'content_attribute': 'data-content'}:
+            raise ValueError('Unreviewed embedded content layout')
+        dates = soup.select('main article-header time')
+        content = region.get('data-content')
+        if len(dates) != 1 or not dates[0].get_text(strip=True) or not isinstance(content, str) or not content.strip():
+            raise ValueError('Missing or ambiguous embedded document content/date')
+        # The captured publisher markup uses a Vue component with escaped HTML in
+        # data-content. Parse those original bytes; do not synthesize the body/date.
+        scoped.main.append(dates[0].extract())
+        region = BeautifulSoup(content, 'html.parser')
     scoped.main.append(region)
     return parse_article(str(scoped).encode('utf-8'), source)
 

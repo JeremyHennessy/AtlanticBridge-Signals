@@ -38,3 +38,22 @@ class DocumentSourceRepairTests(unittest.TestCase):
         c=next(x for x in m['cases'] if x['id']=='enel-pincher-creek')
         self.assertIn('began operations in 2012',c['prior_presence_evidence']['required_text'])
         self.assertFalse(c['first_entry_confirmed'])
+
+    def test_enel_escaped_publisher_body_and_date(self):
+        import html
+        m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+        src=copy.deepcopy(next(x for x in m['sources'] if x['id']=='enel-issuer-alberta-operating-20200521'))
+        content='<p>'+'. '.join(src['required_text'])+'</p>'
+        raw=('<main><article-header><h1>Issuer release</h1><time>May 21, 2020</time></article-header><free-text><section data-content="'+html.escape(content,quote=True)+'"></section></free-text></main>').encode()
+        self.assertEqual(parse_review_document(raw,src)[0]['source_publication_date'],'2020-05-21')
+        with self.assertRaises(ValueError):parse_review_document(raw.replace(b'May 21, 2020',b'UNKNOWN'),src)
+        with self.assertRaises(ValueError):parse_review_document(raw.replace(b'Riverview',b'Other project'),src)
+        with self.assertRaises(ValueError):parse_review_document(raw+raw,src)
+        src['reviewed_layout']['content_attribute']='invented'
+        with self.assertRaises(ValueError):parse_review_document(raw,src)
+    def test_invest_ontario_canonical_hostname_and_retained_tls_failure(self):
+        m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+        src=next(x for x in m['sources'] if x['id']=='stellantis-investontario-20220502')
+        self.assertTrue(src['url'].startswith('https://www.investontario.ca/'))
+        old=next(x for x in m['known_unavailable_paths'] if x['id']=='stellantis-ontario-20220502')
+        self.assertEqual(old['alias_diagnostic_artifact_id'],10723187655)

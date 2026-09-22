@@ -21,7 +21,7 @@
       "id": "stellantis-investontario-20220502",
       "kind": "article",
       "company": "Stellantis",
-      "url": "https://www.investinontario.com/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton",
+      "url": "https://www.investontario.ca/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton",
       "reviewed_publication_date": "2022-05-02",
       "publication_date_text": "May 2, 2022",
       "required_text": [
@@ -136,7 +136,13 @@
         "Castle Rock Ridge II",
         "connected and delivering energy"
       ],
-      "role": "DOCUMENTARY_OPERATING_BY_BOUND_NOT_FIRST_ENTRY"
+      "role": "DOCUMENTARY_OPERATING_BY_BOUND_NOT_FIRST_ENTRY",
+      "reviewed_layout": {
+        "title_selector": "h1",
+        "content_selector": "main free-text section[data-content]",
+        "date_selector": "main article-header time",
+        "content_attribute": "data-content"
+      }
     },
     {
       "id": "accenture-stcatharines-20200115",
@@ -491,7 +497,11 @@
       "diagnostic_artifact_id": 10723391513,
       "diagnostic_artifact_sha256": "3edea9f5529aefa4c8628307efa79950c7904b19104ca430e11ed49e069826f4",
       "replacement_source_id": "stellantis-investontario-20220502",
-      "reason": "Original HTML is a JavaScript shell or PDF-only landing page. A separately named primary-publisher HTML document is reviewed; original failure is retained."
+      "reason": "Original HTML is a JavaScript shell or PDF-only landing page. A separately named primary-publisher HTML document is reviewed; original failure is retained.",
+      "also_failed_alias_url": "https://www.investinontario.com/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton",
+      "alias_failure": "TLS hostname mismatch; no certificate verification disabled",
+      "alias_diagnostic_artifact_id": 10723187655,
+      "alias_diagnostic_artifact_sha256": "f0a73ae39bf772621b1c33a1bbc360027bc48cb808513eb40b4677524cce20f7"
     },
     {
       "id": "enel-alberta-operating-20200521",
