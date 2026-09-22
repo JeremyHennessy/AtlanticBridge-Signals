@@ -69,13 +69,13 @@ function renderCompany(id) {
     return;
   }
   const entry=saved || ABWorkspace.blankEntry(id,company,state.live);
-  const name=company?.company_name || entry.company_name || "Saved supplier identity";
+  const name=company?.company_name || entry.company_name || "Saved company identity";
   const country=company?.country || entry.country || "Not resolved";
   const signals=company?.signals || [];
   const canadian=signals.filter(s=>s.scope_review?.state==="INCLUDED_CANADIAN_DELIVERY").length;
   const buyerOnly=signals.filter(s=>s.scope_review?.state==="INCLUDED_BUYER_ONLY").length;
   document.title=`${name} — AtlanticBridge Signals`;
-  root.innerHTML=`<div class="page-heading"><div><p class="eyebrow">Company dossier / Current supplier evidence</p><h1 id="company-title">${escapeHtml(name)}</h1><p>Supplier address country: <strong>${escapeHtml(country)}</strong>. Grouped by published supplier name and country—not a verified parent or corporate group.</p></div><button class="button" id="company-share" type="button">Copy company link</button></div>
+  root.innerHTML=`<div class="page-heading"><div><p class="eyebrow">Company dossier / ${company?"Current supplier evidence":"Saved investigation; source unavailable"}</p><h1 id="company-title">${escapeHtml(name)}</h1><p>${company?"Supplier address country":"Saved country label"}: <strong>${escapeHtml(country)}</strong>. ${company?"Grouped by published supplier name and country—not a verified parent or corporate group.":"The saved name and country do not establish a supplier, legal entity, or corporate group. Source evidence is currently unavailable."}</p></div><button class="button" id="company-share" type="button">Copy company link</button></div>
     <div id="company-share-fallback" hidden></div>
     <div class="research-banner"><strong>${company ? escapeHtml(liveFreshnessText()) : "Not present in the currently available feed."}</strong><span>${company ? escapeHtml(workSourceCoverage()) : "Your saved notes remain available. This may reflect feed coverage or availability; it is not an absence finding."}</span></div>
     <div class="dossier-columns">

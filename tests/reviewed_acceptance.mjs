@@ -45,12 +45,18 @@ export async function verifyReviewed(browser,options,base,label,out,check){
     const download=await downloadPromise,file=path.join(out,`${label}-feedback-test-only.json`);await download.saveAs(file);
     const reviews=JSON.parse(fs.readFileSync(file,'utf8'));
     check(`${label}: actual feedback download preserves unknown identity`,reviews.length===1&&reviews[0].identity_correct===null&&reviews[0].useful===true&&reviews[0].already_known===false&&reviews[0].timing_basis==='ELAPSED_PAGE_VIEW_INCLUDES_IDLE');
+    await page.locator('#review-feedback-state').click();
     await page.screenshot({path:path.join(out,`${label}-reviewed-project.png`),fullPage:true});
     await page.evaluate(()=>location.hash='#worklist');await page.locator(`[data-worklist-id="${first.id}"]`).waitFor();
     check(`${label}: reviewed project joins existing worklist`,(await page.locator(`[data-worklist-id="${first.id}"]`).innerText()).includes('reviewed historical events'));
     await page.route('**/data/reviewed-evidence.json',route=>route.fulfill({status:503,body:'TEST failure'}));
     await page.reload({waitUntil:'networkidle'});
     check(`${label}: source failure preserves saved project`,await page.locator(`[data-worklist-id="${first.id}"]`).count()===1);
+    await page.evaluate(id=>location.hash='#company?id='+id,first.id);
+    await page.waitForFunction(name=>document.querySelector('#company-title')?.textContent===name,first.company_name);
+    const unavailable=await page.locator('#company-content').innerText();
+    check(`${label}: unavailable project is not relabelled as a supplier`,unavailable.includes('Saved country label')&&!unavailable.includes('Supplier address country')&&!unavailable.includes('Current supplier evidence'));
+    check(`${label}: unavailable dossier retains notes`,await page.locator('#work-notes').inputValue()==='<script>unsafe()</script> TEST-only notes');
     await page.evaluate(()=>location.hash='#signals');await page.locator('#signals-list').waitFor();
     check(`${label}: reviewed failure leaves procurement unchanged`,await page.locator('[data-live-signal-id]').count()===procurement);
     check(`${label}: reviewed failure explicit`,(await page.locator('#reviewed-project-list').innerText()).includes('unavailable'));

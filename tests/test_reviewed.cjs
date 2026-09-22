@@ -15,3 +15,10 @@ test('future monitoring time unverified',()=>assert.match(api.monitoringStatus({
 test('unknown feedback not negative or independent review',()=>{const r={alert_id:'a'.repeat(64),reviewer:'test-only',identity_correct:null,source_supported:null,useful:true,already_known:false,review_seconds:1};assert.equal(api.feedback([r])[0].identity_correct,null);});
 test('corrupt feedback rejected before write',()=>assert.throws(()=>api.feedback({entries:[]})));
 test('duplicate feedback cannot inflate denominator',()=>{const r={alert_id:'a'.repeat(64),reviewer:'test-only',identity_correct:null,source_supported:null,useful:null,already_known:null,review_seconds:0};assert.throws(()=>api.feedback([r,r]));});
+
+test('unavailable saved project cannot acquire supplier-country semantics',()=>{
+ const vm=require('node:vm'),nodes=new Map(),entry={company_name:'TEST historical project',country:'France',status:'review',next_action:'Check identity',notes:'Retained notes',due_date:'',updated_at:'2026-09-22T00:00:00Z'};
+ const context={ABWorkspace:{groupCompanies:()=>new Map(),STATUSES:{review:'To review'}},ABReviewed:api,reviewedCatalog:null,reviewedProject:()=>null,state:{live:{}},document:{},escapeHtml:String,formatTimestamp:String,entry,$:id=>{if(!nodes.has(id))nodes.set(id,{innerHTML:'',addEventListener(){}});return nodes.get(id);}};
+ vm.createContext(context);vm.runInContext(fs.readFileSync('ui/workbench.js','utf8'),context);vm.runInContext('workStore={get:()=>entry};renderCompany("test");',context);
+ const html=nodes.get('company-content').innerHTML;assert.match(html,/Saved country label/);assert.doesNotMatch(html,/Supplier address country|Current supplier evidence/);assert.match(html,/Retained notes/);
+});
