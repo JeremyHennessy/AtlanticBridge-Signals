@@ -1,0 +1,138 @@
+{
+  "coverage": [
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "deutschebahninternationaloperationsgmbh"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:213007",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "sksweldingsystemsgmbh"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:213010",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 2,
+      "aliases_normalized": [
+        "rwesupplyandtradinggmbh",
+        "rwesupplytradinggmbh"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:213011",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "europassistancesa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:214179",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "leafspacespa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:214722",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "nordengineeringfrance"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:214936",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "generalmedicalmeratespa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:238423",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "wizdigitalserviceslimited"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:239953",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "alias_query_count": 1,
+      "aliases_normalized": [
+        "innoscriptase"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_start_date": "2012-01-01",
+      "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012",
+      "entity_id": "control:node:242323",
+      "identity_eligible": true,
+      "signal_family": "TED_CONTRACT_AWARD"
+    }
+  ],
+  "coverage_definition": "Each reviewed alias is used in TED's winner-name query as a candidate retrieval superset over the complete bounded backtest window. Every returned winner-name is post-filtered to exact normalized equality. Absence is only absence of that narrow exact-alias winner signal after complete retrieval of every alias candidate query.",
+  "coverage_window": {
+    "end_exclusive": "2023-06-01",
+    "start_date": "2012-01-01"
+  },
+  "records": [],
+  "schema_version": 1,
+  "signal_definition": "At least one TED notice published on or after 2012-01-01 and before the event-time cutoff where a returned winner-name exactly normalizes to a reviewed foreign legal-entity alias.",
+  "source_family": "TED_CONTRACT_AWARD",
+  "summary": {
+    "complete_entity_query_sets": 9,
+    "entities_with_evidence": 0,
+    "entity_alias_query_count": 10,
+    "entity_count": 9,
+    "evidence_record_count": 0
+  }
+}
