@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from atlanticbridge.company_sources import Ledger, parse_article, url
-from atlanticbridge.investment_discovery import discovery_summary, parse_investment_cards
+from atlanticbridge.investment_discovery import discovery_summary, parse_investment_cards, retained_review_records
 from probe_company_sources import Capture
 
 
@@ -51,7 +51,7 @@ def main() -> int:
                           "raw_sha256": sha, "events": len(events), "replay_events": 0}
                 if source["kind"] == "investment_cards":
                     result["discovery"] = discovery_summary(rows)
-                    queue.extend(dict(row, first_proof_observed_at=observed, raw_sha256=sha) for row in rows)
+                    queue.extend(retained_review_records(ledger, rows))
                 report["sources"].append(result)
                 report["observations"].extend(rows)
                 report["events"].extend(events)

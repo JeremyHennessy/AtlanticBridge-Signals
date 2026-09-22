@@ -6,11 +6,12 @@ collector, model label, publication gate, or UI behavior is changed.
 from __future__ import annotations
 
 from collections import Counter
+import json
 import re
 
 from bs4 import BeautifulSoup
 
-from .company_sources import record, unique
+from .company_sources import Ledger, record, unique
 
 SOURCE_URL = "https://www.investcanada.ca/news"
 
@@ -69,3 +70,17 @@ def discovery_summary(rows: list[dict]) -> dict:
             "dated_first_entry_labels": 0, "independent_holdout_rows": 0,
             "scope_review_required": len(rows), "absence_inference_allowed": False,
             "expansion_score_publication_allowed": False}
+
+
+def retained_review_records(ledger: Ledger, rows: list[dict]) -> list[dict]:
+    """Export persisted first/last observations; never replace first-seen with rebuild time."""
+    retained = []
+    for row in rows:
+        saved = ledger.db.execute("SELECT payload FROM company_observations WHERE id=?", (row["id"],)).fetchone()
+        if saved is None:
+            raise ValueError("Review export requires a committed ledger observation")
+        item = json.loads(saved[0])
+        if item["source_id"] != row["source_id"]:
+            raise ValueError("Review export source mismatch")
+        retained.append(item)
+    return retained

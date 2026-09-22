@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from atlanticbridge.company_sources import Ledger, parse_article
-from atlanticbridge.investment_discovery import parse_investment_cards, discovery_summary
+from atlanticbridge.investment_discovery import parse_investment_cards, discovery_summary, retained_review_records
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = json.loads((ROOT / 'reviews/company_sources/investment-discovery-2026-09-22.json').read_text())['sources'][0]
@@ -91,3 +91,22 @@ class InvestmentDiscoveryTests(unittest.TestCase):
     def test_publication_date_anchor_for_product_launch_is_required(self):
         source=json.loads((ROOT/'reviews/company_sources/investment-discovery-2026-09-22.json').read_text())['sources'][1]
         with self.assertRaises(ValueError):parse_article(b'<h1>Canada launch</h1><main>part of Ericsson in Canada</main>',source)
+
+    def test_export_preserves_first_observation_after_second_capture(self):
+        rows=parse_investment_cards(page(),SOURCE)
+        ledger=Ledger(":memory:")
+        try:
+            sha=hashlib.sha256(page()).hexdigest()
+            ledger.apply(SOURCE,rows,'2026-09-22T20:00:00Z',sha)
+            ledger.apply(SOURCE,rows,'2026-09-22T20:10:00Z',sha)
+            exported=retained_review_records(ledger,rows)[0]
+            self.assertEqual(exported['first_observed_at'],'2026-09-22T20:00:00Z')
+            self.assertEqual(exported['last_observed_at'],'2026-09-22T20:10:00Z')
+            self.assertEqual(exported['raw_sha256'],sha)
+        finally:ledger.close()
+
+    def test_uncommitted_records_cannot_be_exported_as_observed(self):
+        ledger=Ledger(":memory:")
+        try:
+            with self.assertRaises(ValueError):retained_review_records(ledger,parse_investment_cards(page(),SOURCE))
+        finally:ledger.close()

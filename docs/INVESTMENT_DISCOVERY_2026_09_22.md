@@ -74,8 +74,8 @@ replace the production evidence payload.
 
 ## Acceptance boundary
 
-Before remote acceptance, the integrated local package passes **317 Python
-tests**, including **14 additional investment-discovery tests** beyond PR #101.
+Before remote acceptance, the integrated local package passes **319 Python
+tests**, including **16 additional investment-discovery tests** beyond PR #101.
 The existing 28 Node worklist tests are included in the independent workflow.
 The remote proof must pass from the exact PR head before merge.
 
@@ -93,3 +93,11 @@ presence. Then construct eligible matched groups and a predeclared holdout.
 Broaden source/industry/province coverage based on incremental useful leads,
 not raw record counts. Production storage, recurring retention, editorial
 approval, legal-entity joins and source rights must precede public feed release.
+
+## Export-clock correction found during artifact review
+
+The initial export attached the current capture timestamp under a first-proof
+label. The accepted export instead reads committed payloads from the existing
+ledger, preserving `first_observed_at`, `last_observed_at` and raw provenance.
+Regression tests require unchanged first observation after a second capture and
+reject uncommitted records. No existing ledger or historical clock was changed.
