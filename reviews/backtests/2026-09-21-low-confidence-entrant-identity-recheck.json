@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-09-21",
+  "purpose": "Recheck the two LOW-confidence entrant foreign-signal identities after Backtest 002 identified identity-qualified sample size as the next statistical bottleneck.",
+  "identity_gate_rule": "Foreign-source signals require an exact or explicitly reviewed foreign legal-entity identity. When the proposed signal entity is a parent or group company rather than the named Investment Canada investor, primary evidence must explicitly establish the legal relationship. Brand continuity, shared executives, office listings, or group presentation alone are insufficient.",
+  "temporal_boundary": "These sources are used only to review legal identity. They are not treated as pre-anchor signal evidence and do not alter event-time source states.",
+  "summary": {
+    "records_reviewed": 2,
+    "promoted_to_foreign_signal_identity_eligible": 0,
+    "remain_unresolved": 2,
+    "backtest_entity_eligibility_changes": 0
+  },
+  "records": [
+    {
+      "entity_id": "entrant:653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+      "display_name": "Antea Canada Inc.",
+      "anchor_month": "2019-08",
+      "ultimate_control_country": "Italy",
+      "proposed_foreign_legal_name": "ANTEA S.R.L.",
+      "review_status": "UNRESOLVED_INSUFFICIENT_PARENT_LINK",
+      "identity_confidence": "LOW",
+      "foreign_signal_identity_eligible": false,
+      "rationale": "Investment Canada names Antea Canada Inc. itself as the investor/new Canadian business while recording Italy as the country of ultimate control. Antea's official material confirms a Canadian branch within the global Antea operation, and official Antea/CIPO material confirms ANTEA S.R.L. as an Italian legal/trademark owner. The reviewed primary evidence does not explicitly state that ANTEA S.R.L. owns, directly controls, or is the legal parent of Antea Canada Inc. The existing parent mapping therefore remains unresolved.",
+      "identity_evidence": [
+        {
+          "source_url": "https://ised-isde.canada.ca/site/loi-investissement-canada/fr/recherche/indexe-decisions-avis-investissement/a?page=12&wbdisable=false",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "The August 2019 new-business record names Antea Canada Inc., Brossard as the investor and Canadian business, with Italy as country of ultimate control."
+        },
+        {
+          "source_url": "https://antea.tech/canada-branch-office-antea/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Antea describes its Brossard operation as its Canada branch and Americas HQ."
+        },
+        {
+          "source_url": "https://antea.tech/our-story/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Antea's history identifies Antea S.r.l. in its global expansion history and states that Antea expanded into North America with offices in Canada and the United States."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/2029973",
+          "source_type": "OFFICIAL_CIPO",
+          "claim": "CIPO identifies ANTEA S.R.L., Padova, Italy as registrant of Canadian trademark application 2029973."
+        }
+      ],
+      "missing_evidence_required_for_promotion": "Primary evidence explicitly linking ANTEA S.R.L. to Antea Canada Inc. through ownership, direct/ultimate parentage, or another legally defined control relationship."
+    },
+    {
+      "entity_id": "entrant:023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+      "display_name": "HANECS Canada Inc.",
+      "anchor_month": "2021-02",
+      "ultimate_control_country": "Germany",
+      "proposed_foreign_legal_name": "HANECS GmbH",
+      "review_status": "UNRESOLVED_INSUFFICIENT_PARENT_LINK",
+      "identity_confidence": "LOW",
+      "foreign_signal_identity_eligible": false,
+      "rationale": "Investment Canada names Max Neusser and Sven Hansel as the investors, not HANECS GmbH. HANECS GmbH's official imprint identifies Max Neusser and Sven Hänsel as managing directors, and HANECS's official location page describes Ottawa as a HANECS location opened in 2021. Executive roles and group/location presentation do not establish that HANECS GmbH owned or controlled HANECS Canada Inc. at the relevant time. The proposed HANECS GmbH signal identity therefore remains unsupported.",
+      "identity_evidence": [
+        {
+          "source_url": "https://ised-isde.canada.ca/site/loi-investissement-canada/fr/recherche/indexe-decisions-avis-investissement/tous?page=129",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "The February 2021 new-business record names Max Neusser (Ottawa) and Sven Hansel (Eschborn) as investors in HANECS Canada Inc., with Germany as country of ultimate control."
+        },
+        {
+          "source_url": "https://www.hanecs.de/en/impressum/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "HANECS GmbH's legal imprint identifies HRB 109674 and managing directors Sven Hänsel and Max Neusser."
+        },
+        {
+          "source_url": "https://www.hanecs.de/en/standorte/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "HANECS GmbH describes Ottawa, Canada as a new HANECS location since 2021."
+        }
+      ],
+      "missing_evidence_required_for_promotion": "Primary evidence explicitly establishing ownership/control between the named individual investors and HANECS GmbH and/or a legal parent/subsidiary relationship between HANECS GmbH and HANECS Canada Inc."
+    }
+  ]
+}
