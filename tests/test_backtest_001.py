@@ -94,11 +94,13 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(high["entrant_present"], 2)
         self.assertEqual(high["entrant_absent_with_proven_coverage"], 2)
         self.assertEqual(high["entrant_unknown"], 0)
-        self.assertEqual(high["control_entities"], 5)
-        self.assertEqual(high["control_present"], 1)
-        self.assertEqual(high["control_absent_with_proven_coverage"], 4)
+        self.assertEqual(high["eligible_entrant_strata"], 4)
+        self.assertEqual(high["matched_control_strata"], 2)
+        self.assertEqual(high["control_entities"], 2)
+        self.assertEqual(high["control_present"], 0)
+        self.assertEqual(high["control_absent_with_proven_coverage"], 2)
         self.assertEqual(high["control_unknown"], 0)
-        self.assertEqual(high["false_positive_rate"], 0.2)
+        self.assertEqual(high["false_positive_rate"], 0.0)
         self.assertEqual(high["false_negative_rate"], 0.5)
         self.assertEqual(
             high["error_rate_status"],
@@ -117,7 +119,16 @@ class Backtest001Tests(unittest.TestCase):
             3,
         )
         self.assertEqual(high_or_medium["entrant_unknown"], 0)
-        self.assertEqual(high_or_medium["false_positive_rate"], 0.2)
+        self.assertEqual(high_or_medium["eligible_entrant_strata"], 5)
+        self.assertEqual(high_or_medium["matched_control_strata"], 2)
+        self.assertEqual(high_or_medium["control_entities"], 2)
+        self.assertEqual(high_or_medium["control_present"], 0)
+        self.assertEqual(
+            high_or_medium["control_absent_with_proven_coverage"],
+            2,
+        )
+        self.assertEqual(high_or_medium["control_unknown"], 0)
+        self.assertEqual(high_or_medium["false_positive_rate"], 0.0)
         self.assertEqual(high_or_medium["false_negative_rate"], 0.6)
         self.assertEqual(
             high_or_medium["error_rate_status"],
@@ -157,6 +168,24 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(controls["n"], 1)
         self.assertEqual(controls["median_days"], 1121.0)
 
+    def test_identity_sensitivity_preserves_matched_control_strata(self):
+        self.assertIn(
+            "matched entrant candidate stratum",
+            self.result["identity_sensitivity_rule"],
+        )
+        cipo = next(
+            row for row in self.result["signals"]
+            if row["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
+        )
+        high = next(
+            row for row in cipo["identity_confidence_sensitivity"]
+            if row["identity_tier"] == "HIGH"
+            and row["offset_months"] == 3
+        )
+        self.assertEqual(high["eligible_entrant_strata"], 4)
+        self.assertEqual(high["matched_control_strata"], 2)
+        self.assertEqual(high["control_entities"], 2)
+
     def test_cipo_identity_confidence_sensitivity_is_preserved(self):
         cipo = next(
             row for row in self.result["signals"]
@@ -172,11 +201,13 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(high_3["entrant_present"], 2)
         self.assertEqual(high_3["entrant_present_lower_bound"], 0.5)
         self.assertEqual(high_3["entrant_absent_with_proven_coverage"], 2)
-        self.assertEqual(high_3["control_entities"], 5)
-        self.assertEqual(high_3["control_present"], 1)
-        self.assertEqual(high_3["control_present_lower_bound"], 0.2)
-        self.assertEqual(high_3["control_absent_with_proven_coverage"], 4)
-        self.assertEqual(high_3["false_positive_rate"], 0.2)
+        self.assertEqual(high_3["eligible_entrant_strata"], 4)
+        self.assertEqual(high_3["matched_control_strata"], 2)
+        self.assertEqual(high_3["control_entities"], 2)
+        self.assertEqual(high_3["control_present"], 0)
+        self.assertEqual(high_3["control_present_lower_bound"], 0.0)
+        self.assertEqual(high_3["control_absent_with_proven_coverage"], 2)
+        self.assertEqual(high_3["false_positive_rate"], 0.0)
         self.assertEqual(high_3["false_negative_rate"], 0.5)
 
         eligible_3 = next(
@@ -191,7 +222,15 @@ class Backtest001Tests(unittest.TestCase):
             eligible_3["entrant_absent_with_proven_coverage"],
             3,
         )
-        self.assertEqual(eligible_3["false_positive_rate"], 0.2)
+        self.assertEqual(eligible_3["eligible_entrant_strata"], 5)
+        self.assertEqual(eligible_3["matched_control_strata"], 2)
+        self.assertEqual(eligible_3["control_entities"], 2)
+        self.assertEqual(eligible_3["control_present"], 0)
+        self.assertEqual(
+            eligible_3["control_absent_with_proven_coverage"],
+            2,
+        )
+        self.assertEqual(eligible_3["false_positive_rate"], 0.0)
         self.assertEqual(eligible_3["false_negative_rate"], 0.6)
 
     def test_canadabuys_proves_absence_only_for_identity_eligible_subset(self):
@@ -242,9 +281,11 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(high["entrant_present"], 0)
         self.assertEqual(high["entrant_absent_with_proven_coverage"], 4)
         self.assertEqual(high["entrant_unknown"], 0)
-        self.assertEqual(high["control_entities"], 5)
+        self.assertEqual(high["eligible_entrant_strata"], 4)
+        self.assertEqual(high["matched_control_strata"], 2)
+        self.assertEqual(high["control_entities"], 2)
         self.assertEqual(high["control_present"], 0)
-        self.assertEqual(high["control_absent_with_proven_coverage"], 5)
+        self.assertEqual(high["control_absent_with_proven_coverage"], 2)
         self.assertEqual(high["control_unknown"], 0)
         self.assertEqual(high["false_positive_rate"], 0.0)
         self.assertEqual(high["false_negative_rate"], 1.0)
@@ -262,6 +303,13 @@ class Backtest001Tests(unittest.TestCase):
         self.assertEqual(
             high_or_medium["entrant_absent_with_proven_coverage"],
             5,
+        )
+        self.assertEqual(high_or_medium["eligible_entrant_strata"], 5)
+        self.assertEqual(high_or_medium["matched_control_strata"], 2)
+        self.assertEqual(high_or_medium["control_entities"], 2)
+        self.assertEqual(
+            high_or_medium["control_absent_with_proven_coverage"],
+            2,
         )
         self.assertEqual(high_or_medium["false_positive_rate"], 0.0)
         self.assertEqual(high_or_medium["false_negative_rate"], 1.0)
