@@ -427,11 +427,11 @@ function toggleSaved(id) {
 function caseSummary(item) {
   const found=formatClassification(item.outcome_classification);
   let known=item.audit_note || "This historical case is recorded in the audited Investment Canada new-business cohort.";
-  let unknown="The exact first Canadian operations date is not established. Expansion likelihood is not validated, and Nova Scotia fit is not assessed here.";
+  let unknown="The exact first Canadian operations date is not established. Expansion likelihood is not validated, and Canadian market fit is not assessed here.";
   let next="Establish the first operating window and verify when each supporting source became public. Do not treat the filing month as the opening date.";
   if(item.outcome_classification === "EXISTING_CANADIAN_PRESENCE") next="Separate prior Canadian activity from the notified business event, and verify the parent-to-business identity link before treating this as a new-entry case.";
   if(!item.evidence_count) next="Locate original company or government evidence beyond the registry, confirm the investor identity, and establish what the Canadian business actually did.";
-  if(item.first_canadian_operations_date) unknown="A first-operations date is recorded below. That alone does not validate a predictive score or establish Nova Scotia fit.";
+  if(item.first_canadian_operations_date) unknown="A first-operations date is recorded below. That alone does not validate a predictive score or establish Canadian market fit.";
   return `<div class="case-summary"><article class="summary-block"><h3>What we know · ${escapeHtml(found)}</h3><p>${escapeHtml(known)}</p></article><article class="summary-block unknown"><h3>What remains unknown</h3><p>${escapeHtml(unknown)}</p></article><article class="summary-block next"><h3>Next research step</h3><p>${escapeHtml(next)}</p></article></div>`;
 }
 function openCase(id) {
