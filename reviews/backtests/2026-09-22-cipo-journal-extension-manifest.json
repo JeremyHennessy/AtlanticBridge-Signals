@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "design": "CIPO_JOURNAL_SOURCE_EXTENSION_ACCEPTANCE",
+  "accepted_run": {
+    "workflow_run_id": 35673341780,
+    "workflow_head_sha": "8d9d7d83b393ba39d467b9d63a8deb81532ad827",
+    "artifact_id": 10671474936,
+    "artifact_digest": "sha256:e3ebd51e8af9c83eea8fef52e7e089b5c2b5a84950097cf3d2046e04ba54e458",
+    "acceptance_status": "GREEN"
+  },
+  "accepted_prefix": {
+    "start_date": "2000-01-05",
+    "end_date": "2023-05-31",
+    "issue_count": 1221,
+    "canonical_issue_sha256": "8a89eccf0c368e82de4fcd62bea62481930210b7ddf2c182b18e7f45e7521a2d"
+  },
+  "extension": {
+    "start_exclusive": "2023-05-31",
+    "first_issue": "2023-06-07",
+    "last_issue": "2024-05-29",
+    "requested_end_date": "2024-05-31",
+    "issue_count": 52,
+    "application_rows_scanned": 51269,
+    "retrieval_methods": {
+      "OFFICIAL_JOURNAL_HTML": 52
+    },
+    "parser_modes": {
+      "MODERN_APPLICATION_NUMBER_APPLICANT": 52
+    },
+    "issue_audit_canonical_sha256": "8f3d6871c47b8cec9b6eefd597f56eff0d8b8137942d72bae7f1eb55712e2101"
+  },
+  "gate": {
+    "passed": true,
+    "issue_failure_count": 0,
+    "structural_error_count": 0
+  },
+  "identity_absence_inference_allowed": false,
+  "interpretation_boundary": "This accepted proof establishes official Journal archive/source/parser completeness for the extension period only. It does not evaluate reviewed entity aliases and therefore cannot convert a new entity non-hit into CIPO absence."
+}
