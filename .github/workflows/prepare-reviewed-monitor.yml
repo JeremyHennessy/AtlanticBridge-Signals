@@ -1,0 +1,49 @@
+name: Prepare reviewed monitoring branch only
+on:
+  push:
+    branches: [feature/reviewed-monitoring-20260922]
+    paths: [.github/workflows/prepare-reviewed-monitor.yml, '.delivery/**']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/feature/reviewed-monitoring-20260922'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Import only the accepted documentary JSON and apply bounded UI edits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEW_ARCHIVE: ${{ runner.temp }}/reviewed.zip
+        run: |
+          gh api '/repos/JeremyHennessy/AtlanticBridge-Signals/actions/artifacts/10718724645/zip' > "$REVIEW_ARCHIVE"
+          python .delivery/prepare.py
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs
+      - name: Remove delivery helpers, commit feature branch only
+        run: |
+          rm -r .delivery
+          rm .github/workflows/prepare-reviewed-monitor.yml
+          git config user.name 'AtlanticBridge implementation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Connect reviewed histories and initialize persistent monitor acceptance candidate'
+          git push origin HEAD:refs/heads/feature/reviewed-monitoring-20260922
+          mkdir -p artifacts/delivery
+          git rev-parse HEAD > artifacts/delivery/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/delivery/tested-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reviewed-monitoring-delivery-${{ github.sha }}
+          path: artifacts/delivery/
+          retention-days: 7

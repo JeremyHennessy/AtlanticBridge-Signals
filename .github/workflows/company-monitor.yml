@@ -1,0 +1,135 @@
+name: Persistent company monitoring
+on:
+  schedule:
+    - cron: '37 9 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/company-monitor.yml'
+      - 'src/atlanticbridge/monitoring_checkpoint.py'
+      - 'scripts/run_company_monitor.py'
+      - 'scripts/bootstrap_company_monitor.py'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/company-monitor.yml'
+      - 'src/atlanticbridge/monitoring_checkpoint.py'
+      - 'scripts/run_company_monitor.py'
+      - 'scripts/bootstrap_company_monitor.py'
+      - 'tests/test_monitoring_checkpoint.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: company-monitor-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'production' }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -v
+      - name: Copy durable state; initialize only from the pinned accepted proof
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/monitor/state
+          git fetch --no-tags origin monitoring-state
+          git archive FETCH_HEAD | tar -x -C artifacts/monitor/state
+          if [ ! -f artifacts/monitor/state/checkpoint.json ]; then
+            gh api '/repos/JeremyHennessy/AtlanticBridge-Signals/actions/artifacts/10717489758/zip' > "$RUNNER_TEMP/accepted-seed.zip"
+            python scripts/bootstrap_company_monitor.py --archive "$RUNNER_TEMP/accepted-seed.zip" --state-dir artifacts/monitor/state
+          fi
+      - name: Prove retained state survives two independent monitor processes
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          cp artifacts/monitor/state/checkpoint.json artifacts/monitor/seed-checkpoint.json
+          python scripts/run_company_monitor.py --state-dir artifacts/monitor/state --output artifacts/monitor/first --run-id "${RUN_ID}-first"
+          python scripts/run_company_monitor.py --state-dir artifacts/monitor/state --output artifacts/monitor/second --run-id "${RUN_ID}-second"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('artifacts/monitor')
+          a=json.loads((p/'seed-checkpoint.json').read_text())
+          b=json.loads((p/'state/checkpoint.json').read_text())
+          original={r['id']:r['first_seen'] for r in a['tables']['company_observations']}
+          current={r['id']:r['first_seen'] for r in b['tables']['company_observations']}
+          assert all(current[k]==v for k,v in original.items())
+          assert len(b['runs'])==len(a['runs'])+2
+          assert b['runs'][-2]['finished_at'][:10]==b['runs'][-1]['finished_at'][:10]
+          assert all('evidence_text' not in json.loads(r['payload']) for r in b['tables']['company_observations'])
+          PY
+      - name: Preserve test evidence
+        if: always()
+        run: |
+          mkdir -p artifacts/monitor
+          git rev-parse HEAD > artifacts/monitor/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/monitor/tested-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: monitor-proof-${{ github.sha }}
+          path: artifacts/monitor/
+          retention-days: 90
+  collect:
+    if: always() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && (needs.verify.result == 'success' || needs.verify.result == 'skipped')
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - name: Read only the dedicated data branch
+        run: |
+          git fetch --no-tags origin monitoring-state
+          git worktree add --detach "$RUNNER_TEMP/monitor-state" FETCH_HEAD
+      - name: Explicit first-run bootstrap only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -f "$RUNNER_TEMP/monitor-state/checkpoint.json" ]; then
+            gh api '/repos/JeremyHennessy/AtlanticBridge-Signals/actions/artifacts/10717489758/zip' > "$RUNNER_TEMP/accepted-seed.zip"
+            python scripts/bootstrap_company_monitor.py --archive "$RUNNER_TEMP/accepted-seed.zip" --state-dir "$RUNNER_TEMP/monitor-state"
+          fi
+      - name: Collect incrementally and retain explicit source failures
+        id: capture
+        continue-on-error: true
+        env:
+          RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: python scripts/run_company_monitor.py --state-dir "$RUNNER_TEMP/monitor-state" --output artifacts/company-monitor --run-id "$RUN_ID"
+      - name: Commit data and source-health results without touching main
+        env:
+          RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          test -f "$RUNNER_TEMP/monitor-state/runs/${RUN_ID}.json"
+          git -C "$RUNNER_TEMP/monitor-state" config user.name 'AtlanticBridge monitoring'
+          git -C "$RUNNER_TEMP/monitor-state" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$RUNNER_TEMP/monitor-state" add checkpoint.json bootstrap.json health.json runs/
+          git -C "$RUNNER_TEMP/monitor-state" commit -m "Record company monitoring ${RUN_ID}"
+          git -C "$RUNNER_TEMP/monitor-state" push origin HEAD:refs/heads/monitoring-state
+          mkdir -p artifacts/company-monitor
+          cp "$RUNNER_TEMP/monitor-state/health.json" artifacts/company-monitor/health.json
+          git -C "$RUNNER_TEMP/monitor-state" rev-parse HEAD > artifacts/company-monitor/data-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: company-monitor-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/company-monitor/
+          retention-days: 90
+      - name: Fail the run when a source failed; never hide degraded collection
+        if: steps.capture.outcome != 'success'
+        run: exit 1
