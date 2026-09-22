@@ -1,0 +1,190 @@
+name: Expanded research signal scan
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "reviews/backtests/2026-09-22-expanded-research-entities.json"
+      - "scripts/build_expanded_research_entities.py"
+      - "scripts/collect_backtest_cipo.py"
+      - "scripts/collect_backtest_ted.py"
+      - "scripts/collect_backtest_canadabuys.py"
+      - "scripts/build_source_proof_artifact.py"
+      - "scripts/build_event_time_snapshots.py"
+      - "tests/test_expanded_research_entities.py"
+      - ".github/workflows/expanded-research-signal-scan.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-cohort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Verify reviewed cohort
+        run: python -m unittest tests.test_expanded_research_entities -v
+
+  canadabuys:
+    needs: verify-cohort
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - uses: actions/cache@v4
+        with:
+          path: expanded-output/canadabuys-cache
+          key: canadabuys-award-history-20260921-v1
+      - name: Collect CanadaBuys exact-alias history
+        run: |
+          mkdir -p expanded-output/proofs
+          python scripts/collect_backtest_canadabuys.py \
+            --entities reviews/backtests/2026-09-22-expanded-research-entities.json \
+            --cache-dir expanded-output/canadabuys-cache \
+            --output expanded-output/canadabuys-live.json
+          python scripts/build_source_proof_artifact.py \
+            --source canadabuys \
+            --input expanded-output/canadabuys-live.json \
+            --output expanded-output/proofs/canadabuys.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("expanded-output/proofs/canadabuys.json").read_text())
+          print(json.dumps({"summary":p.get("summary"),"records":p.get("records"),"coverage":p.get("coverage")},indent=2))
+          assert len(p.get("coverage") or []) == 9
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: expanded-scan-canadabuys
+          path: expanded-output/proofs/canadabuys.json
+          retention-days: 90
+
+  ted:
+    needs: verify-cohort
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Collect TED exact-alias history
+        run: |
+          mkdir -p expanded-output/proofs
+          python scripts/collect_backtest_ted.py \
+            --entities reviews/backtests/2026-09-22-expanded-research-entities.json \
+            --output expanded-output/ted-live.json
+          python scripts/build_source_proof_artifact.py \
+            --source ted \
+            --input expanded-output/ted-live.json \
+            --output expanded-output/proofs/ted.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("expanded-output/proofs/ted.json").read_text())
+          print(json.dumps({"summary":p.get("summary"),"records":p.get("records"),"coverage":p.get("coverage")},indent=2))
+          assert len(p.get("coverage") or []) == 9
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: expanded-scan-ted
+          path: expanded-output/proofs/ted.json
+          retention-days: 90
+
+  cipo-researcher:
+    needs: verify-cohort
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - uses: actions/cache@v4
+        with:
+          path: expanded-output/cipo-cache
+          key: cipo-researcher-2025-01-28-v1
+      - name: Collect CIPO researcher presence proof
+        run: |
+          mkdir -p expanded-output/proofs
+          python scripts/collect_backtest_cipo.py \
+            --entities reviews/backtests/2026-09-22-expanded-research-entities.json \
+            --cache-dir expanded-output/cipo-cache \
+            --output expanded-output/cipo-live.json
+          python scripts/build_source_proof_artifact.py \
+            --source cipo \
+            --input expanded-output/cipo-live.json \
+            --output expanded-output/proofs/cipo.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("expanded-output/proofs/cipo.json").read_text())
+          print(json.dumps({"summary":p.get("summary"),"records":p.get("records"),"coverage":p.get("coverage"),"known_coverage_gap":p.get("known_coverage_gap")},indent=2))
+          assert len(p.get("coverage") or []) == 9
+          assert all(row.get("absence_coverage_proven") is False for row in p["coverage"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: expanded-scan-cipo
+          path: expanded-output/proofs/cipo.json
+          retention-days: 90
+
+  compose:
+    needs: [canadabuys, ted, cipo-researcher]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: expanded-scan-*
+          path: expanded-proofs
+          merge-multiple: true
+      - name: Build expanded event-time snapshots
+        run: |
+          mkdir -p expanded-output
+          python scripts/build_event_time_snapshots.py \
+            --entities reviews/backtests/2026-09-22-expanded-research-entities.json \
+            --evidence expanded-proofs/canadabuys.json \
+            --evidence expanded-proofs/ted.json \
+            --evidence expanded-proofs/cipo.json \
+            --combined-evidence-output expanded-output/combined-evidence.json \
+            --output expanded-output/event-time-snapshots.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("expanded-output/event-time-snapshots.json").read_text())
+          print(json.dumps(p["summary"],indent=2))
+          rows={}
+          for row in p["snapshots"]:
+              if row["signal_family"] not in {"CIPO_CANADIAN_TRADEMARK","TED_CONTRACT_AWARD","CANADABUYS_AWARD"}:
+                  continue
+              rows.setdefault(row["entity_id"],[]).append({
+                  "signal":row["signal_family"],
+                  "offset_months":row["offset_months"],
+                  "state":row["state"],
+              })
+          print(json.dumps(rows,indent=2,sort_keys=True))
+          assert p["summary"]["entity_count"] == 9
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: expanded-research-event-time-${{ github.event.pull_request.head.sha || github.sha }}
+          path: expanded-output/
+          retention-days: 90
