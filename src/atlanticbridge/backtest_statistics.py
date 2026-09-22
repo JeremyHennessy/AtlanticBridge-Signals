@@ -8,6 +8,7 @@ ABSENT = "ABSENT_WITH_PROVEN_COVERAGE"
 UNKNOWN = "UNKNOWN_UNVERIFIED_COVERAGE"
 ALPHA = 0.05
 Z_95 = 1.959963984540054
+PUBLICATION_GATE_MODE = "EXPLORATORY_NO_PREDECLARED_PRIMARY_ENDPOINT"
 
 
 def _ratio(numerator: int, denominator: int) -> float | None:
@@ -257,16 +258,24 @@ def build_backtest_002(
             }
         )
 
-    publication_allowed = inferentially_resolved_rows > 0
-    if publication_allowed:
-        reason = None
+    publication_allowed = False
+    if inferentially_resolved_rows:
+        reason = (
+            "One or more exploratory signal/cutoff rows satisfy the local "
+            "diagnostic threshold, but Backtest 002 has no predeclared primary "
+            "endpoint and uses the same cohort for exploration. Expansion "
+            "Score weight publication remains blocked pending a separate "
+            "confirmatory design with a predeclared primary endpoint and "
+            "independent holdout or equivalent prospective validation."
+        )
     else:
         reason = (
-            "Backtest 001 mechanically opens weight design, but no "
-            "identity-qualified signal/cutoff comparison has both a two-sided "
-            "Fisher exact p-value <= 0.05 and a 95% score-based risk-difference "
-            "interval entirely above zero. Expansion Score weight publication "
-            "remains blocked."
+            "No identity-qualified signal/cutoff comparison currently has "
+            "both a two-sided Fisher exact p-value <= 0.05 and a 95% "
+            "Newcombe risk-difference interval entirely above zero. In "
+            "addition, Backtest 002 is exploratory and has no predeclared "
+            "primary endpoint. Expansion Score weight publication remains "
+            "blocked pending a separate confirmatory design."
         )
 
     return {
@@ -281,10 +290,12 @@ def build_backtest_002(
             "association_test": "Fisher exact, two-sided",
             "alpha": ALPHA,
             "multiple_testing_boundary": (
-                "Diagnostic only; no cutoff is promoted as a predeclared "
-                "primary endpoint."
+                "Exploratory diagnostic only. No cutoff or identity tier is "
+                "predeclared as a primary endpoint, so no exploratory row may "
+                "open the publication gate."
             ),
         },
+        "publication_gate_mode": PUBLICATION_GATE_MODE,
         "backtest_001_weighting_design_gate": bool(
             summary.get("expansion_score_1_0_weighting_allowed")
         ),
