@@ -47,13 +47,14 @@ export async function verifyWorkspace(browser,options,base,label,out,check) {
   await p.goto(base,{waitUntil:'networkidle'});await settled(p);
   await hash(p,'#signals');
   check(`${label}: blank amount explicitly unknown`,(await p.locator('.live-signal-value').first().innerText()).includes('Amount not stated'));
-  check(`${label}: source country not control`,(await p.locator('#signals-view').innerText()).includes('Supplier address countries; not control'));
+  check(`${label}: source country not control`,(await p.locator('#signals-view').textContent()).includes('Supplier address countries; not control'));
   await p.locator('#signal-window').selectOption('30');
   check(`${label}: recency calculated from public date`,await p.locator('[data-live-signal-id]').count()===1);
   await p.locator('#open-worklist').click();await p.locator('.worklist-row').waitFor();
   check(`${label}: old watch star migrated`,await p.locator('[data-worklist-id]').count()===1);
   await p.locator('.work-company-link').click();await p.locator('#company-title').waitFor();
   check(`${label}: company sees all dates not just signal filter`,await p.locator('[data-company-notice]').count()===2);
+  check(`${label}: dossier visibly distinguishes address country and parent`,(await p.locator('#company-content').innerText()).includes('Supplier address country:') && (await p.locator('#company-content').innerText()).includes('not a verified parent'));
   const note='=SUM(1,1)\n<img src=x onerror="window.workXSS=true">\nTEST research note';
   await p.locator('#work-notes').fill(note);await p.locator('#work-action').fill('Verify published Canadian footprint');await p.locator('#work-status').selectOption('follow_up');await p.locator('#work-date').fill('2026-09-21');
   await p.locator('#work-save').click();await p.waitForFunction(()=>document.querySelector('#work-save-state').textContent.startsWith('Saved in this browser'));
