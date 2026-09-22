@@ -1,7 +1,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
 const api=require('../ui/reviewed.js');
 const load=()=>JSON.parse(fs.readFileSync('ui/data/reviewed-evidence.json'));
-test('six reviewed histories remain independent of alerts',()=>{const d=api.validate(load());assert.equal(d.project_count,6);assert.equal(api.groups(d).size,6);assert.ok(d.projects.every(p=>p.public_alert_allowed===false));});
+test('fifteen reviewed histories preserve the original six and remain independent of alerts',()=>{const d=api.validate(load());assert.equal(d.project_count,15);assert.equal(api.groups(d).size,15);assert.ok(d.projects.every(p=>p.public_alert_allowed===false));});
 test('duplicate identities rejected',()=>{const d=load();d.projects[1].id=d.projects[0].id;assert.throws(()=>api.validate(d));});
 test('unapproved first-entry inference rejected',()=>{const d=load();d.projects[0].first_entry_confirmed=true;assert.throws(()=>api.validate(d));});
 test('unapproved public alert rejected',()=>{const d=load();d.projects[0].public_alert_allowed=true;assert.throws(()=>api.validate(d));});

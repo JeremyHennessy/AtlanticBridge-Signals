@@ -1,0 +1,1189 @@
+{
+  "schema_version": 1,
+  "cohort_id": "operational-review-2026-09-22",
+  "selection_date": "2026-09-22",
+  "target_count": 50,
+  "identity_qualified_current_company_count": null,
+  "operational_monitoring_qualified_count": 0,
+  "independent_holdout": false,
+  "known_outcome_selection_bias": true,
+  "targets": [
+    {
+      "id": "989a090a72a46026c3ddc52029b8c1a7f7c000d2ce80a4e7dfd344b330c41488",
+      "company_label": "Volkswagen",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Germany",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-336",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "5a60c512c7624b15cea94e7bc458863d84370bbacf819bac376acf8fb8d85e08"
+    },
+    {
+      "id": "5d966e2872e1a161b72fbb340e34e1d802fe8e4bf90bd783ce9dd285c769a608",
+      "company_label": "Rio Tinto Group",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "United Kingdom",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-167",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        },
+        {
+          "source_record_id": "investment-152",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        },
+        {
+          "source_record_id": "investment-166",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        },
+        {
+          "source_record_id": "investment-183",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "f5d743cdef00ebf43766ba4614da7ca1f6d88df6a88bd55f5722a38692896de4",
+      "company_label": "The Cultivated B.",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Germany",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-170",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "b5f77598da09ba004244644019eb25f1529e0459b554e7247e1a80cda5c8d78b"
+    },
+    {
+      "id": "947dd3b26560dfe9ebf1fa5f03fb5b51ee61ed9a32f1346e5e08011d561b165a",
+      "company_label": "Ricardo",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "United Kingdom",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-180",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "269902b864364101681bdd5e3c67f811a644975d81274c6f7be86946bed32077",
+      "company_label": "Cellcentric",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Germany",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-154",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "987ffa08cf1b1ee63966806f210ebb5c8a36e1ad76b689a2e824f2a1181ad218"
+    },
+    {
+      "id": "42857eddfe544235ad35277280fb3287f881c9c5cda723a8935205916fc7c7c3",
+      "company_label": "Avanade",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Ireland",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-209",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "545ea9b5d4ba0bc21d28b510f398d80431985e3975eb7ce5ce6c30613ba98e34"
+    },
+    {
+      "id": "6d259954d9bae68ed6a19bc82b2364308b3333834eed9ce79c12bcfe13415af3",
+      "company_label": "Stellantis",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Netherlands",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-177",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "98c95216da8e6e2eec59f07fdb561cbd969b1e970fb1dbbd223e5e7bab219dbb"
+    },
+    {
+      "id": "f42908e3e7e0f7588f36a7f102808437dc5f907a1495982c4e98d6c82245a967",
+      "company_label": "Barry Callebaut",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Switzerland",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-139",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "e50b931d66edf733917e2eef19224ecfe303e06ad4e9d1e6f97d7db2eff9f007",
+      "company_label": "Nature Energy",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Denmark",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-150",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "3d9755a52e8ced8db65f8e95b779db2b6731ccf17ad74c9f9a08af24f79ef211"
+    },
+    {
+      "id": "12f8b3b0b5306740e48ec8ffe9b0dd6c309a81608f1bbea7daa893f88d7ec447",
+      "company_label": "Ubisoft",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "France",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-208",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "52be9fc1bfacfefe8edd12b5782d51f6bd8270933a5f3ba1db9db2d343ea2853"
+    },
+    {
+      "id": "b29432c79b4b5669cfa27224c8fd149d6cbd26739c42a4017b271d554fb9e456",
+      "company_label": "Roquette",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "France",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-168",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "f58c134e21b9dee9dc0f6ecae0623a7d17cf3805a208a34ff2aeed8508eca64f"
+    },
+    {
+      "id": "294bf04442f6ee15c3a5172d6a9fc29d7787d1d5330caf931167c2014e6217c8",
+      "company_label": "De Havilland",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "United Kingdom",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-181",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "006cfeaa81cb56e160feea6bb2fcb4354f9d0af15d9a8ee651213848b3cacf14",
+      "company_label": "Hexagon Purus",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Norway",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-157",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "0a16b6fb006b04305b50955e4235518aed239954f4b0611f4e95f98e4c54dcfe",
+      "company_label": "Nestlé Canada",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Switzerland",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-142",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "63eac6e83f35d0183ecbdfb5838c781ddd410f6e704eadbc197dc4140469780e",
+      "company_label": "Marshall Canada",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "United Kingdom",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-179",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "e455c6cde1f124486f2c139c6f2183a9b3561e1b6364d29fff27c7bfe40be2b3",
+      "company_label": "Sanofi",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "France",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-160",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "a999d21a7e3b1e4eb82e050fbb97fa86e512eb2cc1d075a8e8985a6a2e24d0a4"
+    },
+    {
+      "id": "d1249e6f34cf44a272124b5b98d7760f9bff43a9cf586780b7902bc20a0ed248",
+      "company_label": "Grieg Seafood",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Norway",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-141",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "26f89dff0f933b843a2204321636073eb3a929d5c2db6342f7b433a869cdb9f0",
+      "company_label": "Siemens Energy",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Germany",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-146",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "baaa04866b816e508567d9956b2f8246cd79ef43329cb36e41378709f01c2b85"
+    },
+    {
+      "id": "8d435c59a4c98dca8b66f6aeeecad0914dbae0f1e8cb67586d0055d85c9ab149",
+      "company_label": "Klarna",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Sweden",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-194",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "75892faa65f8469adfe1661cff024e3d450ff3aa8451f591c4203f1060e0e7bd"
+    },
+    {
+      "id": "7820516435e8a41a3f68f8f0e02ea4ac1bc7c7d00b40940a6e80f6ac3c48fb53",
+      "company_label": "Air Liquide",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "France",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-189",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "ec71948f1be50b0fe3aefc68cedd52bcf64330f361028ce65bcab7559aafd517"
+    },
+    {
+      "id": "36c4838638722068627de6bf3e9c16e9e4153273f1235dde15bd684c23d60398",
+      "company_label": "Nova Bus",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Sweden",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-176",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "0ca88032cd2f863edcc9cc152fe6f3d57710823218e524884674fb80e36181ab"
+    },
+    {
+      "id": "b927da9b62505c495b8997dc2079a779fbb88a390472af3417b293eac4dfcd18",
+      "company_label": "Novartis Pharmaceuticals Canada",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Switzerland",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-162",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "f8f53ed4fba7a54e2283c62bf922b61d0dfcf34e66b4eac921d093487baf17f3",
+      "company_label": "Roche",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Switzerland",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-165",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "187abc2b8bd27c5a32235e036ffee68ac2f4db79776d416810a4f6ff87a62241",
+      "company_label": "Elkem",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Norway",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-215",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "78940e4ed49d223aa9a9c6960c7224fa2d82ebe26bf00b16a8d76b3fa36e5246",
+      "company_label": "Viterra",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Switzerland",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-143",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "115adcdf879d0ed46c5a68fbcecfea6a9a320b7dd1fad14215e5c0903b7c62fd",
+      "company_label": "Enel Green Power",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Italy",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-148",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "ac78133e4ee5383530d37e1b0c405589b89c5037406cf9f0908af260e1e83d4c"
+    },
+    {
+      "id": "61891c5ecb55097d9b8ff36ce9b6db28e3cf8ebfaa140e2bd9122de05b79e8b9",
+      "company_label": "Corvus Energy",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Norway",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-158",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "85e664da29536b31a2b0f4c48629a4f53fcb65819b57f06a281358ad954a7987",
+      "company_label": "DeBeers",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "United Kingdom",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-182",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "608b17cdaf92c4a86e9289e27186bff888bee1f5c9c893c2f02e20e6eac144f7",
+      "company_label": "Accenture",
+      "source_role": "INVESTMENT_DISCOVERY_EXACT_LABEL",
+      "origin_label": "Ireland",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_record_id": "investment-202",
+          "source_url": "https://www.investcanada.ca/news",
+          "raw_sha256": "e843e390f0e83e54c1aa7945f0e0e6db9266a9ef85048dc8aa190b57afea79ab",
+          "observed_at": "2026-09-22T23:13:07.351525+00:00"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "c30909419dc82654eef1cc9130af6dd70a41deb03bad407f579726477a495fd7"
+    },
+    {
+      "id": "a46bd8fba191186448112efad032f0cbd358e767ee5c8d3690ada6fdce86887e",
+      "company_label": "SENZOMATIC, s.r.o.",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Czechia",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:241151",
+          "source_url": "https://senzomatic.com/en/contact/",
+          "claim": "Official contact page separately identifies SENZOMATIC, s.r.o. in Prague and SENZOMATIC CANADA INC. in Toronto."
+        },
+        {
+          "case_id": "node:241151",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/s?page=1",
+          "claim": "Investment Canada records Senzomatic, s.r.o., Prague, Czechia as the investor in the February 2026 new-business notification."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "07a6115c9061c6905c56b3a206d734d7be97661b24b4175e1a671f0bcf4d99ee",
+      "company_label": "Global Wind Service A/S",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Denmark",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:242990",
+          "source_url": "https://www.cas.ens.dk/typeliste/257157-2018-aq-den-danak",
+          "claim": "Danish Energy Agency record identifies Global Wind Service A/S, CVR 31166047."
+        },
+        {
+          "case_id": "node:242990",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=0&wbdisable=true",
+          "claim": "Investment Canada records Global Wind Service A/S, Fredericia, Denmark as the investor in April 2026."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "9f0b3f920d98f6b7a64f2cff5772abdccdb5886277d14ef5231ceae9876fe847",
+      "company_label": "Deutsche Bahn International Operations GmbH",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Germany",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:213007",
+          "source_url": "https://io.deutschebahn.com/en/imprint-and-privacy-statements-for-social-media-presences/",
+          "claim": "Official DB International Operations imprint identifies Deutsche Bahn International Operations GmbH, Berlin, AG Berlin-Charlottenburg HRB 190316 B."
+        },
+        {
+          "case_id": "node:213007",
+          "source_url": "https://io.deutschebahn.com/en/about-us/",
+          "claim": "Official company page describes DB International Operations as operating and maintaining rail infrastructure and rolling stock for passenger and freight transport."
+        },
+        {
+          "case_id": "node:213007",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=82&wbdisable=true",
+          "claim": "March 2023 new-business record names Deutsche Bahn International Operations GmbH, Berlin, Germany as investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "8972cda61ce2b33d4b21af0ca3db10311dd510622e1be5fff8f3c00057e8fd58",
+      "company_label": "RWE Supply & Trading GmbH",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Germany",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:213011",
+          "source_url": "https://view.group.rwe/impressum/",
+          "claim": "Official RWE legal notice identifies RWE Supply & Trading GmbH, Essen, Amtsgericht Essen HRB 14327."
+        },
+        {
+          "case_id": "node:213011",
+          "source_url": "https://www.rwe.com/en/the-group/rwest/",
+          "claim": "Official RWE page describes RWE Supply & Trading as the group's worldwide energy and commodity trading business."
+        },
+        {
+          "case_id": "node:213011",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/r?page=2&wbdisable=true",
+          "claim": "April 2023 new-business record names RWE Supply and Trading GmbH, Essen, Germany as investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "9270c70d5ec180d50c8c4bec804aae1bb8b64819c4e0738719cb534bd25b64e5",
+      "company_label": "SKS Welding Systems GmbH",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Germany",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:213010",
+          "source_url": "https://www.sks-welding.com/en/legal-details/legal-notice",
+          "claim": "Official SKS legal notice identifies SKS Welding Systems GmbH, Kaiserslautern, Local District Court HRB 31381."
+        },
+        {
+          "case_id": "node:213010",
+          "source_url": "https://www.sks-welding.com/en/about-sks/contact/contact-sks-worldwide",
+          "claim": "Official worldwide contact page separately identifies SKS Welding Systems GmbH in Germany and SKS Welding Systems Ltd. in Canada."
+        },
+        {
+          "case_id": "node:213010",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/s?page=6",
+          "claim": "April 2023 new-business record names SKS Welding Systems GmbH, Kaiserslautern, Germany as investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "9cbe552d2d3fc902fdcc16a39151807e818e7654644bab0fd345c4199c34531e",
+      "company_label": "innoscripta SE",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Germany",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:242323",
+          "source_url": "https://www.innoscripta.com/EN_innoscripta_GB_2025.pdf",
+          "claim": "Official annual report identifies innoscripta SE, Arnulfstraße 60, Munich, HRB 302244 and describes its R&D software platform business."
+        },
+        {
+          "case_id": "node:242323",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/i",
+          "claim": "March 2026 new-business record names Innoscripta SE, Munich, Germany as investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "205855e8d730cc50c826ec1822a492d8ff556b0aaef5004e6d3c79add736e0dd",
+      "company_label": "WIZ DIGITAL SERVICES LIMITED",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Ireland",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:239953",
+          "source_url": "https://cro.ie/wp-content/uploads/2025/05/21-May-2025-Annual-Returns-Registered.pdf",
+          "claim": "Ireland Companies Registration Office annual-return register lists company number 678945 as WIZ DIGITAL SERVICES LIMITED."
+        },
+        {
+          "case_id": "node:239953",
+          "source_url": "https://www.wizdigital.ie/privacy-policy",
+          "claim": "Official Wiz Digital privacy notice identifies Wiz Digital Services Ltd as a data and AI consultancy registered in Ireland."
+        },
+        {
+          "case_id": "node:239953",
+          "source_url": "https://www.wizdigital.ie/",
+          "claim": "Official Wiz Digital site describes an active Irish research and engineering company delivering data, AI, cloud, robotics and related technology work."
+        },
+        {
+          "case_id": "node:239953",
+          "source_url": "https://www.ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=15",
+          "claim": "December 2025 new-business record names WIZ DIGITAL SERVICES LIMITED, Bishopstown, Ireland as investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "a0358f82389172abb7af209386f34215a22337e453c9b433425695b22bfa8838",
+      "company_label": "Andriani S.p.A.",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Italy",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:212932",
+          "source_url": "https://www.andrianispa.com/informative-privacy/andriani-s-p-a/",
+          "claim": "Official Andriani page identifies Andriani S.p.A., Gravina in Puglia, Registro Imprese di Bari / VAT 06880780728."
+        },
+        {
+          "case_id": "node:212932",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/a?page=7&wbdisable=true",
+          "claim": "March 2023 new-business record names Andriani S.P.A., Gravina in Puglia, Italy as investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "62959428ef85fc34c244ba73852170b1faa75a826c98172dfda37729a0652091",
+      "company_label": "EUROP ASSISTANCE S.A.",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Italy",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:214179",
+          "source_url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000039646070",
+          "claim": "French official journal decision identifies EUROP ASSISTANCE S.A., SIREN 451 366 405, and authorizes insurance operations."
+        },
+        {
+          "case_id": "node:214179",
+          "source_url": "https://gazette.gc.ca/rp-pr/p1/2022/2022-01-29/html/misc-divers-eng.html",
+          "claim": "Canada Gazette identifies Europ Assistance S.A. as incorporated in France, headquartered in Paris, operating property and casualty insurance, with ultimate parent Assicurazioni Generali S.p.A. in Italy."
+        },
+        {
+          "case_id": "node:214179",
+          "source_url": "https://www.ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/e?page=1",
+          "claim": "February 2024 new-business record names Europ Assistance S.A., Paris as investor with Italy as country of ultimate control."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "b6dae34e4aef4cc675b1159074209031f61746ee1a4df4b8e738c1e92764cbec",
+      "company_label": "GILARDONI S.P.A. a Socio Unico",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Italy",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:212990",
+          "source_url": "https://www.gilardoni.it/en/company-info/",
+          "claim": "Official corporate information identifies GILARDONI S.P.A., Milan registration/VAT 00734000151."
+        },
+        {
+          "case_id": "node:212990",
+          "source_url": "https://www.gilardoni.it/en/where-we-are/",
+          "claim": "Official locations page identifies Gilardoni's 22,000 sqm manufacturing plant and R&D laboratories in Italy."
+        },
+        {
+          "case_id": "node:212990",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=2&wbdisable=true",
+          "claim": "March 2023 new-business record names Gilardoni S.p.A. as the Italian investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "1efb2a4926ba26f9d05720f8ce2a2c899a9377eac22f514de09f2f3a04144f86",
+      "company_label": "General Medical Merate S.p.A.",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Italy",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:238423",
+          "source_url": "https://www.gmmspa.com/",
+          "claim": "Official GMM site identifies General Medical Merate S.p.A., Seriate, Italy, VAT 00225500164 and displays its medical imaging product business."
+        },
+        {
+          "case_id": "node:238423",
+          "source_url": "https://www.gmmspa.com/about-us/history-and-achievements/",
+          "claim": "Official history states General Medical Merate S.p.A. has designed and produced radiological diagnostic systems for decades."
+        },
+        {
+          "case_id": "node:238423",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=0&wbdisable=true",
+          "claim": "October 2025 new-business record names General Medical Merate S.p.A., Seriate, Italy as investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "370ce57855b9aab89582240f05c78bf79e7ceaff05d5acfc3ecc4ea28426b95f",
+      "company_label": "Leaf Space S.p.A.",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Italy",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:214722",
+          "source_url": "https://leaf.space/wp-content/uploads/2024/04/Leaf-Space_Privacy_Policy.pdf",
+          "claim": "Official Leaf Space privacy policy identifies Leaf Space S.p.A. as the Italian legal entity operating the company website."
+        },
+        {
+          "case_id": "node:214722",
+          "source_url": "https://leaf.space/20-million-serires-b-funding/",
+          "claim": "Official Leaf Space announcement describes Leaf Space SpA as an Italian-headquartered provider of satellite ground-segment services with a global operating network."
+        },
+        {
+          "case_id": "node:214722",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/l?page=1",
+          "claim": "July 2024 new-business record names Leaf Space S.p.A., Milano, Italy as investor."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "85a1ba4e6f657401c7ba4cca1746da07f2506d6cbff11c16662e9df90c5d87e7",
+      "company_label": "NORD ENGINEERING FRANCE",
+      "source_role": "KNOWN_HISTORICAL_RESEARCH_CONTROL",
+      "origin_label": "Italy",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "node:214936",
+          "source_url": "https://api-avis-situation-sirene.insee.fr/identification/pdf/83392811200048",
+          "claim": "INSEE SIRENE notice identifies active NORD ENGINEERING FRANCE, SIREN 833 928 112, SIRET 833 928 112 00048, at 2405 Route des Dolines, Valbonne."
+        },
+        {
+          "case_id": "node:214936",
+          "source_url": "https://www.boamp.fr/telechargements/FILES/PDF/2026/03/26-27897.pdf",
+          "claim": "French official procurement award notice identifies NORD ENGINEERING FRANCE, 2405 Route des Dolines, Valbonne, as a bidder and awarded organization."
+        },
+        {
+          "case_id": "node:214936",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=42",
+          "claim": "September 2024 new-business record names Nord Engineering France, Valbonne as investor with Italy as country of ultimate control."
+        }
+      ],
+      "existing_research_identity_review": true,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "f4fe66c149826054679932cfba5092d649dc19203228c756adc47559a10cd8b7",
+      "company_label": "Mistral AI",
+      "source_role": "EXISTING_BOUNDED_COMPANY_SOURCE",
+      "origin_label": null,
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_id": "mistral-official-careers",
+          "source_url": "https://mistral.ai/careers/",
+          "proof_artifact_id": 10720884358
+        },
+        {
+          "source_id": "mistral-montreal-announcement",
+          "source_url": "https://www.montrealinternational.com/en/news/mistral-ai-selects-montreal-for-its-canadian-hub/",
+          "proof_artifact_id": 10720884358
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "14d63b54738ee344c58d5b34ed2a0f7f8ea143297a767cb54f2d5c69aad715f9"
+    },
+    {
+      "id": "b79d1a7df954671d974aff9e68e22d53ec2d0124fc7001b1857c2a54e6d873ba",
+      "company_label": "DeepL",
+      "source_role": "EXISTING_BOUNDED_COMPANY_SOURCE",
+      "origin_label": null,
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_id": "deepl-official-careers",
+          "source_url": "https://www.deepl.com/en/careers",
+          "proof_artifact_id": 10720884358
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "65d8edde5dfdf54d70e9eb0d43e1eb065b51d5befa06523a6c233f9f150ccea9"
+    },
+    {
+      "id": "5b93502c17b822f3bbf708faffba99bd8d3485bd16666cedc1f16f3c9cf9b22f",
+      "company_label": "Pleo",
+      "source_role": "EXISTING_BOUNDED_COMPANY_SOURCE",
+      "origin_label": null,
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_id": "pleo-official-careers",
+          "source_url": "https://www.pleo.io/en/careers",
+          "proof_artifact_id": 10720884358
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "924218fff9b21f224b2f70bea90667a7cd0ba6530213721678bb38efda6cc075"
+    },
+    {
+      "id": "4e84cdbc3deae553473aa6e8f651b4c085ee9b9d6f66ef470b45012d9e448d0a",
+      "company_label": "Giesecke+Devrient",
+      "source_role": "EXISTING_BOUNDED_COMPANY_SOURCE",
+      "origin_label": null,
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_id": "gd-montreal-announcement",
+          "source_url": "https://www.montrealinternational.com/en/news/gd-selects-montreal-to-establish-its-global-artificial-intelligence-centre-of-excellence-at-mila/",
+          "proof_artifact_id": 10720884358
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "c38f434396902774379db2518b7482cfcf736f5fcee27ec342eee7a89e146de4"
+    },
+    {
+      "id": "d658d6a92713fa01f8d914acc66590cfde2b794371cd78398742be60690c8a0f",
+      "company_label": "Adyen Canada Ltd.",
+      "source_role": "EXISTING_BOUNDED_COMPANY_SOURCE",
+      "origin_label": null,
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_id": "adyen-payments-membership",
+          "source_url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member",
+          "proof_artifact_id": 10720884358
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": "682c685fa6b8e6cbea1647bf60fdac4ea6f268bb0df39b2559df1d8767743867"
+    },
+    {
+      "id": "0ab8cd555c4b4f250bd8f6195e9ff1cec8c96efc7c25998b66d0f15fd2b0482a",
+      "company_label": "Vonage",
+      "source_role": "KNOWN_PRODUCT_AVAILABILITY_CALIBRATION",
+      "origin_label": null,
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "source_id": "vonage-canada-product-launch-20260630",
+          "source_url": "https://www.vonage.com/about-us/newsroom/press-releases/Vonage-Launches-Network-Powered-Solutions-for-Fraud-Prevention-Across-Canada/20ad8fcc-1c1d-4777-9315-ccc0168df71a/"
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "0479da14e52fc6ebbb0ff1ad504af042e7b228490c6a4cb13e18a66f255fb58d",
+      "company_label": "Sioo Wood Protection Industry AB",
+      "source_role": "KNOWN_HISTORICAL_CASE_INVESTOR",
+      "origin_label": "Sweden",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+          "source_url": "https://www.nefco.int/news/sioo-receives-financing-from-nefco/",
+          "claim": "Nefco states that SiOO received a 2022 Nopef grant to co-finance a feasibility study into establishment in Canada and describes a successful establishment in Canada before its 2023 Fast-track financing for North American scale-up."
+        },
+        {
+          "case_id": "97847c78c9b6a863c1b71b37933241a8c7f75acc228a2b605d114b32ed8cc8b9",
+          "source_url": "https://ised-isde.canada.ca/cipo/trademark-search/1799092",
+          "claim": "CIPO application 1799092 records SIOO:X filed by SIOO WOODPROTECTION AB with proposed use in Canada for wood-protection and related goods."
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    },
+    {
+      "id": "9c61d58cbce698c5b2da12e8846ad7ca6f88fdaebed79a140022d722173fe207",
+      "company_label": "LINET spol. s.r.o.",
+      "source_role": "KNOWN_HISTORICAL_CASE_INVESTOR",
+      "origin_label": "Czechia",
+      "origin_is_current_control_proof": false,
+      "source_references": [
+        {
+          "case_id": "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+          "source_url": "https://www.wi-bo.com/de/Linet/news/news-and-press-releases/2019/New-Subsidiary-in-Canada-will-Share-Clinical-Experience",
+          "claim": "Corroborates Canadian subsidiary founding on 2019-02-21; describes forthcoming support and distribution coordination."
+        }
+      ],
+      "existing_research_identity_review": false,
+      "current_monitoring_qualified": false,
+      "independent_holdout": false,
+      "new_entry_label": false,
+      "selection_status": "SELECTED_FOR_REVIEW_NOT_ENROLLED_MONITORING",
+      "qualification_decision_id": null
+    }
+  ],
+  "limitations": [
+    "Targets are source-local labels, not fifty independently qualified legal entities. Repeated exact discovery labels retain every underlying card.",
+    "Known historical companies and controls are deliberately included for operational review; this is not a prospective independent predictive holdout.",
+    "The existing eight-source monitor is unchanged. Roster selection does not enroll fifty company sources or establish fourteen days of monitoring.",
+    "Source-country labels, corporate control, legal identity, civilian suitability and current status require separate review."
+  ]
+}

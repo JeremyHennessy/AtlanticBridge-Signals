@@ -1,7 +1,7 @@
 /* Reviewed project histories are not procurement suppliers or predictive alerts. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.ABReviewed=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
-  const kinds={PROJECT_ANNOUNCED:'Project announced',OPENING_ANNOUNCED:'Opening announced',INAUGURATION_REPORTED:'Inauguration reported',IMPLEMENTATION_REPORTED:'Implementation reported',OPENING_REPORTED:'Opening reported',OPERATING_BY_DATE:'Operating by this date',SERVICE_AVAILABLE_BY_DATE:'Service available by this date',OFFICE_ESTABLISHED_BY_DATE:'Office established by this date'};
+  const kinds={PROJECT_ANNOUNCED:'Project announced',OPENING_ANNOUNCED:'Opening announced',INAUGURATION_REPORTED:'Inauguration reported',IMPLEMENTATION_REPORTED:'Implementation reported',OPENING_REPORTED:'Opening reported',OPERATING_BY_DATE:'Operating by this date',PROJECT_COMPLETED_BY_DATE:'Completed by this date',SERVICE_AVAILABLE_BY_DATE:'Service available by this date',OFFICE_ESTABLISHED_BY_DATE:'Office established by this date'};
   const hex=v=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
   const day=v=>typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&Number.isFinite(Date.parse(v))&&new Date(v).toISOString().slice(0,10)===v;
   const https=v=>{try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password;}catch(_){return false;}};

@@ -1,0 +1,53 @@
+name: Source-bound pilot release proof
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ui/**'
+      - 'scripts/build_pilot_release.py'
+      - 'scripts/analyse_pilot.py'
+      - 'src/atlanticbridge/pilot_measurement.py'
+      - 'reviews/pilot/**'
+      - 'tests/test_pilot*'
+      - '.github/workflows/pilot-release-proof.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reproduce exact source-derived dossiers, decisions and review roster
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api '/repos/JeremyHennessy/AtlanticBridge-Signals/actions/artifacts/10724340100/zip' > "$RUNNER_TEMP/documentary.zip"
+          gh api '/repos/JeremyHennessy/AtlanticBridge-Signals/actions/artifacts/10720884358/zip' > "$RUNNER_TEMP/monitor.zip"
+          python -m pip install -e .
+          python scripts/build_pilot_release.py --documentary-proof "$RUNNER_TEMP/documentary.zip" --monitor-proof "$RUNNER_TEMP/monitor.zip" --check
+          python -m unittest discover -s tests -v
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
+          mkdir -p artifacts/pilot-release
+          python scripts/analyse_pilot.py reviews/pilot/participant-records-template.json --output artifacts/pilot-release/empty-pilot-result.json
+      - name: Preserve exact tested code and data provenance
+        if: always()
+        run: |
+          mkdir -p artifacts/pilot-release
+          git rev-parse HEAD > artifacts/pilot-release/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/pilot-release/tested-source.tar.gz
+          sha256sum ui/data/company-reviews.json ui/data/reviewed-evidence.json reviews/pilot/operational-cohort-2026-09-22.json > artifacts/pilot-release/data-sha256.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pilot-release-${{ github.event.pull_request.head.sha || github.sha }}
+          path: artifacts/pilot-release/
+          retention-days: 90
+          if-no-files-found: error
