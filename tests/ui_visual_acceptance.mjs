@@ -138,7 +138,7 @@ async function run(label,type,options) {
     }
     await go(page,"#markets");
     const marketText=await page.locator("#markets-view").innerText();
-    check(`${label}: Canada-wide market scope`,marketText.includes("Nova Scotia is one possible market") && marketText.includes("Ontario") && marketText.includes("Québec") && marketText.includes("British Columbia"));
+    check(`${label}: Canada-wide market scope`,marketText.includes("Nova Scotia-specific evidence remains useful") && marketText.includes("Ontario") && marketText.includes("Québec") && marketText.includes("British Columbia"));
     await filters(page,label);await bookmarks(page,label);await allCases(page,label);
     check(`${label}: no console or page errors`,errors.length===0,errors.join(" | "));
     // Failure tests use a separate context: expected network errors are not mixed with normal acceptance.
