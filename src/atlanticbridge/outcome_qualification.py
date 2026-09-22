@@ -61,6 +61,7 @@ def parse_review_document(body: bytes, source: dict) -> list[dict]:
         'nature-farnham-plan-20220315': ('h1', 'article.news-release'),
         'roquette-rd-20200619': ('h1.page__heading', 'article.page__content'),
         'enel-issuer-alberta-operating-20200521': ('h1', 'main free-text section[data-content]'),
+        'stellantis-investontario-20220502': ('h1', '.press-release-text .field--name-body'),
     }
     pair = (layout.get('title_selector'), layout.get('content_selector'))
     if pair != allowed.get(source['id']):
@@ -91,6 +92,14 @@ def parse_review_document(body: bytes, source: dict) -> list[dict]:
         # data-content. Parse those original bytes; do not synthesize the body/date.
         scoped.main.append(dates[0].extract())
         region = BeautifulSoup(content, 'html.parser')
+    if source['id'] == 'stellantis-investontario-20220502':
+        if layout != {'title_selector': 'h1', 'content_selector': '.press-release-text .field--name-body',
+                      'date_selector': '.press-release-date'}:
+            raise ValueError('Unreviewed Invest Ontario content/date layout')
+        dates = soup.select('.press-release-date')
+        if len(dates) != 1 or not dates[0].get_text(strip=True):
+            raise ValueError('Missing or ambiguous Invest Ontario publication date')
+        scoped.main.append(dates[0].extract())
     scoped.main.append(region)
     return parse_article(str(scoped).encode('utf-8'), source)
 

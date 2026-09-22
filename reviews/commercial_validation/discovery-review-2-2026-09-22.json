@@ -29,7 +29,12 @@
         "Windsor and Brampton",
         "two new research and development centres"
       ],
-      "role": "DOCUMENTARY_OUTCOME_REVIEW_NOT_EARLY_SIGNAL"
+      "role": "DOCUMENTARY_OUTCOME_REVIEW_NOT_EARLY_SIGNAL",
+      "reviewed_layout": {
+        "title_selector": "h1",
+        "content_selector": ".press-release-text .field--name-body",
+        "date_selector": ".press-release-date"
+      }
     },
     {
       "id": "nature-farnham-plan-20220315",

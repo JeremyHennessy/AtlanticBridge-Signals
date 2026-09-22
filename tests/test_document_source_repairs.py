@@ -57,3 +57,12 @@ class DocumentSourceRepairTests(unittest.TestCase):
         self.assertTrue(src['url'].startswith('https://www.investontario.ca/'))
         old=next(x for x in m['known_unavailable_paths'] if x['id']=='stellantis-ontario-20220502')
         self.assertEqual(old['alias_diagnostic_artifact_id'],10723187655)
+
+    def test_invest_ontario_decorative_article_does_not_replace_document(self):
+        m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+        src=copy.deepcopy(next(x for x in m['sources'] if x['id']=='stellantis-investontario-20220502'))
+        raw=('<main><article class="media"><img alt="decorative"></article><h1>Issuer title</h1><p class="press-release-date">May 2, 2022</p><div class="press-release-text"><div class="field--name-body">'+'. '.join(src['required_text'])+'</div></div></main>').encode()
+        self.assertEqual(parse_review_document(raw,src)[0]['source_publication_date'],'2022-05-02')
+        with self.assertRaises(ValueError):parse_review_document(raw.replace(b'May 2, 2022',b'UNKNOWN'),src)
+        with self.assertRaises(ValueError):parse_review_document(raw.replace(b'$3.6 billion investment',b'missing'),src)
+        with self.assertRaises(ValueError):parse_review_document(raw+raw,src)
