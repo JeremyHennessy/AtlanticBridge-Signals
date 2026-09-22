@@ -26,9 +26,12 @@ async function go(page, route) {
   await page.waitForTimeout(60);
 }
 async function captureRoute(page, label, route) {
-  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  const {height,dpr} = await page.evaluate(() => ({
+    height: document.documentElement.scrollHeight,
+    dpr: window.devicePixelRatio || 1,
+  }));
   const baseName = path.join(out,`${label}-${route}`);
-  if (height <= 30000) {
+  if (height * dpr <= 30000) {
     await page.screenshot({path:`${baseName}.png`,fullPage:true});
     return;
   }
