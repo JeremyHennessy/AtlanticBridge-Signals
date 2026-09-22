@@ -144,13 +144,16 @@ jobs:
           p=json.loads(Path("expanded-output/proofs/cipo.json").read_text())
           print(json.dumps({"summary":p.get("summary"),"records":p.get("records"),"coverage":p.get("coverage"),"known_coverage_gap":p.get("known_coverage_gap")},indent=2))
           assert len(p.get("coverage") or []) == 9
-          assert all(row.get("absence_coverage_proven") is False for row in p["coverage"])
+          assert all(row.get("coverage_status") == "PRESENCE_ONLY_KNOWN_GAP" for row in p["coverage"])
+          assert p["known_coverage_gap"]["absence_inference_allowed"] is False
           PY
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: expanded-scan-cipo
           path: expanded-output/proofs/cipo.json
           retention-days: 90
+          if-no-files-found: warn
 
   compose:
     needs: [canadabuys, ted, cipo-researcher]
