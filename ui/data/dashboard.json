@@ -58,7 +58,10 @@
       "VERIFIED_BEFORE_NOTIFICATION_MONTH": 17,
       "VERIFIED_DURING_NOTIFICATION_MONTH": 2
     },
-    "cases_with_verified_pre_notification_evidence": 13
+    "cases_with_verified_pre_notification_evidence": 13,
+    "research_cohort_count": 13,
+    "browsable_company_count": 40,
+    "research_historical_overlap_excluded": 1
   },
   "cases": [
     {
@@ -1361,6 +1364,526 @@
         }
       ],
       "verified_pre_notification_evidence_count": 1
+    }
+  ],
+  "research_cohort": [
+    {
+      "id": "node:241151",
+      "display_name": "SENZOMATIC, s.r.o.",
+      "investor_name": "Senzomatic, s.r.o.",
+      "investor_locality": "Prague",
+      "ultimate_control_country": "Czechia",
+      "foreign_legal_name": "SENZOMATIC, s.r.o.",
+      "foreign_legal_identifier": null,
+      "identity_confidence": "HIGH",
+      "research_status": "ACCEPTED_BACKTEST_CONTROL",
+      "later_new_business_month": "2026-02",
+      "accepted_backtest_control_eligible": true,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "78bccec3eb4fca9297b749ba07425e1bd585847360e48958d64811c5b14901e2",
+          "canadian_business_name": "Linet Canada Inc.",
+          "investor_name": "LINET spol. s.r.o.",
+          "notification_month": "2019-10",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "The exact Czech legal entity is separately identified at a Prague address on Senzomatic's official site, while Senzomatic Canada Inc. is separately identified as the Canadian company. Investment Canada later names Senzomatic, s.r.o. as the Czech investor.",
+      "identity_evidence": [
+        {
+          "source_url": "https://senzomatic.com/en/contact/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official contact page separately identifies SENZOMATIC, s.r.o. in Prague and SENZOMATIC CANADA INC. in Toronto."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/s?page=1",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "Investment Canada records Senzomatic, s.r.o., Prague, Czechia as the investor in the February 2026 new-business notification."
+        }
+      ]
+    },
+    {
+      "id": "node:242990",
+      "display_name": "Global Wind Service A/S",
+      "investor_name": "Global Wind Service A/S",
+      "investor_locality": "Fredericia",
+      "ultimate_control_country": "Denmark",
+      "foreign_legal_name": "Global Wind Service A/S",
+      "foreign_legal_identifier": "DK31166047",
+      "identity_confidence": "HIGH",
+      "research_status": "ACCEPTED_BACKTEST_CONTROL",
+      "later_new_business_month": "2026-04",
+      "accepted_backtest_control_eligible": true,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "ff03646b53257fa217b2f9c7ce32a13dd754e47f2204b82ef48a4c02882bc7a5",
+          "canadian_business_name": "Leadership Pipeline Institute Canada Inc.",
+          "investor_name": "Leadership Pipeline Institute Canada Inc.",
+          "notification_month": "2023-09",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "The Danish Energy Agency identifies Global Wind Service A/S with CVR 31166047, and Investment Canada later names the exact Fredericia entity as the Danish investor.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.cas.ens.dk/typeliste/257157-2018-aq-den-danak",
+          "source_type": "OFFICIAL_GOVERNMENT_REGISTRY",
+          "claim": "Danish Energy Agency record identifies Global Wind Service A/S, CVR 31166047."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=0&wbdisable=true",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "Investment Canada records Global Wind Service A/S, Fredericia, Denmark as the investor in April 2026."
+        }
+      ]
+    },
+    {
+      "id": "node:213007",
+      "display_name": "Deutsche Bahn International Operations GmbH",
+      "investor_name": "Deutsche Bahn International Operations GmbH",
+      "investor_locality": "Berlin",
+      "ultimate_control_country": "Germany",
+      "foreign_legal_name": "Deutsche Bahn International Operations GmbH",
+      "foreign_legal_identifier": "HANDELSREGISTER · HRB 190316 B",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2023-03",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+          "canadian_business_name": "HANECS Canada Inc.",
+          "investor_name": "Max Neusser",
+          "notification_month": "2021-02",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "DB International Operations' official imprint identifies the exact Berlin GmbH and registry number, and its official company pages describe an active rail operations and maintenance business. Investment Canada later names the exact Berlin entity in a March 2023 new-business notification, after the assigned February 2021 candidate's 24-month risk horizon.",
+      "identity_evidence": [
+        {
+          "source_url": "https://io.deutschebahn.com/en/imprint-and-privacy-statements-for-social-media-presences/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official DB International Operations imprint identifies Deutsche Bahn International Operations GmbH, Berlin, AG Berlin-Charlottenburg HRB 190316 B."
+        },
+        {
+          "source_url": "https://io.deutschebahn.com/en/about-us/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official company page describes DB International Operations as operating and maintaining rail infrastructure and rolling stock for passenger and freight transport."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=82&wbdisable=true",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "March 2023 new-business record names Deutsche Bahn International Operations GmbH, Berlin, Germany as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:242323",
+      "display_name": "innoscripta SE",
+      "investor_name": "Innoscripta SE",
+      "investor_locality": "Munich",
+      "ultimate_control_country": "Germany",
+      "foreign_legal_name": "innoscripta SE",
+      "foreign_legal_identifier": "HANDELSREGISTER · HRB 302244",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2026-03",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+          "canadian_business_name": "HANECS Canada Inc.",
+          "investor_name": "Max Neusser",
+          "notification_month": "2021-02",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "Innoscripta's official 2025 annual report identifies innoscripta SE in Munich with HRB 302244 and documents its operating software/platform business. Investment Canada later names Innoscripta SE, Munich in a March 2026 new-business notification.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.innoscripta.com/EN_innoscripta_GB_2025.pdf",
+          "source_type": "OFFICIAL_COMPANY_REPORT",
+          "claim": "Official annual report identifies innoscripta SE, Arnulfstraße 60, Munich, HRB 302244 and describes its R&D software platform business."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/i",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "March 2026 new-business record names Innoscripta SE, Munich, Germany as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:213011",
+      "display_name": "RWE Supply & Trading GmbH",
+      "investor_name": "RWE Supply and Trading GmbH",
+      "investor_locality": "Essen",
+      "ultimate_control_country": "Germany",
+      "foreign_legal_name": "RWE Supply & Trading GmbH",
+      "foreign_legal_identifier": "HANDELSREGISTER · HRB 14327",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2023-04",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+          "canadian_business_name": "HANECS Canada Inc.",
+          "investor_name": "Max Neusser",
+          "notification_month": "2021-02",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "RWE's official legal notice identifies RWE Supply & Trading GmbH in Essen with HRB 14327; RWE's operating page describes global energy and commodity trading. Investment Canada later names RWE Supply and Trading GmbH, Essen in April 2023.",
+      "identity_evidence": [
+        {
+          "source_url": "https://view.group.rwe/impressum/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official RWE legal notice identifies RWE Supply & Trading GmbH, Essen, Amtsgericht Essen HRB 14327."
+        },
+        {
+          "source_url": "https://www.rwe.com/en/the-group/rwest/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official RWE page describes RWE Supply & Trading as the group's worldwide energy and commodity trading business."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/r?page=2&wbdisable=true",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "April 2023 new-business record names RWE Supply and Trading GmbH, Essen, Germany as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:213010",
+      "display_name": "SKS Welding Systems GmbH",
+      "investor_name": "SKS Welding Systems GmbH",
+      "investor_locality": "Kaiserslautern",
+      "ultimate_control_country": "Germany",
+      "foreign_legal_name": "SKS Welding Systems GmbH",
+      "foreign_legal_identifier": "HANDELSREGISTER · HRB 31381",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2023-04",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "023105d8069075cda3876e597d6c25a0ffb98be017ac01d9786be98a979cd1ed",
+          "canadian_business_name": "HANECS Canada Inc.",
+          "investor_name": "Max Neusser",
+          "notification_month": "2021-02",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "SKS's official legal notice identifies the exact Kaiserslautern GmbH and HRB 31381, while its official worldwide page distinguishes the German company from its Canadian affiliate and demonstrates an operating welding-systems business. Investment Canada later names the exact German GmbH in April 2023.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.sks-welding.com/en/legal-details/legal-notice",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official SKS legal notice identifies SKS Welding Systems GmbH, Kaiserslautern, Local District Court HRB 31381."
+        },
+        {
+          "source_url": "https://www.sks-welding.com/en/about-sks/contact/contact-sks-worldwide",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official worldwide contact page separately identifies SKS Welding Systems GmbH in Germany and SKS Welding Systems Ltd. in Canada."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/s?page=6",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "April 2023 new-business record names SKS Welding Systems GmbH, Kaiserslautern, Germany as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:239953",
+      "display_name": "WIZ DIGITAL SERVICES LIMITED",
+      "investor_name": "WIZ DIGITAL SERVICES LIMITED",
+      "investor_locality": "Bishopstown",
+      "ultimate_control_country": "Ireland",
+      "foreign_legal_name": "WIZ DIGITAL SERVICES LIMITED",
+      "foreign_legal_identifier": "IRISH_COMPANY_NUMBER · 678945",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2025-12",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a",
+          "canadian_business_name": "DIGITARY CANADA INC.",
+          "investor_name": "FRAMEWORK COMPUTER CONSULTANTS LTD",
+          "notification_month": "2020-06",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "Ireland's Companies Registration Office records company number 678945 under the exact legal name WIZ DIGITAL SERVICES LIMITED. Wiz Digital's official privacy notice identifies Wiz Digital Services Ltd as an Irish data and AI consultancy, and its official company site describes active research, engineering and deployment work. Investment Canada later names WIZ DIGITAL SERVICES LIMITED, Bishopstown, Ireland in a December 2025 new-business notification.",
+      "identity_evidence": [
+        {
+          "source_url": "https://cro.ie/wp-content/uploads/2025/05/21-May-2025-Annual-Returns-Registered.pdf",
+          "source_type": "OFFICIAL_COMPANY_REGISTRY",
+          "claim": "Ireland Companies Registration Office annual-return register lists company number 678945 as WIZ DIGITAL SERVICES LIMITED."
+        },
+        {
+          "source_url": "https://www.wizdigital.ie/privacy-policy",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official Wiz Digital privacy notice identifies Wiz Digital Services Ltd as a data and AI consultancy registered in Ireland."
+        },
+        {
+          "source_url": "https://www.wizdigital.ie/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official Wiz Digital site describes an active Irish research and engineering company delivering data, AI, cloud, robotics and related technology work."
+        },
+        {
+          "source_url": "https://www.ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=15",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "December 2025 new-business record names WIZ DIGITAL SERVICES LIMITED, Bishopstown, Ireland as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:212932",
+      "display_name": "Andriani S.p.A.",
+      "investor_name": "Andriani S.P.A.",
+      "investor_locality": "Gravina in Puglia",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "Andriani S.p.A.",
+      "foreign_legal_identifier": "IT06880780728",
+      "identity_confidence": "HIGH",
+      "research_status": "ACCEPTED_BACKTEST_CONTROL",
+      "later_new_business_month": "2023-03",
+      "accepted_backtest_control_eligible": true,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+          "canadian_business_name": "Antea Canada Inc.",
+          "investor_name": "Antea Canada Inc.",
+          "notification_month": "2019-08",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "Andriani's official site identifies the Italian legal entity and Bari company/VAT number 06880780728, and Investment Canada later names the exact Gravina in Puglia entity as the Italian investor.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.andrianispa.com/informative-privacy/andriani-s-p-a/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official Andriani page identifies Andriani S.p.A., Gravina in Puglia, Registro Imprese di Bari / VAT 06880780728."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/a?page=7&wbdisable=true",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "March 2023 new-business record names Andriani S.P.A., Gravina in Puglia, Italy as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:214179",
+      "display_name": "EUROP ASSISTANCE S.A.",
+      "investor_name": "Europ Assistance S.A.",
+      "investor_locality": "Paris",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "EUROP ASSISTANCE S.A.",
+      "foreign_legal_identifier": "SIREN · 451366405",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2024-02",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+          "canadian_business_name": "Antea Canada Inc.",
+          "investor_name": "Antea Canada Inc.",
+          "notification_month": "2019-08",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "French official regulatory material identifies EUROP ASSISTANCE S.A., SIREN 451 366 405, as an authorized insurer. The Canada Gazette separately identifies Europ Assistance S.A. as a France-incorporated property and casualty insurer headquartered in Paris and ultimately controlled by Assicurazioni Generali S.p.A. in Italy. Investment Canada later names Europ Assistance S.A., Paris, with Italian ultimate control in a February 2024 new-business notification.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000039646070",
+          "source_type": "OFFICIAL_GOVERNMENT_REGULATOR",
+          "claim": "French official journal decision identifies EUROP ASSISTANCE S.A., SIREN 451 366 405, and authorizes insurance operations."
+        },
+        {
+          "source_url": "https://gazette.gc.ca/rp-pr/p1/2022/2022-01-29/html/misc-divers-eng.html",
+          "source_type": "OFFICIAL_CANADA_GAZETTE",
+          "claim": "Canada Gazette identifies Europ Assistance S.A. as incorporated in France, headquartered in Paris, operating property and casualty insurance, with ultimate parent Assicurazioni Generali S.p.A. in Italy."
+        },
+        {
+          "source_url": "https://www.ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/e?page=1",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "February 2024 new-business record names Europ Assistance S.A., Paris as investor with Italy as country of ultimate control."
+        }
+      ]
+    },
+    {
+      "id": "node:238423",
+      "display_name": "General Medical Merate S.p.A.",
+      "investor_name": "General Medical Merate S.p.A.",
+      "investor_locality": "Seriate",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "General Medical Merate S.p.A.",
+      "foreign_legal_identifier": "VAT · 00225500164",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2025-10",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+          "canadian_business_name": "Antea Canada Inc.",
+          "investor_name": "Antea Canada Inc.",
+          "notification_month": "2019-08",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "General Medical Merate's official site identifies the exact Italian S.p.A. and VAT number and documents decades of radiological-equipment design and production. Investment Canada later names General Medical Merate S.p.A., Seriate in October 2025.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.gmmspa.com/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official GMM site identifies General Medical Merate S.p.A., Seriate, Italy, VAT 00225500164 and displays its medical imaging product business."
+        },
+        {
+          "source_url": "https://www.gmmspa.com/about-us/history-and-achievements/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official history states General Medical Merate S.p.A. has designed and produced radiological diagnostic systems for decades."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=0&wbdisable=true",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "October 2025 new-business record names General Medical Merate S.p.A., Seriate, Italy as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:212990",
+      "display_name": "GILARDONI S.P.A. a Socio Unico",
+      "investor_name": "Gilardoni S.p.A.",
+      "investor_locality": "Milano,",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "GILARDONI S.P.A. a Socio Unico",
+      "foreign_legal_identifier": "IT00734000151",
+      "identity_confidence": "HIGH",
+      "research_status": "ACCEPTED_BACKTEST_CONTROL",
+      "later_new_business_month": "2023-03",
+      "accepted_backtest_control_eligible": true,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+          "canadian_business_name": "Antea Canada Inc.",
+          "investor_name": "Antea Canada Inc.",
+          "notification_month": "2019-08",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "Gilardoni's official corporate information identifies the Italian legal entity with Milan Chamber of Commerce/VAT 00734000151 and its operating manufacturing headquarters; Investment Canada later names Gilardoni S.p.A. as the Italian investor.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.gilardoni.it/en/company-info/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official corporate information identifies GILARDONI S.P.A., Milan registration/VAT 00734000151."
+        },
+        {
+          "source_url": "https://www.gilardoni.it/en/where-we-are/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official locations page identifies Gilardoni's 22,000 sqm manufacturing plant and R&D laboratories in Italy."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=2&wbdisable=true",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "March 2023 new-business record names Gilardoni S.p.A. as the Italian investor."
+        }
+      ]
+    },
+    {
+      "id": "node:214722",
+      "display_name": "Leaf Space S.p.A.",
+      "investor_name": "Leaf Space S.p.A.",
+      "investor_locality": "Milano",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "Leaf Space S.p.A.",
+      "foreign_legal_identifier": "VAT · 08710160964",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2024-07",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+          "canadian_business_name": "Antea Canada Inc.",
+          "investor_name": "Antea Canada Inc.",
+          "notification_month": "2019-08",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "Leaf Space's official privacy/governance material identifies Leaf Space S.p.A. and VAT 08710160964, while its official company announcements describe an active global satellite ground-segment services business. Investment Canada later names Leaf Space S.p.A., Milano in July 2024.",
+      "identity_evidence": [
+        {
+          "source_url": "https://leaf.space/wp-content/uploads/2024/04/Leaf-Space_Privacy_Policy.pdf",
+          "source_type": "OFFICIAL_COMPANY_DOCUMENT",
+          "claim": "Official Leaf Space privacy policy identifies Leaf Space S.p.A. as the Italian legal entity operating the company website."
+        },
+        {
+          "source_url": "https://leaf.space/20-million-serires-b-funding/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official Leaf Space announcement describes Leaf Space SpA as an Italian-headquartered provider of satellite ground-segment services with a global operating network."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/l?page=1",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "July 2024 new-business record names Leaf Space S.p.A., Milano, Italy as investor."
+        }
+      ]
+    },
+    {
+      "id": "node:214936",
+      "display_name": "NORD ENGINEERING FRANCE",
+      "investor_name": "Nord Engineering France",
+      "investor_locality": "Valbonne",
+      "ultimate_control_country": "Italy",
+      "foreign_legal_name": "NORD ENGINEERING FRANCE",
+      "foreign_legal_identifier": "SIREN · 833928112",
+      "identity_confidence": "HIGH",
+      "research_status": "IDENTITY_QUALIFIED_RESEARCH_CONTROL",
+      "later_new_business_month": "2024-09",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "matched_candidates": [
+        {
+          "outcome_id": "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8",
+          "canadian_business_name": "Antea Canada Inc.",
+          "investor_name": "Antea Canada Inc.",
+          "notification_month": "2019-08",
+          "cohort": "TRUE_NEW_ENTRY_CANDIDATE"
+        }
+      ],
+      "rationale": "France's official SIRENE service identifies NORD ENGINEERING FRANCE, SIREN 833 928 112, as an active SAS in Valbonne with wholesale-equipment activity. A French official public-procurement award notice separately identifies NORD ENGINEERING FRANCE at the same Valbonne address as a bidder and award recipient, establishing an operating commercial role. Investment Canada later names Nord Engineering France, Valbonne in a September 2024 new-business notification with Italian ultimate control.",
+      "identity_evidence": [
+        {
+          "source_url": "https://api-avis-situation-sirene.insee.fr/identification/pdf/83392811200048",
+          "source_type": "OFFICIAL_COMPANY_REGISTRY",
+          "claim": "INSEE SIRENE notice identifies active NORD ENGINEERING FRANCE, SIREN 833 928 112, SIRET 833 928 112 00048, at 2405 Route des Dolines, Valbonne."
+        },
+        {
+          "source_url": "https://www.boamp.fr/telechargements/FILES/PDF/2026/03/26-27897.pdf",
+          "source_type": "OFFICIAL_GOVERNMENT_PROCUREMENT",
+          "claim": "French official procurement award notice identifies NORD ENGINEERING FRANCE, 2405 Route des Dolines, Valbonne, as a bidder and awarded organization."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=42",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "September 2024 new-business record names Nord Engineering France, Valbonne as investor with Italy as country of ultimate control."
+        }
+      ]
     }
   ]
 }
