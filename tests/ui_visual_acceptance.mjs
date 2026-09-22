@@ -191,12 +191,18 @@ async function run(label,type,options) {
         check(`${label}: signal company search`,(await page.locator("[data-live-signal-id]").first().innerText()).includes(first.company_name));
         await page.locator("#signal-reset").click();
         await page.locator("#signal-window").selectOption("all");
+        const watchedCompany=await page.locator("[data-watch-company]").first().getAttribute("data-watch-company");
         await page.locator("[data-watch-company]").first().click();
-        check(`${label}: company watch saved`,await page.locator("[data-watch-company]").first().getAttribute("aria-pressed")==="true");
+        // Storage commits may await a cross-tab Web Lock; assert the result, not click timing.
+        await page.waitForFunction(id=>document.querySelector(`[data-watch-company="${id}"]`)?.getAttribute("aria-pressed")==="true",watchedCompany);
+        check(`${label}: company watch saved`,await page.evaluate(id=>JSON.parse(localStorage.getItem("atlanticbridge.analyst-workspace.v1")).entries.some(e=>e.id===id),watchedCompany));
+        await page.reload({waitUntil:"networkidle"});await ready(page);
+        check(`${label}: actual source watch survives reload`,await page.locator(`[data-watch-company="${watchedCompany}"]`).first().getAttribute("aria-pressed")==="true");
         await page.locator('[data-signal-view="watched"]').click();
         check(`${label}: watched signal view`,await page.locator("[data-live-signal-id]").count()>0);
         check(`${label}: official live source link`,await page.locator(".live-signal-item .source-link").first().isVisible());
         await page.locator("[data-watch-company]").first().click();
+        await page.waitForFunction(id=>!JSON.parse(localStorage.getItem("atlanticbridge.analyst-workspace.v1")).entries.some(e=>e.id===id),watchedCompany);
         await page.locator("#signal-reset").click();
       }
     } else {

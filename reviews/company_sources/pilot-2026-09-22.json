@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "purpose": "Bounded source proof and calibration. Not a representative company universe, validated holdout, or commercial reuse approval.",
+  "baseline_commit": "c522a167684308188ae4a0a64d6dc9035ef3ecda",
+  "public_alert_allowed": false,
+  "origin_scope": "EU company candidates; source-local brand binding only, legal identities remain separately reviewed",
+  "sources": [
+    {"id": "mistral-official-careers", "kind": "careers", "company": "Mistral AI", "url": "https://mistral.ai/careers/", "role": "CURRENT_HIRING_OBSERVATION"},
+    {"id": "mistral-official-news", "kind": "index", "company": "Mistral AI", "url": "https://mistral.ai/news/", "article_path_prefix": "/news/", "role": "COMPANY_ANNOUNCEMENT_DISCOVERY"},
+    {"id": "montreal-international-news", "kind": "index", "company": null, "url": "https://www.montrealinternational.com/en/news/", "article_path_prefix": "/en/news/", "role": "OUTCOME_DISCOVERY_ALL_ORIGINS_REQUIRE_REVIEW"},
+    {"id": "mistral-montreal-announcement", "kind": "article", "company": "Mistral AI", "url": "https://www.montrealinternational.com/en/news/mistral-ai-selects-montreal-for-its-canadian-hub/", "required_text": ["first establishment in Canada"], "reviewed_publication_date": "2026-06-25", "publication_date_text": "June 25, 2026", "role": "CALIBRATION_ANNOUNCED_FIRST_ESTABLISHMENT_NOT_VERIFIED_OPENING"},
+    {"id": "gd-montreal-announcement", "kind": "article", "company": "Giesecke+Devrient", "url": "https://www.montrealinternational.com/en/news/gd-selects-montreal-to-establish-its-global-artificial-intelligence-centre-of-excellence-at-mila/", "required_text": ["Established in Canada since 1962"], "reviewed_publication_date": "2026-06-17", "publication_date_text": "June 17, 2026", "role": "CALIBRATION_EXISTING_PRESENCE_EXPANSION_NOT_FIRST_ENTRY"},
+    {"id": "adyen-payments-membership", "kind": "article", "company": "Adyen Canada Ltd.", "url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member", "required_text": ["Adyen Canada Ltd"], "reviewed_publication_date": "2026-07-14", "publication_date_text": "July 14, 2026", "role": "CALIBRATION_MEMBERSHIP_NOT_FIRST_OPERATION"},
+    {"id": "deepl-official-careers", "kind": "careers", "company": "DeepL", "url": "https://www.deepl.com/en/careers", "role": "CURRENT_HIRING_OBSERVATION"},
+    {"id": "pleo-official-careers", "kind": "careers", "company": "Pleo", "url": "https://www.pleo.io/en/careers", "role": "CURRENT_HIRING_OBSERVATION"}
+  ]
+}

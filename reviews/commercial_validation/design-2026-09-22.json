@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "design_status": "DEVELOPMENT_PLAN_NOT_CONFIRMATORY_PREREGISTRATION",
+  "baseline_commit": "c522a167684308188ae4a0a64d6dc9035ef3ecda",
+  "scope": "Canada-wide, civilian commercial company activity; existing EU-27 origin gate retained",
+  "buyer_workflow": "Investment-attraction analyst selecting companies for investigation and outreach",
+  "development_targets": {"documented_company_outcomes": 100, "matched_comparison_companies": 200},
+  "prospective_targets": {"companies": [300, 500], "pilot_users": [3, 5], "workflow_test_weeks": [6, 8]},
+  "forecast_outcome_horizon_months": 12,
+  "comparison_baselines": ["OFFICIAL_ANNOUNCEMENTS_ONLY", "CIPO_ONLY", "TIME_BOUNDED_HUMAN_RESEARCH"],
+  "metrics": ["VERIFIED_USEFUL_TOP_20", "LEAD_TIME_VS_ANNOUNCEMENT", "VERIFIED_OUTCOMES_MISSED", "REVIEW_SECONDS_PER_USEFUL_LEAD", "INCREMENTAL_SOURCE_VALUE"],
+  "proposed_beta_thresholds_not_proven": {"identity_accuracy_point_estimate": 0.98, "relevant_supported_alerts_point_estimate": 0.8},
+  "required_before_confirmatory_test": ["Independent legal identity and outcome review", "Corporate-group-disjoint development and holdout", "Preserved entrant-control strata", "Contemporaneous publication-safe source evidence", "Prospectively frozen primary endpoint and power analysis", "Rights/access approval per source", "Observed payment or paid-pilot commitment"],
+  "current_confirmatory_cohort": [],
+  "pilot_reviews": [],
+  "prediction_publication_allowed": false,
+  "commercial_viability_proven": false,
+  "notes": "Six to eight weeks tests workflow usefulness and monitoring, not a twelve-month forecast. Counts are recruitment/research targets, not achieved sample sizes. Calibration cases already inspected cannot become an independent holdout. No existing backtest weights or gates change."
+}

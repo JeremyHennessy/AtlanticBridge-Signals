@@ -1,0 +1,57 @@
+name: Company source and commercial validation proof
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/atlanticbridge/company_sources.py"
+      - "src/atlanticbridge/commercial_validation.py"
+      - "tests/test_company_source*.py"
+      - "tests/test_commercial_validation*.py"
+      - "scripts/probe_company_sources.py"
+      - "scripts/check_commercial_validation.py"
+      - "reviews/company_sources/**"
+      - "reviews/commercial_validation/**"
+      - ".github/workflows/company-source-proof.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  source-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install unchanged project dependencies
+        run: python -m pip install -e .
+      - name: Parser, state recovery and validation boundary regression tests
+        run: python -m unittest tests.test_company_sources tests.test_company_source_network tests.test_commercial_validation tests.test_commercial_validation_inputs -v
+      - name: Audit calibration outcomes and actual pilot readiness
+        run: |
+          mkdir -p artifacts/company-sources
+          python scripts/check_commercial_validation.py | tee artifacts/company-sources/validation-readiness.json
+      - name: Live public company and outcome source proof
+        run: python scripts/probe_company_sources.py --output artifacts/company-sources
+      - name: Retain exact tested source without Git credentials
+        if: always()
+        run: |
+          mkdir -p artifacts/company-sources
+          git rev-parse HEAD > artifacts/company-sources/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/company-sources/tested-source.tar.gz
+      - name: Preserve raw responses, ledger and report even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: company-source-proof-${{ github.event.pull_request.head.sha || github.sha }}
+          path: artifacts/company-sources/
+          retention-days: 90
+          if-no-files-found: warn

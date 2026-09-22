@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "purpose": "Broaden independent outcome discovery using the accepted PR #101 capture and ledger. Not a representative cohort, validated holdout or commercial reuse approval.",
+  "baseline_commit": "c5d251938e781b6eb445a74b3882bcd4cdd42521",
+  "public_alert_allowed": false,
+  "origin_scope": "All source-published origins retained for review. European scope and legal control must be qualified separately; no automatic EU-27 relabelling.",
+  "sources": [
+    {
+      "id": "investcanada-investment-cards-20260922",
+      "kind": "investment_cards",
+      "company": null,
+      "url": "https://www.investcanada.ca/news",
+      "role": "UNDATED_OUTCOME_DISCOVERY_ALL_ORIGINS_REQUIRE_REVIEW"
+    },
+    {
+      "id": "vonage-canada-product-launch-20260630",
+      "kind": "article",
+      "company": "Vonage",
+      "url": "https://www.vonage.com/about-us/newsroom/press-releases/Vonage-Launches-Network-Powered-Solutions-for-Fraud-Prevention-Across-Canada/20ad8fcc-1c1d-4777-9315-ccc0168df71a/",
+      "required_text": ["part of Ericsson", "Canada"],
+      "reviewed_publication_date": "2026-06-30",
+      "publication_date_text": "JUNE 30, 2026",
+      "role": "PRODUCT_AVAILABILITY_CALIBRATION_NOT_FIRST_CANADIAN_OPERATION"
+    }
+  ],
+  "access_review": {
+    "preflight_run_id": 35779853056,
+    "preflight_artifact_id": 10717906195,
+    "robots_allowed_for_actual_user_agent_at_probe": true,
+    "commercial_redistribution_approved": false,
+    "limitations": "Bounded public research proof only. Runtime robots and transport are checked again. Long-term storage, scheduled monitoring and commercial rights remain separate acceptance gates."
+  }
+}
