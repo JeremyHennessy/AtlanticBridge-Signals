@@ -84,3 +84,14 @@ class ArchiveTests(unittest.TestCase):
                 if path=='/releases':return [{'id':1,'tag_name':'evidence-v1-2026-09','draft':True,'published_at':None}]
                 return [{'id':7,'name':f'artifact-10724340100-{expected[:16]}.zip'}]
         with self.assertRaises(ValueError):a.accepted_proof(Client(),10724340100)
+
+    def test_download_accept_header_matches_endpoint_contract(self):
+        from unittest.mock import MagicMock
+        client=a.Client('TEST')
+        response=MagicMock();response.__enter__.return_value=response
+        response.status=200;response.read.return_value=b'bytes'
+        client.opener.open=MagicMock(return_value=response)
+        for suffix,expected in [('/actions/artifacts/1/zip','application/vnd.github+json'),('/releases/assets/1','application/octet-stream'),('/releases/1','application/vnd.github+json')]:
+            client.request(a.API+suffix,binary=True)
+            req=client.opener.open.call_args.args[0]
+            self.assertEqual(req.get_header('Accept'),expected)

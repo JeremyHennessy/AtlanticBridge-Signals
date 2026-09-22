@@ -51,7 +51,7 @@ class Client:
         parsed = urllib.parse.urlsplit(url)
         if parsed.scheme != 'https' or parsed.hostname not in {'api.github.com', 'uploads.github.com', 'github.com'} or parsed.username or parsed.password:
             raise ValueError('Unapproved GitHub endpoint')
-        headers = {'User-Agent':'AtlanticBridge-evidence-retention', 'Accept':'application/octet-stream' if binary else 'application/vnd.github+json', 'X-GitHub-Api-Version':'2026-03-10', 'Content-Type':mime}
+        headers = {'User-Agent':'AtlanticBridge-evidence-retention', 'Accept':'application/octet-stream' if binary and '/releases/assets/' in parsed.path else 'application/vnd.github+json', 'X-GitHub-Api-Version':'2026-03-10', 'Content-Type':mime}
         if auth: headers['Authorization'] = 'Bearer ' + self.token
         if isinstance(body, dict): body = json.dumps(body).encode()
         try:
