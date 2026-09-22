@@ -17,7 +17,7 @@ async function overflow(page, label) {
   check(`${label}: no page-level horizontal overflow`,value.document<=value.viewport+2 && value.body<=value.viewport+2,JSON.stringify(value));
 }
 async function ready(page) {
-  await page.locator('body[data-ui-version="2026-09-22-workspace-overview-01"]').waitFor();
+  await page.locator('body[data-ui-version="2026-09-22-mobile-company-scan-01"]').waitFor();
   await page.waitForFunction(expected => document.querySelector("#metric-cases")?.textContent === String(expected), dashboard.cases.length);
 }
 async function go(page, route) {
@@ -183,6 +183,15 @@ async function run(label,type,options) {
     check(`${label}: research details expand`,await page.locator(".research-detail[open] .research-detail-body").isVisible());
     check(`${label}: primary research source link`,await page.locator(".research-detail[open] .source-link").count()>0);
     await page.locator("#research-reset").click();
+    await go(page,"#companies");
+    const mobileCompanyScanExpected = label === "iphone" || label === "narrow-phone";
+    check(`${label}: mobile company scan visibility`,(await page.locator(".mobile-case-scan").first().isVisible())===mobileCompanyScanExpected);
+    check(`${label}: company activity detail visibility`,(await page.locator(".company-meta").first().isVisible())!==mobileCompanyScanExpected);
+    if (mobileCompanyScanExpected) {
+      check(`${label}: compact scan rows complete`,await page.locator(".mobile-case-scan").count()===dashboard.cases.length);
+      const firstHeight=await page.locator(".case-row").first().evaluate(node=>node.getBoundingClientRect().height);
+      check(`${label}: compact first case row`,firstHeight < 125,`height=${firstHeight}`);
+    }
     await go(page,"#markets");
     const marketText=await page.locator("#markets-view").innerText();
     check(`${label}: Canada-wide market scope`,marketText.includes("Nova Scotia-specific evidence remains useful") && marketText.includes("Ontario") && marketText.includes("Québec") && marketText.includes("British Columbia"));
