@@ -194,6 +194,7 @@ async function run(label,type,options) {
 }
 try {
   await run("desktop",chromium,{viewport:{width:1440,height:1000}});
+  await run("tablet",chromium,{viewport:{width:768,height:900},hasTouch:true});
   await run("iphone",webkit,devices["iPhone 15 Pro"]);
   await run("narrow-phone",chromium,{viewport:{width:320,height:740},isMobile:true,hasTouch:true});
   report.passed=true;
