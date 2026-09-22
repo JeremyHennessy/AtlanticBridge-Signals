@@ -149,25 +149,51 @@ def minimum_equal_group_size(
 def build_backtest_power_plan() -> dict[str, object]:
     scenarios = [
         {
-            "name": "CURRENT_HIGH_EFFECT_ASSUMPTION",
+            "name": "CURRENT_MATCHED_HIGH_POINT_ESTIMATE",
             "entrant_positive_rate": 0.50,
-            "control_positive_rate": 0.20,
+            "control_positive_rate": 0.00,
             "current_entrant_n": 4,
-            "current_control_n": 5,
+            "current_control_n": 2,
             "basis": (
-                "Exploratory Backtest 002 HIGH identity point estimates: "
-                "2/4 entrants and 1/5 controls."
+                "Matched-stratum Backtest 002 HIGH point estimates: "
+                "2/4 entrants and 0/2 controls. The zero control rate is "
+                "based on only two matched controls and is not treated as a "
+                "stable population estimate."
             ),
         },
         {
-            "name": "CURRENT_HIGH_OR_MEDIUM_EFFECT_ASSUMPTION",
+            "name": "CURRENT_MATCHED_HIGH_OR_MEDIUM_POINT_ESTIMATE",
+            "entrant_positive_rate": 0.40,
+            "control_positive_rate": 0.00,
+            "current_entrant_n": 5,
+            "current_control_n": 2,
+            "basis": (
+                "Matched-stratum Backtest 002 HIGH_OR_MEDIUM point "
+                "estimates: 2/5 entrants and 0/2 controls. The zero control "
+                "rate is based on only two matched controls and is not "
+                "treated as a stable population estimate."
+            ),
+        },
+        {
+            "name": "CONTROL_RATE_20_PERCENT_SENSITIVITY_HIGH",
+            "entrant_positive_rate": 0.50,
+            "control_positive_rate": 0.20,
+            "current_entrant_n": 4,
+            "current_control_n": 2,
+            "basis": (
+                "Conservative planning sensitivity using a 20% control "
+                "positive rate rather than the unstable observed 0/2."
+            ),
+        },
+        {
+            "name": "CONTROL_RATE_20_PERCENT_SENSITIVITY_HIGH_OR_MEDIUM",
             "entrant_positive_rate": 0.40,
             "control_positive_rate": 0.20,
             "current_entrant_n": 5,
-            "current_control_n": 5,
+            "current_control_n": 2,
             "basis": (
-                "Exploratory Backtest 002 HIGH_OR_MEDIUM identity point "
-                "estimates: 2/5 entrants and 1/5 controls."
+                "Conservative planning sensitivity using a 20% control "
+                "positive rate rather than the unstable observed 0/2."
             ),
         },
         {
@@ -175,7 +201,7 @@ def build_backtest_power_plan() -> dict[str, object]:
             "entrant_positive_rate": 0.60,
             "control_positive_rate": 0.20,
             "current_entrant_n": 4,
-            "current_control_n": 5,
+            "current_control_n": 2,
             "basis": (
                 "Sensitivity scenario only; not an observed effect estimate."
             ),
@@ -213,9 +239,11 @@ def build_backtest_power_plan() -> dict[str, object]:
             "definition as Backtest 002."
         ),
         "planning_boundary": (
-            "Observed Backtest 002 rates are reused only as effect-size "
-            "scenarios. These calculations do not validate those rates, do "
-            "not select a publishable model, and do not replace a separately "
+            "Matched-stratum Backtest 002 rates are reused only as "
+            "effect-size planning scenarios. The observed control rate is "
+            "0/2 and is therefore especially unstable; explicit 20% control-"
+            "rate sensitivity scenarios are retained. These calculations do "
+            "not validate an effect and do not replace a separately "
             "predeclared confirmatory validation cohort."
         ),
         "scenarios": planned,

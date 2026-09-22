@@ -2,11 +2,11 @@
   "schema_version": 1,
   "design": "BACKTEST_001_ACCEPTED_RESULT_MANIFEST",
   "accepted_run": {
-    "workflow_run_id": 35661907983,
-    "workflow_head_sha": "89d43fc052067a8b8810a26af6bc193e38c16259",
-    "artifact_id": 10667139607,
-    "artifact_digest": "sha256:625d5fa5713c8dc38be7b23fc640fc0fdbad9510588c151a7a72ff615917bbe9",
-    "generated_result_sha256": "7e591fd4cff3f282bb8151a5e41fb51bbc4fbec8de0996eb9bb579c79b2f5001",
+    "workflow_run_id": 35675547261,
+    "workflow_head_sha": "17df2ee68a90fe1ded6ffe7fff2f1dabb413cc6e",
+    "artifact_id": 10672965740,
+    "artifact_digest": "sha256:738ecb9951c5251f7a4ef4962533ed874a35df0c08e56f3278aa959c2f076c1a",
+    "generated_result_sha256": "7ad9c5c01032db5832485251c1f7f223d605ea4a6539ad772dc22f9d5a5ce908",
     "acceptance_status": "GREEN"
   },
   "cohort": {
@@ -53,13 +53,13 @@
   "identity_eligible_canadabuys": {
     "high": {
       "entrant_entities": 4,
-      "control_entities": 5,
+      "control_entities": 2,
       "false_negative_rate": 1,
       "false_positive_rate": 0
     },
     "high_or_medium": {
       "entrant_entities": 5,
-      "control_entities": 5,
+      "control_entities": 2,
       "false_negative_rate": 1,
       "false_positive_rate": 0
     }
@@ -68,13 +68,13 @@
   "identity_eligible_ted": {
     "high": {
       "entrant_entities": 4,
-      "control_entities": 5,
+      "control_entities": 2,
       "false_negative_rate": 1,
       "false_positive_rate": 0
     },
     "high_or_medium": {
       "entrant_entities": 5,
-      "control_entities": 5,
+      "control_entities": 2,
       "false_negative_rate": 1,
       "false_positive_rate": 0
     }
@@ -82,23 +82,39 @@
   "identity_eligible_cipo": {
     "high": {
       "entrant_entities": 4,
-      "control_entities": 5,
+      "control_entities": 2,
       "entrant_present": 2,
       "entrant_absent_with_proven_coverage": 2,
-      "control_present": 1,
-      "control_absent_with_proven_coverage": 4,
+      "control_present": 0,
+      "control_absent_with_proven_coverage": 2,
       "false_negative_rate": 0.5,
-      "false_positive_rate": 0.2
+      "false_positive_rate": 0
     },
     "high_or_medium": {
       "entrant_entities": 5,
-      "control_entities": 5,
+      "control_entities": 2,
       "entrant_present": 2,
       "entrant_absent_with_proven_coverage": 3,
-      "control_present": 1,
-      "control_absent_with_proven_coverage": 4,
+      "control_present": 0,
+      "control_absent_with_proven_coverage": 2,
       "false_negative_rate": 0.6,
-      "false_positive_rate": 0.2
+      "false_positive_rate": 0
     }
-  }
+  },
+  "matched_strata_correction": {
+    "correction_date": "2026-09-22",
+    "reason": "Identity-confidence sensitivity must preserve entrant-specific risk-set strata. Controls matched to an excluded entrant stratum are excluded at the same sensitivity tier.",
+    "correction_probe_run_id": 35675434431,
+    "correction_probe_head_sha": "54de7058dd2e145d6e6dc749120a790045d8657b",
+    "correction_probe_artifact_id": 10672723296,
+    "correction_probe_artifact_digest": "sha256:f71471cb8bd975066f682c69467a6ae4eb96fb133998b0c25f0be00bb53eb883",
+    "correction_probe_generated_result_sha256": "7ad9c5c01032db5832485251c1f7f223d605ea4a6539ad772dc22f9d5a5ce908",
+    "probe_status": "SEMANTICS_AND_TESTS_GREEN_OLD_MANIFEST_HASH_EXPECTED_FAILURE",
+    "accepted_validation_run_id": 35675547261,
+    "accepted_validation_head_sha": "17df2ee68a90fe1ded6ffe7fff2f1dabb413cc6e",
+    "accepted_validation_artifact_id": 10672965740,
+    "accepted_validation_artifact_digest": "sha256:738ecb9951c5251f7a4ef4962533ed874a35df0c08e56f3278aa959c2f076c1a",
+    "accepted_validation_status": "GREEN"
+  },
+  "identity_sensitivity_rule": "At each confidence tier, controls are retained only when their matched entrant candidate stratum is retained at that same tier."
 }

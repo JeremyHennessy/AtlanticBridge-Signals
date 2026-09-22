@@ -1,22 +1,41 @@
 # Backtest 002 — statistical sufficiency diagnostic
 
 Accepted design date: 2026-09-21.
+Matched-stratum correction: 2026-09-22.
 
 ## Purpose
 
-Backtest 001 now has one signal family, CIPO Canadian trademark evidence, with
-both verified pre-anchor positives and authoritative absence coverage on the
+Backtest 001 has one signal family, CIPO Canadian trademark evidence, with both
+verified pre-anchor positives and authoritative absence coverage on the
 identity-qualified subset. That is enough to open **weight design** mechanically.
 It is not enough to justify publishing Expansion Score weights.
 
 Backtest 002 adds an exploratory inferential uncertainty layer without changing
-Backtest 001, source semantics, identity decisions, score weights, or the
-commercial UI.
+source semantics, identity decisions, score weights, or the commercial UI.
+
+## Matched-stratum rule
+
+The controls were selected inside entrant-specific risk sets. Identity
+sensitivity must therefore preserve those strata.
+
+At a given identity-confidence tier:
+
+- an entrant is retained only when its foreign signal identity passes the tier;
+- a control is retained only when the control itself passes the tier **and**
+  its matched entrant candidate is retained at the same tier.
+
+The earlier sensitivity calculation incorrectly kept controls matched to
+LOW-confidence entrants after those entrants were excluded. In particular,
+Andriani's CIPO-positive control row was matched to the LOW-confidence Antea
+stratum and cannot be counted in the HIGH or HIGH+MEDIUM comparison.
+
+The source state counts across the complete 12-entity research cohort are
+unchanged. Only the identity-sensitivity comparison is corrected.
 
 ## Methods
 
-For each identity-qualified CIPO comparison at the existing 24, 12, 6 and
-3 month event-time cutoffs:
+For each matched identity-qualified CIPO comparison at the existing 24, 12, 6
+and 3 month event-time cutoffs:
 
 - positive-rate uncertainty is reported with a 95% Wilson score interval;
 - entrant minus control risk difference uses the 95% Newcombe (1998) method 10
@@ -50,54 +69,50 @@ The machine-readable output therefore sets:
 
 A future publication gate requires a separate confirmatory design established
 before evaluating its validation data, with a predeclared primary comparison
-and an independent holdout cohort or equivalent prospective validation. The
-current cohort can be used for feature discovery and study design, not for the
-final confirmatory claim.
+and an independent holdout cohort or equivalent prospective validation.
 
-## Current result
+## Corrected current result
 
-The CIPO counts are unchanged across the four cutoffs in the current cohort.
+The CIPO counts are unchanged across the four cutoffs.
 
 ### HIGH identity confidence
 
 Entrants: 2 present / 2 proven absent, positive rate 0.50.
 
-Controls: 1 present / 4 proven absent, positive rate 0.20.
+Matched controls: 0 present / 2 proven absent, positive rate 0.00.
 
 - entrant 95% Wilson interval: 0.150039 to 0.849961;
-- control 95% Wilson interval: 0.036224 to 0.624465;
-- risk difference: +0.30;
-- Newcombe risk-difference 95% interval: -0.250130 to +0.686387;
-- two-sided Fisher exact p = 0.523810.
+- control 95% Wilson interval: 0.000000 to 0.657620;
+- risk difference: +0.50;
+- Newcombe risk-difference 95% interval: -0.244941 to +0.849961;
+- two-sided Fisher exact p = 0.466667.
 
 ### HIGH or MEDIUM identity confidence
 
 Entrants: 2 present / 3 proven absent, positive rate 0.40.
 
-Controls: 1 present / 4 proven absent, positive rate 0.20.
+Matched controls: 0 present / 2 proven absent, positive rate 0.00.
 
 - entrant 95% Wilson interval: 0.117621 to 0.769276;
-- control 95% Wilson interval: 0.036224 to 0.624465;
-- risk difference: +0.20;
-- Newcombe risk-difference 95% interval: -0.309813 to +0.603964;
+- control 95% Wilson interval: 0.000000 to 0.657620;
+- risk difference: +0.40;
+- Newcombe risk-difference 95% interval: -0.315683 to +0.769276;
 - two-sided Fisher exact p = 1.0.
 
 ## Interpretation
 
-The observed CIPO direction is entrants > controls, but the uncertainty is very
-wide. Both 95% risk-difference intervals include zero and neither Fisher test is
-significant at alpha 0.05.
+The corrected point differences are larger because the CIPO-positive Andriani
+control belonged to the excluded LOW-confidence Antea stratum. That does **not**
+make the evidence stronger overall: the matched control denominator falls from
+five to two, leaving even wider practical uncertainty.
 
 Therefore:
 
 - Backtest 001 weight **design** remains mechanically open;
 - Expansion Score 1.0 weight **publication remains blocked**;
 - no effect-size claim is promoted from this cohort;
-- CIPO can remain a candidate feature while the identity-qualified cohort is
-  expanded.
-
-This is a sample-size/evidence problem, not a reason to weaken source or
-identity standards.
+- cohort expansion must preserve entrant-control strata rather than adding
+  unmatched controls to a pooled denominator.
 
 ## Reproduction
 
@@ -109,14 +124,13 @@ python scripts/run_backtest_002.py --output /tmp/backtest-002.json
 
 `tests/test_backtest_002.py` locks the Fisher reference tables, Wilson
 intervals, Newcombe method 10 risk-difference intervals, candidate-signal
-boundary, and the exploratory fail-closed publication gate. A synthetic
-strong-effect test proves that even a locally resolved exploratory row cannot
-open publication.
+boundary, and the exploratory fail-closed publication gate.
 
 ## Next gate
 
-Increase the number of identity-qualified entrant/control entities without
-changing source semantics. Use the enlarged exploratory cohort to choose a
-primary comparison and estimate plausible effect sizes. Then define a separate
-confirmatory validation cohort before observing its outcomes. Do not publish
+Increase the number of **matched identity-qualified entrant strata**, not merely
+the number of standalone controls. Expanded controls matched to LOW-confidence
+entrants cannot increase the HIGH-tier denominator until the corresponding
+entrant identity is independently resolved. Use the expanded exploratory cohort
+to design a future predeclared confirmatory validation cohort; do not publish
 Expansion Score weights from Backtest 002.

@@ -232,6 +232,24 @@ def _error_rate_metrics(
     entrant_counts: dict[str, int],
     control_counts: dict[str, int],
 ) -> dict[str, object]:
+    if (
+        entrant_counts["entities"] == 0
+        or control_counts["entities"] == 0
+    ):
+        return {
+            "false_positive_rate": None,
+            "false_negative_rate": None,
+            "status": "NOT_ESTIMABLE_EMPTY_ROLE",
+            "observed_control_positive_lower_bound": _ratio(
+                control_counts["present"],
+                control_counts["entities"],
+            ),
+            "observed_entrant_positive_lower_bound": _ratio(
+                entrant_counts["present"],
+                entrant_counts["entities"],
+            ),
+        }
+
     entrant_unknown = entrant_counts["unknown"]
     control_unknown = control_counts["unknown"]
     if entrant_unknown or control_unknown:
@@ -298,6 +316,25 @@ def build_backtest_001(
     role_totals = Counter(str(row["role"]) for row in entities.values())
     if role_totals != Counter({"ENTRANT": 7, "CONTROL": 5}):
         raise ValueError(f"Backtest 001 cohort changed unexpectedly: {role_totals}")
+
+    entrant_candidate_ids = {
+        str(row.get("candidate_outcome_id") or "")
+        for row in entities.values()
+        if row["role"] == "ENTRANT"
+    }
+    if "" in entrant_candidate_ids:
+        raise ValueError("entrant entity missing candidate_outcome_id")
+    for entity_id, entity in entities.items():
+        if entity["role"] != "CONTROL":
+            continue
+        matched_candidate = str(
+            entity.get("candidate_outcome_id") or ""
+        )
+        if matched_candidate not in entrant_candidate_ids:
+            raise ValueError(
+                f"control {entity_id} references unknown entrant stratum "
+                f"{matched_candidate!r}"
+            )
 
     output_signals: list[dict[str, object]] = []
     signals_with_any_present = 0
@@ -390,14 +427,29 @@ def build_backtest_001(
 
         identity_sensitivity: list[dict[str, object]] = []
         for tier in ("HIGH", "HIGH_OR_MEDIUM"):
+            eligible_entrant_strata = {
+                str(entity["candidate_outcome_id"])
+                for entity in entities.values()
+                if entity["role"] == "ENTRANT"
+                and _confidence_allowed(entity, tier)
+            }
             for offset in OFFSETS_MONTHS:
                 tier_rows = []
+                matched_control_strata: set[str] = set()
                 for row in family_rows:
                     if row["offset_months"] != offset:
                         continue
                     entity = entities[str(row["entity_id"])]
-                    if _confidence_allowed(entity, tier):
-                        tier_rows.append(row)
+                    if not _confidence_allowed(entity, tier):
+                        continue
+                    if entity["role"] == "CONTROL":
+                        matched_candidate = str(
+                            entity["candidate_outcome_id"]
+                        )
+                        if matched_candidate not in eligible_entrant_strata:
+                            continue
+                        matched_control_strata.add(matched_candidate)
+                    tier_rows.append(row)
                 entrant_counts = _role_counts(tier_rows, "ENTRANT")
                 control_counts = _role_counts(tier_rows, "CONTROL")
                 subset_error_rates = _error_rate_metrics(
@@ -408,6 +460,12 @@ def build_backtest_001(
                     {
                         "identity_tier": tier,
                         "offset_months": offset,
+                        "eligible_entrant_strata": len(
+                            eligible_entrant_strata
+                        ),
+                        "matched_control_strata": len(
+                            matched_control_strata
+                        ),
                         "entrant_present_lower_bound": _ratio(
                             entrant_counts["present"],
                             entrant_counts["entities"],
@@ -493,6 +551,12 @@ def build_backtest_001(
         "design": "BACKTEST_001_SOURCE_INDEPENDENT_EVENT_TIME_DIAGNOSTIC",
         "target_boundary": accepted_input.get("target_boundary"),
         "offsets_months": list(OFFSETS_MONTHS),
+        "identity_sensitivity_rule": (
+            "At each confidence tier, controls are retained only when their "
+            "matched entrant candidate stratum is retained at that same tier. "
+            "This preserves the risk-set matching design during sensitivity "
+            "analysis."
+        ),
         "cohort": {
             "entrant_entities": role_totals["ENTRANT"],
             "time_indexed_control_entities": role_totals["CONTROL"],

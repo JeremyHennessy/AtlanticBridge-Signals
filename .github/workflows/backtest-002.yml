@@ -71,11 +71,13 @@ jobs:
               if row["identity_tier"] == "HIGH"
               and row["offset_months"] == 3
           )
-          assert high["fisher_exact_two_sided_p"] == 0.52381
+          assert high["fisher_exact_two_sided_p"] == 0.466667
+          assert high["control_positive_rate"]["total"] == 2
+          assert high["control_positive_rate"]["point_estimate"] == 0.0
           assert high["risk_difference"] == {
-              "point_estimate": 0.3,
-              "lower_95": -0.25013,
-              "upper_95": 0.686387,
+              "point_estimate": 0.5,
+              "lower_95": -0.244941,
+              "upper_95": 0.849961,
           }
           assert high["directional_discrimination_resolved"] is False
 
@@ -85,10 +87,12 @@ jobs:
               and row["offset_months"] == 3
           )
           assert eligible["fisher_exact_two_sided_p"] == 1.0
+          assert eligible["control_positive_rate"]["total"] == 2
+          assert eligible["control_positive_rate"]["point_estimate"] == 0.0
           assert eligible["risk_difference"] == {
-              "point_estimate": 0.2,
-              "lower_95": -0.309813,
-              "upper_95": 0.603964,
+              "point_estimate": 0.4,
+              "lower_95": -0.315683,
+              "upper_95": 0.769276,
           }
           assert eligible["directional_discrimination_resolved"] is False
           PY
