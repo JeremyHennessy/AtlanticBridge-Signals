@@ -17,7 +17,7 @@ async function overflow(page, label) {
   check(`${label}: no page-level horizontal overflow`,value.document<=value.viewport+2 && value.body<=value.viewport+2,JSON.stringify(value));
 }
 async function ready(page) {
-  await page.locator('body[data-ui-version="2026-09-22-research-01"]').waitFor();
+  await page.locator('body[data-ui-version="2026-09-22-research-triage-01"]').waitFor();
   await page.waitForFunction(expected => document.querySelector("#metric-cases")?.textContent === String(expected), dashboard.cases.length);
 }
 async function go(page, route) {
@@ -154,12 +154,30 @@ async function run(label,type,options) {
       await captureRoute(page,label,route);
     }
     await go(page,"#research");
-    check(`${label}: expanded research cards`,await page.locator("[data-research-id]").count()===dashboard.research_cohort.length);
+    check(`${label}: expanded research rows`,await page.locator("[data-research-id]").count()===dashboard.research_cohort.length);
     check(`${label}: 40-company universe`,await page.locator("#metric-browsable").innerText()===String(dashboard.summary.browsable_company_count));
+    check(`${label}: research result count`,await page.locator("#research-result-count").innerText()===`${dashboard.research_cohort.length} of ${dashboard.research_cohort.length} companies`);
     const researchText=await page.locator("#research-view").innerText();
-    check(`${label}: research role boundary`,researchText.includes("not a current expansion prediction") && researchText.includes("Accepted control") && researchText.includes("Identity-qualified"));
-    check(`${label}: research signal rows`,await page.locator(".research-signal-row").count()===dashboard.research_cohort.length*3);
-    check(`${label}: research signal boundaries`,researchText.includes("Present before cutoff") && researchText.includes("No exact hit · coverage proven") && researchText.includes("Unknown · coverage not sufficient"));
+    check(`${label}: research role boundary`,researchText.includes("not current prospects") && researchText.includes("Accepted controls") && researchText.includes("Identity-qualified"));
+    check(`${label}: research signal pills`,await page.locator(".research-signal-pill").count()===dashboard.research_cohort.length*3);
+    check(`${label}: research signal boundaries`,researchText.includes("Present") && researchText.includes("Proven absent") && researchText.includes("Unknown"));
+    await page.locator("#research-cipo-filter").selectOption("PRESENT");
+    await page.waitForFunction(()=>document.querySelectorAll("[data-research-id]").length===1);
+    check(`${label}: CIPO present filter`,(await page.locator("[data-research-id]").innerText()).includes("Andriani"));
+    check(`${label}: research filter URL`,page.url().includes("cipo=PRESENT"));
+    await page.locator("#research-reset").click();
+    await page.waitForFunction(expected=>document.querySelectorAll("[data-research-id]").length===expected,dashboard.research_cohort.length);
+    await page.locator("#research-role-filter").selectOption("ACCEPTED_BACKTEST_CONTROL");
+    await page.waitForFunction(()=>document.querySelectorAll("[data-research-id]").length===4);
+    check(`${label}: accepted control filter`,await page.locator("[data-research-id]").count()===4);
+    await page.locator("#research-reset").click();
+    await page.locator("#research-search").fill("Andriani");
+    await page.waitForFunction(()=>document.querySelectorAll("[data-research-id]").length===1);
+    check(`${label}: research search`,(await page.locator("[data-research-id]").innerText()).includes("Andriani"));
+    await page.locator(".research-detail summary").click();
+    check(`${label}: research details expand`,await page.locator(".research-detail[open] .research-detail-body").isVisible());
+    check(`${label}: primary research source link`,await page.locator(".research-detail[open] .source-link").count()>0);
+    await page.locator("#research-reset").click();
     await go(page,"#markets");
     const marketText=await page.locator("#markets-view").innerText();
     check(`${label}: Canada-wide market scope`,marketText.includes("Nova Scotia-specific evidence remains useful") && marketText.includes("Ontario") && marketText.includes("Québec") && marketText.includes("British Columbia"));
