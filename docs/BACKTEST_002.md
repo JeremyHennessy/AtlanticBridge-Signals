@@ -9,8 +9,9 @@ both verified pre-anchor positives and authoritative absence coverage on the
 identity-qualified subset. That is enough to open **weight design** mechanically.
 It is not enough to justify publishing Expansion Score weights.
 
-Backtest 002 adds an inferential uncertainty layer without changing Backtest
-001, source semantics, identity decisions, score weights, or the commercial UI.
+Backtest 002 adds an exploratory inferential uncertainty layer without changing
+Backtest 001, source semantics, identity decisions, score weights, or the
+commercial UI.
 
 ## Methods
 
@@ -29,8 +30,29 @@ Reference: Robert G. Newcombe, *Statistics in Medicine* 17 (1998), 873-890,
 comparison of eleven methods", DOI
 10.1002/(SICI)1097-0258(19980430)17:8<873::AID-SIM779>3.0.CO;2-I.
 
-The offsets remain descriptive diagnostics. No cutoff is promoted after seeing
-the data as a predeclared primary endpoint.
+The offsets and identity tiers are exploratory diagnostics. No cutoff or tier
+was predeclared as a primary endpoint before inspecting this cohort.
+
+## Publication boundary
+
+Backtest 002 **cannot open the Expansion Score publication gate**, even if an
+exploratory row later crosses its local Fisher / Newcombe threshold. Allowing
+the first significant row among several inspected cutoffs and overlapping
+identity tiers to open publication would contradict the no-post-hoc-primary
+rule.
+
+The machine-readable output therefore sets:
+
+- `publication_gate_mode =
+  EXPLORATORY_NO_PREDECLARED_PRIMARY_ENDPOINT`;
+- `expansion_score_1_0_weight_publication_allowed = false` unconditionally
+  for this exploratory design.
+
+A future publication gate requires a separate confirmatory design established
+before evaluating its validation data, with a predeclared primary comparison
+and an independent holdout cohort or equivalent prospective validation. The
+current cohort can be used for feature discovery and study design, not for the
+final confirmatory claim.
 
 ## Current result
 
@@ -87,11 +109,14 @@ python scripts/run_backtest_002.py --output /tmp/backtest-002.json
 
 `tests/test_backtest_002.py` locks the Fisher reference tables, Wilson
 intervals, Newcombe method 10 risk-difference intervals, candidate-signal
-boundary, and fail-closed publication gate.
+boundary, and the exploratory fail-closed publication gate. A synthetic
+strong-effect test proves that even a locally resolved exploratory row cannot
+open publication.
 
 ## Next gate
 
 Increase the number of identity-qualified entrant/control entities without
-changing source semantics. Resolve the remaining low-confidence entrant
-identities first, then expand the audited risk-set cohort. Re-run Backtest 002
-only after those identity decisions are source-backed.
+changing source semantics. Use the enlarged exploratory cohort to choose a
+primary comparison and estimate plausible effect sizes. Then define a separate
+confirmatory validation cohort before observing its outcomes. Do not publish
+Expansion Score weights from Backtest 002.
