@@ -1,0 +1,17 @@
+# Evidence retention and actual recovery
+
+Starting application baseline: PR108 main 046dd412ef10b45441b81cd374c5d1aa42c9987c. Original accepted baseline 686d8b9 remains preserved. No UI, source collector, original monitoring checkpoint contract, workspace, model, score or observation clock is changed by this increment.
+
+## Storage choice and limits
+Use unpublished draft GitHub release assets as an additional authenticated copy outside Actions' 90-day artifact expiry. Keep each exact source artifact, its SHA-256, the exact monitoring-state checkpoint named in the artifact, and metadata tying the archive to source/run/code identities. Policy: retain at least eighteen months and while referenced; no automatic deletion. This is same-provider mutable/deletable storage, not an immutable vault or off-site backup. Access control does not confer commercial redistribution rights. Never publish an evidence draft.
+
+A disposable proof ran as 35797698040. Independently downloaded artifact 10724503037, SHA-256 f30e02d2a3a4e0a642ea817b8b7a3e732f383ba212c55255fd7fe7f5c5aaeb00, verifies authenticated exact-byte restoration; anonymous release, asset API and browser-download requests returned 404; the disposable asset and draft were deleted and authenticated GETs confirmed their absence. This capability proof is not a claim that production evidence was archived.
+
+## Required acceptance
+Archive accepted seed 10717489758, accepted eight-source proof 10720884358, and accepted tranche-two proof 10724340100 only at their pinned ZIP digests. Independently hash every raw response in each ZIP. Scan the twenty most recent completed main monitor runs and retain production capture artifacts separately from proof artifacts. Restore each exact captured checkpoint into an empty SQLite ledger, require integrity_check=ok, and compare the entire exported state including all first/last observation clocks and fingerprints. A missing artifact/checkpoint, wrong digest, public release, failed privacy check, or differing existing asset is a failure, never an overwrite or a new baseline.
+
+The release proof runs on the explicitly named same-repository feature branch and writes only restricted draft assets and disposable proof metadata; it never commits monitoring-state. After acceptance/merge, daily and post-monitor runs publish only archive-attempt.json, archive-health.json and archive-manifests to the dedicated metadata branch. Shared concurrency prevents collisions with the original monitor. On failure the last accepted archive-health is retained; a failed attempt and failing job remain explicit.
+
+Archive assets are downloaded again and compared byte-for-byte. Each asset API and the containing draft is verified unavailable anonymously; repeated identical release checks are cached within a run to avoid consuming the anonymous API budget. The earlier disposable probe additionally verified the browser-download URL behavior. The source-bound pilot proof can recover the exact pinned bytes from an unpublished archive after Actions expiry, without changing accepted hashes or treating a published copy as approved.
+
+Production archival is not accepted merely because code exists or unit tests pass. Inspect the exact-head archive report, actual draft/asset states, source hashes, recovered SQLite state and independent artifact before merge. Then verify the main production archive job and durable metadata. The older health.json continues to describe its original 90-day capture contract; archive-health.json separately reports the additional verified copy.

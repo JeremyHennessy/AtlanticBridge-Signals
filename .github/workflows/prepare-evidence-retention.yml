@@ -1,0 +1,48 @@
+name: Prepare isolated evidence retention candidate
+on:
+  push:
+    branches: [feature/evidence-retention-20260922]
+    paths: [.github/workflows/prepare-evidence-retention.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply three exact tested additive files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$GITHUB_REF_NAME" = 'feature/evidence-retention-20260922'
+          test "$(git rev-parse HEAD^)" = '046dd412ef10b45441b81cd374c5d1aa42c9987c'
+          python - <<'PY'
+          import base64,gzip,hashlib,json,subprocess
+          from pathlib import Path
+          blob=json.loads(subprocess.check_output(['gh','api','/repos/JeremyHennessy/AtlanticBridge-Signals/git/blobs/beec712437282be7eef1824ba6474f49eea16911']))
+          data=gzip.decompress(base64.b64decode(blob['content']))
+          assert hashlib.sha256(data).hexdigest()=='c839d8f0d461f93b1097b23abf623ccb55d9ad636a5b836910db61045b6204be'
+          files=json.loads(data)
+          assert set(files)=={'scripts/archive_evidence.py','scripts/fetch_accepted_proof.py','tests/test_evidence_archive.py'}
+          for name,content in files.items():
+              p=Path(name);assert not p.exists();p.write_text(content)
+          PY
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
+          git diff --check
+      - name: Remove helper and commit isolated files only
+        run: |
+          git rm .github/workflows/prepare-evidence-retention.yml
+          git add scripts/archive_evidence.py scripts/fetch_accepted_proof.py tests/test_evidence_archive.py
+          git config user.name 'AtlanticBridge evidence retention'
+          git config user.email 'actions@users.noreply.github.com'
+          git commit -m 'Add verified draft-only raw-evidence archive and exact checkpoint restoration'
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
