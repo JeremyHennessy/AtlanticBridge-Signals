@@ -1,0 +1,53 @@
+name: Investment outcome discovery proof
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/atlanticbridge/investment_discovery.py'
+      - 'scripts/probe_investment_discovery.py'
+      - 'tests/test_investment_discovery.py'
+      - 'reviews/company_sources/investment-discovery-2026-09-22.json'
+      - '.github/workflows/investment-discovery-proof.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run full Python and existing worklist regression suites
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -v
+          node --test tests/test_workspace.cjs
+      - name: Collect two live snapshots using the same accepted ledger
+        run: |
+          mkdir -p artifacts/investment-discovery
+          python scripts/probe_investment_discovery.py \
+            --state artifacts/investment-discovery/observations.sqlite \
+            --output artifacts/investment-discovery/first
+          python scripts/probe_investment_discovery.py \
+            --state artifacts/investment-discovery/observations.sqlite \
+            --output artifacts/investment-discovery/second
+      - name: Preserve exact tested revision and pilot boundaries
+        if: always()
+        run: |
+          mkdir -p artifacts/investment-discovery
+          git rev-parse HEAD > artifacts/investment-discovery/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/investment-discovery/tested-source.tar.gz
+          python scripts/check_commercial_validation.py > artifacts/investment-discovery/validation-readiness.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: investment-discovery-${{ github.event.pull_request.head.sha || github.sha }}
+          path: artifacts/investment-discovery/
+          retention-days: 90
+          if-no-files-found: error
