@@ -1,0 +1,222 @@
+name: Expanded control CIPO exact-alias research scan
+
+on:
+  push:
+    branches:
+      - "research/expanded-control-cipo-scan-*"
+  workflow_dispatch:
+
+concurrency:
+  group: expanded-control-cipo-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - label: y2000_2003
+            start_year: 2000
+            end_year: 2003
+          - label: y2004_2007
+            start_year: 2004
+            end_year: 2007
+          - label: y2008_2011
+            start_year: 2008
+            end_year: 2011
+          - label: y2012_2015
+            start_year: 2012
+            end_year: 2015
+          - label: y2016_2019
+            start_year: 2016
+            end_year: 2019
+          - label: y2020_2023
+            start_year: 2020
+            end_year: 2023
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install project and PDF text extractor
+        run: |
+          python -m pip install -e .
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+
+      - name: Unit tests
+        run: |
+          python -m unittest \
+            tests.test_cipo_journal \
+            tests.test_cipo_journal_full_scan \
+            tests.test_expanded_control_cipo \
+            -v
+
+      - name: Build exact reviewed-alias scanner input
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          from atlanticbridge.expanded_control_cipo import (
+              build_reviewed_entity_contract,
+              scanner_entities_payload,
+          )
+
+          paths = [
+              Path(
+                  "reviews/control_cohorts/"
+                  "2026-09-22-expanded-control-identity-batch-01.json"
+              ),
+              Path(
+                  "reviews/control_cohorts/"
+                  "2026-09-22-expanded-control-identity-batch-02.json"
+              ),
+          ]
+          batches = [json.loads(path.read_text()) for path in paths]
+          contract = build_reviewed_entity_contract(batches)
+          assert contract["entity_count"] == 9
+          entities = scanner_entities_payload(contract)
+
+          Path("/tmp/expanded-control-cipo-entities.json").write_text(
+              json.dumps(entities, indent=2, sort_keys=True) + "\n"
+          )
+          Path("/tmp/expanded-control-cipo-identities.json").write_text(
+              json.dumps({"schema_version": 1, "cases": []}) + "\n"
+          )
+          PY
+
+      - name: Scan accepted Journal shard
+        run: |
+          mkdir -p expanded-cipo-shards
+          python scripts/scan_cipo_journal_shard.py \
+            --start-year ${{ matrix.start_year }} \
+            --end-year ${{ matrix.end_year }} \
+            --entities /tmp/expanded-control-cipo-entities.json \
+            --journal-identities /tmp/expanded-control-cipo-identities.json \
+            --output expanded-cipo-shards/shard-${{ matrix.label }}.json
+
+      - name: Validate shard accounting
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path(
+              "expanded-cipo-shards/shard-${{ matrix.label }}.json"
+          )
+          payload = json.loads(path.read_text())
+          summary = payload["summary"]
+          assert payload["design"] == "CIPO_JOURNAL_FULL_SCAN_SHARD"
+          assert payload["alias_contract"]["entity_count"] == 9
+          assert payload["alias_contract"]["alias_count"] >= 9
+          assert (
+              summary["issues_scanned"] + summary["issue_failures"]
+              == summary["issues_in_inventory"]
+          )
+          assert len(payload["issue_proof"]) == summary["issues_scanned"]
+          PY
+
+      - name: Upload compact shard proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: expanded-control-cipo-shard-${{ matrix.label }}
+          path: expanded-cipo-shards/shard-${{ matrix.label }}.json
+          retention-days: 30
+          if-no-files-found: error
+
+  aggregate:
+    needs: scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Download shard proofs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: expanded-control-cipo-shard-*
+          path: expanded-cipo-shards
+          merge-multiple: true
+
+      - name: Aggregate research proof
+        run: |
+          mkdir -p expanded-cipo-output
+          python scripts/aggregate_expanded_control_cipo_scan.py \
+            --shard-dir expanded-cipo-shards \
+            --batch reviews/control_cohorts/2026-09-22-expanded-control-identity-batch-01.json \
+            --batch reviews/control_cohorts/2026-09-22-expanded-control-identity-batch-02.json \
+            --output expanded-cipo-output/expanded-control-cipo-proof.json
+
+      - name: Enforce research-only completeness gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = json.loads(
+              Path(
+                  "expanded-cipo-output/"
+                  "expanded-control-cipo-proof.json"
+              ).read_text()
+          )
+          s = p["summary"]
+          g = p["gate"]
+          i = p["inventory"]
+
+          assert p["design"] == (
+              "EXPANDED_CONTROL_CIPO_EXACT_REVIEWED_ALIAS_"
+              "COMPLETENESS_PROOF"
+          )
+          assert i["issue_count"] == 1221
+          assert i["canonical_issue_sha256"] == (
+              "8a89eccf0c368e82de4fcd62bea62481930210b7ddf2c182b18e7f45e7521a2d"
+          )
+          assert s["reviewed_entity_count"] == 9
+          assert s["complete_issue_count"] == 1221
+          assert s["issue_failure_count"] == 0
+          assert s["unresolved_alias_occurrence_count"] == 0
+          assert g["structural_errors"] == []
+          assert g["issue_failures"] == []
+          assert g["unresolved_alias_occurrences"] == []
+          assert g["passed"] is True
+          assert s["absence_inference_allowed_for_reviewed_aliases"] is True
+
+          # Research boundary: coverage is established only for the nine
+          # reviewed controls and does not alter accepted Backtest 001 files.
+          assert len(p["coverage"]) == 9
+          assert all(
+              row["identity_confidence"] == "HIGH"
+              and row["absence_coverage_proven"] is True
+              for row in p["coverage"]
+          )
+          PY
+
+      - name: Upload aggregate research proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: expanded-control-cipo-proof-${{ github.sha }}
+          path: expanded-cipo-output/
+          retention-days: 90
+          if-no-files-found: error
