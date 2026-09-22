@@ -82,9 +82,20 @@ jobs:
       - name: Collect TED exact-alias history
         run: |
           mkdir -p expanded-output/proofs
-          python scripts/collect_backtest_ted.py \
-            --entities reviews/backtests/2026-09-22-expanded-research-entities.json \
-            --output expanded-output/ted-live.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.collect_backtest_ted import collect
+          entities=json.loads(Path("reviews/backtests/2026-09-22-expanded-research-entities.json").read_text())
+          payload=collect(entities_payload=entities)
+          summary=payload["summary"]
+          assert summary["entity_count"] == 9, summary
+          assert summary["complete_entity_query_sets"] == 9, summary
+          Path("expanded-output/ted-live.json").write_text(
+              json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+          )
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
           python scripts/build_source_proof_artifact.py \
             --source ted \
             --input expanded-output/ted-live.json \
