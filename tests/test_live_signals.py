@@ -156,6 +156,34 @@ class LiveSignalsTests(unittest.TestCase):
         self.assertEqual(signal["publicly_available_date"], "2026-09-21")
         self.assertEqual(signal["recency_days"], 1)
 
+    def test_zero_padded_initial_amendment_number_is_not_an_amendment(self):
+        conn = connect(":memory:")
+        ingest_awards(
+            conn,
+            [
+                award(
+                    reference="EU-ZERO",
+                    supplier="Example Spain S.L.",
+                    country="Spain",
+                    publication="2026-09-20",
+                    amendment="000",
+                )
+            ],
+            source_sha256="sha-current",
+            source_url="https://canadabuys.canada.ca/opendata/example.csv",
+            source_bytes=123,
+            observed_at="2026-09-22T12:00:00+00:00",
+        )
+        payload = build_canadabuys_live_signals(
+            conn,
+            as_of_date=date(2026, 9, 22),
+            lookback_days=30,
+        )
+        signal = payload["signals"][0]
+        self.assertEqual(signal["amendment_number"], "000")
+        self.assertEqual(signal["signal_kind"], "FEDERAL_AWARD_PUBLISHED")
+        self.assertEqual(signal["publicly_available_date"], "2026-09-20")
+
     def test_company_id_is_stable_across_multiple_awards(self):
         conn = connect(":memory:")
         ingest_awards(

@@ -150,9 +150,12 @@ def build_canadabuys_live_signals(
 
         amendment_number = str(row["amendment_number"] or "").strip()
         amendment_date = _date_value(row["amendment_date"])
+        amendment_number_is_nonzero = (
+            bool(amendment_number) and bool(amendment_number.strip("0"))
+        )
         signal_kind = (
             "FEDERAL_AWARD_AMENDED"
-            if amendment_number not in {"", "0", "00"} or amendment_date is not None
+            if amendment_number_is_nonzero or amendment_date is not None
             else "FEDERAL_AWARD_PUBLISHED"
         )
 
