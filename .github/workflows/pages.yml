@@ -6,10 +6,17 @@ on:
     paths:
       - "index.html"
       - "ui/**"
+      - "src/atlanticbridge/live_signals.py"
+      - "src/atlanticbridge/canadabuys_store.py"
+      - "src/atlanticbridge/sources/canadabuys.py"
       - "scripts/build_ui_payload.py"
+      - "scripts/build_live_signals.py"
       - "reviews/outcome_audit/**"
+      - "tests/test_live_signals.py"
       - "tests/ui_visual_acceptance.mjs"
       - ".github/workflows/pages.yml"
+  schedule:
+    - cron: "17 10 * * *"
   workflow_dispatch:
 
 permissions:
@@ -36,10 +43,52 @@ jobs:
       - name: Install project
         run: python -m pip install -e .
 
-      - name: Verify and rebuild deterministic UI payload
+      - name: Verify deterministic evidence payloads
         run: |
-          python -m unittest tests.test_ui_payload -v
+          python -m unittest tests.test_ui_payload tests.test_live_signals -v
           python scripts/build_ui_payload.py
+
+      - name: Refresh current CanadaBuys live signals
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set +e
+          rm -f /tmp/atlanticbridge-live.sqlite /tmp/live-signals.json
+          python -m atlanticbridge ingest-canadabuys-awards             --db /tmp/atlanticbridge-live.sqlite
+          ingest_status=$?
+          if [ "$ingest_status" -eq 0 ]; then
+            python scripts/build_live_signals.py               --db /tmp/atlanticbridge-live.sqlite               --output /tmp/live-signals.json               --lookback-days 365
+            build_status=$?
+          else
+            build_status=1
+          fi
+          set -e
+
+          if [ "$ingest_status" -eq 0 ] && [ "$build_status" -eq 0 ] && [ -s /tmp/live-signals.json ]; then
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("/tmp/live-signals.json").read_text())
+          assert p["status"] == "ACTIVE"
+          assert p["summary"]["signal_count"] > 0
+          assert p["summary"]["company_count"] > 0
+          assert all(x["signal_family"] == "CANADABUYS_AWARD" for x in p["signals"])
+          assert all(x["source_confidence"] == "SOURCE_CONFIRMED" for x in p["signals"])
+          print(json.dumps({"generated_at":p["generated_at"],"source":p["source"],"summary":p["summary"]},indent=2))
+          PY
+            mv /tmp/live-signals.json ui/data/live-signals.json
+          elif [ "$EVENT_NAME" = "push" ]; then
+            echo "::warning::Current CanadaBuys refresh failed during code deployment; retaining the checked-in last-known-good live signal snapshot."
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("ui/data/live-signals.json").read_text())
+          print(json.dumps({"fallback_status":p["status"],"generated_at":p.get("generated_at"),"summary":p["summary"]},indent=2))
+          PY
+          else
+            echo "::error::Scheduled/manual live-signal refresh failed. Keeping the previously deployed feed by failing before Pages deployment."
+            exit 1
+          fi
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -83,6 +132,7 @@ jobs:
       - name: Verify hosted desktop and iPhone UI
         env:
           UI_BASE_URL: ${{ needs.deploy.outputs.page_url }}
+          REQUIRE_LIVE_SIGNALS: "1"
         run: node tests/ui_visual_acceptance.mjs
 
       - name: Upload hosted acceptance screenshots
