@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "accepted_at": "2026-09-22",
+  "cohort_file": "reviews/backtests/2026-09-22-expanded-research-entities.json",
+  "cohort_entity_count": 9,
+  "cutoff_end_exclusive": "2023-06-01",
+  "proofs": {
+    "cipo": {
+      "path": "reviews/backtests/source_proofs/2026-09-22-expanded-cipo-researcher-evidence.json",
+      "sha256": "a2536523a88211927b964eb8ba717c098e894567960b8a62befaad125470187a",
+      "observed_workflow_run_id": 35739350718,
+      "observed_job_id": 106784813246,
+      "result": "ZERO_EXACT_ALIAS_MATCHES_PRESENCE_ONLY",
+      "absence_inference_allowed": false,
+      "event_rows_scanned": 23244288
+    },
+    "ted": {
+      "path": "reviews/backtests/source_proofs/2026-09-22-expanded-ted-evidence.json",
+      "sha256": "08e57109a6a3a35a97f876cc6ffa1b2d3852044cd7d13ba0bcbe44ab0af44c87",
+      "observed_workflow_run_id": 35742320698,
+      "artifact_id": 10700535687,
+      "artifact_zip_sha256": "0a514c325d046bd7ccf23b588da655a0b016293c89b5e5bac4cbf378834d02cf",
+      "result": "ZERO_EXACT_ALIAS_MATCHES_WITH_PROVEN_COVERAGE"
+    },
+    "canadabuys": {
+      "path": "reviews/backtests/source_proofs/2026-09-22-expanded-canadabuys-evidence.json",
+      "sha256": "4e513b2b25b32a472c7aef5fb698e63814e13f33852b0ecffeaaed1e9b2bebaa",
+      "observed_workflow_run_id": 35742320698,
+      "artifact_id": 10700281724,
+      "artifact_zip_sha256": "8caa3f15a95c46cc30fe275628c3b2b4a18b8d44b855c34d4b959aef6dedba5d",
+      "result": "ZERO_EXACT_ALIAS_MATCHES_WITH_PROVEN_COVERAGE"
+    }
+  },
+  "interpretation": "TED and CanadaBuys non-hits are narrow exact-alias absences within proven source coverage. CIPO researcher non-hits remain unknown because the accepted source has a known completeness gap. No proof creates a permanent negative label or a current-prospect conclusion."
+}
