@@ -1,8 +1,9 @@
-// Read-only research workspace. Filters and local bookmarks never change source evidence.
-const state = {data:null, query:"", classification:"", evidence:"", country:"", sort:"name", view:"all", researchQuery:"", researchRole:"", researchCipo:"", researchSort:"signal", route:"overview", caseId:null, saved:new Set()};
+// Evidence workspace. Local filters/watchlists never change source records.
+const state = {data:null, live:null, query:"", classification:"", evidence:"", country:"", sort:"name", view:"all", signalQuery:"", signalCountry:"", signalWindow:"90", signalView:"all", researchQuery:"", researchRole:"", researchCipo:"", researchSort:"signal", route:"overview", caseId:null, saved:new Set(), watched:new Set()};
 const $ = (id) => document.getElementById(id);
 const els = {auditDate:$("audit-date"), metricCases:$("metric-cases"), metricEvidence:$("metric-evidence"), metricIdentity:$("metric-identity"), metricModel:$("metric-model"), caseSearch:$("case-search"), classificationFilter:$("classification-filter"), evidenceFilter:$("evidence-filter"), caseCountLabel:$("case-count-label"), casesBody:$("cases-body"), emptyRowTemplate:$("empty-row-template"), coverageBefore:$("coverage-before"), coverageBeforeBar:$("coverage-before-bar"), coverageSame:$("coverage-same"), coverageSameBar:$("coverage-same-bar"), coveragePublication:$("coverage-publication"), coveragePublicationBar:$("coverage-publication-bar"), medianLead:$("median-lead"), sourceTypes:$("source-types"), drawer:$("case-drawer"), drawerTitle:$("drawer-title"), drawerContent:$("drawer-content"), drawerClose:$("drawer-close"), drawerBackdrop:$("drawer-backdrop")};
 const SAVE_KEY = "atlanticbridge.saved-cases.v1";
+const WATCH_KEY = "atlanticbridge.watched-companies.v1";
 let returnFocus = null;
 let toastTimer;
 function escapeHtml(value) {
@@ -339,14 +340,165 @@ function filteredCases() {
     return nameOrder;
   });
 }
+function formatMoney(value, currency) {
+  const amount = Number(String(value || "").replace(/,/g,""));
+  if (!Number.isFinite(amount)) return value ? `${value} ${currency || ""}`.trim() : "Amount not stated";
+  try {
+    return new Intl.NumberFormat("en-CA", {
+      style:"currency",
+      currency: currency || "CAD",
+      maximumFractionDigits: amount >= 1000 ? 0 : 2,
+    }).format(amount);
+  } catch (_) {
+    return `${amount.toLocaleString("en-CA")} ${currency || ""}`.trim();
+  }
+}
+
+function formatTimestamp(value) {
+  if (!value) return "Unknown";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return String(value);
+  return parsed.toLocaleString("en-CA",{year:"numeric",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+}
+
+function unavailableLivePayload(reason="Current signal feed unavailable.") {
+  return {schema_version:1,status:"UNAVAILABLE",generated_at:null,reason,source:{family:"CANADABUYS_AWARD",label:"CanadaBuys federal award notice",observed_at:null,source_url:null},summary:{signal_count:0,company_count:0,country_count:0,latest_public_date:null,earliest_public_date:null,cad_contract_amount:"0",lookback_days:null},signals:[]};
+}
+
+function activeLiveSignals() {
+  return state.live?.status === "ACTIVE" && Array.isArray(state.live.signals) ? state.live.signals : [];
+}
+
+function liveSignalsForWindow(days=90) {
+  return activeLiveSignals().filter(signal => Number(signal.recency_days) <= days);
+}
+
+function filteredSignals() {
+  const q=state.signalQuery.trim().toLocaleLowerCase();
+  const maxDays=state.signalWindow === "all" ? null : Number(state.signalWindow);
+  return activeLiveSignals().filter(signal => {
+    if(maxDays != null && Number(signal.recency_days) > maxDays)return false;
+    if(state.signalCountry && signal.country !== state.signalCountry)return false;
+    if(state.signalView === "watched" && !state.watched.has(signal.company_id))return false;
+    if(!q)return true;
+    const text=[signal.company_name,signal.country,signal.title,signal.contracting_entity,signal.reference_number,signal.award_description].filter(Boolean).join(" ").toLocaleLowerCase();
+    return text.includes(q);
+  }).sort((a,b)=>String(b.publicly_available_date||"").localeCompare(String(a.publicly_available_date||"")) || String(a.company_name||"").localeCompare(String(b.company_name||"")));
+}
+
+function loadWatched() {
+  try {
+    const value=JSON.parse(localStorage.getItem(WATCH_KEY)||"[]");
+    if(!Array.isArray(value))throw new Error("Invalid watchlist");
+    state.watched=new Set(value.filter(x=>typeof x==="string"&&x));
+  } catch (_) {
+    state.watched=new Set();
+    showToast("Watched companies could not be loaded. The signal feed is still available.");
+  }
+}
+
+function toggleWatched(companyId) {
+  if(!companyId)return;
+  const next=new Set(state.watched);
+  next.has(companyId)?next.delete(companyId):next.add(companyId);
+  try {localStorage.setItem(WATCH_KEY,JSON.stringify([...next]));}
+  catch(_){showToast("This browser could not update the watchlist.");return;}
+  state.watched=next;
+  renderSignals();
+  showToast(next.has(companyId)?"Company watched in this browser.":"Company removed from this browser watchlist.");
+}
+
+function populateSignalCountries() {
+  const select=$("signal-country-filter");
+  if(!select)return;
+  const countries=[...new Set(activeLiveSignals().map(x=>x.country).filter(Boolean))].sort();
+  const current=state.signalCountry;
+  select.innerHTML='<option value="">All countries</option>'+countries.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");
+  if(current && countries.includes(current))select.value=current;
+}
+
+function syncSignalControls() {
+  $("signal-search").value=state.signalQuery;
+  $("signal-country-filter").value=state.signalCountry;
+  $("signal-window").value=state.signalWindow;
+  document.querySelectorAll("[data-signal-view]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.signalView===state.signalView)));
+}
+
+function syncSignalUrl() {
+  if(state.route!=="signals")return;
+  const p=new URLSearchParams();
+  if(state.signalQuery)p.set("q",state.signalQuery);
+  if(state.signalCountry)p.set("country",state.signalCountry);
+  if(state.signalWindow!=="90")p.set("window",state.signalWindow);
+  if(state.signalView!=="all")p.set("view",state.signalView);
+  history.replaceState(null,"",`#signals${p.size?"?"+p:""}`);
+}
+
+function resetSignalFilters() {
+  state.signalQuery="";state.signalCountry="";state.signalWindow="90";state.signalView="all";
+  syncSignalControls();renderSignals();syncSignalUrl();$("signal-search").focus();
+}
+
+function renderSignals() {
+  const active=state.live?.status==="ACTIVE";
+  const root=$("signals-list");
+  $("watched-count").textContent=state.watched.size;
+  if(!active){
+    $("signal-freshness").innerHTML=`<strong>Current feed unavailable.</strong><span>${escapeHtml(state.live?.reason || "No current source snapshot is available.")}</span>`;
+    for(const id of ["signal-metric-count","signal-metric-companies","signal-metric-countries","signal-metric-latest"])$(id).textContent="—";
+    $("signal-count-label").textContent="Current signal feed unavailable—not zero signals";
+    root.innerHTML='<div class="empty-state signal-empty"><h3>Current signals are unavailable.</h3><p>The historical evidence workspace remains available. No zero-signal conclusion has been inferred.</p></div>';
+    return;
+  }
+
+  const rows=filteredSignals();
+  const companyIds=new Set(rows.map(x=>x.company_id));
+  const countries=new Set(rows.map(x=>x.country).filter(Boolean));
+  const latest=rows.map(x=>x.publicly_available_date).filter(Boolean).sort().at(-1)||null;
+  $("signal-metric-count").textContent=rows.length;
+  $("signal-metric-companies").textContent=companyIds.size;
+  $("signal-metric-countries").textContent=countries.size;
+  $("signal-metric-latest").textContent=latest?formatDate(latest):"—";
+  $("signal-count-label").textContent=`${rows.length} signal${rows.length===1?"":"s"} · ${companyIds.size} compan${companyIds.size===1?"y":"ies"}`;
+  $("signal-freshness").innerHTML=`<strong>Live source refreshed ${escapeHtml(formatTimestamp(state.live.source?.observed_at || state.live.generated_at))}.</strong><span>${escapeHtml(state.live.source?.label || "Current source")} · ${escapeHtml(state.live.summary?.signal_count ?? 0)} source-backed events in the available feed.</span>`;
+
+  if(!rows.length){
+    root.innerHTML='<div class="empty-state signal-empty"><h3>No signals match these filters.</h3><p>The underlying current feed is unchanged.</p><button class="button button-secondary" type="button" data-signal-reset>Reset signal filters</button></div>';
+    return;
+  }
+
+  root.innerHTML=rows.map(signal=>{
+    const watched=state.watched.has(signal.company_id);
+    const source=safeUrl(signal.source_url);
+    const kind=signal.signal_kind==="FEDERAL_AWARD_AMENDED"?"Award amended":"Award published";
+    const amount=formatMoney(signal.contract_amount,signal.contract_currency);
+    return `<article class="live-signal-item" data-live-signal-id="${escapeHtml(signal.id)}" data-company-id="${escapeHtml(signal.company_id)}">
+      <div class="live-signal-main">
+        <div class="live-signal-date"><span class="eyebrow">${escapeHtml(kind)}</span><strong>${escapeHtml(formatDate(signal.publicly_available_date))}</strong><span>${escapeHtml(signal.recency_days)}d ago</span></div>
+        <div class="live-signal-company"><div class="live-signal-company-line"><h3>${escapeHtml(signal.company_name)}</h3><span class="status-chip status-existing">${escapeHtml(signal.country)}</span></div><p>${escapeHtml(signal.title || signal.award_description || "Federal award notice")}</p><span class="live-signal-buyer">${escapeHtml(signal.contracting_entity || "Canadian federal contracting entity not stated")}</span></div>
+        <div class="live-signal-value"><strong>${escapeHtml(amount)}</strong><span>${escapeHtml(signal.reference_number || "No reference")}</span></div>
+        <button class="save-button signal-watch" type="button" data-watch-company="${escapeHtml(signal.company_id)}" aria-pressed="${watched}" aria-label="${watched?"Unwatch":"Watch"} ${escapeHtml(signal.company_name)}" title="${watched?"Remove company from watchlist":"Watch company in this browser"}">${watched?"★":"☆"}</button>
+      </div>
+      <div class="live-signal-context"><p><strong>Why surfaced:</strong> ${escapeHtml(signal.why_surfaced)}</p><div class="live-signal-meta"><span>Stage · ${escapeHtml(String(signal.signal_stage||"").replaceAll("_"," ").toLowerCase())}</span><span>Identity · ${escapeHtml(String(signal.identity_scope||"").replaceAll("_"," ").toLowerCase())}</span>${signal.regions_of_delivery?`<span>Delivery · ${escapeHtml(signal.regions_of_delivery)}</span>`:""}</div>${source?`<a class="source-link" href="${escapeHtml(source)}" target="_blank" rel="noopener noreferrer">Official CanadaBuys source ↗</a>`:""}</div>
+    </article>`;
+  }).join("");
+}
+
 function renderMetrics() {
   const s = state.data.summary;
-  els.auditDate.textContent = `Case audit: ${formatDate(state.data.audit_date)}`;
+  const live90=liveSignalsForWindow(90);
+  const liveCompanies90=new Set(live90.map(x=>x.company_id));
+  els.auditDate.textContent = state.live?.status==="ACTIVE"
+    ? `Live: ${formatDate(state.live.summary?.latest_public_date)} · Audit: ${formatDate(state.data.audit_date)}`
+    : `Case audit: ${formatDate(state.data.audit_date)}`;
   els.metricCases.textContent = s.case_count;
   els.metricEvidence.textContent = s.research_cohort_count;
-  $("metric-public").textContent = s.cases_with_verified_pre_notification_evidence;
-  $("metric-countries").textContent = state.data.research_cohort.filter(x => researchSignalFor(x,"CIPO_CANADIAN_TRADEMARK")?.state === "PRESENT").length;
-  $("metric-browsable").textContent = s.browsable_company_count;
+  $("metric-live-signals").textContent = state.live?.status==="ACTIVE" ? live90.length : "—";
+  $("metric-live-companies").textContent = state.live?.status==="ACTIVE" ? liveCompanies90.size : "—";
+  $("signal-nav-count").textContent = state.live?.status==="ACTIVE" ? live90.length : "—";
+  $("overview-live-status").textContent = state.live?.status==="ACTIVE"
+    ? `${live90.length} current signal${live90.length===1?"":"s"} in the last 90 days · refreshed ${formatTimestamp(state.live.source?.observed_at || state.live.generated_at)}.`
+    : "Current signal feed unavailable. Historical evidence remains available.";
   els.metricIdentity.textContent = s.identity_supported;
   els.metricModel.textContent = s.model_eligible_count;
   for (const [label,bar,count] of [[els.coverageBefore,els.coverageBeforeBar,s.before_notification_month],[els.coverageSame,els.coverageSameBar,s.same_notification_month],[els.coveragePublication,els.coveragePublicationBar,s.cases_with_verified_pre_notification_evidence]]) {
@@ -354,9 +506,10 @@ function renderMetrics() {
     bar.style.width = `${s.case_count ? Math.min(100,100*count/s.case_count) : 0}%`;
   }
   els.medianLead.textContent = s.median_days_before_notification_month == null ? "Unknown" : `${s.median_days_before_notification_month} days`;
-  $("data-note").textContent = `Case audit: ${formatDate(state.data.audit_date)} · ${s.case_count} audited cases · ${s.research_cohort_count} research companies · UI: 22 September 2026. Interface updates do not refresh the evidence.`;
+  $("data-note").textContent = `Live feed: ${state.live?.status==="ACTIVE"?formatTimestamp(state.live.source?.observed_at || state.live.generated_at):"unavailable"} · Case audit: ${formatDate(state.data.audit_date)} · ${s.case_count} audited cases · ${s.research_cohort_count} research companies · UI: 22 September 2026.`;
   const countries = [...new Set(state.data.cases.map(x => x.ultimate_control_country).filter(Boolean))].sort();
   $("country-filter").innerHTML = '<option value="">All countries</option>' + countries.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");
+  populateSignalCountries();
 }
 function renderSources() {
   els.sourceTypes.innerHTML = Object.entries(state.data.summary.source_type_counts).map(([type,count]) => `<div class="source-row"><span>${escapeHtml(formatSourceType(type))}</span><span class="source-count">${escapeHtml(count)}</span></div>`).join("");
@@ -587,16 +740,24 @@ function route() {
   if(!state.data)return;
   const [raw="overview",search=""]=location.hash.slice(1).split("?");
   if(raw === "main-content"){$("main-content").focus();return;}
-  const valid=["overview","companies","research","markets","coverage","guide"];
+  const valid=["overview","signals","companies","research","markets","coverage","guide"];
   const previousRoute=state.route;
   const requested=raw||"overview";state.route=valid.includes(requested)?requested:"overview";
   const p=new URLSearchParams(search);
   if(previousRoute!==state.route){$("main-content").focus({preventScroll:true});window.scrollTo(0,0);}
-  document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  document.title=`AtlanticBridge Signals — ${{overview:"Overview",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
   $("route-notice").hidden=valid.includes(requested);
   if(!valid.includes(requested))$("route-notice").textContent="That view was not found. Showing the overview instead.";
   document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!==state.route;});
   document.querySelectorAll("[data-nav]").forEach(link=>{if(link.dataset.nav===state.route)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});
+  if(state.route === "signals") {
+    state.signalQuery=p.get("q")||"";
+    state.signalCountry=p.get("country")||"";
+    state.signalWindow=["30","90","180","all"].includes(p.get("window"))?p.get("window"):"90";
+    state.signalView=p.get("view")==="watched"?"watched":"all";
+    if(state.signalCountry && ![...$("signal-country-filter").options].some(o=>o.value===state.signalCountry)){const o=new Option(`Not in current feed: ${state.signalCountry}`,state.signalCountry);$("signal-country-filter").add(o);}
+    syncSignalControls();renderSignals();
+  }
   if(state.route === "companies") {
     state.query=p.get("q")||"";state.country=p.get("country")||"";state.classification=p.get("finding")||"";state.evidence=["with","without"].includes(p.get("evidence"))?p.get("evidence"):"";state.sort=["newest","evidence"].includes(p.get("sort"))?p.get("sort"):"name";state.view=["early","registry","saved"].includes(p.get("view"))?p.get("view"):"all";
     // Keep unsupported filters visible as a recoverable empty state, not silently broader results.
@@ -613,7 +774,7 @@ function route() {
     syncResearchControls();
     renderResearch();
   }
-  hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
 }
 function bindEvents() {
   const mobileFilters=window.matchMedia("(max-width:760px)");
@@ -622,6 +783,10 @@ function bindEvents() {
   for(const [node,key,event] of [[els.caseSearch,"query","input"],[els.classificationFilter,"classification","change"],[els.evidenceFilter,"evidence","change"],[$("country-filter"),"country","change"],[$("sort-order"),"sort","change"]])node.addEventListener(event,()=>{state[key]=node.value;renderCases();syncFilterUrl();});
   document.querySelectorAll("[data-view]").forEach(button=>button.addEventListener("click",()=>{state.view=button.dataset.view;renderCases();syncFilterUrl();}));
   $("reset-filters").addEventListener("click",resetFilters);
+  for(const [node,key,event] of [[$("signal-search"),"signalQuery","input"],[$("signal-country-filter"),"signalCountry","change"],[$("signal-window"),"signalWindow","change"]])node.addEventListener(event,()=>{state[key]=node.value;renderSignals();syncSignalUrl();});
+  document.querySelectorAll("[data-signal-view]").forEach(button=>button.addEventListener("click",()=>{state.signalView=button.dataset.signalView;renderSignals();syncSignalUrl();}));
+  $("signal-reset").addEventListener("click",resetSignalFilters);
+  $("signals-list").addEventListener("click",event=>{const watch=event.target.closest("[data-watch-company]");if(watch){toggleWatched(watch.dataset.watchCompany);return;}if(event.target.closest("[data-signal-reset]"))resetSignalFilters();});
   for(const [node,key,event] of [[$("research-search"),"researchQuery","input"],[$("research-role-filter"),"researchRole","change"],[$("research-cipo-filter"),"researchCipo","change"],[$("research-sort"),"researchSort","change"]])node.addEventListener(event,()=>{state[key]=node.value;renderResearch();syncResearchUrl();});
   $("research-reset").addEventListener("click",resetResearchFilters);
   $("research-companies").addEventListener("click",event=>{if(event.target.closest("[data-research-reset]"))resetResearchFilters();});
@@ -635,7 +800,7 @@ function bindEvents() {
   els.drawerClose.addEventListener("click",closeDrawer);els.drawerBackdrop.addEventListener("click",closeDrawer);
   document.addEventListener("keydown",event=>{if(!state.caseId)return;if(event.key==="Escape"){event.preventDefault();closeDrawer();}if(event.key==="Tab"){const focusable=[...els.drawer.querySelectorAll('button:not(:disabled),a[href],input,select,[tabindex="0"]')].filter(x=>x.getClientRects().length);const first=focusable[0],last=focusable.at(-1);if(event.shiftKey && document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first?.focus();}}});
   window.addEventListener("hashchange",route);
-  window.addEventListener("storage",event=>{if(event.key===SAVE_KEY){loadSaved();renderCases();if(state.caseId){const button=$("detail-save");const saved=state.saved.has(state.caseId);button.textContent=saved?"★ Saved in this browser":"☆ Save this case";button.setAttribute("aria-pressed",String(saved));}}});
+  window.addEventListener("storage",event=>{if(event.key===SAVE_KEY){loadSaved();renderCases();if(state.caseId){const button=$("detail-save");const saved=state.saved.has(state.caseId);button.textContent=saved?"★ Saved in this browser":"☆ Save this case";button.setAttribute("aria-pressed",String(saved));}}if(event.key===WATCH_KEY){loadWatched();renderSignals();}});
 }
 function validatePayload(data) {
   if(!data || !data.summary || !Array.isArray(data.cases) || data.summary.case_count!==data.cases.length || !Array.isArray(data.research_cohort) || data.summary.research_cohort_count!==data.research_cohort.length)throw new Error("Invalid case payload");
@@ -646,15 +811,35 @@ function validatePayload(data) {
   for(const x of data.cases)if(typeof x.id!=="string" || !x.id || !Array.isArray(x.evidence) || x.evidence_count!==x.evidence.length || typeof x.model_eligible!=="boolean")throw new Error("Invalid case record");
   return data;
 }
+function validateLivePayload(data) {
+  if(!data || data.schema_version!==1 || !["ACTIVE","UNAVAILABLE"].includes(data.status) || !data.summary || !Array.isArray(data.signals))throw new Error("Invalid live signal payload");
+  if(data.status==="ACTIVE"){
+    if(data.summary.signal_count!==data.signals.length)throw new Error("Invalid live signal count");
+    if(new Set(data.signals.map(x=>x.id)).size!==data.signals.length)throw new Error("Duplicate live signal IDs");
+    for(const x of data.signals)if(typeof x.id!=="string" || !x.company_id || !x.company_name || x.signal_family!=="CANADABUYS_AWARD" || x.source_confidence!=="SOURCE_CONFIRMED")throw new Error("Invalid live signal record");
+    if(data.summary.company_count!==new Set(data.signals.map(x=>x.company_id)).size)throw new Error("Invalid live company count");
+  }
+  return data;
+}
+
 async function init() {
   bindEvents();
   const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
   try {
     const response=await fetch("data/dashboard.json",{cache:"no-store",signal:controller.signal});
     if(!response.ok)throw new Error(`Dashboard payload returned HTTP ${response.status}`);
-    state.data=validatePayload(await response.json());loadSaved();renderMetrics();renderSources();renderResearch();renderCases();$("load-status").hidden=true;route();
+    state.data=validatePayload(await response.json());
+    try {
+      const liveResponse=await fetch("data/live-signals.json",{cache:"no-store",signal:controller.signal});
+      if(!liveResponse.ok)throw new Error(`Live signal payload returned HTTP ${liveResponse.status}`);
+      state.live=validateLivePayload(await liveResponse.json());
+    } catch(liveError) {
+      console.warn(liveError);
+      state.live=unavailableLivePayload("The current signal source could not be loaded. Historical evidence is still available.");
+    }
+    loadSaved();loadWatched();renderMetrics();renderSources();renderSignals();renderResearch();renderCases();$("load-status").hidden=true;route();
   } catch(error) {
-    console.error(error);state.data=null;$("load-status").hidden=false;$("load-status").setAttribute("role","alert");$("load-status").innerHTML='The case evidence could not be loaded. No results or scores have been inferred. <button class="button" id="retry-load" type="button">Try again</button>';
+    console.error(error);state.data=null;state.live=unavailableLivePayload("Case evidence failed to load.");$("load-status").hidden=false;$("load-status").setAttribute("role","alert");$("load-status").innerHTML='The audited case evidence could not be loaded. No results or scores have been inferred. <button class="button" id="retry-load" type="button">Try again</button>';
     $("retry-load").addEventListener("click",()=>location.reload());els.caseCountLabel.textContent="Data unavailable—not zero cases";$("audit-date").textContent="Case evidence unavailable";$("data-note").textContent="Case evidence unavailable. Interface version: 22 September 2026.";
     document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!=="overview";});
   } finally {clearTimeout(timeout);}

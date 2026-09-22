@@ -8,6 +8,8 @@ import { chromium, webkit, devices } from "playwright";
 const root = process.cwd();
 const base = process.env.UI_BASE_URL || "http://127.0.0.1:8000";
 const dashboard = JSON.parse(fs.readFileSync(path.join(root, "ui/data/dashboard.json"), "utf8"));
+const checkedLive = JSON.parse(fs.readFileSync(path.join(root, "ui/data/live-signals.json"), "utf8"));
+const requireLive = process.env.REQUIRE_LIVE_SIGNALS === "1";
 const out = path.join(root, "artifacts/ui-acceptance");
 fs.mkdirSync(out, { recursive: true });
 const report = { verified_commit: process.env.GITHUB_SHA || null, expected_case_count: dashboard.cases.length, expected_evidence_count: dashboard.cases.reduce((n,c)=>n+c.evidence.length,0), checks: [], failures: [] };
@@ -17,7 +19,7 @@ async function overflow(page, label) {
   check(`${label}: no page-level horizontal overflow`,value.document<=value.viewport+2 && value.body<=value.viewport+2,JSON.stringify(value));
 }
 async function ready(page) {
-  await page.locator('body[data-ui-version="2026-09-22-mobile-company-scan-01"]').waitFor();
+  await page.locator('body[data-ui-version="2026-09-22-live-signals-01"]').waitFor();
   await page.waitForFunction(expected => document.querySelector("#metric-cases")?.textContent === String(expected), dashboard.cases.length);
 }
 async function go(page, route) {
@@ -42,13 +44,32 @@ async function captureRoute(page, label, route) {
   await page.screenshot({path:`${baseName}-bottom.png`});
   await page.evaluate(() => window.scrollTo(0,0));
 }
+function validateLivePayload(payload,label) {
+  check(`${label}: live payload schema`,payload?.schema_version===1 && ["ACTIVE","UNAVAILABLE"].includes(payload?.status) && Array.isArray(payload?.signals) && payload?.summary);
+  if(payload.status==="ACTIVE"){
+    check(`${label}: live signal count contract`,payload.summary.signal_count===payload.signals.length);
+    check(`${label}: live signal IDs unique`,new Set(payload.signals.map(x=>x.id)).size===payload.signals.length);
+    check(`${label}: live company count contract`,payload.summary.company_count===new Set(payload.signals.map(x=>x.company_id)).size);
+    check(`${label}: live CanadaBuys semantics`,payload.signals.every(x=>x.signal_family==="CANADABUYS_AWARD" && x.source_confidence==="SOURCE_CONFIRMED" && x.company_id && x.company_name && x.publicly_available_date && x.source_url));
+  } else {
+    check(`${label}: unavailable live feed explains itself`,typeof payload.reason==="string" && payload.reason.length>0);
+  }
+  if(requireLive)check(`${label}: hosted release requires active live feed`,payload.status==="ACTIVE" && payload.summary.signal_count>0 && payload.summary.company_count>0);
+  return payload;
+}
+async function fetchLivePayload(page,label) {
+  const payload=await page.evaluate(async()=>{const r=await fetch(new URL("data/live-signals.json",location.href),{cache:"no-store"});if(!r.ok)throw new Error(`Live payload HTTP ${r.status}`);return r.json();});
+  return validateLivePayload(payload,label);
+}
 async function exactAssets(page, label) {
   for (const name of ["index.html","app.js","styles.css","data/dashboard.json"]) {
     const actual=await page.evaluate(async name=>{const r=await fetch(new URL(name,location.href),{cache:"no-store"});if(!r.ok)throw new Error(`Asset HTTP ${r.status}: ${name}`);return r.text();},name);
     const expected=fs.readFileSync(path.join(root,"ui",name),"utf8");
-    // The existing payload builder changes JSON key order, not audited values.
-    // Code must match byte-for-byte; payload contents must match structurally.
     check(`${label}: ${name.endsWith(".json")?"identical audited payload":"exact deployed asset"} ${name}`,name.endsWith(".json")?isDeepStrictEqual(JSON.parse(actual),JSON.parse(expected)):actual===expected);
+  }
+  const live=await fetchLivePayload(page,label);
+  if(!requireLive && checkedLive.status==="ACTIVE" && live.status==="ACTIVE"){
+    check(`${label}: checked and served live source family agree`,checkedLive.source?.family===live.source?.family);
   }
 }
 async function allCases(page,label) {
@@ -132,7 +153,7 @@ async function bookmarks(page,label) {
   await page.locator('[data-view="saved"]').click();
   check(`${label}: local save survives reload`,await page.locator("tr.case-row").count()===1 && await page.locator(`[data-case-id="${id}"]`).count()===1);
   await page.locator(`[data-save="${id}"]`).click();
-  check(`${label}: saved empty state`,await page.locator("tr.case-row").count()===0 && (await page.locator(".empty-state").innerText()).includes("No saved cases yet"));
+  check(`${label}: saved empty state`,await page.locator("tr.case-row").count()===0 && (await page.locator("#companies-view .empty-state").innerText()).includes("No saved cases yet"));
   await go(page,`#companies?case=${id}`);await page.locator("#case-drawer.open").waitFor();
   await page.reload({waitUntil:"networkidle"});await ready(page);await page.locator("#case-drawer.open").waitFor();
   check(`${label}: case deep link survives reload`,await page.locator("#drawer-title").innerText()===dashboard.cases[0].canadian_business_name);
@@ -149,18 +170,46 @@ async function run(label,type,options) {
     page.on("pageerror",e=>errors.push(String(e)));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
     const response=await page.goto(base,{waitUntil:"networkidle",timeout:30000});
     check(`${label}: page HTTP success`,response?.ok());await ready(page);await exactAssets(page,label);
-    for(const route of ["overview","companies","research","markets","coverage","guide"]) {
+    for(const route of ["overview","signals","companies","research","markets","coverage","guide"]) {
       await go(page,`#${route}`);await page.locator(`#${route}-view`).waitFor();await overflow(page,`${label}/${route}`);
       await captureRoute(page,label,route);
+    }
+    await go(page,"#signals");
+    const live=await fetchLivePayload(page,`${label}/signals`);
+    if(live.status==="ACTIVE"){
+      const allAvailable=live.signals;
+      const expected90=allAvailable.filter(x=>Number(x.recency_days)<=90);
+      check(`${label}: default signal row count`,await page.locator("[data-live-signal-id]").count()===expected90.length);
+      check(`${label}: signal feed boundary`,(await page.locator("#signals-view").innerText()).includes("not establish first entry") && !(await page.locator("#signals-view").innerText()).toLowerCase().includes("probability score"));
+      await page.locator("#signal-window").selectOption("all");
+      await page.waitForFunction(expected=>document.querySelectorAll("[data-live-signal-id]").length===expected,allAvailable.length);
+      if(allAvailable.length){
+        const first=allAvailable[0];
+        await page.locator("#signal-search").fill(first.company_name);
+        await page.waitForFunction(()=>document.querySelectorAll("[data-live-signal-id]").length>0);
+        check(`${label}: signal company search`,(await page.locator("[data-live-signal-id]").first().innerText()).includes(first.company_name));
+        await page.locator("#signal-reset").click();
+        await page.locator("#signal-window").selectOption("all");
+        await page.locator("[data-watch-company]").first().click();
+        check(`${label}: company watch saved`,await page.locator("[data-watch-company]").first().getAttribute("aria-pressed")==="true");
+        await page.locator('[data-signal-view="watched"]').click();
+        check(`${label}: watched signal view`,await page.locator("[data-live-signal-id]").count()>0);
+        check(`${label}: official live source link`,await page.locator(".live-signal-item .source-link").first().isVisible());
+        await page.locator("[data-watch-company]").first().click();
+        await page.locator("#signal-reset").click();
+      }
+    } else {
+      check(`${label}: unavailable live feed is explicit`,(await page.locator("#signal-count-label").innerText()).includes("unavailable—not zero"));
     }
     await go(page,"#overview");
     check(`${label}: overview research count`,await page.locator("#metric-evidence").innerText()===String(dashboard.summary.research_cohort_count));
     const presentCount=dashboard.research_cohort.filter(x=>(x.signal_analysis||[]).some(s=>s.signal_family==="CIPO_CANADIAN_TRADEMARK" && s.state==="PRESENT")).length;
-    check(`${label}: overview CIPO signal count`,await page.locator("#metric-countries").innerText()===String(presentCount));
-    check(`${label}: overview 40-company framing`,(await page.locator("#overview-view").innerText()).includes("40-company evidence workspace") && (await page.locator("#overview-view").innerText()).includes("Open research workbench"));
+    const overviewText=await page.locator("#overview-view").innerText();
+    check(`${label}: overview live/research boundary`,overviewText.includes("live evidence inbox") && overviewText.includes("Historical cases and research controls remain separate context."));
     await go(page,"#research");
+    check(`${label}: research CIPO signal count`,await page.locator("#research-cipo-present-count").innerText()===String(presentCount));
     check(`${label}: expanded research rows`,await page.locator("[data-research-id]").count()===dashboard.research_cohort.length);
-    check(`${label}: 40-company universe`,await page.locator("#metric-browsable").innerText()===String(dashboard.summary.browsable_company_count));
+    check(`${label}: 40-company universe arithmetic`,dashboard.summary.browsable_company_count===dashboard.summary.case_count+dashboard.summary.research_cohort_count);
     check(`${label}: research result count`,await page.locator("#research-result-count").innerText()===`${dashboard.research_cohort.length} of ${dashboard.research_cohort.length} companies`);
     const researchText=await page.locator("#research-view").innerText();
     check(`${label}: research role boundary`,(await page.locator(".research-page-heading").innerText()).includes("not current prospects") && await page.locator("#research-accepted-count").innerText()==="4" && await page.locator("#research-qualified-count").innerText()==="9");

@@ -8,15 +8,16 @@
   <title>AtlanticBridge Signals — Evidence Console</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body data-ui-version="2026-09-22-mobile-company-scan-01">
+<body data-ui-version="2026-09-22-live-signals-01">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <div class="app-shell" id="app-shell">
     <header class="topbar">
       <a class="brand" href="#overview" aria-label="AtlanticBridge Signals home"><span class="brand-mark" aria-hidden="true">AB</span><span><strong class="brand-name">AtlanticBridge Signals</strong><span class="brand-subtitle">Europe → Canada · Commercial intelligence</span></span></a>
-      <div class="topbar-actions"><span class="phase-badge">Research preview</span><span class="audit-date" id="audit-date">Loading case audit…</span></div>
+      <div class="topbar-actions"><span class="phase-badge">Live signal pilot</span><span class="audit-date" id="audit-date">Loading evidence…</span></div>
     </header>
     <nav class="primary-nav" aria-label="Main navigation">
       <a href="#overview" data-nav="overview" aria-current="page">Overview</a>
+      <a href="#signals" data-nav="signals">Signals <span id="signal-nav-count">—</span></a>
       <a href="#companies" data-nav="companies">Companies</a>
       <a href="#research" data-nav="research">Research cohort</a>
       <a href="#markets" data-nav="markets">Markets</a>
@@ -25,23 +26,46 @@
       <a class="saved-nav" href="#companies?view=saved">Saved cases <span id="saved-count">0</span></a>
     </nav>
     <main id="main-content" tabindex="-1">
-      <div id="load-status" class="load-status" role="status">Loading the audited evidence…</div>
+      <div id="load-status" class="load-status" role="status">Loading current and audited evidence…</div>
       <p id="route-notice" class="notice" role="status" hidden></p>
       <section id="overview-view" data-route="overview">
         <div class="hero">
-          <div class="hero-copy"><p class="eyebrow">Find the evidence. Understand the opportunity.</p><h1>European expansion.<br><span>Canadian opportunity.</span></h1><p class="hero-text">Investigate historical Canadian expansion cases, compare pre-entry source signals, and keep Canadian market fit as a separate question.</p><div class="hero-actions"><a class="button primary" href="#companies">Browse audited cases <span aria-hidden="true">↗</span></a><a class="button" href="#research">Open research workbench</a><a class="text-link" href="#guide">How to use the evidence →</a></div></div>
-          <aside class="purpose-note"><span class="eyebrow">What you can use today</span><h2>A 40-company evidence workspace.</h2><p><strong>27 audited Canadian cases</strong> establish what happened. A separate <strong>13-company research cohort</strong> tests what source signals appeared before matched Canadian entry windows.</p><p class="small">This is still research, not a live prospect list. Expansion likelihood and Canadian market fit remain unscored.</p><a href="#coverage" class="text-link">See the evidence boundaries →</a></aside>
+          <div class="hero-copy"><p class="eyebrow">Current signals. Source-backed context.</p><h1>European expansion.<br><span>Canadian opportunity.</span></h1><p class="hero-text">Monitor current Canada-directed commercial activity from European companies, then investigate the historical evidence behind what surfaced.</p><div class="hero-actions"><a class="button primary" href="#signals">Open live signals <span aria-hidden="true">↗</span></a><a class="button" href="#companies">Browse audited cases</a><a class="text-link" href="#guide">How to use the evidence →</a></div></div>
+          <aside class="purpose-note"><span class="eyebrow">What you can use today</span><h2>A live evidence inbox—without a fake score.</h2><p>The first live feed surfaces <strong>European suppliers named in current CanadaBuys federal award notices</strong>. Historical cases and research controls remain separate context.</p><p class="small">A signal means source-confirmed Canadian commercial activity. It is not an expansion probability and does not prove first market entry.</p><a href="#signals" class="text-link">See what surfaced →</a></aside>
         </div>
         <section class="metrics" aria-label="Current evidence workspace">
+          <a class="metric-card" href="#signals"><span class="metric-label">Current signals · 90d</span><strong class="metric-value" id="metric-live-signals">—</strong><span class="metric-detail">Source-backed Canada commercial events ↗</span></a>
+          <a class="metric-card" href="#signals"><span class="metric-label">Companies · 90d</span><strong class="metric-value" id="metric-live-companies">—</strong><span class="metric-detail">European legal suppliers in the current feed ↗</span></a>
           <a class="metric-card" href="#companies"><span class="metric-label">Audited cases</span><strong class="metric-value" id="metric-cases">—</strong><span class="metric-detail">Historical Canadian businesses reviewed ↗</span></a>
           <a class="metric-card" href="#research"><span class="metric-label">Research companies</span><strong class="metric-value" id="metric-evidence">—</strong><span class="metric-detail">Identity-qualified future entrants under signal analysis ↗</span></a>
-          <a class="metric-card" href="#companies?view=early"><span class="metric-label">Earlier public evidence</span><strong class="metric-value" id="metric-public">—</strong><span class="metric-detail">Audited cases with evidence public before notification ↗</span></a>
-          <a class="metric-card" href="#research?cipo=PRESENT"><span class="metric-label">Pre-cutoff CIPO signal</span><strong class="metric-value" id="metric-countries">—</strong><span class="metric-detail">Research companies with an exact historical CIPO hit ↗</span></a>
         </section>
-        <div class="research-banner"><strong><span id="metric-browsable">—</span> companies, two evidence roles.</strong><span>Audited outcomes and research controls stay separate. Missing source coverage remains unknown—not zero—and no company is presented as a live prospect.</span><a class="text-link" href="#research">Open the signal workbench →</a></div>
+        <div class="research-banner"><strong id="overview-live-status">Live feed loading.</strong><span>Current signals, audited outcomes, and research controls remain separate evidence roles. Missing coverage stays unknown—not zero.</span><a class="text-link" href="#signals">Open current signals →</a></div>
         <section class="start-section"><div class="section-heading"><div><p class="eyebrow">A practical starting point</p><h2>From a company name to a clearer picture.</h2></div><span class="muted">Three questions. Separate answers.</span></div>
-          <div class="question-grid"><article><span class="step">01 / AUDITED CASES</span><h3>What happened in Canada?</h3><p>Start with historical Canadian businesses, named investors, and the source-backed evidence explaining each case.</p><a class="text-link" href="#companies">Browse audited cases →</a></article><article><span class="step">02 / RESEARCH SIGNALS</span><h3>What appeared before entry?</h3><p>Compare CIPO, TED, and CanadaBuys states at matched 24 / 12 / 6 / 3 month cutoffs without turning missing coverage into a negative.</p><a class="text-link" href="#research">Open the research workbench →</a></article><article><span class="step">03 / MARKET FIT</span><h3>Where in Canada could it fit?</h3><p>Province, region, and metro fit are separate from the national expansion question. Nova Scotia is one possible market—not the default destination.</p><a class="text-link" href="#markets">Explore the Canada-wide market lens →</a></article></div>
+          <div class="question-grid"><article><span class="step">01 / CURRENT SIGNALS</span><h3>What changed recently?</h3><p>Start with dated Canada-directed commercial records and the exact reason each company surfaced.</p><a class="text-link" href="#signals">Open live signals →</a></article><article><span class="step">02 / HISTORICAL CONTEXT</span><h3>Does this kind of signal appear early?</h3><p>Use audited cases and matched research controls to understand timing and source limitations without inventing a probability.</p><a class="text-link" href="#research">Open research workbench →</a></article><article><span class="step">03 / MARKET FIT</span><h3>Where in Canada could it fit?</h3><p>Province, region, and metro fit are separate from the national expansion question. Nova Scotia is one possible market—not the default destination.</p><a class="text-link" href="#markets">Explore the Canada-wide market lens →</a></article></div>
         </section>
+      </section>
+      <section id="signals-view" data-route="signals" hidden>
+        <div class="page-heading"><div><p class="eyebrow">Current Canada signals</p><h1>What surfaced recently?</h1><p>Current source-backed commercial activity from European companies. The first live source is CanadaBuys federal award notices; more source families will be added only with explicit semantics.</p></div><a class="text-link" href="#guide">How to interpret a signal →</a></div>
+        <div id="signal-freshness" class="research-banner"><strong>Loading current feed.</strong><span>Signals are evidence events—not expansion probabilities.</span></div>
+        <section class="metrics signal-metrics" aria-label="Current signal feed">
+          <div class="metric-card"><span class="metric-label">Signals in view</span><strong class="metric-value" id="signal-metric-count">—</strong><span class="metric-detail">Current filtered evidence events</span></div>
+          <div class="metric-card"><span class="metric-label">Companies in view</span><strong class="metric-value" id="signal-metric-companies">—</strong><span class="metric-detail">Distinct European legal suppliers</span></div>
+          <div class="metric-card"><span class="metric-label">Countries</span><strong class="metric-value" id="signal-metric-countries">—</strong><span class="metric-detail">EU control countries represented</span></div>
+          <div class="metric-card"><span class="metric-label">Latest public record</span><strong class="metric-value metric-date" id="signal-metric-latest">—</strong><span class="metric-detail">Official publication/amendment clock</span></div>
+        </section>
+        <article class="panel panel-wide signal-workbench">
+          <div class="panel-header"><div><p class="eyebrow">Signal inbox</p><h2>Review source-confirmed activity.</h2></div><div class="quick-views" role="group" aria-label="Signal views"><button type="button" data-signal-view="all" aria-pressed="true">All signals</button><button type="button" data-signal-view="watched" aria-pressed="false">Watched companies <span id="watched-count">0</span></button></div></div>
+          <div class="signal-filters">
+            <label class="signal-search">Search<input id="signal-search" type="search" autocomplete="off" placeholder="Company, department, award or reference"></label>
+            <label>Country<select id="signal-country-filter"><option value="">All countries</option></select></label>
+            <label>Recency<select id="signal-window"><option value="30">Last 30 days</option><option value="90" selected>Last 90 days</option><option value="180">Last 180 days</option><option value="all">All available</option></select></label>
+            <button class="button button-secondary" id="signal-reset" type="button">Reset</button>
+          </div>
+          <div class="table-summary signal-summary"><span id="signal-count-label" role="status" aria-live="polite">Loading signals…</span><span class="muted">Newest public record first</span></div>
+          <div id="signals-list" class="signals-list" aria-live="polite"></div>
+          <p class="table-footnote">Current signal semantics: an EU legal supplier is named in an official Canadian federal award notice. This confirms Canada-facing commercial activity; it does not establish first entry, a future expansion, or a probability.</p>
+        </article>
+        <p class="small muted">Watched companies are stored only in this browser for this pilot. They are not shared, assigned, or synced to a team yet.</p>
       </section>
       <section id="companies-view" data-route="companies" hidden>
         <div class="page-heading"><div><p class="eyebrow">Company research</p><h1>Explore the company cases.</h1><p>Search historical Canadian businesses and their named investors. Open a case to see what is supported, what is unknown, and the original sources.</p></div><a class="text-link" href="#guide">How to read a case →</a></div>
