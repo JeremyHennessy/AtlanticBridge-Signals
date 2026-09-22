@@ -18,16 +18,16 @@
       "role": "DOCUMENTARY_OUTCOME_REVIEW_NOT_EARLY_SIGNAL"
     },
     {
-      "id": "stellantis-ontario-20220502",
+      "id": "stellantis-investontario-20220502",
       "kind": "article",
       "company": "Stellantis",
-      "url": "https://news.ontario.ca/en/release/1002141/major-investments-secure-automotive-manufacturing-futures-for-windsor-and-brampton",
+      "url": "https://www.investinontario.com/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton",
       "reviewed_publication_date": "2022-05-02",
-      "publication_date_text": "May 02, 2022",
+      "publication_date_text": "May 2, 2022",
       "required_text": [
         "$3.6 billion investment",
         "Windsor and Brampton",
-        "new R&D centres"
+        "two new research and development centres"
       ],
       "role": "DOCUMENTARY_OUTCOME_REVIEW_NOT_EARLY_SIGNAL"
     },
@@ -44,7 +44,11 @@
         "acquired land"
       ],
       "role": "DOCUMENTARY_OUTCOME_REVIEW_NOT_EARLY_SIGNAL",
-      "publisher_role": "NATURE_ENERGY_ISSUER_RELEASE_DISTRIBUTED_BY_CNW"
+      "publisher_role": "NATURE_ENERGY_ISSUER_RELEASE_DISTRIBUTED_BY_CNW",
+      "reviewed_layout": {
+        "title_selector": "h1",
+        "content_selector": "article.news-release"
+      }
     },
     {
       "id": "nature-farnham-ised-20230320",
@@ -86,7 +90,11 @@
         "Roquette and Prairie Fava",
         "collaborative R&D project"
       ],
-      "role": "DOCUMENTARY_PROJECT_REVIEW_CARD_FACILITY_CHARACTERIZATION_UNVERIFIED"
+      "role": "DOCUMENTARY_PROJECT_REVIEW_CARD_FACILITY_CHARACTERIZATION_UNVERIFIED",
+      "reviewed_layout": {
+        "title_selector": "h1.page__heading",
+        "content_selector": "article.page__content"
+      }
     },
     {
       "id": "siemens-alberta-completed-20230101",
@@ -117,12 +125,12 @@
       "role": "DOCUMENTARY_OUTCOME_REVIEW_NOT_EARLY_SIGNAL"
     },
     {
-      "id": "enel-alberta-operating-20200521",
+      "id": "enel-issuer-alberta-operating-20200521",
       "kind": "article",
       "company": "Enel Green Power",
-      "url": "https://www.enelgreenpower.com/pt/midias/press/2020/05/enel-green-power-fuels-recovery-by-connecting-three-new-wind-farms-in-north-america",
+      "url": "https://corporate.enel.it/en/media/explore-press-releases/press/2020/05/enel-green-power-fuels-recovery-by-connecting-three-new-wind-farms-in-north-america0",
       "reviewed_publication_date": "2020-05-21",
-      "publication_date_text": "21 maio 2020",
+      "publication_date_text": "May 21, 2020",
       "required_text": [
         "Riverview",
         "Castle Rock Ridge II",
@@ -205,7 +213,7 @@
           "kind": "PROJECT_ANNOUNCED",
           "date": "2022-05-02",
           "date_basis": "SOURCE_ASSERTED_DAY",
-          "source_id": "stellantis-ontario-20220502",
+          "source_id": "stellantis-investontario-20220502",
           "required_text": [
             "investment from Stellantis",
             "Windsor and Brampton"
@@ -219,7 +227,7 @@
       "backtest_eligible": false,
       "public_alert_allowed": false,
       "prior_presence_evidence": {
-        "source_id": "stellantis-ontario-20220502",
+        "source_id": "stellantis-investontario-20220502",
         "required_text": [
           "Windsor and Brampton plants"
         ]
@@ -414,7 +422,7 @@
           "kind": "OPERATING_BY_DATE",
           "date": "2020-05-21",
           "date_basis": "UPPER_BOUND_DAY",
-          "source_id": "enel-alberta-operating-20200521",
+          "source_id": "enel-issuer-alberta-operating-20200521",
           "required_text": [
             "Riverview",
             "Castle Rock Ridge II",
@@ -422,12 +430,19 @@
           ]
         }
       ],
-      "interpretation": "Enel's May 21, 2020 release reports the Riverview and Castle Rock Ridge II Alberta wind farms connected and delivering energy. The release's 'three new wind farms in North America' also includes a Texas expansion, so the card wording must not be read as three Canadian farms. The evidence establishes operation by the publication date, not an exact first-generation day or first Canadian entry.",
+      "interpretation": "Enel's May 21, 2020 release reports the Riverview and Castle Rock Ridge II Alberta wind farms connected and delivering energy. The release's 'three new wind farms in North America' also includes a Texas expansion, so the card wording must not be read as three Canadian farms. The evidence establishes operation by the publication date, not an exact first-generation day or first Canadian entry. The same issuer document reports an existing Canadian wind farm operating since 2012; this is additional Canadian capacity rather than first entry.",
       "legal_identity_confirmed": false,
       "first_entry_confirmed": false,
       "independent_holdout": false,
       "backtest_eligible": false,
-      "public_alert_allowed": false
+      "public_alert_allowed": false,
+      "prior_presence_evidence": {
+        "source_id": "enel-issuer-alberta-operating-20200521",
+        "required_text": [
+          "Castle Rock Ridge I",
+          "began operations in 2012"
+        ]
+      }
     },
     {
       "id": "accenture-st-catharines",
@@ -466,6 +481,26 @@
           "been in the Niagara Region since 2001"
         ]
       }
+    }
+  ],
+  "known_unavailable_paths": [
+    {
+      "id": "stellantis-ontario-20220502",
+      "url": "https://news.ontario.ca/en/release/1002141/major-investments-secure-automotive-manufacturing-futures-for-windsor-and-brampton",
+      "status": "CAPTURED_PAGE_HAS_NO_ASSERTED_BODY",
+      "diagnostic_artifact_id": 10723391513,
+      "diagnostic_artifact_sha256": "3edea9f5529aefa4c8628307efa79950c7904b19104ca430e11ed49e069826f4",
+      "replacement_source_id": "stellantis-investontario-20220502",
+      "reason": "Original HTML is a JavaScript shell or PDF-only landing page. A separately named primary-publisher HTML document is reviewed; original failure is retained."
+    },
+    {
+      "id": "enel-alberta-operating-20200521",
+      "url": "https://www.enelgreenpower.com/pt/midias/press/2020/05/enel-green-power-fuels-recovery-by-connecting-three-new-wind-farms-in-north-america",
+      "status": "CAPTURED_PAGE_HAS_NO_ASSERTED_BODY",
+      "diagnostic_artifact_id": 10723391513,
+      "diagnostic_artifact_sha256": "3edea9f5529aefa4c8628307efa79950c7904b19104ca430e11ed49e069826f4",
+      "replacement_source_id": "enel-issuer-alberta-operating-20200521",
+      "reason": "Original HTML is a JavaScript shell or PDF-only landing page. A separately named primary-publisher HTML document is reviewed; original failure is retained."
     }
   ]
 }

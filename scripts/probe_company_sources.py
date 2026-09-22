@@ -19,6 +19,13 @@ UA = "AtlanticBridgeSignalsSourceProof/1.0 (+https://github.com/JeremyHennessy/A
 LIMIT = 16 * 1024 * 1024
 
 
+def accept_header_for(target):
+    # robots.txt is a text/plain resource; do not negotiate it as a JSON/HTML API.
+    # Status errors and robots disallows still fail through the existing policy.
+    return ("text/plain, */*;q=0.1" if urlsplit(target).path == "/robots.txt"
+            else "application/json, text/html, application/xml;q=0.9")
+
+
 def unavailable_robots_allowed(status, target):
     # RFC 9309 section 2.3.1.3 distinguishes unavailable robots from protected
     # content. Restrict the observed 401/403 case to Ashby's documented PUBLIC
@@ -55,7 +62,7 @@ class Capture:
         time.sleep(0.6)
         error = None
         try:
-            response = self.opener.open(Request(target, headers={"User-Agent": UA, "Accept": "application/json, text/html, application/xml;q=0.9"}), timeout=25)
+            response = self.opener.open(Request(target, headers={"User-Agent": UA, "Accept": accept_header_for(target)}), timeout=25)
         except HTTPError as exc:
             response, error = exc, exc
         with response:

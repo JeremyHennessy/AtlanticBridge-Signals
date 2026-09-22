@@ -58,6 +58,8 @@ def parse_review_document(body: bytes, source: dict) -> list[dict]:
     allowed = {
         'sanofi-flu-inauguration-20260916': ('title', '#ReleaseContent'),
         'avanade-halifax-20220628': ('h1.page-title', 'article.article--full .field--name-body'),
+        'nature-farnham-plan-20220315': ('h1', 'article.news-release'),
+        'roquette-rd-20200619': ('h1.page__heading', 'article.page__content'),
     }
     pair = (layout.get('title_selector'), layout.get('content_selector'))
     if pair != allowed.get(source['id']):
@@ -70,7 +72,13 @@ def parse_review_document(body: bytes, source: dict) -> list[dict]:
     # date and evidence anchors. Captured bytes and their SHA-256 remain unchanged.
     scoped = BeautifulSoup('<h1></h1><main></main>', 'html.parser')
     scoped.h1.string = headings[0].get_text(' ', strip=True)
-    scoped.main.append(contents[0].extract())
+    region = contents[0].extract()
+    if source['id'] in {'nature-farnham-plan-20220315', 'roquette-rd-20200619'}:
+        # These retained pages put the publication date in the article's own header.
+        # Keep that source text, not unrelated site headers or a fabricated date.
+        for header in region.select('header'):
+            header.name = 'div'
+    scoped.main.append(region)
     return parse_article(str(scoped).encode('utf-8'), source)
 
 
