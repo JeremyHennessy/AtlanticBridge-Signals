@@ -1,0 +1,97 @@
+name: Backtest 002 statistical sufficiency
+
+on:
+  pull_request:
+    paths:
+      - "src/atlanticbridge/backtest_statistics.py"
+      - "scripts/run_backtest_002.py"
+      - "tests/test_backtest_002.py"
+      - "docs/BACKTEST_002.md"
+      - "reviews/backtests/2026-09-21-backtest-001-input.json"
+      - "reviews/backtests/2026-09-21-backtest-entities.json"
+      - "reviews/backtests/2026-09-21-signal-source-semantics.json"
+      - ".github/workflows/backtest-002.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backtest-002:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Unit tests
+        run: python -m unittest tests.test_backtest_002 -v
+
+      - name: Run Backtest 002
+        run: |
+          mkdir -p backtest-output
+          python scripts/run_backtest_002.py \
+            --output backtest-output/2026-09-21-backtest-002.json
+
+      - name: Validate statistical fail-closed result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          result = json.loads(
+              Path("backtest-output/2026-09-21-backtest-002.json").read_text()
+          )
+          assert result["backtest_001_weighting_design_gate"] is True
+          assert result["candidate_signal_count"] == 1
+          assert result["inferentially_resolved_rows"] == 0
+          assert (
+              result["expansion_score_1_0_weight_publication_allowed"]
+              is False
+          )
+
+          cipo = result["signals"][0]
+          assert cipo["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
+          rows = cipo["tested_rows"]
+
+          high = next(
+              row for row in rows
+              if row["identity_tier"] == "HIGH"
+              and row["offset_months"] == 3
+          )
+          assert high["fisher_exact_two_sided_p"] == 0.52381
+          assert high["risk_difference"] == {
+              "point_estimate": 0.3,
+              "lower_95": -0.474426,
+              "upper_95": 0.813737,
+          }
+          assert high["directional_discrimination_resolved"] is False
+
+          eligible = next(
+              row for row in rows
+              if row["identity_tier"] == "HIGH_OR_MEDIUM"
+              and row["offset_months"] == 3
+          )
+          assert eligible["fisher_exact_two_sided_p"] == 1.0
+          assert eligible["risk_difference"] == {
+              "point_estimate": 0.2,
+              "lower_95": -0.506844,
+              "upper_95": 0.733052,
+          }
+          assert eligible["directional_discrimination_resolved"] is False
+          PY
+
+      - name: Retain Backtest 002
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backtest-002-${{ github.event.pull_request.head.sha || github.sha }}
+          path: backtest-output/
+          retention-days: 90
+          if-no-files-found: error
