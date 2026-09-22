@@ -106,12 +106,64 @@ class Backtest002Tests(unittest.TestCase):
 
     def test_score_publication_fails_closed(self):
         self.assertEqual(self.result["inferentially_resolved_rows"], 0)
+        self.assertEqual(
+            self.result["publication_gate_mode"],
+            "EXPLORATORY_NO_PREDECLARED_PRIMARY_ENDPOINT",
+        )
         self.assertFalse(
             self.result["expansion_score_1_0_weight_publication_allowed"]
         )
         self.assertIn(
-            "weight publication remains blocked",
+            "publication remains blocked",
             self.result["score_publication_gate_reason"],
+        )
+
+    def test_exploratory_significant_row_cannot_open_publication(self):
+        synthetic = {
+            "summary": {
+                "expansion_score_1_0_weighting_allowed": True,
+            },
+            "target_boundary": {
+                "positive_class": "SYNTHETIC_CENSORED_ANCHOR",
+            },
+            "signals": [
+                {
+                    "signal_family": "SYNTHETIC_SIGNAL",
+                    "state_counts": {
+                        "PRESENT": 10,
+                        "ABSENT_WITH_PROVEN_COVERAGE": 10,
+                        "UNKNOWN_UNVERIFIED_COVERAGE": 0,
+                    },
+                    "identity_confidence_sensitivity": [
+                        {
+                            "identity_tier": "HIGH",
+                            "offset_months": 3,
+                            "error_rate_status":
+                                "ESTIMABLE_FOR_CENSORED_ANCHOR_TARGET",
+                            "entrant_unknown": 0,
+                            "control_unknown": 0,
+                            "entrant_present": 10,
+                            "entrant_absent_with_proven_coverage": 0,
+                            "control_present": 0,
+                            "control_absent_with_proven_coverage": 10,
+                        }
+                    ],
+                }
+            ],
+        }
+        result = build_backtest_002(backtest_001=synthetic)
+        self.assertEqual(result["inferentially_resolved_rows"], 1)
+        self.assertTrue(
+            result["signals"][0]["tested_rows"][0][
+                "directional_discrimination_resolved"
+            ]
+        )
+        self.assertFalse(
+            result["expansion_score_1_0_weight_publication_allowed"]
+        )
+        self.assertIn(
+            "predeclared primary endpoint",
+            result["score_publication_gate_reason"],
         )
 
 
