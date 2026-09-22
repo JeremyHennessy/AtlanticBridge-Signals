@@ -20,6 +20,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -87,6 +88,50 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: ui
+
+      - name: Wait for legacy Pages publisher to settle
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          build_type="$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "/repos/${GITHUB_REPOSITORY}/pages" \
+            --jq '.build_type // "legacy"')"
+
+          if [ "$build_type" != "legacy" ]; then
+            echo "GitHub Pages build type is $build_type; no branch-based publisher to wait for."
+            exit 0
+          fi
+
+          echo "GitHub Pages is still configured for branch-based publishing."
+          echo "Waiting for the native Pages deployment for ${GITHUB_SHA} to finish before the custom artifact deploys."
+
+          for attempt in $(seq 1 60); do
+            run_json="$(gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              "/repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${GITHUB_SHA}&per_page=30")"
+
+            state="$(printf '%s' "$run_json" | python -c '
+import json, sys
+runs=json.load(sys.stdin).get("workflow_runs", [])
+matches=[r for r in runs if r.get("path") == "dynamic/pages/pages-build-deployment"]
+print(matches[0].get("status", "") if matches else "")
+')"
+
+            if [ "$state" = "completed" ]; then
+              echo "Legacy Pages publisher completed; the custom Pages deployment can now become the final publisher."
+              exit 0
+            fi
+
+            echo "Legacy Pages publisher state: ${state:-not-visible-yet} (attempt $attempt/60)"
+            sleep 5
+          done
+
+          echo "::error::Legacy Pages publisher did not settle for ${GITHUB_SHA}; refusing to race two production deployments."
+          exit 1
 
   deploy:
     needs: build
