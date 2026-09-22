@@ -1,0 +1,44 @@
+name: Bounded Nature Energy PDF evidence
+on:
+  push:
+    branches: [test/nature-pdf-evidence-20260922]
+    paths: [.github/workflows/nature-pdf-proof.yml]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - name: Read only the named public primary PDF
+        run: |
+          PYTHONPATH=scripts:src python - <<'PY'
+          from pathlib import Path
+          import json
+          from probe_company_sources import Capture
+          out=Path('artifacts/nature-pdf');out.mkdir(parents=True,exist_ok=True)
+          capture=Capture(out/'raw',{'energir.com'})
+          report={'source_url':'https://energir.com/files/energir_common/import/Fichiers/Corporatifs/Dev%20durable/Rapport-climat-2025_EN.pdf','status':'UNVERIFIED','current_status_claim_allowed':False}
+          try:
+              raw,sha=capture.get(report['source_url'])
+              assert raw.startswith(b'%PDF-'),'Not a PDF document'
+              report.update(status='RETRIEVED_NOT_YET_DOCUMENT_REVIEWED',raw_sha256=sha,bytes=len(raw))
+              (out/'report.pdf').write_bytes(raw)
+          except Exception as e:
+              report.update(error_type=type(e).__name__,error=str(e));raise
+          finally:
+              report['responses']=capture.responses
+              (out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nature-pdf-${{ github.run_id }}
+          path: artifacts/nature-pdf/
+          retention-days: 90
+          if-no-files-found: error
