@@ -11,7 +11,9 @@ from datetime import date
 import re
 import unicodedata
 
-from .company_sources import instant, url
+from bs4 import BeautifulSoup
+
+from .company_sources import instant, parse_article, url
 from .constants import EU27
 
 KINDS = {
@@ -45,6 +47,30 @@ def origin_label_bucket(label: str) -> str:
     if label in {'United States', 'Australia', 'Brazil', 'India', 'Japan', 'New Zealand'}:
         return 'NON_EUROPE_SOURCE_LABEL_NOT_CONTROL_PROOF'
     return 'UNCLASSIFIED_SOURCE_LABEL'
+
+
+def parse_review_document(body: bytes, source: dict) -> list[dict]:
+    """Apply only explicitly reviewed layout selectors; preserve original raw capture."""
+    layout = source.get('reviewed_layout')
+    if layout is None:
+        return parse_article(body, source)
+    allowed = {
+        'sanofi-flu-inauguration-20260916': ('title', '#ReleaseContent'),
+        'avanade-halifax-20220628': ('h1.page-title', 'article.article--full .field--name-body'),
+    }
+    pair = (layout.get('title_selector'), layout.get('content_selector'))
+    if pair != allowed.get(source['id']):
+        raise ValueError('Unreviewed document layout')
+    soup = BeautifulSoup(body, 'html.parser')
+    headings, contents = soup.select(pair[0]), soup.select(pair[1])
+    if len(headings) != 1 or len(contents) != 1 or not headings[0].get_text(strip=True):
+        raise ValueError('Missing, duplicate or empty reviewed title/content region')
+    # Copy source text/markup, not inferred content. Shared parser still enforces
+    # date and evidence anchors. Captured bytes and their SHA-256 remain unchanged.
+    scoped = BeautifulSoup('<h1></h1><main></main>', 'html.parser')
+    scoped.h1.string = headings[0].get_text(' ', strip=True)
+    scoped.main.append(contents[0].extract())
+    return parse_article(str(scoped).encode('utf-8'), source)
 
 
 def source_window(source: dict, record: dict) -> str:

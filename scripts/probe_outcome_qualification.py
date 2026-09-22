@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 
 from atlanticbridge.company_sources import Ledger, parse_article
 from atlanticbridge.investment_discovery import parse_investment_cards, retained_review_records
-from atlanticbridge.outcome_qualification import qualify
+from atlanticbridge.outcome_qualification import qualify, parse_review_document
 from probe_company_sources import Capture
 
 
@@ -64,13 +64,14 @@ def main() -> int:
     capture = Capture(out / 'raw', {urlsplit(s['url']).hostname for s in sources})
     ledger = Ledger(str(state))
     report = {'schema_version': 1, 'manifest_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
-              'sources': [], 'failures': [], 'recovery_tests': [], 'qualification': None}
+              'sources': [], 'failures': [], 'recovery_tests': [], 'qualification': None,
+              'known_unavailable_paths': manifest.get('known_unavailable_paths', [])}
     discovery, evidence = [], {}
     try:
         for source in sources:
             try:
                 body, sha = capture.get(source['url'])
-                rows = (parse_investment_cards if source['kind'] == 'investment_cards' else parse_article)(body, source)
+                rows = (parse_investment_cards if source['kind'] == 'investment_cards' else parse_review_document)(body, source)
                 observed = datetime.now(timezone.utc).isoformat()
                 events = ledger.apply(source, rows, observed, sha)
                 assert not ledger.apply(source, rows, observed, sha), 'Replay was not idempotent'
