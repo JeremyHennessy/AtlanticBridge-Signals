@@ -25,6 +25,20 @@ async function go(page, route) {
   await page.waitForFunction(hash => location.hash === hash, route);
   await page.waitForTimeout(60);
 }
+async function captureRoute(page, label, route) {
+  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  const baseName = path.join(out,`${label}-${route}`);
+  if (height <= 30000) {
+    await page.screenshot({path:`${baseName}.png`,fullPage:true});
+    return;
+  }
+  await page.evaluate(() => window.scrollTo(0,0));
+  await page.screenshot({path:`${baseName}-top.png`});
+  await page.evaluate(() => window.scrollTo(0,document.documentElement.scrollHeight));
+  await page.waitForTimeout(60);
+  await page.screenshot({path:`${baseName}-bottom.png`});
+  await page.evaluate(() => window.scrollTo(0,0));
+}
 async function exactAssets(page, label) {
   for (const name of ["index.html","app.js","styles.css","data/dashboard.json"]) {
     const actual=await page.evaluate(async name=>{const r=await fetch(new URL(name,location.href),{cache:"no-store"});if(!r.ok)throw new Error(`Asset HTTP ${r.status}: ${name}`);return r.text();},name);
@@ -134,7 +148,7 @@ async function run(label,type,options) {
     check(`${label}: page HTTP success`,response?.ok());await ready(page);await exactAssets(page,label);
     for(const route of ["overview","companies","research","markets","coverage","guide"]) {
       await go(page,`#${route}`);await page.locator(`#${route}-view`).waitFor();await overflow(page,`${label}/${route}`);
-      await page.screenshot({path:path.join(out,`${label}-${route}.png`),fullPage:true});
+      await captureRoute(page,label,route);
     }
     await go(page,"#research");
     check(`${label}: expanded research cards`,await page.locator("[data-research-id]").count()===dashboard.research_cohort.length);
