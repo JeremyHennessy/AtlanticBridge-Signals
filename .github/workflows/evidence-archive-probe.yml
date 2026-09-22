@@ -1,0 +1,74 @@
+name: Reversible draft evidence archive probe
+on:
+  push:
+    branches: [test/evidence-archive-probe-20260922]
+    paths: [.github/workflows/evidence-archive-probe.yml]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify draft isolation, byte restoration and cleanup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/archive-probe
+          python - <<'PY'
+          import hashlib,json,os,urllib.request,urllib.error
+          from pathlib import Path
+          repo=os.environ['GITHUB_REPOSITORY'];root='https://api.github.com/repos/'+repo
+          report={'run_id':os.environ['GITHUB_RUN_ID'],'tested_commit':os.environ['GITHUB_SHA'],'test_bytes_only':True,'checks':{}};release=None;asset=None
+          def req(url,method='GET',body=None,auth=True,accept='application/vnd.github+json',mime='application/json'):
+              h={'Accept':accept,'Content-Type':mime,'X-GitHub-Api-Version':'2026-03-10','User-Agent':'AtlanticBridge-evidence-archive-probe'}
+              if auth:h['Authorization']='Bearer '+os.environ['GH_TOKEN']
+              if isinstance(body,dict):body=json.dumps(body).encode()
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(url,data=body,headers=h,method=method),timeout=35) as r:return r.status,r.read()
+              except urllib.error.HTTPError as e:return e.code,e.read()
+          def js(url,method='GET',body=None):
+              status,raw=req(url,method,body)
+              if status not in (200,201,204):raise RuntimeError('GitHub status '+str(status)+': '+raw[:300].decode(errors='replace'))
+              return json.loads(raw) if raw else None
+          try:
+              main=js(root+'/branches/main')['commit']['sha']
+              release=js(root+'/releases','POST',{'tag_name':'evidence-probe-'+report['run_id'],'target_commitish':main,'name':'Disposable evidence storage probe','body':'Test bytes only. Must remain draft and be deleted by this run.','draft':True,'prerelease':True,'make_latest':'false'})
+              assert release['draft'] is True;report['checks']['draft_created']=True
+              payload=b'AtlanticBridge disposable archive verification\n'
+              url=release['upload_url'].split('{')[0]+'?name=probe.txt'
+              code,data=req(url,'POST',payload,mime='text/plain');assert code==201,(code,data[:300])
+              asset=json.loads(data);report['release_id']=release['id'];report['asset_id']=asset['id']
+              code,restored=req(asset['url'],accept='application/octet-stream');assert code==200 and restored==payload
+              report['sha256']=hashlib.sha256(payload).hexdigest();report['checks']['authenticated_byte_restore']=True
+              for label,url in [('release',release['url']),('asset',asset['url']),('browser_asset',asset['browser_download_url'])]:
+                  code,data=req(url,auth=False,accept='application/octet-stream' if label!='release' else 'application/vnd.github+json')
+                  report['checks']['anonymous_'+label+'_status']=code
+                  assert code==404,'Draft unexpectedly anonymous-accessible or check inconclusive: '+label+' '+str(code)
+              report['passed']=True
+          except Exception as e:
+              report['passed']=False;report['error']=str(e);raise
+          finally:
+              try:
+                  if asset:
+                      code,_=req(asset['url'],'DELETE');assert code in (204,404)
+                      code,_=req(asset['url']);assert code==404
+                      report['checks']['asset_deleted_and_absent']=True
+                  if release:
+                      code,_=req(release['url'],'DELETE');assert code in (204,404)
+                      code,_=req(release['url']);assert code==404
+                      report['checks']['release_deleted_and_absent']=True
+              except Exception as e:
+                  report['passed']=False;report['cleanup_error']=str(e);raise
+              finally:
+                  Path('artifacts/archive-probe/report.json').write_text(json.dumps(report,indent=2)+'\n')
+                  print(json.dumps(report))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: draft-archive-probe-${{ github.run_id }}
+          path: artifacts/archive-probe/
+          retention-days: 90
+          if-no-files-found: error
