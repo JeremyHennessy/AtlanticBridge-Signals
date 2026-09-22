@@ -1,6 +1,6 @@
 # Backtest 001 — event-time signal diagnostic
 
-Accepted run date: 2026-09-21.
+Accepted result date: 2026-09-21.
 
 ## Scope
 
@@ -12,107 +12,160 @@ The notification month remains a **censored event-time anchor**, not a proven
 first Canadian operating date. Controls are future entrants observed at risk
 through the matched horizon; they are not permanent negative labels.
 
-## Accepted Step 3 input
+## Accepted source-proof state
 
-The accepted historical-snapshot workflow run `35552301164` at
-`6d5ef1b60fc6299e65c008bac1d5cad85f0cec1b` produced:
+The accepted Backtest 001 result is pinned in
+`reviews/backtests/2026-09-21-backtest-001.manifest.json`.
+
+Current event-time composition:
 
 - 12 entities;
 - 5 signal families;
 - 240 event-time rows;
 - 12 `PRESENT` rows;
-- 228 `UNKNOWN_UNVERIFIED_COVERAGE` rows;
-- 0 `ABSENT_WITH_PROVEN_COVERAGE` rows.
+- 108 `ABSENT_WITH_PROVEN_COVERAGE` rows;
+- 120 `UNKNOWN_UNVERIFIED_COVERAGE` rows.
 
-Artifact digest:
-`sha256:4202d1b13679f63092a81ebd990d0067c29d9fbbb646feaac2079000c55552ad`.
+Source-family state counts:
 
-Only CIPO produced accepted historical positives. CIPO is explicitly
-**presence-only** because the official Sioo trademark record demonstrated a
-coverage gap in the bulk/search datasets. A CIPO non-hit therefore remains
-`UNKNOWN`; it is never treated as absence.
+| Signal family | PRESENT | Proven absent | UNKNOWN |
+| --- | ---: | ---: | ---: |
+| CIPO Canadian trademark | 12 | 28 | 8 |
+| CanadaBuys award | 0 | 40 | 8 |
+| TED contract award | 0 | 40 | 8 |
+| Federal corporation event | 0 | 0 | 48 |
+| CORDIS Canada relationship | 0 | 0 | 48 |
 
-## CIPO result
+The two remaining fully unknown families have not had their required historical
+public-availability semantics proven. They therefore remain unknown rather than
+being converted to negative evidence.
 
-At **all four cutoffs (24/12/6/3 months)**:
+## CIPO authoritative Journal proof
 
-| Metric | Entrants | Controls |
-| --- | ---: | ---: |
-| Cohort size | 7 | 5 |
-| Verified PRESENT | 2 | 1 |
-| UNKNOWN | 5 | 4 |
-| Proven ABSENT | 0 | 0 |
-| Observed-positive lower bound | 28.6% | 20.0% |
+CIPO historical absence inference is now backed by the accepted official
+Trademarks Journal completeness proof:
 
-These percentages are **lower bounds on observed positives**, not prevalence
-estimates. Source non-hits cannot currently be interpreted as negatives.
+- 1,221 / 1,221 in-scope official Journal issues complete;
+- coverage from 2000-01-05 through 2023-05-31;
+- 824,204 Advertised Applications rows parsed;
+- 0 issue failures;
+- 0 unresolved reviewed-alias occurrences;
+- 16 exact evidence records across 5 entities;
+- required LINET, Sioo application `1799092`, and Andriani known cases
+  recovered;
+- absence inference enabled only after complete unambiguous exact-alias
+  coverage was established.
 
-Only 3 of 12 entity rows are observable at each cutoff, giving a source
-observable fraction of **25%**. Across all four cutoffs CIPO contributes 12
-observable positive rows and 36 unknown rows.
+CIPO event-time rows are therefore:
 
-### Lead time to the censored anchor
+- 12 `PRESENT`;
+- 28 `ABSENT_WITH_PROVEN_COVERAGE`;
+- 8 `UNKNOWN_UNVERIFIED_COVERAGE`.
+
+The eight unknown rows come from the two entrant entities whose foreign legal
+identity is still unresolved. Source absence is not inferred for those rows.
+
+## Identity-qualified CIPO result
+
+The current CIPO counts are the same at all four event-time cutoffs.
+
+### HIGH identity confidence
+
+Entrants:
+
+- 4 identity-qualified entities;
+- 2 present;
+- 2 proven absent;
+- observed positive rate 0.50;
+- false-negative rate relative to the censored anchor target: 0.50.
+
+Controls:
+
+- 5 identity-qualified entities;
+- 1 present;
+- 4 proven absent;
+- observed positive rate / false-positive rate: 0.20.
+
+### HIGH or MEDIUM identity confidence
+
+Entrants:
+
+- 5 identity-qualified entities;
+- 2 present;
+- 3 proven absent;
+- observed positive rate 0.40;
+- false-negative rate relative to the censored anchor target: 0.60.
+
+Controls remain:
+
+- 5 entities;
+- 1 present;
+- 4 proven absent;
+- false-positive rate 0.20.
+
+These rates are estimable only on the identity-qualified subset. The full
+seven-entrant cohort still contains two unresolved foreign identities, so the
+full-cohort CIPO false rates remain fail-closed.
+
+## CanadaBuys and TED
+
+CanadaBuys and TED both have proven historical absence coverage for the
+identity-qualified subset, but neither currently has a verified pre-anchor
+positive in this 12-entity cohort.
+
+For each family:
+
+- 0 `PRESENT`;
+- 40 `ABSENT_WITH_PROVEN_COVERAGE`;
+- 8 `UNKNOWN_UNVERIFIED_COVERAGE`.
+
+On the HIGH and HIGH-or-MEDIUM identity-qualified subsets, each therefore has:
+
+- false-positive rate 0.0;
+- false-negative rate 1.0.
+
+That makes the rates mechanically estimable, but does **not** establish useful
+predictive discrimination.
+
+## Lead time to the censored anchor
 
 For the two entrant entities with verified pre-anchor CIPO evidence:
 
-- median: **2,955 days (~97.1 months)**;
-- p25: **2,308.5 days (~75.8 months)**;
-- p75: **3,601.5 days (~118.3 months)**.
+- median: 2,955 days (~97.1 months);
+- p25: 2,308.5 days (~75.8 months);
+- p75: 3,601.5 days (~118.3 months).
 
 The one control with verified pre-anchor CIPO evidence has an anchor lead time
-of **1,121 days (~36.8 months)**.
+of 1,121 days (~36.8 months).
 
 These are signal-to-notification-anchor lead times. They are **not**
 first-operation lead times.
 
-### Identity-confidence sensitivity
+## Expansion Score gates
 
-At each cutoff:
+Backtest 001 now mechanically opens the **weight-design** gate because at least
+one signal, CIPO, has both verified positive evidence and proven absence
+coverage with estimable identity-qualified false rates.
 
-- HIGH-confidence entrants: 2/4 observed positive = **50% lower bound**;
-- HIGH-confidence controls: 1/5 observed positive = **20% lower bound**;
-- HIGH-or-MEDIUM entrants: 2/5 observed positive = **40% lower bound**;
-- HIGH-or-MEDIUM controls: 1/5 observed positive = **20% lower bound**.
-
-This sensitivity result is descriptive only because absence coverage remains
-unproven.
-
-## Other signal families
-
-The following remain fully unknown in Backtest 001:
-
-- `FEDERAL_CORPORATION_EVENT` — historical public-availability clock not proven;
-- `CORDIS_CANADA_RELATIONSHIP` — first-publication clock not proven;
-- `TED_CONTRACT_AWARD` — exact historical winner-query completeness not yet live-proven;
-- `CANADABUYS_AWARD` — historical award coverage not yet collected.
-
-For each of these families all 48 entity/cutoff rows remain
-`UNKNOWN_UNVERIFIED_COVERAGE`.
-
-## Error-rate result
-
-False-positive and false-negative point estimates are **NOT ESTIMABLE** for all
-current signals.
-
-Reason: no signal family currently has complete enough historical source
-coverage to distinguish a true non-hit from missing/unavailable source
-evidence. Reporting a numeric FPR or FNR would convert unknown source coverage
-into false negatives/negatives.
-
-## Expansion Score 1.0 gate
-
-**Score weighting remains disabled.**
-
-Backtest 001 has:
+Accepted Backtest 001 summary:
 
 - 5 signal families;
 - 1 family with any verified historical positive evidence;
-- 0 families with proven historical absence coverage;
-- 0 families with estimable false-positive/false-negative rates.
+- 3 families with proven historical absence coverage;
+- 3 families with identity-qualified estimable false rates;
+- 1 family with both verified positive and proven absence evidence;
+- `expansion_score_1_0_weighting_allowed = true`.
 
-No Expansion Likelihood weights can be justified from this result. Evidence
-Confidence remains a separate dimension and does not substitute for predictive
-discrimination.
+This flag means only that empirical weight design may be investigated. It does
+**not** mean Expansion Score weights are statistically justified or ready for
+publication.
+
+Backtest 002 adds the statistical-sufficiency layer. Its current result keeps
+**Expansion Score weight publication blocked** because the CIPO entrant-control
+difference is not statistically resolved and the 95% risk-difference intervals
+include zero.
+
+See `docs/BACKTEST_002.md`.
 
 ## Reproduction
 
@@ -120,15 +173,25 @@ Run:
 
 ```bash
 python scripts/run_backtest_001.py --output /tmp/backtest-001.json
+python scripts/run_backtest_002.py --output /tmp/backtest-002.json
 ```
 
-`tests/test_backtest_001.py` locks the fail-closed interpretation, CIPO counts,
-lead-time quantiles and identity-confidence sensitivity.
+`tests/test_backtest_001.py` locks the source-state counts, identity-qualified
+false-rate interpretation, lead-time diagnostics and Backtest 001 design gate.
+
+`tests/test_backtest_002.py` separately locks the Fisher exact tests,
+uncertainty intervals and fail-closed publication gate.
 
 ## Next gate
 
-The highest-value next task is to establish at least one source with defensible
-historical **presence and absence** coverage. TED is the next candidate because
-its award notices have an explicit publication date and the API supports
-historical search; exact winner-query semantics and complete result retrieval
-must be proven live before non-hits can become absences.
+Increase the identity-qualified sample without weakening source or identity
+standards.
+
+Priority order:
+
+1. resolve the two LOW-confidence entrant foreign identities with explicit
+   primary evidence;
+2. expand the audited time-indexed control / entrant cohort;
+3. rerun Backtest 002 on the enlarged cohort;
+4. do not publish Expansion Score weights until the statistical-sufficiency
+   result supports a defensible signal effect.
