@@ -1,0 +1,86 @@
+name: Prepare reviewed embedded document adapter
+on:
+  push:
+    branches: [feature/outcome-qualification-2-20260922]
+    paths: [.github/workflows/prepare-tranche2-final-adapter.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exact captured-page repairs
+        run: |
+          test "$GITHUB_REF_NAME" = 'feature/outcome-qualification-2-20260922'
+          test "$(git rev-parse HEAD^)" = '00b2f8b4033cc7f42722de4c2fd27fc2acef1249'
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('src/atlanticbridge/outcome_qualification.py');s=p.read_text()
+          a="        'roquette-rd-20200619': ('h1.page__heading', 'article.page__content'),";assert s.count(a)==1
+          s=s.replace(a,a+"\n        'enel-issuer-alberta-operating-20200521': ('h1', 'main free-text section[data-content]'),")
+          a='    scoped.main.append(region)';assert s.count(a)==1
+          s=s.replace(a,'''    if source['id'] == 'enel-issuer-alberta-operating-20200521':
+                  if layout != {'title_selector': 'h1', 'content_selector': 'main free-text section[data-content]',
+                                'date_selector': 'main article-header time', 'content_attribute': 'data-content'}:
+                      raise ValueError('Unreviewed embedded content layout')
+                  dates = soup.select('main article-header time')
+                  content = region.get('data-content')
+                  if len(dates) != 1 or not dates[0].get_text(strip=True) or not isinstance(content, str) or not content.strip():
+                      raise ValueError('Missing or ambiguous embedded document content/date')
+                  # The captured publisher markup uses a Vue component with escaped HTML in
+                  # data-content. Parse those original bytes; do not synthesize the body/date.
+                  scoped.main.append(dates[0].extract())
+                  region = BeautifulSoup(content, 'html.parser')
+              scoped.main.append(region)''')
+          p.write_text(s)
+          p=Path('reviews/commercial_validation/discovery-review-2-2026-09-22.json');m=json.loads(p.read_text())
+          for s in m['sources']:
+              if s['id']=='stellantis-investontario-20220502':s['url']=s['url'].replace('www.investinontario.com','www.investontario.ca')
+              if s['id']=='enel-issuer-alberta-operating-20200521':s['reviewed_layout']={'title_selector':'h1','content_selector':'main free-text section[data-content]','date_selector':'main article-header time','content_attribute':'data-content'}
+          for r in m['known_unavailable_paths']:
+              if r['id']=='stellantis-ontario-20220502':r.update(also_failed_alias_url='https://www.investinontario.com/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton',alias_failure='TLS hostname mismatch; no certificate verification disabled',alias_diagnostic_artifact_id=10723187655,alias_diagnostic_artifact_sha256='f0a73ae39bf772621b1c33a1bbc360027bc48cb808513eb40b4677524cce20f7')
+          p.write_text(json.dumps(m,indent=2,ensure_ascii=False)+'\n')
+          p=Path('tests/test_document_source_repairs.py');s=p.read_text();s+='''
+              def test_enel_escaped_publisher_body_and_date(self):
+                  import html
+                  m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+                  src=copy.deepcopy(next(x for x in m['sources'] if x['id']=='enel-issuer-alberta-operating-20200521'))
+                  content='<p>'+'. '.join(src['required_text'])+'</p>'
+                  raw=('<main><article-header><h1>Issuer release</h1><time>May 21, 2020</time></article-header><free-text><section data-content="'+html.escape(content,quote=True)+'"></section></free-text></main>').encode()
+                  self.assertEqual(parse_review_document(raw,src)[0]['source_publication_date'],'2020-05-21')
+                  with self.assertRaises(ValueError):parse_review_document(raw.replace(b'May 21, 2020',b'UNKNOWN'),src)
+                  with self.assertRaises(ValueError):parse_review_document(raw.replace(b'Riverview',b'Other project'),src)
+                  with self.assertRaises(ValueError):parse_review_document(raw+raw,src)
+                  src['reviewed_layout']['content_attribute']='invented'
+                  with self.assertRaises(ValueError):parse_review_document(raw,src)
+              def test_invest_ontario_canonical_hostname_and_retained_tls_failure(self):
+                  m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+                  src=next(x for x in m['sources'] if x['id']=='stellantis-investontario-20220502')
+                  self.assertTrue(src['url'].startswith('https://www.investontario.ca/'))
+                  old=next(x for x in m['known_unavailable_paths'] if x['id']=='stellantis-ontario-20220502')
+                  self.assertEqual(old['alias_diagnostic_artifact_id'],10723187655)
+          ''';p.write_text(s)
+          PY
+      - name: Complete regression suite
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs
+          git diff --check
+      - name: Remove helper and commit only to research branch
+        run: |
+          git rm .github/workflows/prepare-tranche2-final-adapter.yml
+          git add src/atlanticbridge/outcome_qualification.py reviews/commercial_validation/discovery-review-2-2026-09-22.json tests/test_document_source_repairs.py
+          git config user.name 'AtlanticBridge source review'
+          git config user.email 'actions@users.noreply.github.com'
+          git commit -m 'Read retained Enel component content and correct Invest Ontario canonical hostname'
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          git rev-parse HEAD
