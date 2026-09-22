@@ -5,6 +5,7 @@ from pathlib import Path
 import json
 
 from atlanticbridge.outcome_evidence import evidence_publication_status
+from atlanticbridge.event_time_signals import build_event_time_snapshots
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES_PATH = ROOT / "reviews" / "outcome_audit" / "2026-09-20-cases.json"
@@ -16,6 +17,20 @@ EXPANDED_IDENTITY_PATHS = [
     ROOT / "reviews" / "control_cohorts" / "2026-09-22-expanded-control-identity-batch-02.json",
 ]
 OUTCOME_COHORT_PATH = ROOT / "reviews" / "outcome_audit" / "2026-09-20-outcome-cohorts.json"
+SIGNAL_SEMANTICS_PATH = ROOT / "reviews" / "backtests" / "2026-09-21-signal-source-semantics.json"
+RESEARCH_SIGNAL_PROOF_PATHS = [
+    ROOT / "reviews" / "backtests" / "source_proofs" / "2026-09-21-cipo-journal-evidence.json",
+    ROOT / "reviews" / "backtests" / "source_proofs" / "2026-09-21-ted-evidence.json",
+    ROOT / "reviews" / "backtests" / "source_proofs" / "2026-09-21-canadabuys-evidence.json",
+    ROOT / "reviews" / "backtests" / "source_proofs" / "2026-09-22-expanded-cipo-researcher-evidence.json",
+    ROOT / "reviews" / "backtests" / "source_proofs" / "2026-09-22-expanded-ted-evidence.json",
+    ROOT / "reviews" / "backtests" / "source_proofs" / "2026-09-22-expanded-canadabuys-evidence.json",
+]
+RESEARCH_SIGNAL_FAMILIES = (
+    "CIPO_CANADIAN_TRADEMARK",
+    "TED_CONTRACT_AWARD",
+    "CANADABUYS_AWARD",
+)
 
 
 def normalize_company_name(value: str | None) -> str:
@@ -135,11 +150,97 @@ def build_research_cohort(cases: list[dict]) -> tuple[list[dict], int]:
     return result, excluded_overlap
 
 
+
+def attach_research_signal_analysis(research_cohort: list[dict]) -> None:
+    semantics = json.loads(SIGNAL_SEMANTICS_PATH.read_text(encoding="utf-8"))
+    evidence = {"coverage": [], "records": []}
+    for path in RESEARCH_SIGNAL_PROOF_PATHS:
+        proof = json.loads(path.read_text(encoding="utf-8"))
+        evidence["coverage"].extend(proof.get("coverage") or [])
+        evidence["records"].extend(proof.get("records") or [])
+
+    entities = []
+    for row in research_cohort:
+        matched = row.get("matched_candidates") or []
+        if len(matched) != 1 or not matched[0].get("notification_month"):
+            row["signal_analysis"] = []
+            continue
+        entities.append(
+            {
+                "entity_id": f"control:{row['id']}",
+                "role": "CONTROL",
+                "candidate_outcome_id": matched[0]["outcome_id"],
+                "anchor_month": matched[0]["notification_month"],
+                "identity_confidence": row.get("identity_confidence") or "UNKNOWN",
+                "foreign_signal_identity_eligible": True,
+            }
+        )
+
+    if not entities:
+        return
+
+    snapshots = build_event_time_snapshots(
+        entities_payload={
+            "entities": entities,
+            "cutoff_rule": (
+                "For offset N, cutoff_exclusive is the first day of the anchor "
+                "month minus N calendar months."
+            ),
+        },
+        semantics_payload=semantics,
+        evidence_payload=evidence,
+    )
+    grouped: dict[tuple[str, str], list[dict]] = {}
+    for snapshot in snapshots["snapshots"]:
+        family = snapshot["signal_family"]
+        if family not in RESEARCH_SIGNAL_FAMILIES:
+            continue
+        grouped.setdefault((snapshot["entity_id"], family), []).append(snapshot)
+
+    by_id = {f"control:{row['id']}": row for row in research_cohort}
+    for entity_id, row in by_id.items():
+        analysis = []
+        for family in RESEARCH_SIGNAL_FAMILIES:
+            rows = sorted(
+                grouped.get((entity_id, family), []),
+                key=lambda item: -int(item["offset_months"]),
+            )
+            states = [item["state"] for item in rows]
+            overall = states[0] if states and len(set(states)) == 1 else (
+                "MIXED_BY_CUTOFF" if states else "UNKNOWN_UNVERIFIED_COVERAGE"
+            )
+            public_dates = sorted(
+                {
+                    str(item["earliest_public_date"])
+                    for item in rows
+                    if item.get("earliest_public_date")
+                }
+            )
+            analysis.append(
+                {
+                    "signal_family": family,
+                    "state": overall,
+                    "cutoffs": [
+                        {
+                            "offset_months": item["offset_months"],
+                            "cutoff_exclusive": item["cutoff_exclusive"],
+                            "state": item["state"],
+                        }
+                        for item in rows
+                    ],
+                    "earliest_public_date": public_dates[0] if public_dates else None,
+                    "coverage_status": rows[0]["coverage_status"] if rows else "UNVERIFIED",
+                }
+            )
+        row["signal_analysis"] = analysis
+
+
 def build_payload() -> dict:
     cases_doc = json.loads(CASES_PATH.read_text(encoding="utf-8"))
     identity_doc = json.loads(IDENTITY_PATH.read_text(encoding="utf-8"))
     cases = cases_doc["cases"]
     research_cohort, research_overlap_excluded = build_research_cohort(cases)
+    attach_research_signal_analysis(research_cohort)
 
     classification_counts = Counter(case["outcome_classification"] for case in cases)
     source_type_counts = Counter(
@@ -232,6 +333,7 @@ def build_payload() -> dict:
             "research_cohort_count": len(research_cohort),
             "browsable_company_count": cases_doc["case_count"] + len(research_cohort),
             "research_historical_overlap_excluded": research_overlap_excluded,
+            "research_signal_analyzed_count": sum(bool(row.get("signal_analysis")) for row in research_cohort),
             "evidence_case_count": sum(bool(case.get("additional_evidence")) for case in cases),
             "identity_supported": identity_doc.get("supported", 0),
             "identity_requires_review": identity_doc.get("requires_evidence_review", 0),
