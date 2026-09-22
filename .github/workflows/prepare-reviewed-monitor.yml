@@ -29,18 +29,18 @@ jobs:
           python -m pip install -e .
           python -m unittest discover -s tests -q
           node --test tests/test_workspace.cjs tests/test_reviewed.cjs
-      - name: Remove delivery helpers, commit feature branch only
+      - name: Commit only application files to feature branch
         run: |
-          rm -r .delivery
-          rm .github/workflows/prepare-reviewed-monitor.yml
+          mkdir -p artifacts/delivery
+          cp .github/workflows/ui-usability.yml artifacts/delivery/accepted-ui-usability.yml
+          git restore -- .github/workflows/ui-usability.yml
           git config user.name 'AtlanticBridge implementation'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git commit -m 'Connect reviewed histories and initialize persistent monitor acceptance candidate'
-          git push origin HEAD:refs/heads/feature/reviewed-monitoring-20260922
-          mkdir -p artifacts/delivery
+          git add ui/app.js ui/index.html ui/workbench.js ui/data/reviewed-evidence.json tests/ui_visual_acceptance.mjs src/atlanticbridge/monitoring_checkpoint.py
+          git commit -m 'Connect reviewed histories and retain exact monitoring acceptance candidate'
           git rev-parse HEAD > artifacts/delivery/tested-commit.txt
           git archive --format=tar.gz HEAD > artifacts/delivery/tested-source.tar.gz
+          git push origin HEAD:refs/heads/feature/reviewed-monitoring-20260922
       - uses: actions/upload-artifact@v4
         if: always()
         with:
