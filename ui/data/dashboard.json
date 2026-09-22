@@ -61,7 +61,8 @@
     "cases_with_verified_pre_notification_evidence": 13,
     "research_cohort_count": 13,
     "browsable_company_count": 40,
-    "research_historical_overlap_excluded": 1
+    "research_historical_overlap_excluded": 1,
+    "research_signal_analyzed_count": 13
   },
   "cases": [
     {
@@ -1401,6 +1402,92 @@
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "Investment Canada records Senzomatic, s.r.o., Prague, Czechia as the investor in the February 2026 new-business notification."
         }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-10-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-10-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-04-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-07-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-10-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-10-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-04-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-07-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-10-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-10-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-04-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-07-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
+        }
       ]
     },
     {
@@ -1436,6 +1523,92 @@
           "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=0&wbdisable=true",
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "Investment Canada records Global Wind Service A/S, Fredericia, Denmark as the investor in April 2026."
+        }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2021-09-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2022-09-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2023-03-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2023-06-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2021-09-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2022-09-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2023-03-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2023-06-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2021-09-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2022-09-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2023-03-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2023-06-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
         }
       ]
     },
@@ -1478,6 +1651,92 @@
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "March 2023 new-business record names Deutsche Bahn International Operations GmbH, Berlin, Germany as investor."
         }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
+        }
       ]
     },
     {
@@ -1518,6 +1777,92 @@
           "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/r?page=2&wbdisable=true",
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "April 2023 new-business record names RWE Supply and Trading GmbH, Essen, Germany as investor."
+        }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
         }
       ]
     },
@@ -1560,6 +1905,92 @@
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "April 2023 new-business record names SKS Welding Systems GmbH, Kaiserslautern, Germany as investor."
         }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
+        }
       ]
     },
     {
@@ -1595,6 +2026,92 @@
           "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/i",
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "March 2026 new-business record names Innoscripta SE, Munich, Germany as investor."
+        }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2020-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2020-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-11-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
         }
       ]
     },
@@ -1642,6 +2159,92 @@
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "December 2025 new-business record names WIZ DIGITAL SERVICES LIMITED, Bishopstown, Ireland as investor."
         }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2018-06-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2019-06-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-12-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-03-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2018-06-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2019-06-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-12-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-03-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2018-06-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2019-06-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-12-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2020-03-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
+        }
       ]
     },
     {
@@ -1677,6 +2280,92 @@
           "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/a?page=7&wbdisable=true",
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "March 2023 new-business record names Andriani S.P.A., Gravina in Puglia, Italy as investor."
+        }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "PRESENT",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "PRESENT"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "PRESENT"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "PRESENT"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "PRESENT"
+            }
+          ],
+          "earliest_public_date": "2016-07-06",
+          "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
         }
       ]
     },
@@ -1719,6 +2408,92 @@
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "February 2024 new-business record names Europ Assistance S.A., Paris as investor with Italy as country of ultimate control."
         }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
+        }
       ]
     },
     {
@@ -1759,6 +2534,92 @@
           "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/g?page=2&wbdisable=true",
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "March 2023 new-business record names Gilardoni S.p.A. as the Italian investor."
+        }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_JOURNAL_EXACT_ALIAS_HISTORY_2000_TO_2023_05_31"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
         }
       ]
     },
@@ -1801,6 +2662,92 @@
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "October 2025 new-business record names General Medical Merate S.p.A., Seriate, Italy as investor."
         }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
+        }
       ]
     },
     {
@@ -1842,6 +2789,92 @@
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "July 2024 new-business record names Leaf Space S.p.A., Milano, Italy as investor."
         }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
+        }
       ]
     },
     {
@@ -1882,6 +2915,92 @@
           "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=42",
           "source_type": "OFFICIAL_INVESTMENT_CANADA",
           "claim": "September 2024 new-business record names Nord Engineering France, Valbonne as investor with Italy as country of ultimate control."
+        }
+      ],
+      "signal_analysis": [
+        {
+          "signal_family": "CIPO_CANADIAN_TRADEMARK",
+          "state": "UNKNOWN_UNVERIFIED_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "UNKNOWN_UNVERIFIED_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "PRESENCE_ONLY_KNOWN_GAP"
+        },
+        {
+          "signal_family": "TED_CONTRACT_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_WINNER_CANDIDATE_QUERY_WITH_EXACT_POSTFILTER_SINCE_2012"
+        },
+        {
+          "signal_family": "CANADABUYS_AWARD",
+          "state": "ABSENT_WITH_PROVEN_COVERAGE",
+          "cutoffs": [
+            {
+              "offset_months": 24,
+              "cutoff_exclusive": "2017-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 12,
+              "cutoff_exclusive": "2018-08-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 6,
+              "cutoff_exclusive": "2019-02-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            },
+            {
+              "offset_months": 3,
+              "cutoff_exclusive": "2019-05-01",
+              "state": "ABSENT_WITH_PROVEN_COVERAGE"
+            }
+          ],
+          "earliest_public_date": null,
+          "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD"
         }
       ]
     }

@@ -38,6 +38,15 @@ class UIPayloadTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["browsable_company_count"], 40)
         self.assertEqual(payload["summary"]["research_historical_overlap_excluded"], 1)
         self.assertEqual(len(payload["research_cohort"]), 13)
+        self.assertEqual(payload["summary"]["research_signal_analyzed_count"], 13)
+        self.assertTrue(all(len(row["signal_analysis"]) == 3 for row in payload["research_cohort"]))
+        by_name = {row["display_name"]: row for row in payload["research_cohort"]}
+        andriani = {row["signal_family"]: row for row in by_name["Andriani S.p.A."]["signal_analysis"]}
+        self.assertEqual(andriani["CIPO_CANADIAN_TRADEMARK"]["state"], "PRESENT")
+        self.assertEqual(andriani["TED_CONTRACT_AWARD"]["state"], "ABSENT_WITH_PROVEN_COVERAGE")
+        db = {row["signal_family"]: row for row in by_name["Deutsche Bahn International Operations GmbH"]["signal_analysis"]}
+        self.assertEqual(db["CIPO_CANADIAN_TRADEMARK"]["state"], "UNKNOWN_UNVERIFIED_COVERAGE")
+        self.assertEqual(db["CANADABUYS_AWARD"]["state"], "ABSENT_WITH_PROVEN_COVERAGE")
         self.assertTrue(all(not row["negative_label_eligible"] for row in payload["research_cohort"]))
         historical_names = {case["investor_name"].casefold() for case in payload["cases"] if case.get("investor_name")}
         self.assertTrue(all(row["display_name"].casefold() not in historical_names for row in payload["research_cohort"]))

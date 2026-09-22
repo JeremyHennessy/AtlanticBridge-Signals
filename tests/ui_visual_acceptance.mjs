@@ -158,6 +158,8 @@ async function run(label,type,options) {
     check(`${label}: 40-company universe`,await page.locator("#metric-browsable").innerText()===String(dashboard.summary.browsable_company_count));
     const researchText=await page.locator("#research-view").innerText();
     check(`${label}: research role boundary`,researchText.includes("not a current expansion prediction") && researchText.includes("Accepted control") && researchText.includes("Identity-qualified"));
+    check(`${label}: research signal rows`,await page.locator(".research-signal-row").count()===dashboard.research_cohort.length*3);
+    check(`${label}: research signal boundaries`,researchText.includes("Present before cutoff") && researchText.includes("No exact hit · coverage proven") && researchText.includes("Unknown · coverage not sufficient"));
     await go(page,"#markets");
     const marketText=await page.locator("#markets-view").innerText();
     check(`${label}: Canada-wide market scope`,marketText.includes("Nova Scotia-specific evidence remains useful") && marketText.includes("Ontario") && marketText.includes("Québec") && marketText.includes("British Columbia"));

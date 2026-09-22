@@ -51,6 +51,31 @@ function formatResearchStatus(value) {
   return labels[value] || value || "Research";
 }
 
+function formatResearchSignal(value) {
+  const labels = {
+    CIPO_CANADIAN_TRADEMARK: "CIPO trademark",
+    TED_CONTRACT_AWARD: "TED award",
+    CANADABUYS_AWARD: "CanadaBuys award",
+  };
+  return labels[value] || formatSourceType(value);
+}
+
+function formatResearchSignalState(value) {
+  const labels = {
+    PRESENT: "Present before cutoff",
+    ABSENT_WITH_PROVEN_COVERAGE: "No exact hit · coverage proven",
+    UNKNOWN_UNVERIFIED_COVERAGE: "Unknown · coverage not sufficient",
+    MIXED_BY_CUTOFF: "Changes by cutoff",
+  };
+  return labels[value] || value || "Unknown";
+}
+
+function researchSignalClass(value) {
+  if (value === "PRESENT") return "signal-present";
+  if (value === "ABSENT_WITH_PROVEN_COVERAGE") return "signal-absent";
+  return "signal-unknown";
+}
+
 function formatPublicationStatus(value) {
   const labels = {
     VERIFIED_BEFORE_NOTIFICATION_MONTH: "Public before notification",
@@ -359,10 +384,17 @@ function renderResearch() {
       return `${escapeHtml(name)} · ${escapeHtml(formatDate(candidate.notification_month))}`;
     }).join("; ");
     const statusClass = item.research_status === "ACCEPTED_BACKTEST_CONTROL" ? "status-existing" : "status-establishment";
+    const signals = (item.signal_analysis || []).map(signal => {
+      const detail = signal.state === "PRESENT" && signal.earliest_public_date
+        ? `Earliest public evidence ${formatDate(signal.earliest_public_date)}`
+        : "Matched 24 / 12 / 6 / 3 month cutoffs";
+      return `<div class="research-signal-row"><span><strong>${escapeHtml(formatResearchSignal(signal.signal_family))}</strong><small>${escapeHtml(detail)}</small></span><span class="research-signal-state ${researchSignalClass(signal.state)}">${escapeHtml(formatResearchSignalState(signal.state))}</span></div>`;
+    }).join("");
     return `<article class="research-card panel" data-research-id="${escapeHtml(item.id)}">
       <div class="research-card-head"><div><span class="eyebrow">${escapeHtml(item.ultimate_control_country || "Country unknown")}</span><h2>${escapeHtml(item.display_name)}</h2></div><span class="status-chip ${statusClass}">${escapeHtml(formatResearchStatus(item.research_status))}</span></div>
       <div class="research-card-meta"><span><strong>Later Canadian new-business record</strong>${escapeHtml(formatDate(item.later_new_business_month))}</span><span><strong>Identity confidence</strong>${escapeHtml(item.identity_confidence || "Unknown")}</span><span><strong>Legal identifier</strong>${escapeHtml(item.foreign_legal_identifier || "Not recorded")}</span><span><strong>Matched research stratum</strong>${matched || "Not recorded"}</span></div>
       <p class="research-rationale">${escapeHtml(item.rationale || "Identity-qualified historical research entity.")}</p>
+      <section class="research-signal-analysis" aria-label="Historical signal analysis"><div class="research-signal-heading"><strong>Historical signal analysis</strong><span>Exact reviewed entity · matched event-time cutoffs</span></div>${signals || '<p class="small muted">Signal analysis unavailable.</p>'}</section>
       <details class="research-sources"><summary>Primary identity evidence · ${(item.identity_evidence || []).length} source${(item.identity_evidence || []).length === 1 ? "" : "s"}</summary><ul>${sources}</ul></details>
       <p class="small muted">Historical research entity · not a current expansion prediction · not a permanent negative.</p>
     </article>`;
@@ -499,6 +531,7 @@ function validatePayload(data) {
   if(!data || !data.summary || !Array.isArray(data.cases) || data.summary.case_count!==data.cases.length || !Array.isArray(data.research_cohort) || data.summary.research_cohort_count!==data.research_cohort.length)throw new Error("Invalid case payload");
   if(new Set(data.cases.map(x=>x.id)).size!==data.cases.length)throw new Error("Duplicate case IDs");
   if(new Set(data.research_cohort.map(x=>x.id)).size!==data.research_cohort.length)throw new Error("Duplicate research IDs");
+  for(const x of data.research_cohort)if(!Array.isArray(x.signal_analysis) || x.signal_analysis.length!==3)throw new Error("Invalid research signal analysis");
   if(data.summary.browsable_company_count!==data.cases.length+data.research_cohort.length)throw new Error("Invalid browsable company count");
   for(const x of data.cases)if(typeof x.id!=="string" || !x.id || !Array.isArray(x.evidence) || x.evidence_count!==x.evidence.length || typeof x.model_eligible!=="boolean")throw new Error("Invalid case record");
   return data;
