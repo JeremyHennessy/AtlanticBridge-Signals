@@ -3,10 +3,12 @@ from __future__ import annotations
 import argparse
 from datetime import date
 import json
+from pathlib import Path
 
 from atlanticbridge.canadabuys_store import ensure_canadabuys_schema
 from atlanticbridge.db import connect
 from atlanticbridge.live_signals import write_live_signals
+from atlanticbridge.live_signal_scope import apply_commercial_scope
 
 
 def main() -> int:
@@ -26,6 +28,9 @@ def main() -> int:
         as_of_date=as_of,
         lookback_days=args.lookback_days,
     )
+    payload = apply_commercial_scope(payload, conn)
+    Path(args.output).write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    conn.close()
     print(
         json.dumps(
             {
