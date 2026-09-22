@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import {verifyLiveDossiers,verifyWorkspace} from "./workspace_acceptance.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
@@ -19,7 +20,7 @@ async function overflow(page, label) {
   check(`${label}: no page-level horizontal overflow`,value.document<=value.viewport+2 && value.body<=value.viewport+2,JSON.stringify(value));
 }
 async function ready(page) {
-  await page.locator('body[data-ui-version="2026-09-22-live-signals-01"]').waitFor();
+  await page.locator('body[data-ui-version="2026-09-22-workbench-01"]').waitFor();
   await page.waitForFunction(expected => document.querySelector("#metric-cases")?.textContent === String(expected), dashboard.cases.length);
 }
 async function go(page, route) {
@@ -62,7 +63,7 @@ async function fetchLivePayload(page,label) {
   return validateLivePayload(payload,label);
 }
 async function exactAssets(page, label) {
-  for (const name of ["index.html","app.js","styles.css","data/dashboard.json"]) {
+  for (const name of ["index.html","app.js","styles.css","workspace.js","workbench.js","workspace.css","data/dashboard.json"]) {
     const actual=await page.evaluate(async name=>{const r=await fetch(new URL(name,location.href),{cache:"no-store"});if(!r.ok)throw new Error(`Asset HTTP ${r.status}: ${name}`);return r.text();},name);
     const expected=fs.readFileSync(path.join(root,"ui",name),"utf8");
     check(`${label}: ${name.endsWith(".json")?"identical audited payload":"exact deployed asset"} ${name}`,name.endsWith(".json")?isDeepStrictEqual(JSON.parse(actual),JSON.parse(expected)):actual===expected);
@@ -178,7 +179,7 @@ async function run(label,type,options) {
     const live=await fetchLivePayload(page,`${label}/signals`);
     if(live.status==="ACTIVE"){
       const allAvailable=live.signals;
-      const expected90=allAvailable.filter(x=>Number(x.recency_days)<=90);
+      const expected90=allAvailable.filter(x=>{const age=Math.floor((Date.parse(new Date().toISOString().slice(0,10))-Date.parse(x.publicly_available_date))/86400000);return age>=0 && age<=90;});
       check(`${label}: default signal row count`,await page.locator("[data-live-signal-id]").count()===expected90.length);
       check(`${label}: signal feed boundary`,(await page.locator("#signals-view").innerText()).includes("not establish first entry") && !(await page.locator("#signals-view").innerText()).toLowerCase().includes("probability score"));
       await page.locator("#signal-window").selectOption("all");
@@ -245,6 +246,8 @@ async function run(label,type,options) {
     const marketText=await page.locator("#markets-view").innerText();
     check(`${label}: Canada-wide market scope`,marketText.includes("Nova Scotia-specific evidence remains useful") && marketText.includes("Ontario") && marketText.includes("Québec") && marketText.includes("British Columbia"));
     await filters(page,label);await bookmarks(page,label);await allCases(page,label);
+    await verifyLiveDossiers(page,live,label,out,check);
+    await verifyWorkspace(browser,options,base,label,out,check);
     check(`${label}: no console or page errors`,errors.length===0,errors.join(" | "));
     // Failure tests use a separate context: expected network errors are not mixed with normal acceptance.
     const failed=await browser.newContext(options);const broken=await failed.newPage();
