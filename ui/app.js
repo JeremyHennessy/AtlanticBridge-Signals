@@ -1,5 +1,5 @@
 // Read-only research workspace. Filters and local bookmarks never change source evidence.
-const state = {data:null, query:"", classification:"", evidence:"", country:"", sort:"name", view:"all", route:"overview", caseId:null, saved:new Set()};
+const state = {data:null, query:"", classification:"", evidence:"", country:"", sort:"name", view:"all", researchQuery:"", researchRole:"", researchCipo:"", researchSort:"signal", route:"overview", caseId:null, saved:new Set()};
 const $ = (id) => document.getElementById(id);
 const els = {auditDate:$("audit-date"), metricCases:$("metric-cases"), metricEvidence:$("metric-evidence"), metricIdentity:$("metric-identity"), metricModel:$("metric-model"), caseSearch:$("case-search"), classificationFilter:$("classification-filter"), evidenceFilter:$("evidence-filter"), caseCountLabel:$("case-count-label"), casesBody:$("cases-body"), emptyRowTemplate:$("empty-row-template"), coverageBefore:$("coverage-before"), coverageBeforeBar:$("coverage-before-bar"), coverageSame:$("coverage-same"), coverageSameBar:$("coverage-same-bar"), coveragePublication:$("coverage-publication"), coveragePublicationBar:$("coverage-publication-bar"), medianLead:$("median-lead"), sourceTypes:$("source-types"), drawer:$("case-drawer"), drawerTitle:$("drawer-title"), drawerContent:$("drawer-content"), drawerClose:$("drawer-close"), drawerBackdrop:$("drawer-backdrop")};
 const SAVE_KEY = "atlanticbridge.saved-cases.v1";
@@ -361,14 +361,92 @@ function renderMetrics() {
 function renderSources() {
   els.sourceTypes.innerHTML = Object.entries(state.data.summary.source_type_counts).map(([type,count]) => `<div class="source-row"><span>${escapeHtml(formatSourceType(type))}</span><span class="source-count">${escapeHtml(count)}</span></div>`).join("");
 }
+function researchSignalFor(item, family) {
+  return (item.signal_analysis || []).find(signal => signal.signal_family === family) || null;
+}
+
+function compactResearchSignalState(value) {
+  const labels = {
+    PRESENT: "Present",
+    ABSENT_WITH_PROVEN_COVERAGE: "Proven absent",
+    UNKNOWN_UNVERIFIED_COVERAGE: "Unknown",
+    MIXED_BY_CUTOFF: "Mixed",
+  };
+  return labels[value] || "Unknown";
+}
+
+function filteredResearch() {
+  if (!state.data) return [];
+  const q = state.researchQuery.trim().toLocaleLowerCase();
+  const rows = state.data.research_cohort.filter(item => {
+    if (state.researchRole && item.research_status !== state.researchRole) return false;
+    const cipo = researchSignalFor(item, "CIPO_CANADIAN_TRADEMARK");
+    if (state.researchCipo && cipo?.state !== state.researchCipo) return false;
+    if (!q) return true;
+    const haystack = [
+      item.display_name,
+      item.investor_name,
+      item.ultimate_control_country,
+      item.foreign_legal_identifier,
+      item.investor_locality,
+    ].filter(Boolean).join(" ").toLocaleLowerCase();
+    return haystack.includes(q);
+  });
+  const signalRank = {PRESENT:0, UNKNOWN_UNVERIFIED_COVERAGE:1, MIXED_BY_CUTOFF:2, ABSENT_WITH_PROVEN_COVERAGE:3};
+  rows.sort((a,b) => {
+    if (state.researchSort === "entry") {
+      return String(b.later_new_business_month || "").localeCompare(String(a.later_new_business_month || "")) || String(a.display_name).localeCompare(String(b.display_name));
+    }
+    if (state.researchSort === "name") return String(a.display_name).localeCompare(String(b.display_name));
+    const ac = researchSignalFor(a,"CIPO_CANADIAN_TRADEMARK")?.state || "UNKNOWN_UNVERIFIED_COVERAGE";
+    const bc = researchSignalFor(b,"CIPO_CANADIAN_TRADEMARK")?.state || "UNKNOWN_UNVERIFIED_COVERAGE";
+    return (signalRank[ac] ?? 9) - (signalRank[bc] ?? 9)
+      || Number(b.research_status === "ACCEPTED_BACKTEST_CONTROL") - Number(a.research_status === "ACCEPTED_BACKTEST_CONTROL")
+      || String(a.display_name).localeCompare(String(b.display_name));
+  });
+  return rows;
+}
+
+function syncResearchControls() {
+  $("research-search").value = state.researchQuery;
+  $("research-role-filter").value = state.researchRole;
+  $("research-cipo-filter").value = state.researchCipo;
+  $("research-sort").value = state.researchSort;
+}
+
+function syncResearchUrl() {
+  if (state.route !== "research") return;
+  const params = new URLSearchParams();
+  if (state.researchQuery) params.set("q",state.researchQuery);
+  if (state.researchRole) params.set("role",state.researchRole);
+  if (state.researchCipo) params.set("cipo",state.researchCipo);
+  if (state.researchSort !== "signal") params.set("sort",state.researchSort);
+  history.replaceState(null,"",`#research${params.size ? "?" + params : ""}`);
+}
+
+function resetResearchFilters() {
+  state.researchQuery="";
+  state.researchRole="";
+  state.researchCipo="";
+  state.researchSort="signal";
+  syncResearchControls();
+  renderResearch();
+  syncResearchUrl();
+  $("research-search").focus();
+}
+
 function renderResearch() {
-  const rows = state.data.research_cohort || [];
-  $("research-count").textContent = rows.length;
-  $("research-accepted-count").textContent = rows.filter(x => x.research_status === "ACCEPTED_BACKTEST_CONTROL").length;
-  $("research-qualified-count").textContent = rows.filter(x => x.research_status === "IDENTITY_QUALIFIED_RESEARCH_CONTROL").length;
+  const allRows = state.data.research_cohort || [];
+  const rows = filteredResearch();
+  $("research-count").textContent = allRows.length;
+  $("research-accepted-count").textContent = allRows.filter(x => x.research_status === "ACCEPTED_BACKTEST_CONTROL").length;
+  $("research-qualified-count").textContent = allRows.filter(x => x.research_status === "IDENTITY_QUALIFIED_RESEARCH_CONTROL").length;
+  $("research-cipo-present-count").textContent = allRows.filter(x => researchSignalFor(x,"CIPO_CANADIAN_TRADEMARK")?.state === "PRESENT").length;
+  $("research-cipo-unknown-count").textContent = allRows.filter(x => researchSignalFor(x,"CIPO_CANADIAN_TRADEMARK")?.state === "UNKNOWN_UNVERIFIED_COVERAGE").length;
+  $("research-result-count").textContent = `${rows.length} of ${allRows.length} companies`;
   const root = $("research-companies");
   if (!rows.length) {
-    root.innerHTML = '<div class="empty-state panel"><h3>No expanded research companies are published.</h3><p>This is unavailable—not evidence that no additional companies exist.</p></div>';
+    root.innerHTML = '<div class="empty-state research-empty"><h3>No research companies match these filters.</h3><p>The underlying cohort is unchanged.</p><button class="button button-secondary" type="button" data-research-reset>Reset research filters</button></div>';
     return;
   }
   root.innerHTML = rows.map(item => {
@@ -384,19 +462,40 @@ function renderResearch() {
       return `${escapeHtml(name)} · ${escapeHtml(formatDate(candidate.notification_month))}`;
     }).join("; ");
     const statusClass = item.research_status === "ACCEPTED_BACKTEST_CONTROL" ? "status-existing" : "status-establishment";
-    const signals = (item.signal_analysis || []).map(signal => {
-      const detail = signal.state === "PRESENT" && signal.earliest_public_date
+    const signalCell = family => {
+      const signal = researchSignalFor(item,family);
+      const stateValue = signal?.state || "UNKNOWN_UNVERIFIED_COVERAGE";
+      const detail = signal?.state === "PRESENT" && signal.earliest_public_date
         ? `Earliest public evidence ${formatDate(signal.earliest_public_date)}`
-        : "Matched 24 / 12 / 6 / 3 month cutoffs";
-      return `<div class="research-signal-row"><span><strong>${escapeHtml(formatResearchSignal(signal.signal_family))}</strong><small>${escapeHtml(detail)}</small></span><span class="research-signal-state ${researchSignalClass(signal.state)}">${escapeHtml(formatResearchSignalState(signal.state))}</span></div>`;
+        : formatResearchSignalState(stateValue);
+      return `<span class="research-signal-pill ${researchSignalClass(stateValue)}" title="${escapeHtml(detail)}"><span class="signal-dot" aria-hidden="true"></span>${escapeHtml(compactResearchSignalState(stateValue))}</span>`;
+    };
+    const signalDetails = (item.signal_analysis || []).map(signal => {
+      const cutoffs = (signal.cutoffs || []).map(cutoff => `${cutoff.offset_months}m: ${compactResearchSignalState(cutoff.state)}`).join(" · ");
+      return `<div class="research-detail-signal"><strong>${escapeHtml(formatResearchSignal(signal.signal_family))}</strong><span>${escapeHtml(formatResearchSignalState(signal.state))}</span><small>${escapeHtml(cutoffs || "No cutoff detail")} · ${escapeHtml(signal.coverage_status || "Coverage unverified")}</small></div>`;
     }).join("");
-    return `<article class="research-card panel" data-research-id="${escapeHtml(item.id)}">
-      <div class="research-card-head"><div><span class="eyebrow">${escapeHtml(item.ultimate_control_country || "Country unknown")}</span><h2>${escapeHtml(item.display_name)}</h2></div><span class="status-chip ${statusClass}">${escapeHtml(formatResearchStatus(item.research_status))}</span></div>
-      <div class="research-card-meta"><span><strong>Later Canadian new-business record</strong>${escapeHtml(formatDate(item.later_new_business_month))}</span><span><strong>Identity confidence</strong>${escapeHtml(item.identity_confidence || "Unknown")}</span><span><strong>Legal identifier</strong>${escapeHtml(item.foreign_legal_identifier || "Not recorded")}</span><span><strong>Matched research stratum</strong>${matched || "Not recorded"}</span></div>
-      <p class="research-rationale">${escapeHtml(item.rationale || "Identity-qualified historical research entity.")}</p>
-      <section class="research-signal-analysis" aria-label="Historical signal analysis"><div class="research-signal-heading"><strong>Historical signal analysis</strong><span>Exact reviewed entity · matched event-time cutoffs</span></div>${signals || '<p class="small muted">Signal analysis unavailable.</p>'}</section>
-      <details class="research-sources"><summary>Primary identity evidence · ${(item.identity_evidence || []).length} source${(item.identity_evidence || []).length === 1 ? "" : "s"}</summary><ul>${sources}</ul></details>
-      <p class="small muted">Historical research entity · not a current expansion prediction · not a permanent negative.</p>
+    return `<article class="research-list-item" data-research-id="${escapeHtml(item.id)}">
+      <div class="research-row-main">
+        <div class="research-company-cell"><span class="eyebrow">${escapeHtml(item.ultimate_control_country || "Country unknown")}</span><h3>${escapeHtml(item.display_name)}</h3><span class="research-legal-id">${escapeHtml(item.foreign_legal_identifier || "Legal identifier not recorded")}</span></div>
+        <div class="research-role-cell"><span class="status-chip ${statusClass}">${escapeHtml(formatResearchStatus(item.research_status))}</span></div>
+        <div class="research-entry-cell"><strong>${escapeHtml(formatDate(item.later_new_business_month))}</strong><span>later new-business record</span></div>
+        <div class="research-signal-cell" data-label="CIPO">${signalCell("CIPO_CANADIAN_TRADEMARK")}</div>
+        <div class="research-signal-cell" data-label="TED">${signalCell("TED_CONTRACT_AWARD")}</div>
+        <div class="research-signal-cell" data-label="CanadaBuys">${signalCell("CANADABUYS_AWARD")}</div>
+      </div>
+      <details class="research-detail">
+        <summary>View identity & source evidence</summary>
+        <div class="research-detail-body">
+          <div class="research-detail-column">
+            <h4>Research context</h4>
+            <dl class="research-detail-facts"><div><dt>Identity confidence</dt><dd>${escapeHtml(item.identity_confidence || "Unknown")}</dd></div><div><dt>Matched stratum</dt><dd>${matched || "Not recorded"}</dd></div><div><dt>Investor locality</dt><dd>${escapeHtml(item.investor_locality || "Not recorded")}</dd></div></dl>
+            <p>${escapeHtml(item.rationale || "Identity-qualified historical research entity.")}</p>
+          </div>
+          <div class="research-detail-column"><h4>Historical signal analysis</h4><div class="research-detail-signals">${signalDetails}</div></div>
+          <div class="research-detail-column research-detail-evidence"><h4>Primary identity evidence</h4><ul>${sources}</ul></div>
+        </div>
+        <p class="small muted research-boundary-note">Historical research entity · not a current expansion prediction · not a permanent negative.</p>
+      </details>
     </article>`;
   }).join("");
 }
@@ -506,6 +605,14 @@ function route() {
     const id=p.get("case");if(id && state.data.cases.some(x=>x.id===id)){openCase(id);return;}
     if(id){$("route-notice").textContent="That case is not in this audited dataset. Search the available cases below.";$("route-notice").hidden=false;}
   }
+  if(state.route === "research") {
+    state.researchQuery=p.get("q")||"";
+    state.researchRole=["ACCEPTED_BACKTEST_CONTROL","IDENTITY_QUALIFIED_RESEARCH_CONTROL"].includes(p.get("role"))?p.get("role"):"";
+    state.researchCipo=["PRESENT","ABSENT_WITH_PROVEN_COVERAGE","UNKNOWN_UNVERIFIED_COVERAGE"].includes(p.get("cipo"))?p.get("cipo"):"";
+    state.researchSort=["name","entry"].includes(p.get("sort"))?p.get("sort"):"signal";
+    syncResearchControls();
+    renderResearch();
+  }
   hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
 }
 function bindEvents() {
@@ -515,6 +622,9 @@ function bindEvents() {
   for(const [node,key,event] of [[els.caseSearch,"query","input"],[els.classificationFilter,"classification","change"],[els.evidenceFilter,"evidence","change"],[$("country-filter"),"country","change"],[$("sort-order"),"sort","change"]])node.addEventListener(event,()=>{state[key]=node.value;renderCases();syncFilterUrl();});
   document.querySelectorAll("[data-view]").forEach(button=>button.addEventListener("click",()=>{state.view=button.dataset.view;renderCases();syncFilterUrl();}));
   $("reset-filters").addEventListener("click",resetFilters);
+  for(const [node,key,event] of [[$("research-search"),"researchQuery","input"],[$("research-role-filter"),"researchRole","change"],[$("research-cipo-filter"),"researchCipo","change"],[$("research-sort"),"researchSort","change"]])node.addEventListener(event,()=>{state[key]=node.value;renderResearch();syncResearchUrl();});
+  $("research-reset").addEventListener("click",resetResearchFilters);
+  $("research-companies").addEventListener("click",event=>{if(event.target.closest("[data-research-reset]"))resetResearchFilters();});
   els.casesBody.addEventListener("click",event=>{
     if(event.target.closest("[data-reset]")){resetFilters();return;}
     const save=event.target.closest("[data-save]");if(save){toggleSaved(save.dataset.save);return;}

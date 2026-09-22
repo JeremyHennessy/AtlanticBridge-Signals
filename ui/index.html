@@ -8,7 +8,7 @@
   <title>AtlanticBridge Signals — Evidence Console</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body data-ui-version="2026-09-22-research-01">
+<body data-ui-version="2026-09-22-research-triage-01">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <div class="app-shell" id="app-shell">
     <header class="topbar">
@@ -56,15 +56,26 @@
         <p class="small muted">Saved cases stay in this browser only. They do not update the underlying research, sync to a team, or imply commercial qualification.</p>
       </section>
       <section id="research-view" data-route="research" hidden>
-        <div class="page-heading"><div><p class="eyebrow">Expanded research cohort</p><h1>More companies, without weakening the evidence gate.</h1><p>These companies are historical future entrants used for control and signal research. Their foreign legal identities are supported by primary evidence, but they are not current prospects, permanent negatives, or additions to the 27 audited outcome cases.</p></div><a class="text-link" href="#coverage">Review the evidence boundaries →</a></div>
-        <div class="research-banner"><strong><span id="research-count">—</span> additional unique companies.</strong><span>Each company is separated by research role. “Accepted control” means it passed the existing time-indexed control gate; “identity-qualified” means legal identity is established but source-signal integration is still in progress.</span></div>
-        <div class="research-summary-grid">
-          <article class="panel"><span class="eyebrow">Accepted controls</span><strong class="research-summary-value" id="research-accepted-count">—</strong><p>Identity-qualified future entrants already used in the accepted exploratory backtest.</p></article>
-          <article class="panel"><span class="eyebrow">New identity-qualified</span><strong class="research-summary-value" id="research-qualified-count">—</strong><p>Newly reviewed foreign operating companies awaiting expanded source-signal integration.</p></article>
-          <article class="panel"><span class="eyebrow">Current prospect claims</span><strong class="research-summary-value">0</strong><p>This cohort is historical research. It does not assert that any listed company is currently planning another Canadian expansion.</p></article>
+        <div class="page-heading research-page-heading"><div><p class="eyebrow">Expanded research cohort</p><h1>Research companies & historical signals.</h1><p>Scan identity-qualified historical future entrants, compare source states, then open the evidence only when you need it. These are research controls—not current prospects or permanent negatives.</p></div><a class="text-link" href="#coverage">Review the evidence boundaries →</a></div>
+        <div class="research-banner"><strong><span id="research-count">—</span> additional unique companies.</strong><span>Signals are evaluated at matched 24 / 12 / 6 / 3 month cutoffs. “Proven absent” is narrow source-specific absence; “unknown” is never converted to zero.</span></div>
+        <div class="research-summary-grid research-summary-grid-compact">
+          <article class="panel"><span class="eyebrow">Accepted controls</span><strong class="research-summary-value" id="research-accepted-count">—</strong><p>Already used in the accepted exploratory backtest.</p></article>
+          <article class="panel"><span class="eyebrow">Identity-qualified</span><strong class="research-summary-value" id="research-qualified-count">—</strong><p>Legal identity established; still research-only.</p></article>
+          <article class="panel"><span class="eyebrow">Pre-cutoff CIPO signal</span><strong class="research-summary-value" id="research-cipo-present-count">—</strong><p>Exact reviewed entity with historical CIPO evidence.</p></article>
+          <article class="panel"><span class="eyebrow">CIPO unknown</span><strong class="research-summary-value" id="research-cipo-unknown-count">—</strong><p>Coverage is insufficient to infer absence.</p></article>
         </div>
-        <div class="section-heading research-heading"><div><p class="eyebrow">Company universe</p><h2>Identity-qualified companies added to the workspace.</h2></div><span class="muted">Primary-source identity evidence retained</span></div>
-        <div id="research-companies" class="research-company-grid" aria-live="polite"></div>
+        <section class="research-workbench panel" aria-labelledby="research-workbench-title">
+          <div class="research-workbench-head"><div><p class="eyebrow">Research workbench</p><h2 id="research-workbench-title">Find the companies that need attention.</h2></div><span class="muted" id="research-result-count">—</span></div>
+          <div class="research-filters">
+            <label class="research-search">Search companies<input id="research-search" type="search" autocomplete="off" placeholder="Company, country, legal ID"></label>
+            <label>Research role<select id="research-role-filter"><option value="">All roles</option><option value="ACCEPTED_BACKTEST_CONTROL">Accepted controls</option><option value="IDENTITY_QUALIFIED_RESEARCH_CONTROL">Identity-qualified</option></select></label>
+            <label>CIPO state<select id="research-cipo-filter"><option value="">All CIPO states</option><option value="PRESENT">Present before cutoff</option><option value="ABSENT_WITH_PROVEN_COVERAGE">Proven absent</option><option value="UNKNOWN_UNVERIFIED_COVERAGE">Unknown coverage</option></select></label>
+            <label>Sort<select id="research-sort"><option value="signal">Signal priority</option><option value="name">Company name</option><option value="entry">Latest Canadian entry</option></select></label>
+            <button class="button button-secondary research-reset" id="research-reset" type="button">Reset</button>
+          </div>
+          <div class="research-list-head" aria-hidden="true"><span>Company</span><span>Role</span><span>Later Canada entry</span><span>CIPO</span><span>TED</span><span>CanadaBuys</span></div>
+          <div id="research-companies" class="research-list" aria-live="polite"></div>
+        </section>
       </section>
       <section id="markets-view" data-route="markets" hidden>
         <div class="page-heading"><div><p class="eyebrow">Canada-wide market lens</p><h1>Canada is the destination. Regions are separate opportunities.</h1><p>AtlanticBridge is designed to identify credible European expansion toward Canada first, then assess which Canadian provinces, regions, or metros may fit each company. A company can be a strong Canadian expansion case without Nova Scotia being its best location.</p></div><a class="text-link" href="#guide">How the layers stay separate →</a></div>
