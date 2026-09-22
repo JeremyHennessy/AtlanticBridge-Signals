@@ -4,7 +4,7 @@
   "baseline_commit": "4d87ea022b1ae5f439fe095b38b695a40ed6f830",
   "proof_artifact_id": 10718724645,
   "proof_archive_sha256": "46f6e0853b6848cc10d5982e54bebeac2bf810e6e3ede19062b470e6c39a75a6",
-  "project_count": 6,
+  "project_count": 15,
   "projects": [
     {
       "id": "3f0ad81898ea05df0368eac2ab6daff93febad166894a482ed0764a439f7cd02",
@@ -315,6 +315,426 @@
       "backtest_eligible": false,
       "public_alert_allowed": false,
       "independent_holdout": false
+    },
+    {
+      "id": "09c804fbe214143cfb4fb4898731c4f08dc4afae4ead98a47b6e3ce396eb7437",
+      "project_key": "burnaby-fuel-cell-production-expansion",
+      "company_name": "Cellcentric",
+      "country": "Germany",
+      "location": "Burnaby, BC",
+      "title": "Fuel stack production facility",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "The June 29, 2022 source reports a grand opening and move to a larger Burnaby facility. It explicitly compares the new site with a previous production facility and says the Canadian operation had been based in Burnaby for decades. This is relocation/expansion of an existing Canadian presence, not first Canadian entry; inauguration is not an independently verified first-production date.",
+      "next_action": "Confirm the current Canadian operating entity, production activity and civilian supplier requirements at the Burnaby facility; do not treat its relocation as first entry.",
+      "prior_presence_status": "SOURCE_REPORTS_EXISTING_PRESENCE",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:09.193071+00:00",
+        "source_url": "https://www.cellcentric.net/en-us/news/canada-currently-cellcentrics-production-site-for-",
+        "source_sha256": "7cb5793c6590bbc95dbda02146b97d921c7e4948e5ee2fbe0323332de187b0ba"
+      },
+      "latest_public_date": "2022-06-29",
+      "evidence": [
+        {
+          "source_id": "cellcentric-burnaby-20220629",
+          "source_url": "https://www.cellcentric.net/en-us/news/canada-currently-cellcentrics-production-site-for-",
+          "source_publication_date": "2022-06-29",
+          "first_observed_at": "2026-09-22T23:12:45.535550+00:00",
+          "last_observed_at": "2026-09-22T23:13:09.193071+00:00",
+          "raw_sha256": "7cb5793c6590bbc95dbda02146b97d921c7e4948e5ee2fbe0323332de187b0ba"
+        }
+      ],
+      "events": [
+        {
+          "kind": "INAUGURATION_REPORTED",
+          "date": "2022-06-29",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "cellcentric-burnaby-20220629",
+          "source_url": "https://www.cellcentric.net/en-us/news/canada-currently-cellcentrics-production-site-for-",
+          "raw_sha256": "7cb5793c6590bbc95dbda02146b97d921c7e4948e5ee2fbe0323332de187b0ba"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "76ab7a53c7b5baab0cad11f7705bd1b77753c830cd8a6006bd481a4a4b22eab0",
+      "project_key": "brampton-ev-modernization-rd",
+      "company_name": "Stellantis",
+      "country": "Netherlands",
+      "location": "Brampton, ON",
+      "title": "Modernize facilities for electric vehicle production and set up R&D centres",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Ontario reported a $3.6 billion Stellantis investment to modernize existing Windsor and Brampton plants and create R&D centres. The evidence describes investment in existing Canadian manufacturing assets, not a new Canadian entry or an opening date.",
+      "next_action": "Check the latest issuer update on Brampton retooling, timing and procurement before acting on the 2022 investment announcement.",
+      "prior_presence_status": "SOURCE_REPORTS_EXISTING_PRESENCE",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:10.868895+00:00",
+        "source_url": "https://www.investontario.ca/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton",
+        "source_sha256": "cb75c2178b385fe00971912039192a2e6a560a0cf16ab31969ca6726defb41f9"
+      },
+      "latest_public_date": "2022-05-02",
+      "evidence": [
+        {
+          "source_id": "stellantis-investontario-20220502",
+          "source_url": "https://www.investontario.ca/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton",
+          "source_publication_date": "2022-05-02",
+          "first_observed_at": "2026-09-22T23:12:47.280691+00:00",
+          "last_observed_at": "2026-09-22T23:13:10.868895+00:00",
+          "raw_sha256": "cb75c2178b385fe00971912039192a2e6a560a0cf16ab31969ca6726defb41f9"
+        }
+      ],
+      "events": [
+        {
+          "kind": "PROJECT_ANNOUNCED",
+          "date": "2022-05-02",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "stellantis-investontario-20220502",
+          "source_url": "https://www.investontario.ca/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton",
+          "raw_sha256": "cb75c2178b385fe00971912039192a2e6a560a0cf16ab31969ca6726defb41f9"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "831d5d02c8df568c46d57b7c69b5a593a2ad457d9eecf3d4573e55b985a4f514",
+      "project_key": "farnham-rng-facility",
+      "company_name": "Nature Energy",
+      "country": "Denmark",
+      "location": "Farnham, QC",
+      "title": "Large-scale facility for renewable natural gas production",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Nature Energy announced land acquisition and a planned Farnham biogas facility in March 2022. A March 2023 Investment Canada record later names Nature Energy Farnham Inc. among entities acquired by Shell Petroleum N.V. and reports United Kingdom ultimate control at that time. The original Danish card label therefore must not be treated as current corporate control. This review does not establish an opening/operating date or the project's current status.",
+      "next_action": "Verify the latest project status, including the unresolved reported withdrawal, and current ownership before treating Farnham as an active project. Retrieve and review the cited primary PDF.",
+      "prior_presence_status": "NOT_ESTABLISHED",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:13.867221+00:00",
+        "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/node/218410",
+        "source_sha256": "751b8b8c6fa769676982637e2533cd234deb049cb112a68b03630118717445a7"
+      },
+      "latest_public_date": "2023-03-20",
+      "evidence": [
+        {
+          "source_id": "nature-farnham-plan-20220315",
+          "source_url": "https://www.newswire.ca/news-releases/nature-energy-a-global-leader-in-green-energy-unveils-biogas-plant-project-in-farnham-803089982.html",
+          "source_publication_date": "2022-03-15",
+          "first_observed_at": "2026-09-22T23:12:48.768736+00:00",
+          "last_observed_at": "2026-09-22T23:13:12.303307+00:00",
+          "raw_sha256": "ea5e887fa0b913446cb50999ac82b0770e2e3a21694017ceedaa579e1a9f6a2e"
+        },
+        {
+          "source_id": "nature-farnham-ised-20230320",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/node/218410",
+          "source_publication_date": "2023-03-20",
+          "first_observed_at": "2026-09-22T23:12:50.471503+00:00",
+          "last_observed_at": "2026-09-22T23:13:13.867221+00:00",
+          "raw_sha256": "751b8b8c6fa769676982637e2533cd234deb049cb112a68b03630118717445a7"
+        }
+      ],
+      "events": [
+        {
+          "kind": "PROJECT_ANNOUNCED",
+          "date": "2022-03-15",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "nature-farnham-plan-20220315",
+          "source_url": "https://www.newswire.ca/news-releases/nature-energy-a-global-leader-in-green-energy-unveils-biogas-plant-project-in-farnham-803089982.html",
+          "raw_sha256": "ea5e887fa0b913446cb50999ac82b0770e2e3a21694017ceedaa579e1a9f6a2e"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "f779e54385e76734508a8c449b1fa4572ad70cc55987233227d7495b9d875e83",
+      "project_key": "sherbrooke-game-studio",
+      "company_name": "Ubisoft",
+      "country": "France",
+      "location": "Sherbrooke, QC and Winnipeg, MB",
+      "title": "New production studio, accelerator and training programs",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Ubisoft announced its fourth Quebec studio in Sherbrooke on November 16, 2021, together with training/accelerator investments. The same source says this occurred nearly 25 years after the group's first entry into Quebec. It is expansion of an established Canadian presence; the release is not independent proof of an exact operating commencement date.",
+      "next_action": "Confirm whether this studio is currently operating and hiring and identify the Canadian legal entity before outreach.",
+      "prior_presence_status": "SOURCE_REPORTS_EXISTING_PRESENCE",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:15.482641+00:00",
+        "source_url": "https://quebec.ubisoft.com/en/ubisoft-announces-the-opening-of-a-new-studio-in-sherbrooke/",
+        "source_sha256": "769103fdb45bb5de0b3ac90dfb67ec3a569fb9ee39c4376f0773dca63716257a"
+      },
+      "latest_public_date": "2021-11-16",
+      "evidence": [
+        {
+          "source_id": "ubisoft-sherbrooke-20211116",
+          "source_url": "https://quebec.ubisoft.com/en/ubisoft-announces-the-opening-of-a-new-studio-in-sherbrooke/",
+          "source_publication_date": "2021-11-16",
+          "first_observed_at": "2026-09-22T23:12:52.265980+00:00",
+          "last_observed_at": "2026-09-22T23:13:15.482641+00:00",
+          "raw_sha256": "769103fdb45bb5de0b3ac90dfb67ec3a569fb9ee39c4376f0773dca63716257a"
+        }
+      ],
+      "events": [
+        {
+          "kind": "OPENING_ANNOUNCED",
+          "date": "2021-11-16",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "ubisoft-sherbrooke-20211116",
+          "source_url": "https://quebec.ubisoft.com/en/ubisoft-announces-the-opening-of-a-new-studio-in-sherbrooke/",
+          "raw_sha256": "769103fdb45bb5de0b3ac90dfb67ec3a569fb9ee39c4376f0773dca63716257a"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "a827fa9bc84cc318b200d7294b14caff286f199cb8319d3068de2f8728d75ec8",
+      "project_key": "manitoba-plant-protein-rd",
+      "company_name": "Roquette",
+      "country": "France",
+      "location": "Winnipeg, MB",
+      "title": "R&D centre to accelerate development of new plant-based proteins",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Protein Industries Canada announced a Winnipeg-datelined collaborative R&D project involving Roquette and Prairie Fava. This primary evidence supports an R&D project and broader Canadian plant-protein investment; it does not independently establish the investment card's characterization of a distinct Roquette R&D centre facility in Winnipeg.",
+      "next_action": "Determine whether the record describes a collaborative R&D project or a separate facility, then verify the location, operator and current requirements.",
+      "prior_presence_status": "NOT_ESTABLISHED",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:17.476531+00:00",
+        "source_url": "https://www.proteinindustriescanada.ca/news-releases/investment-to-further-pea-and-fava-bean-processing-on-the-prairies",
+        "source_sha256": "f9f9538d9ebdcf6dc19ab4920295dc65468129441bc7e64b786f5305e2084563"
+      },
+      "latest_public_date": "2020-06-19",
+      "evidence": [
+        {
+          "source_id": "roquette-rd-20200619",
+          "source_url": "https://www.proteinindustriescanada.ca/news-releases/investment-to-further-pea-and-fava-bean-processing-on-the-prairies",
+          "source_publication_date": "2020-06-19",
+          "first_observed_at": "2026-09-22T23:12:54.682685+00:00",
+          "last_observed_at": "2026-09-22T23:13:17.476531+00:00",
+          "raw_sha256": "f9f9538d9ebdcf6dc19ab4920295dc65468129441bc7e64b786f5305e2084563"
+        }
+      ],
+      "events": [
+        {
+          "kind": "PROJECT_ANNOUNCED",
+          "date": "2020-06-19",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "roquette-rd-20200619",
+          "source_url": "https://www.proteinindustriescanada.ca/news-releases/investment-to-further-pea-and-fava-bean-processing-on-the-prairies",
+          "raw_sha256": "f9f9538d9ebdcf6dc19ab4920295dc65468129441bc7e64b786f5305e2084563"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "f59309bd8ea046b550913d1b7405863bdb4bd513cdfb98ea39a541b62b1b001a",
+      "project_key": "greenview-waste-heat-power-pilot",
+      "company_name": "Siemens Energy",
+      "country": "Germany",
+      "location": "Greenview, AB",
+      "title": "First waste heat-to-power facility in Canada",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Alberta's January 1, 2023 monthly Major Projects update lists the Siemens Energy waste heat-to-power pilot among projects completed in December 2022. This establishes a completed-by publication bound, not the exact commissioning or first-operation day and not Siemens Energy's first Canadian presence.",
+      "next_action": "Check whether the Greenview pilot remains in operation and who operates it. A completed-by bound is not an exact commissioning date.",
+      "prior_presence_status": "NOT_ESTABLISHED",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:20.750050+00:00",
+        "source_url": "https://export.alberta.ca/articles-pages/major-projects-feeds/december-2022-major-projects-updates/",
+        "source_sha256": "6efe2fd05c30de46547e78efa02e8504a07e75ce0091727829c5a9bc1c471976"
+      },
+      "latest_public_date": "2023-01-01",
+      "evidence": [
+        {
+          "source_id": "siemens-alberta-completed-20230101",
+          "source_url": "https://export.alberta.ca/articles-pages/major-projects-feeds/december-2022-major-projects-updates/",
+          "source_publication_date": "2023-01-01",
+          "first_observed_at": "2026-09-22T23:12:58.091315+00:00",
+          "last_observed_at": "2026-09-22T23:13:20.750050+00:00",
+          "raw_sha256": "6efe2fd05c30de46547e78efa02e8504a07e75ce0091727829c5a9bc1c471976"
+        }
+      ],
+      "events": [
+        {
+          "kind": "PROJECT_COMPLETED_BY_DATE",
+          "date": "2023-01-01",
+          "date_basis": "UPPER_BOUND_DAY",
+          "source_id": "siemens-alberta-completed-20230101",
+          "source_url": "https://export.alberta.ca/articles-pages/major-projects-feeds/december-2022-major-projects-updates/",
+          "raw_sha256": "6efe2fd05c30de46547e78efa02e8504a07e75ce0091727829c5a9bc1c471976"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "ad1d89218fb7064f55fa452fd59a18d0c6d2d9235fca301c04c15839ac22b06c",
+      "project_key": "nova-bus-facility-modernization",
+      "company_name": "Nova Bus",
+      "country": "Sweden",
+      "location": "Saint-François-du-Lac, QC",
+      "title": "Expansion of bus manufacturing facility",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "The Government of Canada described a Nova Bus transformation project updating existing Saint-Eustache and Saint-François-du-Lac facilities. The release explicitly says the project maintains Nova Bus's Canadian manufacturing footprint and identifies Nova Bus as a Volvo Group division. This is modernization/expansion of an existing presence, not first entry.",
+      "next_action": "Check the factory’s latest operating status and current capacity or supplier needs before acting on the 2021 transformation announcement.",
+      "prior_presence_status": "SOURCE_REPORTS_EXISTING_PRESENCE",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:26.306540+00:00",
+        "source_url": "https://www.canada.ca/en/innovation-science-economic-development/news/2021/06/new-investment-in-electric-buses-to-create-jobs-and-cut-pollution.html",
+        "source_sha256": "f4af5982eb4e6a90399d5cfdea04f0974f4c1d5c28cc53d82e7153b6105dd4b3"
+      },
+      "latest_public_date": "2021-06-08",
+      "evidence": [
+        {
+          "source_id": "novabus-transformation-20210608",
+          "source_url": "https://www.canada.ca/en/innovation-science-economic-development/news/2021/06/new-investment-in-electric-buses-to-create-jobs-and-cut-pollution.html",
+          "source_publication_date": "2021-06-08",
+          "first_observed_at": "2026-09-22T23:13:01.784472+00:00",
+          "last_observed_at": "2026-09-22T23:13:26.306540+00:00",
+          "raw_sha256": "f4af5982eb4e6a90399d5cfdea04f0974f4c1d5c28cc53d82e7153b6105dd4b3"
+        }
+      ],
+      "events": [
+        {
+          "kind": "PROJECT_ANNOUNCED",
+          "date": "2021-06-08",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "novabus-transformation-20210608",
+          "source_url": "https://www.canada.ca/en/innovation-science-economic-development/news/2021/06/new-investment-in-electric-buses-to-create-jobs-and-cut-pollution.html",
+          "raw_sha256": "f4af5982eb4e6a90399d5cfdea04f0974f4c1d5c28cc53d82e7153b6105dd4b3"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "024112e729a0c3ce986eed73462125f91a27ab15de84bd7661b24ecc1cf62fa4",
+      "project_key": "riverview-castle-rock-ridge-ii",
+      "company_name": "Enel Green Power",
+      "country": "Italy",
+      "location": "Pincher Creek, AB",
+      "title": "Connecting three new wind farms in North America",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Enel's May 21, 2020 release reports the Riverview and Castle Rock Ridge II Alberta wind farms connected and delivering energy. The release's 'three new wind farms in North America' also includes a Texas expansion, so the card wording must not be read as three Canadian farms. The evidence establishes operation by the publication date, not an exact first-generation day or first Canadian entry. The same issuer document reports an existing Canadian wind farm operating since 2012; this is additional Canadian capacity rather than first entry.",
+      "next_action": "Verify current asset ownership and operating or maintenance opportunities. These projects added capacity to an existing Canadian presence.",
+      "prior_presence_status": "SOURCE_REPORTS_EXISTING_PRESENCE",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:27.731952+00:00",
+        "source_url": "https://corporate.enel.it/en/media/explore-press-releases/press/2020/05/enel-green-power-fuels-recovery-by-connecting-three-new-wind-farms-in-north-america0",
+        "source_sha256": "0172d782bdaca4f47d04b85e3e8aee4795dadfbe038cbfcc5e96b21b7eb57985"
+      },
+      "latest_public_date": "2020-05-21",
+      "evidence": [
+        {
+          "source_id": "enel-issuer-alberta-operating-20200521",
+          "source_url": "https://corporate.enel.it/en/media/explore-press-releases/press/2020/05/enel-green-power-fuels-recovery-by-connecting-three-new-wind-farms-in-north-america0",
+          "source_publication_date": "2020-05-21",
+          "first_observed_at": "2026-09-22T23:13:03.475363+00:00",
+          "last_observed_at": "2026-09-22T23:13:27.731952+00:00",
+          "raw_sha256": "0172d782bdaca4f47d04b85e3e8aee4795dadfbe038cbfcc5e96b21b7eb57985"
+        }
+      ],
+      "events": [
+        {
+          "kind": "OPERATING_BY_DATE",
+          "date": "2020-05-21",
+          "date_basis": "UPPER_BOUND_DAY",
+          "source_id": "enel-issuer-alberta-operating-20200521",
+          "source_url": "https://corporate.enel.it/en/media/explore-press-releases/press/2020/05/enel-green-power-fuels-recovery-by-connecting-three-new-wind-farms-in-north-america0",
+          "raw_sha256": "0172d782bdaca4f47d04b85e3e8aee4795dadfbe038cbfcc5e96b21b7eb57985"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "6d4687413b57ee1e1f34d2725cbc0720872cf4f42b46953d79d07a22c6c6f1ed",
+      "project_key": "st-catharines-intelligent-operations-center",
+      "company_name": "Accenture",
+      "country": "Ireland",
+      "location": "St. Catharines, ON",
+      "title": "Intelligent operations centre",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Accenture reported opening its St. Catharines intelligent operations centre on January 15, 2020. The same release says it was the company's second location in Niagara, third intelligent operations centre in Canada, and that Accenture had been in the Niagara region since 2001. This is an expansion of established Canadian operations, not first entry.",
+      "next_action": "Confirm the centre’s present activity, hiring and legal operator. The source documents expansion of an existing Canadian business.",
+      "prior_presence_status": "SOURCE_REPORTS_EXISTING_PRESENCE",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T23:13:29.110929+00:00",
+        "source_url": "https://newsroom.accenture.com/news/2020/accenture-opens-new-intelligent-operations-center-in-canada-to-help-worlds-leading-companies-power-growth",
+        "source_sha256": "61970d1030b54f953425f06de10c0489ff3412f00af3cf0cf1d9029d18fcea80"
+      },
+      "latest_public_date": "2020-01-15",
+      "evidence": [
+        {
+          "source_id": "accenture-stcatharines-20200115",
+          "source_url": "https://newsroom.accenture.com/news/2020/accenture-opens-new-intelligent-operations-center-in-canada-to-help-worlds-leading-companies-power-growth",
+          "source_publication_date": "2020-01-15",
+          "first_observed_at": "2026-09-22T23:13:04.972831+00:00",
+          "last_observed_at": "2026-09-22T23:13:29.110929+00:00",
+          "raw_sha256": "61970d1030b54f953425f06de10c0489ff3412f00af3cf0cf1d9029d18fcea80"
+        }
+      ],
+      "events": [
+        {
+          "kind": "OPENING_REPORTED",
+          "date": "2020-01-15",
+          "date_basis": "REPORTED_BY_DAY",
+          "source_id": "accenture-stcatharines-20200115",
+          "source_url": "https://newsroom.accenture.com/news/2020/accenture-opens-new-intelligent-operations-center-in-canada-to-help-worlds-leading-companies-power-growth",
+          "raw_sha256": "61970d1030b54f953425f06de10c0489ff3412f00af3cf0cf1d9029d18fcea80"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    }
+  ],
+  "additional_proofs": [
+    {
+      "artifact_id": 10724340100,
+      "archive_sha256": "eb1a6546cf4306118d0dc77cbb7e665468230a169cefed7ed5dc56ef52acaf0a",
+      "preserved_six_project_values_sha256": "6777f23591c1263da741133f69de62757ca256b1267a7663afb1dc3240a80125"
     }
   ]
 }

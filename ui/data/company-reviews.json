@@ -1,0 +1,892 @@
+{
+  "schema_version": 1,
+  "status": "REVIEW_REGISTER_NOT_PREDICTIONS",
+  "decision_count": 20,
+  "decisions": [
+    {
+      "id": "a999d21a7e3b1e4eb82e050fbb97fa86e512eb2cc1d075a8e8985a6a2e24d0a4",
+      "project_id": "3f0ad81898ea05df0368eac2ab6daff93febad166894a482ed0764a439f7cd02",
+      "company_name": "Sanofi",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Influenza project: 2021 announcement and September 2026 inauguration. The 2021 source explicitly describes a separate diphtheria/tetanus/pertussis facility; that separate project must not supply the influenza opening date. An inauguration is not a verified first-production date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Check whether the inaugurated influenza facility has entered production and whether relevant supplier opportunities remain open.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "sanofi-flu-inauguration-20260916",
+          "sanofi-flu-plan-20210331"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "sanofi-flu-inauguration-20260916",
+          "source_url": "https://sanoficanada.mediaroom.com/2026-09-16-Sanofi-inaugurates-new-flu-vaccine-facility,-Canadas-largest-biomanufacturing-investment",
+          "raw_sha256": "5c6547679ebd13e2ba316094051bddcd921645c05e70cebdaeaaea89d23e95b0",
+          "observed_at": "2026-09-22T21:08:09.417267+00:00",
+          "source_publication_date": "2026-09-16"
+        },
+        {
+          "source_id": "sanofi-flu-plan-20210331",
+          "source_url": "https://www.canada.ca/en/innovation-science-economic-development/news/2021/03/the-government-of-canada-makes-historic-investment-to-strengthen-canadas-biomanufacturing-sector.html",
+          "raw_sha256": "ee01b996d23d879cc4bcfe610605a566ec47d93eff290a8237a56d03ac330188",
+          "observed_at": "2026-09-22T21:08:07.233056+00:00",
+          "source_publication_date": "2021-03-31"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "5a60c512c7624b15cea94e7bc458863d84370bbacf819bac376acf8fb8d85e08",
+      "project_id": "86bf17a563d2ea608714913eca0fa0d3db36f117f4f121417a65a3f62fc9eaf0",
+      "company_name": "Volkswagen",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "A battery-factory plan and implementation update, not an operational plant or first Canadian presence of the Volkswagen group. The 2027 year is a historical plan, not a current schedule guarantee. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Verify the current construction and production schedule before considering outreach; do not reuse the historical 2027 plan as a current commitment.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "vw-powerco-progress-20231212",
+          "vw-powerco-plan-20230313"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "vw-powerco-progress-20231212",
+          "source_url": "https://www.volkswagen-group.com/en/press-releases/volkswagen-backed-powerco-se-reaches-significant-milestone-in-st-thomas-gigafactory-project-17962",
+          "raw_sha256": "472c9aeb2d8a5327fe77e5b2cbecf1858426929086420748ec99e068e51ac6ce",
+          "observed_at": "2026-09-22T21:08:02.353282+00:00",
+          "source_publication_date": "2023-12-12"
+        },
+        {
+          "source_id": "vw-powerco-plan-20230313",
+          "source_url": "https://www.volkswagen-group.com/en/press-releases/volkswagen-group-steps-up-activities-in-north-america-canada-chosen-as-location-for-first-overseas-gigafactory-of-its-battery-company-powerco-se-16930",
+          "raw_sha256": "665b8c90a6e5f30e7b0f2b0d8a502fef2a06051d1ebacf36e29c2cd78d6f530f",
+          "observed_at": "2026-09-22T21:08:01.485818+00:00",
+          "source_publication_date": "2023-03-13"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "b5f77598da09ba004244644019eb25f1529e0459b554e7247e1a80cda5c8d78b",
+      "project_id": "1e42a52082d60e55f78e5e96e74c2902c7da6f6b311cc42d3c389c1cc830b39c",
+      "company_name": "The Cultivated B.",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Same-day announcement and planned ceremony. Do not turn future-tense ceremony language into independent confirmation that the ceremony or production occurred. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Verify the facility's current operating status and corporate identity before treating the opening announcement as an active opportunity.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "tcb-burlington-20221027"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "tcb-burlington-20221027",
+          "source_url": "https://www.thecultivatedb.com/the-cultivated-b-expands-cellular-agriculture-operations-to-canada-with-facility/",
+          "raw_sha256": "10203da181524beb677d8bb2f1659fe28e2366b3e54ae6a11a78a14ea40017e0",
+          "observed_at": "2026-09-22T21:08:14.417571+00:00",
+          "source_publication_date": "2022-10-27"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "545ea9b5d4ba0bc21d28b510f398d80431985e3975eb7ce5ce6c30613ba98e34",
+      "project_id": "cf697b08bcc18aca49467618ca06f29450671843d33a7be9eede7ce0ababda72",
+      "company_name": "Avanade",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "The dated agency section reports an established Halifax office. Up to 700 jobs is conditional agreement potential, not actual jobs created. A local office is not first Canadian group entry, and Ireland is still the original agency card label, not newly verified legal control. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Confirm the named Canadian legal entity and current office activity; do not treat the agency country label as verified parent control.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "avanade-halifax-20220628"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "avanade-halifax-20220628",
+          "source_url": "https://investnovascotia.ca/news-and-stories/disclosures-strategic-investment-fund-202223",
+          "raw_sha256": "8f49712c5a5895ebb0bdd364f592b0026684cabc8ffe0743e3add66742eaf3c6",
+          "observed_at": "2026-09-22T21:08:18.142820+00:00",
+          "source_publication_date": "2022-06-28"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "75892faa65f8469adfe1661cff024e3d450ff3aa8451f591c4203f1060e0e7bd",
+      "project_id": "09db8fe3c6f5d80c2110393698bfa613c312f07bd54a59f7df4deda7b3bf3d09",
+      "company_name": "Klarna",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Issuer reports service availability and a Toronto hub. Hiring 500+ engineers by 2025 is a plan in this 2022 release, not verified realized jobs. Prior Canadian group presence and the exact office-opening day remain unverified. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Confirm the current Toronto footprint and current hiring independently of the historical hiring target.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "klarna-canada-20220222"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "klarna-canada-20220222",
+          "source_url": "https://www.prnewswire.com/news-releases/klarna-expands-to-canada-with-flexible-pay-in-4-service-and-shopping-app-while-announcing-major-investment-in-local-economy-301487360.html",
+          "raw_sha256": "9b09c593dae6936c87f54e622759fc261eaef52940e93c8712069ff4832780da",
+          "observed_at": "2026-09-22T21:08:15.279636+00:00",
+          "source_publication_date": "2022-02-22"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "ec71948f1be50b0fe3aefc68cedd52bcf64330f361028ce65bcab7559aafd517",
+      "project_id": "e138bf65c46301372bb83d0e1a0b499bc25c949378a3f30126aa58c4c7bbf7d2",
+      "company_name": "Air Liquide",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "The unit was operating by the publication date. Its exact first-production day is not established. This increased an existing complex, not first Canadian entry. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Look for a newer capacity or procurement announcement; the recorded 2021 operation is historical context, not a new entry lead.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "airliquide-becancour-20210126-wire"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "airliquide-becancour-20210126-wire",
+          "source_url": "https://www.prnewswire.com/news-releases/air-liquide-inaugurates-the-worlds-largest-low-carbon-hydrogen-membrane-based-production-unit-in-canada-301214697.html",
+          "raw_sha256": "e2543f21ebdd37ca8ceac8c4d2a3a509258e2f755b154aea72299692aab09068",
+          "observed_at": "2026-09-22T21:08:11.383113+00:00",
+          "source_publication_date": "2021-01-26"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "987ffa08cf1b1ee63966806f210ebb5c8a36e1ad76b689a2e824f2a1181ad218",
+      "project_id": "09c804fbe214143cfb4fb4898731c4f08dc4afae4ead98a47b6e3ce396eb7437",
+      "company_name": "Cellcentric",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "The June 29, 2022 source reports a grand opening and move to a larger Burnaby facility. It explicitly compares the new site with a previous production facility and says the Canadian operation had been based in Burnaby for decades. This is relocation/expansion of an existing Canadian presence, not first Canadian entry; inauguration is not an independently verified first-production date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Confirm the current Canadian operating entity, production activity and civilian supplier requirements at the Burnaby facility; do not treat its relocation as first entry.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "cellcentric-burnaby-20220629"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "cellcentric-burnaby-20220629",
+          "source_url": "https://www.cellcentric.net/en-us/news/canada-currently-cellcentrics-production-site-for-",
+          "raw_sha256": "7cb5793c6590bbc95dbda02146b97d921c7e4948e5ee2fbe0323332de187b0ba",
+          "observed_at": "2026-09-22T23:13:09.193071+00:00",
+          "source_publication_date": "2022-06-29"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "98c95216da8e6e2eec59f07fdb561cbd969b1e970fb1dbbd223e5e7bab219dbb",
+      "project_id": "76ab7a53c7b5baab0cad11f7705bd1b77753c830cd8a6006bd481a4a4b22eab0",
+      "company_name": "Stellantis",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Ontario reported a $3.6 billion Stellantis investment to modernize existing Windsor and Brampton plants and create R&D centres. The evidence describes investment in existing Canadian manufacturing assets, not a new Canadian entry or an opening date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Check the latest issuer update on Brampton retooling, timing and procurement before acting on the 2022 investment announcement.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "stellantis-investontario-20220502"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "stellantis-investontario-20220502",
+          "source_url": "https://www.investontario.ca/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton",
+          "raw_sha256": "cb75c2178b385fe00971912039192a2e6a560a0cf16ab31969ca6726defb41f9",
+          "observed_at": "2026-09-22T23:13:10.868895+00:00",
+          "source_publication_date": "2022-05-02"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "3d9755a52e8ced8db65f8e95b779db2b6731ccf17ad74c9f9a08af24f79ef211",
+      "project_id": "831d5d02c8df568c46d57b7c69b5a593a2ad457d9eecf3d4573e55b985a4f514",
+      "company_name": "Nature Energy",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Nature Energy announced land acquisition and a planned Farnham biogas facility in March 2022. A March 2023 Investment Canada record later names Nature Energy Farnham Inc. among entities acquired by Shell Petroleum N.V. and reports United Kingdom ultimate control at that time. The original Danish card label therefore must not be treated as current corporate control. This review does not establish an opening/operating date or the project's current status. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Verify the latest project status, including the unresolved reported withdrawal, and current ownership before treating Farnham as an active project. Retrieve and review the cited primary PDF.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "nature-farnham-plan-20220315",
+          "nature-farnham-ised-20230320"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "nature-farnham-plan-20220315",
+          "source_url": "https://www.newswire.ca/news-releases/nature-energy-a-global-leader-in-green-energy-unveils-biogas-plant-project-in-farnham-803089982.html",
+          "raw_sha256": "ea5e887fa0b913446cb50999ac82b0770e2e3a21694017ceedaa579e1a9f6a2e",
+          "observed_at": "2026-09-22T23:13:12.303307+00:00",
+          "source_publication_date": "2022-03-15"
+        },
+        {
+          "source_id": "nature-farnham-ised-20230320",
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/node/218410",
+          "raw_sha256": "751b8b8c6fa769676982637e2533cd234deb049cb112a68b03630118717445a7",
+          "observed_at": "2026-09-22T23:13:13.867221+00:00",
+          "source_publication_date": "2023-03-20"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "52be9fc1bfacfefe8edd12b5782d51f6bd8270933a5f3ba1db9db2d343ea2853",
+      "project_id": "f779e54385e76734508a8c449b1fa4572ad70cc55987233227d7495b9d875e83",
+      "company_name": "Ubisoft",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Ubisoft announced its fourth Quebec studio in Sherbrooke on November 16, 2021, together with training/accelerator investments. The same source says this occurred nearly 25 years after the group's first entry into Quebec. It is expansion of an established Canadian presence; the release is not independent proof of an exact operating commencement date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Confirm whether this studio is currently operating and hiring and identify the Canadian legal entity before outreach.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "ubisoft-sherbrooke-20211116"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "ubisoft-sherbrooke-20211116",
+          "source_url": "https://quebec.ubisoft.com/en/ubisoft-announces-the-opening-of-a-new-studio-in-sherbrooke/",
+          "raw_sha256": "769103fdb45bb5de0b3ac90dfb67ec3a569fb9ee39c4376f0773dca63716257a",
+          "observed_at": "2026-09-22T23:13:15.482641+00:00",
+          "source_publication_date": "2021-11-16"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "f58c134e21b9dee9dc0f6ecae0623a7d17cf3805a208a34ff2aeed8508eca64f",
+      "project_id": "a827fa9bc84cc318b200d7294b14caff286f199cb8319d3068de2f8728d75ec8",
+      "company_name": "Roquette",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Protein Industries Canada announced a Winnipeg-datelined collaborative R&D project involving Roquette and Prairie Fava. This primary evidence supports an R&D project and broader Canadian plant-protein investment; it does not independently establish the investment card's characterization of a distinct Roquette R&D centre facility in Winnipeg. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Determine whether the record describes a collaborative R&D project or a separate facility, then verify the location, operator and current requirements.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "roquette-rd-20200619"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "roquette-rd-20200619",
+          "source_url": "https://www.proteinindustriescanada.ca/news-releases/investment-to-further-pea-and-fava-bean-processing-on-the-prairies",
+          "raw_sha256": "f9f9538d9ebdcf6dc19ab4920295dc65468129441bc7e64b786f5305e2084563",
+          "observed_at": "2026-09-22T23:13:17.476531+00:00",
+          "source_publication_date": "2020-06-19"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "baaa04866b816e508567d9956b2f8246cd79ef43329cb36e41378709f01c2b85",
+      "project_id": "f59309bd8ea046b550913d1b7405863bdb4bd513cdfb98ea39a541b62b1b001a",
+      "company_name": "Siemens Energy",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Alberta's January 1, 2023 monthly Major Projects update lists the Siemens Energy waste heat-to-power pilot among projects completed in December 2022. This establishes a completed-by publication bound, not the exact commissioning or first-operation day and not Siemens Energy's first Canadian presence. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Check whether the Greenview pilot remains in operation and who operates it. A completed-by bound is not an exact commissioning date.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "siemens-alberta-completed-20230101"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "siemens-alberta-completed-20230101",
+          "source_url": "https://export.alberta.ca/articles-pages/major-projects-feeds/december-2022-major-projects-updates/",
+          "raw_sha256": "6efe2fd05c30de46547e78efa02e8504a07e75ce0091727829c5a9bc1c471976",
+          "observed_at": "2026-09-22T23:13:20.750050+00:00",
+          "source_publication_date": "2023-01-01"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "0ca88032cd2f863edcc9cc152fe6f3d57710823218e524884674fb80e36181ab",
+      "project_id": "ad1d89218fb7064f55fa452fd59a18d0c6d2d9235fca301c04c15839ac22b06c",
+      "company_name": "Nova Bus",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "The Government of Canada described a Nova Bus transformation project updating existing Saint-Eustache and Saint-François-du-Lac facilities. The release explicitly says the project maintains Nova Bus's Canadian manufacturing footprint and identifies Nova Bus as a Volvo Group division. This is modernization/expansion of an existing presence, not first entry. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Check the factory’s latest operating status and current capacity or supplier needs before acting on the 2021 transformation announcement.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "novabus-transformation-20210608"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "novabus-transformation-20210608",
+          "source_url": "https://www.canada.ca/en/innovation-science-economic-development/news/2021/06/new-investment-in-electric-buses-to-create-jobs-and-cut-pollution.html",
+          "raw_sha256": "f4af5982eb4e6a90399d5cfdea04f0974f4c1d5c28cc53d82e7153b6105dd4b3",
+          "observed_at": "2026-09-22T23:13:26.306540+00:00",
+          "source_publication_date": "2021-06-08"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "ac78133e4ee5383530d37e1b0c405589b89c5037406cf9f0908af260e1e83d4c",
+      "project_id": "024112e729a0c3ce986eed73462125f91a27ab15de84bd7661b24ecc1cf62fa4",
+      "company_name": "Enel Green Power",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Enel's May 21, 2020 release reports the Riverview and Castle Rock Ridge II Alberta wind farms connected and delivering energy. The release's 'three new wind farms in North America' also includes a Texas expansion, so the card wording must not be read as three Canadian farms. The evidence establishes operation by the publication date, not an exact first-generation day or first Canadian entry. The same issuer document reports an existing Canadian wind farm operating since 2012; this is additional Canadian capacity rather than first entry. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Verify current asset ownership and operating or maintenance opportunities. These projects added capacity to an existing Canadian presence.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "enel-issuer-alberta-operating-20200521"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "enel-issuer-alberta-operating-20200521",
+          "source_url": "https://corporate.enel.it/en/media/explore-press-releases/press/2020/05/enel-green-power-fuels-recovery-by-connecting-three-new-wind-farms-in-north-america0",
+          "raw_sha256": "0172d782bdaca4f47d04b85e3e8aee4795dadfbe038cbfcc5e96b21b7eb57985",
+          "observed_at": "2026-09-22T23:13:27.731952+00:00",
+          "source_publication_date": "2020-05-21"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "c30909419dc82654eef1cc9130af6dd70a41deb03bad407f579726477a495fd7",
+      "project_id": "6d4687413b57ee1e1f34d2725cbc0720872cf4f42b46953d79d07a22c6c6f1ed",
+      "company_name": "Accenture",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "Accenture reported opening its St. Catharines intelligent operations centre on January 15, 2020. The same release says it was the company's second location in Niagara, third intelligent operations centre in Canada, and that Accenture had been in the Niagara region since 2001. This is an expansion of established Canadian operations, not first entry. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
+      "next_action": "Confirm the centre’s present activity, hiring and legal operator. The source documents expansion of an existing Canadian business.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "accenture-stcatharines-20200115"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "accenture-stcatharines-20200115",
+          "source_url": "https://newsroom.accenture.com/news/2020/accenture-opens-new-intelligent-operations-center-in-canada-to-help-worlds-leading-companies-power-growth",
+          "raw_sha256": "61970d1030b54f953425f06de10c0489ff3412f00af3cf0cf1d9029d18fcea80",
+          "observed_at": "2026-09-22T23:13:29.110929+00:00",
+          "source_publication_date": "2020-01-15"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "14d63b54738ee344c58d5b34ed2a0f7f8ea143297a767cb54f2d5c69aad715f9",
+      "project_id": null,
+      "company_name": "Mistral AI",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "A Canadian-hub announcement and seven Canada-location hiring records are retained. All seven job candidates remain scope-held because of defence wording; zero unheld jobs is not no Canadian hiring.",
+      "next_action": "Review role-specific civilian scope, the exact legal entity and current hub status before treating these observations as an opportunity.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "mistral-montreal-announcement"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "mistral-official-careers",
+          "source_url": "https://api.ashbyhq.com/posting-api/job-board/mistral.ai",
+          "entry_url": "https://mistral.ai/careers/",
+          "raw_sha256": "9d72ee185b5a791c6d5ee5305cbf22c3a12fcabda1f0780e1062caf6cb564d7e",
+          "observed_at": "2026-09-22T21:56:06.298004+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "mistral-montreal-announcement",
+          "source_url": "https://www.montrealinternational.com/en/news/mistral-ai-selects-montreal-for-its-canadian-hub/",
+          "entry_url": "https://www.montrealinternational.com/en/news/mistral-ai-selects-montreal-for-its-canadian-hub/",
+          "raw_sha256": "c8019599c8164a98d221fed551a2915b60af6350fb3f7cc9d802dc0a902ec46a",
+          "observed_at": "2026-09-22T21:56:12.782607+00:00",
+          "source_publication_date": "2026-06-25"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "65d8edde5dfdf54d70e9eb0d43e1eb065b51d5befa06523a6c233f9f150ccea9",
+      "project_id": null,
+      "company_name": "DeepL",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "The accepted board capture contains 40 published job records. No Canada-location candidate was retained in that bounded capture; this does not establish company-wide absence or no Canadian plans.",
+      "next_action": "Seek dated Canada-specific hiring or announcement evidence and verify the legal entity and ownership before qualification.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "UNKNOWN",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "deepl-official-careers",
+          "source_url": "https://api.ashbyhq.com/posting-api/job-board/DeepL",
+          "entry_url": "https://www.deepl.com/en/careers",
+          "raw_sha256": "53835619efabae3d0b7fd41f03db797169da9f88715e1c8d76018c9222bd362c",
+          "observed_at": "2026-09-22T21:56:18.311539+00:00",
+          "source_publication_date": null
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "924218fff9b21f224b2f70bea90667a7cd0ba6530213721678bb38efda6cc075",
+      "project_id": null,
+      "company_name": "Pleo",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "The accepted board capture contains 30 published job records. The bounded board does not establish Canadian presence or absence, and does not prove expansion intent.",
+      "next_action": "Verify legal identity and find a specific, dated Canada-facing change before promoting this monitoring target.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "UNKNOWN",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "pleo-official-careers",
+          "source_url": "https://api.ashbyhq.com/posting-api/job-board/pleo",
+          "entry_url": "https://www.pleo.io/en/careers",
+          "raw_sha256": "f5aba7822eb608ab4ae57fdddd5e655d80a4dfe3dac979936ec5182b22ff0bc7",
+          "observed_at": "2026-09-22T21:56:21.149090+00:00",
+          "source_publication_date": null
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "c38f434396902774379db2518b7482cfcf736f5fcee27ec342eee7a89e146de4",
+      "project_id": null,
+      "company_name": "Giesecke+Devrient",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "The Montreal announcement describes an AI centre and explicitly reports Canadian presence since 1962. It is an expansion context record, not first Canadian entry.",
+      "next_action": "Verify the operating entity, current centre activity and civilian commercial needs; retain existing Canadian presence in the classification.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "gd-montreal-announcement"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "gd-montreal-announcement",
+          "source_url": "https://www.montrealinternational.com/en/news/gd-selects-montreal-to-establish-its-global-artificial-intelligence-centre-of-excellence-at-mila/",
+          "entry_url": "https://www.montrealinternational.com/en/news/gd-selects-montreal-to-establish-its-global-artificial-intelligence-centre-of-excellence-at-mila/",
+          "raw_sha256": "c8c3e1d2bf38975155c71cfaee67c7695138cf33057144ed4873a60000a805e0",
+          "observed_at": "2026-09-22T21:56:14.706579+00:00",
+          "source_publication_date": "2026-06-17"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "682c685fa6b8e6cbea1647bf60fdac4ea6f268bb0df39b2559df1d8767743867",
+      "project_id": null,
+      "company_name": "Adyen Canada Ltd.",
+      "decision": "HOLD",
+      "review_date": "2026-09-22",
+      "reviewer": "assistant-source-review-2026-09-22",
+      "reason": "The source documents Payments Canada membership. Membership is not a verified first office, first operation or first Canadian entry.",
+      "next_action": "Resolve the Canadian member-to-European-parent relationship and identify a concrete current operational or commercial requirement.",
+      "checks": {
+        "legal_identity": "UNKNOWN",
+        "corporate_group": "UNKNOWN",
+        "civilian_scope": "UNKNOWN",
+        "canadian_relevance": "SUPPORTED",
+        "current_status": "UNKNOWN",
+        "source_reuse": "UNKNOWN"
+      },
+      "check_sources": {
+        "legal_identity": [],
+        "corporate_group": [],
+        "civilian_scope": [],
+        "canadian_relevance": [
+          "adyen-payments-membership"
+        ],
+        "current_status": [],
+        "source_reuse": []
+      },
+      "evidence": [
+        {
+          "source_id": "adyen-payments-membership",
+          "source_url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member",
+          "entry_url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member",
+          "raw_sha256": "7510c3404dc406b7aaba876377314a66b588887ea6a526cc0df2d0839c839265",
+          "observed_at": "2026-09-22T21:56:16.007887+00:00",
+          "source_publication_date": "2026-07-14"
+        }
+      ],
+      "current_status_date": null,
+      "current_status_source_id": null,
+      "first_entry_confirmed": false,
+      "predictive_score_allowed": false,
+      "independent_holdout": false
+    }
+  ],
+  "proofs": [
+    {
+      "artifact_id": 10724340100,
+      "archive_sha256": "eb1a6546cf4306118d0dc77cbb7e665468230a169cefed7ed5dc56ef52acaf0a"
+    },
+    {
+      "artifact_id": 10720884358,
+      "archive_sha256": "db6e1b2055d27d3bf945a2c2ce228321b3425d1dea4c6baaf4d9d78f7713e802"
+    }
+  ],
+  "qualification_completed": false,
+  "scope": "Documented triage decisions, not twenty identity-qualified companies or twenty qualified opportunities."
+}

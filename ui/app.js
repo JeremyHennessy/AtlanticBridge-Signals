@@ -714,12 +714,12 @@ function route() {
   const [raw="overview",search=""]=location.hash.slice(1).split("?");
   if(raw === "main-content"){$("main-content").focus();return;}
   if(!workCanNavigate(location.hash))return;
-  const valid=["overview","signals","companies","research","markets","coverage","guide","company","worklist"];
+  const valid=["overview","opportunities","signals","companies","research","markets","coverage","guide","company","worklist"];
   const previousRoute=state.route;
   const requested=raw||"overview";state.route=valid.includes(requested)?requested:"overview";
   const p=new URLSearchParams(search);
   if(previousRoute!==state.route){$("main-content").focus({preventScroll:true});window.scrollTo(0,0);}
-  document.title=`AtlanticBridge Signals — ${{overview:"Overview",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use",company:"Company dossier",worklist:"Company worklist"}[state.route]}`;
+  document.title=`AtlanticBridge Signals — ${{overview:"Overview",opportunities:"Opportunity review queue",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use",company:"Company dossier",worklist:"Company worklist"}[state.route]}`;
   $("route-notice").hidden=valid.includes(requested);
   if(!valid.includes(requested))$("route-notice").textContent="That view was not found. Showing the overview instead.";
   document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!==state.route;});
@@ -751,10 +751,12 @@ function route() {
   if(["companies","research","coverage"].includes(state.route) && !state.data){$("route-notice").hidden=false;$("route-notice").textContent="Audited case evidence is unavailable—not zero cases. Your worklist remains available.";}
   if(state.route === "worklist") {workQuery=p.get("q")||"";workStatus=Object.hasOwn(ABWorkspace.STATUSES,p.get("status"))?p.get("status"):"";workDue=p.get("due")==="1";renderWorklist();}
   if(state.route === "company") renderCompany(p.get("id") || "");
-  hideDrawer();if(state.route!=="company")document.title=`AtlanticBridge Signals — ${{overview:"Overview",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use",company:"Company dossier",worklist:"Company worklist"}[state.route]}`;
+  if(state.route === "opportunities") renderOpportunityQueue(p);
+  hideDrawer();if(state.route!=="company")document.title=`AtlanticBridge Signals — ${{overview:"Overview",opportunities:"Opportunity review queue",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use",company:"Company dossier",worklist:"Company worklist"}[state.route]}`;
 }
 function bindEvents() {
   bindWorkEvents();
+  bindOpportunityQueue();
   const mobileFilters=window.matchMedia("(max-width:760px)");
   if(mobileFilters.matches)$("advanced-filters").open=false;
   mobileFilters.addEventListener("change",event=>{if(!event.matches)$("advanced-filters").open=true;});
@@ -811,10 +813,12 @@ async function init() {
     fetchEvidence("data/dashboard.json",validatePayload),
     fetchEvidence("data/live-signals.json",validateLivePayload),
     fetchEvidence("data/reviewed-evidence.json",ABReviewed.validate),
+    fetchEvidence("data/company-reviews.json",ABOpportunities.validate),
   ]);
   state.data=results[0].status==="fulfilled"?results[0].value:null;
   state.live=results[1].status==="fulfilled"?results[1].value:unavailableLivePayload("The current signal source could not be loaded. Saved work and available historical evidence remain accessible.");
   reviewedCatalog=results[2].status==="fulfilled"?results[2].value:null;
+  opportunityRegister=results[3].status==="fulfilled"?results[3].value:null;
   loadWatched();renderMetrics();renderSignals();renderReviewedProjects();
   $("monitoring-refresh").addEventListener("click",loadMonitoringHealth);
   if(state.data){loadSaved();renderSources();renderResearch();renderCases();$("load-status").hidden=true;}
