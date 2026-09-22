@@ -204,9 +204,9 @@ async function run(label,type,options) {
     await go(page,"#overview");
     check(`${label}: overview research count`,await page.locator("#metric-evidence").innerText()===String(dashboard.summary.research_cohort_count));
     const presentCount=dashboard.research_cohort.filter(x=>(x.signal_analysis||[]).some(s=>s.signal_family==="CIPO_CANADIAN_TRADEMARK" && s.state==="PRESENT")).length;
-    check(`${label}: overview CIPO signal count`,await page.locator("#metric-countries").innerText()===String(presentCount));
     check(`${label}: overview 40-company framing`,(await page.locator("#overview-view").innerText()).includes("40-company evidence workspace") && (await page.locator("#overview-view").innerText()).includes("Open research workbench"));
     await go(page,"#research");
+    check(`${label}: research CIPO signal count`,await page.locator("#research-cipo-present-count").innerText()===String(presentCount));
     check(`${label}: expanded research rows`,await page.locator("[data-research-id]").count()===dashboard.research_cohort.length);
     check(`${label}: 40-company universe`,await page.locator("#metric-browsable").innerText()===String(dashboard.summary.browsable_company_count));
     check(`${label}: research result count`,await page.locator("#research-result-count").innerText()===`${dashboard.research_cohort.length} of ${dashboard.research_cohort.length} companies`);
