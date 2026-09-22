@@ -49,8 +49,6 @@ jobs:
           python scripts/build_ui_payload.py
 
       - name: Refresh current CanadaBuys live signals
-        env:
-          EVENT_NAME: ${{ github.event_name }}
         run: |
           set +e
           rm -f /tmp/atlanticbridge-live.sqlite /tmp/live-signals.json
@@ -77,16 +75,8 @@ jobs:
           print(json.dumps({"generated_at":p["generated_at"],"source":p["source"],"summary":p["summary"]},indent=2))
           PY
             mv /tmp/live-signals.json ui/data/live-signals.json
-          elif [ "$EVENT_NAME" = "push" ]; then
-            echo "::warning::Current CanadaBuys refresh failed during code deployment; retaining the checked-in last-known-good live signal snapshot."
-            python - <<'PY'
-          import json
-          from pathlib import Path
-          p=json.loads(Path("ui/data/live-signals.json").read_text())
-          print(json.dumps({"fallback_status":p["status"],"generated_at":p.get("generated_at"),"summary":p["summary"]},indent=2))
-          PY
           else
-            echo "::error::Scheduled/manual live-signal refresh failed. Keeping the previously deployed feed by failing before Pages deployment."
+            echo "::error::Current CanadaBuys refresh failed. Aborting Pages deployment so the previously hosted feed remains in place."
             exit 1
           fi
 
