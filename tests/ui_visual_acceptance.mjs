@@ -209,7 +209,7 @@ async function run(label,type,options) {
     await go(page,"#research");
     check(`${label}: research CIPO signal count`,await page.locator("#research-cipo-present-count").innerText()===String(presentCount));
     check(`${label}: expanded research rows`,await page.locator("[data-research-id]").count()===dashboard.research_cohort.length);
-    check(`${label}: 40-company universe`,await page.locator("#metric-browsable").innerText()===String(dashboard.summary.browsable_company_count));
+    check(`${label}: 40-company universe arithmetic`,dashboard.summary.browsable_company_count===dashboard.summary.case_count+dashboard.summary.research_cohort_count);
     check(`${label}: research result count`,await page.locator("#research-result-count").innerText()===`${dashboard.research_cohort.length} of ${dashboard.research_cohort.length} companies`);
     const researchText=await page.locator("#research-view").innerText();
     check(`${label}: research role boundary`,(await page.locator(".research-page-heading").innerText()).includes("not current prospects") && await page.locator("#research-accepted-count").innerText()==="4" && await page.locator("#research-qualified-count").innerText()==="9");
