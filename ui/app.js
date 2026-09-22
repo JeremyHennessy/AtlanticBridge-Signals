@@ -343,9 +343,9 @@ function renderMetrics() {
   const s = state.data.summary;
   els.auditDate.textContent = `Case audit: ${formatDate(state.data.audit_date)}`;
   els.metricCases.textContent = s.case_count;
-  els.metricEvidence.textContent = s.evidence_case_count;
+  els.metricEvidence.textContent = s.research_cohort_count;
   $("metric-public").textContent = s.cases_with_verified_pre_notification_evidence;
-  $("metric-countries").textContent = new Set(state.data.cases.map(x => x.ultimate_control_country).filter(Boolean)).size;
+  $("metric-countries").textContent = state.data.research_cohort.filter(x => researchSignalFor(x,"CIPO_CANADIAN_TRADEMARK")?.state === "PRESENT").length;
   $("metric-browsable").textContent = s.browsable_company_count;
   els.metricIdentity.textContent = s.identity_supported;
   els.metricModel.textContent = s.model_eligible_count;
@@ -354,7 +354,7 @@ function renderMetrics() {
     bar.style.width = `${s.case_count ? Math.min(100,100*count/s.case_count) : 0}%`;
   }
   els.medianLead.textContent = s.median_days_before_notification_month == null ? "Unknown" : `${s.median_days_before_notification_month} days`;
-  $("data-note").textContent = `Case audit: ${formatDate(state.data.audit_date)} · ${s.case_count} historical cases · UI: 22 September 2026. Interface updates do not refresh the evidence.`;
+  $("data-note").textContent = `Case audit: ${formatDate(state.data.audit_date)} · ${s.case_count} audited cases · ${s.research_cohort_count} research companies · UI: 22 September 2026. Interface updates do not refresh the evidence.`;
   const countries = [...new Set(state.data.cases.map(x => x.ultimate_control_country).filter(Boolean))].sort();
   $("country-filter").innerHTML = '<option value="">All countries</option>' + countries.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");
 }
