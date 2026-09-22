@@ -153,7 +153,7 @@ async function bookmarks(page,label) {
   await page.locator('[data-view="saved"]').click();
   check(`${label}: local save survives reload`,await page.locator("tr.case-row").count()===1 && await page.locator(`[data-case-id="${id}"]`).count()===1);
   await page.locator(`[data-save="${id}"]`).click();
-  check(`${label}: saved empty state`,await page.locator("tr.case-row").count()===0 && (await page.locator(".empty-state").innerText()).includes("No saved cases yet"));
+  check(`${label}: saved empty state`,await page.locator("tr.case-row").count()===0 && (await page.locator("#companies-view .empty-state").innerText()).includes("No saved cases yet"));
   await go(page,`#companies?case=${id}`);await page.locator("#case-drawer.open").waitFor();
   await page.reload({waitUntil:"networkidle"});await ready(page);await page.locator("#case-drawer.open").waitFor();
   check(`${label}: case deep link survives reload`,await page.locator("#drawer-title").innerText()===dashboard.cases[0].canadian_business_name);
