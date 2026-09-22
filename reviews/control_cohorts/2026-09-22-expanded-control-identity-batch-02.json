@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-09-22",
+  "source_queue": "reviews/control_cohorts/2026-09-22-risk-set-control-expansion.json",
+  "purpose": "Second primary-evidence identity review batch from the 48-entity expanded risk-set queue. Decisions qualify foreign operating legal identity only; they do not alter the accepted five-control baseline or create negative labels.",
+  "decision_rule": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY requires explicit primary evidence for the exact named foreign legal entity plus evidence that it operates a real business. The later Investment Canada new-business record confirms the same selected investor and later-entry month. Identity qualification remains separate from source-specific event-time coverage.",
+  "summary": {
+    "records_reviewed": 3,
+    "qualified_foreign_operating_legal_entities": 3,
+    "rejected": 0,
+    "unresolved": 0,
+    "promoted_to_accepted_backtest_controls": 0,
+    "negative_labels_created": 0
+  },
+  "records": [
+    {
+      "control_entity_key": "node:239953",
+      "investor_node_id": "239953",
+      "investor_name": "WIZ DIGITAL SERVICES LIMITED",
+      "investor_locality": "Bishopstown",
+      "ultimate_control_country": "Ireland",
+      "assigned_candidate_outcome_ids": [
+        "56361c05a17b303a69d6d6cf522f95b7a1a820a896a1f455593775883e93398a"
+      ],
+      "review_decision": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
+      "identity_confidence": "HIGH",
+      "foreign_legal_name": "WIZ DIGITAL SERVICES LIMITED",
+      "foreign_legal_identifier": {
+        "type": "IRISH_COMPANY_NUMBER",
+        "value": "678945"
+      },
+      "later_new_business_month": "2025-12",
+      "integration_status": "RESEARCH_IDENTITY_QUALIFIED_NOT_IN_ACCEPTED_CONTROL_SET",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "rationale": "Ireland's Companies Registration Office records company number 678945 under the exact legal name WIZ DIGITAL SERVICES LIMITED. Wiz Digital's official privacy notice identifies Wiz Digital Services Ltd as an Irish data and AI consultancy, and its official company site describes active research, engineering and deployment work. Investment Canada later names WIZ DIGITAL SERVICES LIMITED, Bishopstown, Ireland in a December 2025 new-business notification.",
+      "identity_evidence": [
+        {
+          "source_url": "https://cro.ie/wp-content/uploads/2025/05/21-May-2025-Annual-Returns-Registered.pdf",
+          "source_type": "OFFICIAL_COMPANY_REGISTRY",
+          "claim": "Ireland Companies Registration Office annual-return register lists company number 678945 as WIZ DIGITAL SERVICES LIMITED."
+        },
+        {
+          "source_url": "https://www.wizdigital.ie/privacy-policy",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official Wiz Digital privacy notice identifies Wiz Digital Services Ltd as a data and AI consultancy registered in Ireland."
+        },
+        {
+          "source_url": "https://www.wizdigital.ie/",
+          "source_type": "OFFICIAL_COMPANY_SITE",
+          "claim": "Official Wiz Digital site describes an active Irish research and engineering company delivering data, AI, cloud, robotics and related technology work."
+        },
+        {
+          "source_url": "https://www.ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=15",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "December 2025 new-business record names WIZ DIGITAL SERVICES LIMITED, Bishopstown, Ireland as investor."
+        }
+      ]
+    },
+    {
+      "control_entity_key": "node:214179",
+      "investor_node_id": "214179",
+      "investor_name": "Europ Assistance S.A.",
+      "investor_locality": "Paris",
+      "ultimate_control_country": "Italy",
+      "assigned_candidate_outcome_ids": [
+        "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8"
+      ],
+      "review_decision": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
+      "identity_confidence": "HIGH",
+      "foreign_legal_name": "EUROP ASSISTANCE S.A.",
+      "foreign_legal_identifier": {
+        "type": "SIREN",
+        "value": "451366405"
+      },
+      "later_new_business_month": "2024-02",
+      "integration_status": "RESEARCH_IDENTITY_QUALIFIED_NOT_IN_ACCEPTED_CONTROL_SET",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "rationale": "French official regulatory material identifies EUROP ASSISTANCE S.A., SIREN 451 366 405, as an authorized insurer. The Canada Gazette separately identifies Europ Assistance S.A. as a France-incorporated property and casualty insurer headquartered in Paris and ultimately controlled by Assicurazioni Generali S.p.A. in Italy. Investment Canada later names Europ Assistance S.A., Paris, with Italian ultimate control in a February 2024 new-business notification.",
+      "identity_evidence": [
+        {
+          "source_url": "https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000039646070",
+          "source_type": "OFFICIAL_GOVERNMENT_REGULATOR",
+          "claim": "French official journal decision identifies EUROP ASSISTANCE S.A., SIREN 451 366 405, and authorizes insurance operations."
+        },
+        {
+          "source_url": "https://gazette.gc.ca/rp-pr/p1/2022/2022-01-29/html/misc-divers-eng.html",
+          "source_type": "OFFICIAL_CANADA_GAZETTE",
+          "claim": "Canada Gazette identifies Europ Assistance S.A. as incorporated in France, headquartered in Paris, operating property and casualty insurance, with ultimate parent Assicurazioni Generali S.p.A. in Italy."
+        },
+        {
+          "source_url": "https://www.ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/e?page=1",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "February 2024 new-business record names Europ Assistance S.A., Paris as investor with Italy as country of ultimate control."
+        }
+      ]
+    },
+    {
+      "control_entity_key": "node:214936",
+      "investor_node_id": "214936",
+      "investor_name": "Nord Engineering France",
+      "investor_locality": "Valbonne",
+      "ultimate_control_country": "Italy",
+      "assigned_candidate_outcome_ids": [
+        "653b0de34ba760e11f7a193a48b785e9a49b8af7c3c3764be2aa091886b27cc8"
+      ],
+      "review_decision": "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
+      "identity_confidence": "HIGH",
+      "foreign_legal_name": "NORD ENGINEERING FRANCE",
+      "foreign_legal_identifier": {
+        "type": "SIREN",
+        "value": "833928112"
+      },
+      "later_new_business_month": "2024-09",
+      "integration_status": "RESEARCH_IDENTITY_QUALIFIED_NOT_IN_ACCEPTED_CONTROL_SET",
+      "accepted_backtest_control_eligible": false,
+      "negative_label_eligible": false,
+      "rationale": "France's official SIRENE service identifies NORD ENGINEERING FRANCE, SIREN 833 928 112, as an active SAS in Valbonne with wholesale-equipment activity. A French official public-procurement award notice separately identifies NORD ENGINEERING FRANCE at the same Valbonne address as a bidder and award recipient, establishing an operating commercial role. Investment Canada later names Nord Engineering France, Valbonne in a September 2024 new-business notification with Italian ultimate control.",
+      "identity_evidence": [
+        {
+          "source_url": "https://api-avis-situation-sirene.insee.fr/identification/pdf/83392811200048",
+          "source_type": "OFFICIAL_COMPANY_REGISTRY",
+          "claim": "INSEE SIRENE notice identifies active NORD ENGINEERING FRANCE, SIREN 833 928 112, SIRET 833 928 112 00048, at 2405 Route des Dolines, Valbonne."
+        },
+        {
+          "source_url": "https://www.boamp.fr/telechargements/FILES/PDF/2026/03/26-27897.pdf",
+          "source_type": "OFFICIAL_GOVERNMENT_PROCUREMENT",
+          "claim": "French official procurement award notice identifies NORD ENGINEERING FRANCE, 2405 Route des Dolines, Valbonne, as a bidder and awarded organization."
+        },
+        {
+          "source_url": "https://ised-isde.canada.ca/site/investment-canada-act/en/search/decisions-and-notification-index/all?page=42",
+          "source_type": "OFFICIAL_INVESTMENT_CANADA",
+          "claim": "September 2024 new-business record names Nord Engineering France, Valbonne as investor with Italy as country of ultimate control."
+        }
+      ]
+    }
+  ]
+}
