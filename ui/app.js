@@ -414,12 +414,12 @@ function route() {
   if(!state.data)return;
   const [raw="overview",search=""]=location.hash.slice(1).split("?");
   if(raw === "main-content"){$("main-content").focus();return;}
-  const valid=["overview","companies","coverage","guide"];
+  const valid=["overview","companies","markets","coverage","guide"];
   const previousRoute=state.route;
   const requested=raw||"overview";state.route=valid.includes(requested)?requested:"overview";
   const p=new URLSearchParams(search);
   if(previousRoute!==state.route){$("main-content").focus({preventScroll:true});window.scrollTo(0,0);}
-  document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
   $("route-notice").hidden=valid.includes(requested);
   if(!valid.includes(requested))$("route-notice").textContent="That view was not found. Showing the overview instead.";
   document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!==state.route;});
@@ -432,7 +432,7 @@ function route() {
     const id=p.get("case");if(id && state.data.cases.some(x=>x.id===id)){openCase(id);return;}
     if(id){$("route-notice").textContent="That case is not in this audited dataset. Search the available cases below.";$("route-notice").hidden=false;}
   }
-  hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
 }
 function bindEvents() {
   const mobileFilters=window.matchMedia("(max-width:760px)");

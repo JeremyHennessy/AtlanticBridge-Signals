@@ -17,7 +17,7 @@ async function overflow(page, label) {
   check(`${label}: no page-level horizontal overflow`,value.document<=value.viewport+2 && value.body<=value.viewport+2,JSON.stringify(value));
 }
 async function ready(page) {
-  await page.locator('body[data-ui-version="2026-09-22-usability-01"]').waitFor();
+  await page.locator('body[data-ui-version="2026-09-22-canada-wide-01"]').waitFor();
   await page.waitForFunction(expected => document.querySelector("#metric-cases")?.textContent === String(expected), dashboard.cases.length);
 }
 async function go(page, route) {
@@ -132,10 +132,13 @@ async function run(label,type,options) {
     page.on("pageerror",e=>errors.push(String(e)));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
     const response=await page.goto(base,{waitUntil:"networkidle",timeout:30000});
     check(`${label}: page HTTP success`,response?.ok());await ready(page);await exactAssets(page,label);
-    for(const route of ["overview","companies","coverage","guide"]) {
+    for(const route of ["overview","companies","markets","coverage","guide"]) {
       await go(page,`#${route}`);await page.locator(`#${route}-view`).waitFor();await overflow(page,`${label}/${route}`);
       await page.screenshot({path:path.join(out,`${label}-${route}.png`),fullPage:true});
     }
+    await go(page,"#markets");
+    const marketText=await page.locator("#markets-view").innerText();
+    check(`${label}: Canada-wide market scope`,marketText.includes("Nova Scotia-specific evidence remains useful") && marketText.includes("Ontario") && marketText.includes("Québec") && marketText.includes("British Columbia"));
     await filters(page,label);await bookmarks(page,label);await allCases(page,label);
     check(`${label}: no console or page errors`,errors.length===0,errors.join(" | "));
     // Failure tests use a separate context: expected network errors are not mixed with normal acceptance.

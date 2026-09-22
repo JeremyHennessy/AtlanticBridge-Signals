@@ -1,6 +1,6 @@
 # AtlanticBridge Signals
 
-AtlanticBridge Signals is a source-backed commercial intelligence system for detecting European companies that are likely to establish, acquire, hire, invest, partner, or materially expand in Canada — and then estimating whether Nova Scotia is a strong landing location.
+AtlanticBridge Signals is a source-backed commercial intelligence system for detecting European companies that are likely to establish, acquire, hire, invest, partner, or materially expand in Canada — and then assessing which Canadian provinces, regions, or metros could be the strongest market fit. Nova Scotia is one possible market lens, not the default destination.
 
 ## Current phase: Data Proof
 
@@ -12,7 +12,7 @@ The first outcome source is the **Investment Canada Act Decisions and Notificati
 
 ### Principles
 
-- Expansion likelihood and Nova Scotia fit are separate models.
+- Expansion likelihood and Canadian market fit are separate models. Nova Scotia can be one market-specific lens within the latter.
 - Evidence confidence is separate from either score.
 - No score is accepted without source-backed evidence.
 - Raw source text is preserved before normalization.
