@@ -7,7 +7,10 @@
     <meta http-equiv="refresh" content="0; url=./ui/" />
     <link rel="canonical" href="./ui/" />
     <script>
-      window.location.replace(new URL("./ui/", window.location.href).href);
+      const target = new URL("./ui/", window.location.href);
+      target.search = window.location.search;
+      target.hash = window.location.hash;
+      window.location.replace(target.href);
     </script>
   </head>
   <body>

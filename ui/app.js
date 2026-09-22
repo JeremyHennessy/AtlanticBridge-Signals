@@ -1,37 +1,10 @@
-const state = {
-  data: null,
-  query: "",
-  classification: "",
-  evidence: "",
-};
-
-const els = {
-  auditDate: document.querySelector("#audit-date"),
-  metricCases: document.querySelector("#metric-cases"),
-  metricEvidence: document.querySelector("#metric-evidence"),
-  metricIdentity: document.querySelector("#metric-identity"),
-  metricModel: document.querySelector("#metric-model"),
-  caseSearch: document.querySelector("#case-search"),
-  classificationFilter: document.querySelector("#classification-filter"),
-  evidenceFilter: document.querySelector("#evidence-filter"),
-  caseCountLabel: document.querySelector("#case-count-label"),
-  casesBody: document.querySelector("#cases-body"),
-  emptyRowTemplate: document.querySelector("#empty-row-template"),
-  coverageBefore: document.querySelector("#coverage-before"),
-  coverageBeforeBar: document.querySelector("#coverage-before-bar"),
-  coverageSame: document.querySelector("#coverage-same"),
-  coverageSameBar: document.querySelector("#coverage-same-bar"),
-  coveragePublication: document.querySelector("#coverage-publication"),
-  coveragePublicationBar: document.querySelector("#coverage-publication-bar"),
-  medianLead: document.querySelector("#median-lead"),
-  sourceTypes: document.querySelector("#source-types"),
-  drawer: document.querySelector("#case-drawer"),
-  drawerTitle: document.querySelector("#drawer-title"),
-  drawerContent: document.querySelector("#drawer-content"),
-  drawerClose: document.querySelector("#drawer-close"),
-  drawerBackdrop: document.querySelector("#drawer-backdrop"),
-};
-
+// Read-only research workspace. Filters and local bookmarks never change source evidence.
+const state = {data:null, query:"", classification:"", evidence:"", country:"", sort:"name", view:"all", route:"overview", caseId:null, saved:new Set()};
+const $ = (id) => document.getElementById(id);
+const els = {auditDate:$("audit-date"), metricCases:$("metric-cases"), metricEvidence:$("metric-evidence"), metricIdentity:$("metric-identity"), metricModel:$("metric-model"), caseSearch:$("case-search"), classificationFilter:$("classification-filter"), evidenceFilter:$("evidence-filter"), caseCountLabel:$("case-count-label"), casesBody:$("cases-body"), emptyRowTemplate:$("empty-row-template"), coverageBefore:$("coverage-before"), coverageBeforeBar:$("coverage-before-bar"), coverageSame:$("coverage-same"), coverageSameBar:$("coverage-same-bar"), coveragePublication:$("coverage-publication"), coveragePublicationBar:$("coverage-publication-bar"), medianLead:$("median-lead"), sourceTypes:$("source-types"), drawer:$("case-drawer"), drawerTitle:$("drawer-title"), drawerContent:$("drawer-content"), drawerClose:$("drawer-close"), drawerBackdrop:$("drawer-backdrop")};
+const SAVE_KEY = "atlanticbridge.saved-cases.v1";
+let returnFocus = null;
+let toastTimer;
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -55,9 +28,9 @@ function safeUrl(value) {
 
 function formatClassification(value) {
   const labels = {
-    EXISTING_CANADIAN_PRESENCE: "Existing Canadian presence",
-    ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED: "Establishment corroborated",
-    UNRESOLVED: "Unresolved",
+    EXISTING_CANADIAN_PRESENCE: "Already present in Canada",
+    ESTABLISHMENT_CORROBORATED_OPERATIONS_UNRESOLVED: "Business setup supported",
+    UNRESOLVED: "Still unresolved",
   };
   return labels[value] || value || "Unknown";
 }
@@ -125,141 +98,6 @@ function leadLabel(days) {
   if (days < 0) return "Same month";
   if (days === 0) return "Same day";
   return `${days} d`;
-}
-
-function filteredCases() {
-  if (!state.data) return [];
-  const query = state.query.trim().toLowerCase();
-
-  return state.data.cases.filter((item) => {
-    if (
-      query &&
-      ![
-        item.canadian_business_name,
-        item.investor_name,
-        item.ultimate_control_country,
-        item.canadian_business_activity,
-        item.corporation_number,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase()
-        .includes(query)
-    ) {
-      return false;
-    }
-
-    if (state.classification && item.outcome_classification !== state.classification) {
-      return false;
-    }
-
-    if (state.evidence === "with" && item.evidence_count === 0) return false;
-    if (state.evidence === "without" && item.evidence_count > 0) return false;
-
-    return true;
-  });
-}
-
-function renderMetrics() {
-  const summary = state.data.summary;
-  els.auditDate.textContent = `Audit date ${state.data.audit_date || "—"}`;
-  els.metricCases.textContent = summary.case_count;
-  els.metricEvidence.textContent = `${summary.evidence_case_count}/${summary.case_count}`;
-  els.metricIdentity.textContent = summary.identity_requires_review
-    ? `${summary.identity_supported} supported`
-    : `${summary.identity_supported}/${summary.identity_supported}`;
-  els.metricModel.textContent = summary.model_eligible_count;
-
-  const beforePct = summary.case_count
-    ? (summary.before_notification_month / summary.case_count) * 100
-    : 0;
-  const samePct = summary.case_count
-    ? (summary.same_notification_month / summary.case_count) * 100
-    : 0;
-  const publicationPct = summary.case_count
-    ? (summary.cases_with_verified_pre_notification_evidence / summary.case_count) * 100
-    : 0;
-
-  els.coverageBefore.textContent =
-    `${summary.before_notification_month}/${summary.case_count}`;
-  els.coverageSame.textContent =
-    `${summary.same_notification_month}/${summary.case_count}`;
-  els.coverageBeforeBar.style.width = `${beforePct}%`;
-  els.coverageSameBar.style.width = `${samePct}%`;
-  els.coveragePublication.textContent =
-    `${summary.cases_with_verified_pre_notification_evidence}/${summary.case_count}`;
-  els.coveragePublicationBar.style.width = `${publicationPct}%`;
-  els.medianLead.textContent =
-    summary.median_days_before_notification_month === null
-      ? "—"
-      : `${summary.median_days_before_notification_month} days`;
-}
-
-function renderSources() {
-  const rows = Object.entries(state.data.summary.source_type_counts).slice(0, 8);
-  els.sourceTypes.innerHTML = rows
-    .map(
-      ([source, count]) => `
-        <div class="source-row">
-          <span>${escapeHtml(formatSourceType(source))}</span>
-          <span class="source-count">${escapeHtml(count)}</span>
-        </div>
-      `,
-    )
-    .join("");
-}
-
-function renderCases() {
-  const cases = filteredCases();
-  els.caseCountLabel.textContent = `${cases.length} of ${state.data.cases.length} cases`;
-
-  if (!cases.length) {
-    els.casesBody.replaceChildren(els.emptyRowTemplate.content.cloneNode(true));
-    return;
-  }
-
-  els.casesBody.innerHTML = cases
-    .map(
-      (item) => `
-        <tr
-          class="case-row"
-          tabindex="0"
-          data-case-id="${escapeHtml(item.id)}"
-          aria-label="Open evidence for ${escapeHtml(item.canadian_business_name)}"
-        >
-          <td>
-            <div class="company-name">${escapeHtml(item.canadian_business_name)}</div>
-            <div class="company-meta">
-              Corp ${escapeHtml(item.corporation_number || "—")} ·
-              ${escapeHtml(item.registry_status || "status unknown")}
-            </div>
-          </td>
-          <td>
-            <div class="investor-name">${escapeHtml(item.investor_name)}</div>
-            <div class="investor-meta">${escapeHtml(item.ultimate_control_country || "control unknown")}</div>
-          </td>
-          <td class="date-value">${escapeHtml(formatDate(item.notification_month))}</td>
-          <td class="lead-value">${escapeHtml(leadLabel(item.days_before_notification_month))}</td>
-          <td class="evidence-value"><strong>${escapeHtml(item.evidence_count)}</strong> source item${item.evidence_count === 1 ? "" : "s"}</td>
-          <td>
-            <span class="status-chip ${classificationClass(item.outcome_classification)}">
-              ${escapeHtml(formatClassification(item.outcome_classification))}
-            </span>
-          </td>
-        </tr>
-      `,
-    )
-    .join("");
-
-  els.casesBody.querySelectorAll(".case-row").forEach((row) => {
-    row.addEventListener("click", () => openCase(row.dataset.caseId));
-    row.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openCase(row.dataset.caseId);
-      }
-    });
-  });
 }
 
 function timelineDate(value, precision = null) {
@@ -392,7 +230,7 @@ function renderCaseTimeline(item) {
               <div class="timeline-content">
                 <div class="timeline-topline">
                   <time>${escapeHtml(event.date.label)}</time>
-                  <span>${escapeHtml(event.meta)}</span>
+                  <span>${escapeHtml(formatSourceType(event.meta))}</span>
                 </div>
                 <h4>${escapeHtml(event.title)}</h4>
                 <p>${escapeHtml(event.detail)}</p>
@@ -439,7 +277,7 @@ function renderEvidence(evidence) {
                 </span>
                 <span class="publication-date">Public date: ${escapeHtml(publicDate)}</span>
               </div>
-              <div class="evidence-support">${escapeHtml(item.supports || "Evidence role unclassified")}</div>
+              <div class="evidence-support">${escapeHtml(formatSourceType(item.supports || "Evidence role unclassified"))}</div>
               ${
                 url
                   ? `<a class="source-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Open source ↗</a>`
@@ -453,126 +291,185 @@ function renderEvidence(evidence) {
   `;
 }
 
-function openCase(id) {
-  const item = state.data.cases.find((caseItem) => caseItem.id === id);
-  if (!item) return;
 
-  els.drawerTitle.textContent = item.canadian_business_name;
-  els.drawerContent.innerHTML = `
-    <section class="detail-hero">
-      <h3 class="detail-business">${escapeHtml(item.canadian_business_name)}</h3>
-      <p class="detail-activity">${escapeHtml(item.canadian_business_activity || "No activity description recorded.")}</p>
-      <div class="detail-grid">
-        <div class="detail-stat">
-          <span>Investor</span>
-          <strong>${escapeHtml(item.investor_name)}</strong>
-        </div>
-        <div class="detail-stat">
-          <span>Ultimate control</span>
-          <strong>${escapeHtml(item.ultimate_control_country || "Unknown")}</strong>
-        </div>
-        <div class="detail-stat">
-          <span>Incorporation</span>
-          <strong>${escapeHtml(formatDate(item.incorporation_date))}</strong>
-        </div>
-        <div class="detail-stat">
-          <span>Notification</span>
-          <strong>${escapeHtml(formatDate(item.notification_month))}</strong>
-        </div>
-        <div class="detail-stat">
-          <span>Model eligibility</span>
-          <strong>${item.model_eligible ? "Eligible" : "Not eligible"}</strong>
-        </div>
-        <div class="detail-stat">
-          <span>First operations</span>
-          <strong>${escapeHtml(formatDate(item.first_canadian_operations_date))}</strong>
-        </div>
-      </div>
-    </section>
-
-    <section class="detail-section">
-      <h3>Audit disposition</h3>
-      <div class="status-chip ${classificationClass(item.outcome_classification)}">
-        ${escapeHtml(formatClassification(item.outcome_classification))}
-      </div>
-      <div class="audit-note" style="margin-top: 10px;">
-        ${escapeHtml(item.audit_note || "No audit note recorded.")}
-      </div>
-    </section>
-
-    <section class="detail-section">
-      <h3>Evidence timeline</h3>
-      ${renderCaseTimeline(item)}
-    </section>
-
-    <section class="detail-section">
-      <h3>Evidence ledger</h3>
-      ${renderEvidence(item.evidence)}
-    </section>
-  `;
-
-  els.drawerBackdrop.hidden = false;
-  els.drawer.classList.add("open");
-  els.drawer.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-  els.drawerClose.focus();
+function earlyEvidence(item) { return (item.verified_pre_notification_evidence_count || 0) > 0; }
+function filteredCases() {
+  if (!state.data) return [];
+  const query = state.query.trim().toLocaleLowerCase();
+  return state.data.cases.filter((item) => {
+    const text = [item.canadian_business_name, item.investor_name, item.ultimate_control_country, item.canadian_business_activity, item.corporation_number].filter(Boolean).join(" ").toLocaleLowerCase();
+    return (!query || text.includes(query)) && (!state.classification || item.outcome_classification === state.classification) && (!state.country || item.ultimate_control_country === state.country) && (state.evidence !== "with" || item.evidence_count > 0) && (state.evidence !== "without" || item.evidence_count === 0) && (state.view !== "early" || earlyEvidence(item)) && (state.view !== "registry" || item.evidence_count === 0) && (state.view !== "saved" || state.saved.has(item.id));
+  }).sort((a,b) => {
+    const nameOrder = String(a.canadian_business_name).localeCompare(String(b.canadian_business_name), "en");
+    if (state.sort === "newest") return String(b.notification_month || "").localeCompare(String(a.notification_month || "")) || nameOrder;
+    if (state.sort === "evidence") return b.evidence_count - a.evidence_count || nameOrder;
+    return nameOrder;
+  });
 }
-
-function closeDrawer() {
-  els.drawer.classList.remove("open");
-  els.drawer.setAttribute("aria-hidden", "true");
-  els.drawerBackdrop.hidden = true;
-  document.body.style.overflow = "";
+function renderMetrics() {
+  const s = state.data.summary;
+  els.auditDate.textContent = `Case audit: ${formatDate(state.data.audit_date)}`;
+  els.metricCases.textContent = s.case_count;
+  els.metricEvidence.textContent = s.evidence_case_count;
+  $("metric-public").textContent = s.cases_with_verified_pre_notification_evidence;
+  $("metric-countries").textContent = new Set(state.data.cases.map(x => x.ultimate_control_country).filter(Boolean)).size;
+  els.metricIdentity.textContent = s.identity_supported;
+  els.metricModel.textContent = s.model_eligible_count;
+  for (const [label,bar,count] of [[els.coverageBefore,els.coverageBeforeBar,s.before_notification_month],[els.coverageSame,els.coverageSameBar,s.same_notification_month],[els.coveragePublication,els.coveragePublicationBar,s.cases_with_verified_pre_notification_evidence]]) {
+    label.textContent = `${count} / ${s.case_count}`;
+    bar.style.width = `${s.case_count ? Math.min(100,100*count/s.case_count) : 0}%`;
+  }
+  els.medianLead.textContent = s.median_days_before_notification_month == null ? "Unknown" : `${s.median_days_before_notification_month} days`;
+  $("data-note").textContent = `Case audit: ${formatDate(state.data.audit_date)} · ${s.case_count} historical cases · UI: 22 September 2026. Interface updates do not refresh the evidence.`;
+  const countries = [...new Set(state.data.cases.map(x => x.ultimate_control_country).filter(Boolean))].sort();
+  $("country-filter").innerHTML = '<option value="">All countries</option>' + countries.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");
 }
-
-function bindEvents() {
-  els.caseSearch.addEventListener("input", (event) => {
-    state.query = event.target.value;
-    renderCases();
-  });
-  els.classificationFilter.addEventListener("change", (event) => {
-    state.classification = event.target.value;
-    renderCases();
-  });
-  els.evidenceFilter.addEventListener("change", (event) => {
-    state.evidence = event.target.value;
-    renderCases();
-  });
-  els.drawerClose.addEventListener("click", closeDrawer);
-  els.drawerBackdrop.addEventListener("click", closeDrawer);
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && els.drawer.classList.contains("open")) {
-      closeDrawer();
+function renderSources() {
+  els.sourceTypes.innerHTML = Object.entries(state.data.summary.source_type_counts).map(([type,count]) => `<div class="source-row"><span>${escapeHtml(formatSourceType(type))}</span><span class="source-count">${escapeHtml(count)}</span></div>`).join("");
+}
+function savedButton(item) {
+  const saved = state.saved.has(item.id);
+  return `<button class="save-button" type="button" data-save="${escapeHtml(item.id)}" aria-pressed="${saved}" aria-label="${saved ? "Unsave" : "Save"} ${escapeHtml(item.canadian_business_name)}" title="${saved ? "Remove from saved cases" : "Save in this browser"}">${saved ? "★" : "☆"}</button>`;
+}
+function renderCases() {
+  const cases = filteredCases();
+  els.caseCountLabel.textContent = `${cases.length} of ${state.data.cases.length} historical cases${state.view === "saved" ? " · saved in this browser" : ""}`;
+  document.querySelectorAll("[data-view]").forEach(button => button.setAttribute("aria-pressed",String(button.dataset.view === state.view)));
+  $("saved-count").textContent = state.saved.size;
+  if (!cases.length) {
+    els.casesBody.replaceChildren(els.emptyRowTemplate.content.cloneNode(true));
+    if (state.view === "saved" && !state.saved.size) {
+      els.casesBody.querySelector("h3").textContent = "No saved cases yet.";
+      els.casesBody.querySelector("p").textContent = "Use the star beside a company to save its case in this browser. Your saved list is not shared or synced.";
+      els.casesBody.querySelector("[data-reset]").textContent = "Browse all cases";
     }
-  });
+    return;
+  }
+  els.casesBody.innerHTML = cases.map(item => `<tr class="case-row" tabindex="0" data-case-id="${escapeHtml(item.id)}" aria-label="Open evidence for ${escapeHtml(item.canadian_business_name)}"><td data-label="Canadian business"><a class="company-name" href="${escapeHtml(caseHash(item.id))}">${escapeHtml(item.canadian_business_name)}</a><div class="company-meta">${escapeHtml(item.canadian_business_activity || "Business activity not recorded")}</div></td><td data-label="Named investor / control"><div class="investor-name">${escapeHtml(item.investor_name || "Investor unresolved")}</div><div class="investor-meta">${escapeHtml(item.ultimate_control_country || "Control country unknown")}</div></td><td data-label="Notification month">${escapeHtml(formatDate(item.notification_month))}</td><td class="evidence-value" data-label="Evidence to explore"><strong>${escapeHtml(item.evidence_count)}</strong> additional source item${item.evidence_count === 1 ? "" : "s"}<span class="early-hint">${earlyEvidence(item) ? `${item.verified_pre_notification_evidence_count} public before notification` : item.evidence_count ? "No verified earlier public evidence attached" : "Registry only · needs research"}</span></td><td data-label="What we know"><span class="status-chip ${classificationClass(item.outcome_classification)}">${escapeHtml(formatClassification(item.outcome_classification))}</span></td><td>${savedButton(item)}</td></tr>`).join("");
 }
-
+function caseHash(id) {
+  const params = filterParams();
+  params.set("case",id);
+  return `#companies?${params}`;
+}
+function filterParams() {
+  const params = new URLSearchParams();
+  for (const [key,value] of [["q",state.query],["country",state.country],["finding",state.classification],["evidence",state.evidence],["sort",state.sort === "name" ? "" : state.sort],["view",state.view === "all" ? "" : state.view]]) if(value) params.set(key,value);
+  return params;
+}
+function syncFilterUrl() { const p=filterParams(); history.replaceState(null,"",`#companies${p.size ? "?"+p : ""}`); }
+function resetFilters() {
+  state.query="";state.classification="";state.evidence="";state.country="";state.sort="name";state.view="all";
+  syncControls();renderCases();syncFilterUrl();els.caseSearch.focus();
+}
+function syncControls() {
+  els.caseSearch.value=state.query;els.classificationFilter.value=state.classification;els.evidenceFilter.value=state.evidence;$("country-filter").value=state.country;$("sort-order").value=state.sort;
+}
+function showToast(message) { clearTimeout(toastTimer);$("toast").textContent=message;$("toast").hidden=false;toastTimer=setTimeout(()=>{$("toast").hidden=true;},5000); }
+function loadSaved() {
+  try {
+    const value=JSON.parse(localStorage.getItem(SAVE_KEY)||"[]");
+    if (!Array.isArray(value)) throw new Error("Invalid saved list");
+    const valid=new Set(state.data.cases.map(x=>x.id));state.saved=new Set(value.filter(x=>typeof x === "string" && valid.has(x)));
+  } catch (_) {state.saved=new Set();showToast("Saved cases could not be loaded. You can still explore all the evidence.");}
+}
+function toggleSaved(id) {
+  if (!state.data.cases.some(x=>x.id===id)) return;
+  const next=new Set(state.saved);next.has(id)?next.delete(id):next.add(id);
+  try {localStorage.setItem(SAVE_KEY,JSON.stringify([...next]));} catch (_) {showToast("This browser could not save the case. Nothing was saved; use the case link instead.");return;}
+  state.saved=next;renderCases();
+  if(!state.caseId){const replacement=[...els.casesBody.querySelectorAll("[data-save]")].find(x=>x.dataset.save===id);(replacement || els.caseSearch).focus();}
+  const detailSave=$("detail-save");if(detailSave && state.caseId === id){detailSave.textContent=next.has(id)?"★ Saved in this browser":"☆ Save this case";detailSave.setAttribute("aria-pressed",String(next.has(id)));}
+  showToast(next.has(id)?"Case saved in this browser only.":"Case removed from your saved list.");
+}
+function caseSummary(item) {
+  const found=formatClassification(item.outcome_classification);
+  let known=item.audit_note || "This historical case is recorded in the audited Investment Canada new-business cohort.";
+  let unknown="The exact first Canadian operations date is not established. Expansion likelihood is not validated, and Nova Scotia fit is not assessed here.";
+  let next="Establish the first operating window and verify when each supporting source became public. Do not treat the filing month as the opening date.";
+  if(item.outcome_classification === "EXISTING_CANADIAN_PRESENCE") next="Separate prior Canadian activity from the notified business event, and verify the parent-to-business identity link before treating this as a new-entry case.";
+  if(!item.evidence_count) next="Locate original company or government evidence beyond the registry, confirm the investor identity, and establish what the Canadian business actually did.";
+  if(item.first_canadian_operations_date) unknown="A first-operations date is recorded below. That alone does not validate a predictive score or establish Nova Scotia fit.";
+  return `<div class="case-summary"><article class="summary-block"><h3>What we know · ${escapeHtml(found)}</h3><p>${escapeHtml(known)}</p></article><article class="summary-block unknown"><h3>What remains unknown</h3><p>${escapeHtml(unknown)}</p></article><article class="summary-block next"><h3>Next research step</h3><p>${escapeHtml(next)}</p></article></div>`;
+}
+function openCase(id) {
+  const item=state.data.cases.find(x=>x.id===id);if(!item)return;
+  if(!state.caseId) returnFocus=document.activeElement;
+  state.caseId=id;els.drawerTitle.textContent=item.canadian_business_name;
+  els.drawerContent.innerHTML=`<div class="drawer-tools"><button class="button" id="detail-save" type="button" data-save="${escapeHtml(id)}" aria-pressed="${state.saved.has(id)}">${state.saved.has(id)?"★ Saved in this browser":"☆ Save this case"}</button><button class="button" id="copy-case-link" type="button">Copy case link</button><span class="small muted">Historical case · not a prediction</span></div><div id="case-link-fallback" hidden></div><section class="detail-hero" id="detail-summary"><h3 class="detail-business">${escapeHtml(item.canadian_business_name)}</h3><p class="detail-activity">${escapeHtml(item.canadian_business_activity || "No activity description recorded.")}</p><div class="detail-grid"><div class="detail-stat"><span>Named investor (not necessarily the foreign parent)</span><strong>${escapeHtml(item.investor_name || "Unknown")}</strong></div><div class="detail-stat"><span>Country of ultimate control</span><strong>${escapeHtml(item.ultimate_control_country || "Unknown")}</strong></div><div class="detail-stat"><span>Federal incorporation</span><strong>${escapeHtml(formatDate(item.incorporation_date))}</strong></div><div class="detail-stat"><span>Investment Canada notification month</span><strong>${escapeHtml(formatDate(item.notification_month))}</strong></div><div class="detail-stat"><span>Exact first-operation model label</span><strong>${item.model_eligible?"Eligible under the recorded audit gate":"Not eligible"}</strong></div><div class="detail-stat"><span>First Canadian operations</span><strong>${escapeHtml(formatDate(item.first_canadian_operations_date))}</strong></div><div class="detail-stat"><span>Corporation number / registry status</span><strong>${escapeHtml(item.corporation_number || "Unknown")} · ${escapeHtml(item.registry_status || "Unknown")}</strong></div><div class="detail-stat"><span>Registry lead (not an operating lead)</span><strong>${escapeHtml(leadLabel(item.days_before_notification_month))}</strong></div></div></section>${caseSummary(item)}<nav class="detail-jumps" aria-label="Case sections"><button class="text-button" data-jump="detail-summary">Case summary</button><button class="text-button" data-jump="detail-timeline">Timeline</button><button class="text-button" data-jump="detail-sources">Original sources</button></nav><section class="detail-section" id="detail-timeline"><h3>Evidence timeline</h3>${renderCaseTimeline(item)}</section><section class="detail-section" id="detail-sources"><h3>Original sources · Evidence ledger</h3>${renderEvidence(item.evidence || [])}</section>`;
+  els.drawerBackdrop.hidden=false;els.drawer.inert=false;els.drawer.classList.add("open");els.drawer.setAttribute("aria-hidden","false");$("app-shell").inert=true;document.body.style.overflow="hidden";els.drawerContent.scrollTop=0;els.drawerClose.focus();
+}
+function hideDrawer() {
+  const wasOpen=state.caseId;state.caseId=null;els.drawer.classList.remove("open");els.drawer.setAttribute("aria-hidden","true");els.drawer.inert=true;els.drawerBackdrop.hidden=true;$("app-shell").inert=false;document.body.style.overflow="";
+  if(wasOpen && returnFocus?.isConnected) returnFocus.focus();
+  else if(wasOpen) els.caseSearch.focus();
+}
+function closeDrawer() {hideDrawer();const p=filterParams();history.replaceState(null,"",`#companies${p.size?"?"+p:""}`);}
+async function copyCaseLink() {
+  const url=new URL(location.href);url.hash=`#companies?case=${encodeURIComponent(state.caseId)}`;
+  try {if(!navigator.clipboard?.writeText)throw new Error("Clipboard unavailable");await navigator.clipboard.writeText(url.href);showToast("Case link copied. Your saved list is not included.");}
+  catch(_){const fallback=$("case-link-fallback");fallback.hidden=false;fallback.innerHTML='<label class="small">Copy this case link<input class="copied-link" readonly aria-label="Case link"></label>';const input=fallback.querySelector("input");input.value=url.href;input.focus();input.select();showToast("Clipboard unavailable. Select and copy the case link shown here.");}
+}
+function route() {
+  if(!state.data)return;
+  const [raw="overview",search=""]=location.hash.slice(1).split("?");
+  if(raw === "main-content"){$("main-content").focus();return;}
+  const valid=["overview","companies","coverage","guide"];
+  const previousRoute=state.route;
+  const requested=raw||"overview";state.route=valid.includes(requested)?requested:"overview";
+  const p=new URLSearchParams(search);
+  if(previousRoute!==state.route){$("main-content").focus({preventScroll:true});window.scrollTo(0,0);}
+  document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  $("route-notice").hidden=valid.includes(requested);
+  if(!valid.includes(requested))$("route-notice").textContent="That view was not found. Showing the overview instead.";
+  document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!==state.route;});
+  document.querySelectorAll("[data-nav]").forEach(link=>{if(link.dataset.nav===state.route)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");});
+  if(state.route === "companies") {
+    state.query=p.get("q")||"";state.country=p.get("country")||"";state.classification=p.get("finding")||"";state.evidence=["with","without"].includes(p.get("evidence"))?p.get("evidence"):"";state.sort=["newest","evidence"].includes(p.get("sort"))?p.get("sort"):"name";state.view=["early","registry","saved"].includes(p.get("view"))?p.get("view"):"all";
+    // Keep unsupported filters visible as a recoverable empty state, not silently broader results.
+    for(const [id,value] of [["country-filter",state.country],["classification-filter",state.classification]])if(value && ![...$(id).options].some(o=>o.value===value)){const o=new Option(`Not in this audit: ${value}`,value);$(id).add(o);}
+    syncControls();renderCases();
+    const id=p.get("case");if(id && state.data.cases.some(x=>x.id===id)){openCase(id);return;}
+    if(id){$("route-notice").textContent="That case is not in this audited dataset. Search the available cases below.";$("route-notice").hidden=false;}
+  }
+  hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+}
+function bindEvents() {
+  const mobileFilters=window.matchMedia("(max-width:760px)");
+  if(mobileFilters.matches)$("advanced-filters").open=false;
+  mobileFilters.addEventListener("change",event=>{if(!event.matches)$("advanced-filters").open=true;});
+  for(const [node,key,event] of [[els.caseSearch,"query","input"],[els.classificationFilter,"classification","change"],[els.evidenceFilter,"evidence","change"],[$("country-filter"),"country","change"],[$("sort-order"),"sort","change"]])node.addEventListener(event,()=>{state[key]=node.value;renderCases();syncFilterUrl();});
+  document.querySelectorAll("[data-view]").forEach(button=>button.addEventListener("click",()=>{state.view=button.dataset.view;renderCases();syncFilterUrl();}));
+  $("reset-filters").addEventListener("click",resetFilters);
+  els.casesBody.addEventListener("click",event=>{
+    if(event.target.closest("[data-reset]")){resetFilters();return;}
+    const save=event.target.closest("[data-save]");if(save){toggleSaved(save.dataset.save);return;}
+    const row=event.target.closest("[data-case-id]");if(row){if(event.target.closest("a"))return;location.hash=caseHash(row.dataset.caseId);}
+  });
+  els.casesBody.addEventListener("keydown",event=>{if(event.target.matches(".case-row") && ["Enter"," "].includes(event.key)){event.preventDefault();location.hash=caseHash(event.target.dataset.caseId);}});
+  els.drawerContent.addEventListener("click",event=>{const save=event.target.closest("[data-save]");if(save)toggleSaved(save.dataset.save);if(event.target.closest("#copy-case-link"))copyCaseLink();const jump=event.target.closest("[data-jump]");if(jump)$(jump.dataset.jump).scrollIntoView({behavior:"auto",block:"start"});});
+  els.drawerClose.addEventListener("click",closeDrawer);els.drawerBackdrop.addEventListener("click",closeDrawer);
+  document.addEventListener("keydown",event=>{if(!state.caseId)return;if(event.key==="Escape"){event.preventDefault();closeDrawer();}if(event.key==="Tab"){const focusable=[...els.drawer.querySelectorAll('button:not(:disabled),a[href],input,select,[tabindex="0"]')].filter(x=>x.getClientRects().length);const first=focusable[0],last=focusable.at(-1);if(event.shiftKey && document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first?.focus();}}});
+  window.addEventListener("hashchange",route);
+  window.addEventListener("storage",event=>{if(event.key===SAVE_KEY){loadSaved();renderCases();if(state.caseId){const button=$("detail-save");const saved=state.saved.has(state.caseId);button.textContent=saved?"★ Saved in this browser":"☆ Save this case";button.setAttribute("aria-pressed",String(saved));}}});
+}
+function validatePayload(data) {
+  if(!data || !data.summary || !Array.isArray(data.cases) || data.summary.case_count!==data.cases.length)throw new Error("Invalid case payload");
+  if(new Set(data.cases.map(x=>x.id)).size!==data.cases.length)throw new Error("Duplicate case IDs");
+  for(const x of data.cases)if(typeof x.id!=="string" || !x.id || !Array.isArray(x.evidence) || x.evidence_count!==x.evidence.length || typeof x.model_eligible!=="boolean")throw new Error("Invalid case record");
+  return data;
+}
 async function init() {
   bindEvents();
-
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
   try {
-    const response = await fetch("data/dashboard.json", { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`Dashboard payload returned HTTP ${response.status}`);
-    }
-    state.data = await response.json();
-    renderMetrics();
-    renderSources();
-    renderCases();
-  } catch (error) {
-    console.error(error);
-    els.caseCountLabel.textContent = "Data unavailable";
-    els.casesBody.innerHTML = `
-      <tr>
-        <td colspan="6">
-          <div class="empty-state">
-            The evidence payload could not be loaded. Serve the <code>ui/</code> directory
-            over HTTP so <code>data/dashboard.json</code> is available.
-          </div>
-        </td>
-      </tr>
-    `;
-  }
+    const response=await fetch("data/dashboard.json",{cache:"no-store",signal:controller.signal});
+    if(!response.ok)throw new Error(`Dashboard payload returned HTTP ${response.status}`);
+    state.data=validatePayload(await response.json());loadSaved();renderMetrics();renderSources();renderCases();$("load-status").hidden=true;route();
+  } catch(error) {
+    console.error(error);state.data=null;$("load-status").hidden=false;$("load-status").setAttribute("role","alert");$("load-status").innerHTML='The case evidence could not be loaded. No results or scores have been inferred. <button class="button" id="retry-load" type="button">Try again</button>';
+    $("retry-load").addEventListener("click",()=>location.reload());els.caseCountLabel.textContent="Data unavailable—not zero cases";$("audit-date").textContent="Case evidence unavailable";$("data-note").textContent="Case evidence unavailable. Interface version: 22 September 2026.";
+    document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!=="overview";});
+  } finally {clearTimeout(timeout);}
 }
-
 init();
