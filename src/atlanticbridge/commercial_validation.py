@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from collections import Counter
 from datetime import date
+import math
 import re
 
 from .company_sources import instant, url
@@ -24,17 +25,23 @@ def audit_outcomes(rows: list[dict]) -> dict:
         seen.add(row["id"])
         if row.get("event_type") not in EVENT_TYPES:
             raise ValueError("Unreviewed outcome type")
+        for field in ("first_entry_confirmed", "independent_holdout", "legal_identity_confirmed"):
+            if field in row and type(row[field]) is not bool:
+                raise ValueError("Outcome confirmation flags must be explicit booleans")
         url(row["source_url"])
         date.fromisoformat(row["source_publication_date"])
         if row.get("announcement_date"):
             date.fromisoformat(row["announcement_date"])
-        if row.get("operational_opening_date"):
-            date.fromisoformat(row["operational_opening_date"])
-            if row["event_type"] != "VERIFIED_OPERATIONAL_OPENING" or not row.get("opening_evidence"):
-                raise ValueError("Announcement/membership cannot stand in for operational opening")
+        opening = row.get("operational_opening_date")
+        if row["event_type"] == "VERIFIED_OPERATIONAL_OPENING":
+            if not opening or not row.get("opening_evidence"):
+                raise ValueError("Verified opening requires both an opening date and retained evidence")
+            date.fromisoformat(opening)
+        elif opening:
+            raise ValueError("Announcement/membership cannot stand in for operational opening")
         if row.get("first_entry_confirmed") and not row.get("prior_presence_review"):
             raise ValueError("First-entry confirmation requires independent prior-presence review")
-        if row.get("independent_holdout") and (row.get("split") == "calibration" or not row.get("independent_reviewer")):
+        if row.get("independent_holdout") and (row.get("split") != "holdout" or not row.get("independent_reviewer")):
             raise ValueError("Calibration/developer-curated rows are not independent validation")
     return {"documented_examples": len(rows), "event_type_counts": dict(Counter(r["event_type"] for r in rows)),
             "verified_operational_openings": sum(r["event_type"] == "VERIFIED_OPERATIONAL_OPENING" for r in rows),
@@ -55,7 +62,7 @@ def validate_split(rows: list[dict], frozen_at: str) -> dict:
         if not key or key in keys or not group or split not in {"development", "holdout", "prospective"}:
             raise ValueError("Unique companies and explicit corporate groups/splits are required")
         keys.add(key)
-        if not row.get("legal_identity_confirmed"):
+        if row.get("legal_identity_confirmed") is not True:
             raise ValueError("Unconfirmed legal identity cannot enter validation denominator")
         if groups.setdefault(group, split) != split:
             raise ValueError("Corporate-group leakage across data splits")
@@ -92,8 +99,8 @@ def review_metrics(rows: list[dict]) -> dict:
             if row.get(field) is not None and type(row[field]) is not bool:
                 raise ValueError("Review judgments must be booleans or unreviewed null")
         seconds = row.get("review_seconds")
-        if seconds is not None and (type(seconds) not in {int, float} or seconds < 0):
-            raise ValueError("Review time must be non-negative")
+        if seconds is not None and (type(seconds) not in {int, float} or not math.isfinite(seconds) or seconds < 0):
+            raise ValueError("Review time must be finite and non-negative")
     def fraction(field):
         reviewed = [r[field] for r in rows if r.get(field) is not None]
         return {"reviewed": len(reviewed), "positive": sum(reviewed),

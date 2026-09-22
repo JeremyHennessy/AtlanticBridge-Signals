@@ -19,6 +19,15 @@ UA = "AtlanticBridgeSignalsSourceProof/1.0 (+https://github.com/JeremyHennessy/A
 LIMIT = 16 * 1024 * 1024
 
 
+def unavailable_robots_allowed(status, target):
+    # RFC 9309 section 2.3.1.3 distinguishes unavailable robots from protected
+    # content. Restrict the observed 401/403 case to Ashby's documented PUBLIC
+    # postings endpoint; a 401/403 from the endpoint itself still raises.
+    p = urlsplit(target)
+    documented_public_api = p.hostname == "api.ashbyhq.com" and p.path.startswith("/posting-api/job-board/")
+    return status in (404, 410) or (status in (401, 403) and documented_public_api)
+
+
 class SafeRedirect(HTTPRedirectHandler):
     def __init__(self, hosts):
         self.hosts = hosts
@@ -44,7 +53,12 @@ class Capture:
         if urlsplit(target).hostname not in self.hosts:
             raise ValueError("Unreviewed network host")
         time.sleep(0.6)
-        with self.opener.open(Request(target, headers={"User-Agent": UA, "Accept": "application/json, text/html, application/xml;q=0.9"}), timeout=25) as response:
+        error = None
+        try:
+            response = self.opener.open(Request(target, headers={"User-Agent": UA, "Accept": "application/json, text/html, application/xml;q=0.9"}), timeout=25)
+        except HTTPError as exc:
+            response, error = exc, exc
+        with response:
             body = response.read(LIMIT + 1)
             if len(body) > LIMIT:
                 raise ValueError("Response exceeds download bound")
@@ -54,7 +68,9 @@ class Capture:
                                    "status": response.status, "sha256": sha, "bytes": len(body),
                                    "retrieved_at": datetime.now(timezone.utc).isoformat(),
                                    "content_type": response.headers.get("Content-Type")})
-            return body, sha
+        if error:
+            raise error
+        return body, sha
 
     def get(self, target):
         p = urlsplit(url(target))
@@ -65,11 +81,11 @@ class Capture:
                 body, _ = self.raw(origin + "/robots.txt")
                 policy.parse(body.decode("utf-8", errors="replace").splitlines())
             except HTTPError as exc:
-                if exc.code not in (404, 410):
+                if not unavailable_robots_allowed(exc.code, target):
                     raise
                 policy.parse(["User-agent: *", "Disallow:"])
                 self.responses.append({"url": origin + "/robots.txt", "status": exc.code,
-                                       "policy": "NO_ROBOTS_FILE_NOT_A_REUSE_LICENCE"})
+                                       "policy": "UNAVAILABLE_ROBOTS_RFC9309_2_3_1_3_NOT_CONTENT_AUTHORIZATION"})
             self.robots[origin] = policy
         policy = self.robots[origin]
         if not policy.can_fetch(UA, target):
@@ -125,9 +141,7 @@ def main():
             try:
                 rows, sha, coverage = collect(source, capture)
                 observed = datetime.now(timezone.utc).isoformat()
-                # Raw bytes already exist; parsing must succeed before committing source state.
                 events = ledger.apply(source, rows, observed, sha)
-                # Exact same-source replay must never produce another event.
                 replay = ledger.apply(source, rows, observed, sha)
                 if replay:
                     raise AssertionError("Non-idempotent source replay")
@@ -143,7 +157,7 @@ def main():
                         print(json.dumps({"candidate": row["title"][:220], "url": row["source_url"],
                                           "source_id": source["id"], "clock": row["publication_clock"]}, ensure_ascii=False), flush=True)
             except Exception as exc:
-                failure = {"id": source["id"], "status": "UNVERIFIED_SOURCE_FAILURE", "type": type(exc).__name__, "error": str(exc)}
+                failure = {"id": source["id"], "status": "UNVERIFIED_SOURCE_FAILURE", "type": type(exc).__name__, "error": str(exc), "failed_url": getattr(exc, "url", None)}
                 report["failures"].append(failure)
                 report["sources"].append(failure)
                 print(json.dumps(failure, ensure_ascii=False), flush=True)

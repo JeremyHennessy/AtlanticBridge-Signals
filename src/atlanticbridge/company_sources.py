@@ -17,7 +17,7 @@ import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
 
-VERSION = 1
+VERSION = 2
 CANADA = re.compile(r"\b(canada|canadian|canadien(?:ne)?|montr[eé]al|toronto|ottawa|calgary|edmonton|winnipeg|halifax|saskatoon|regina)\b", re.I)
 MILITARY = re.compile(r"\b(military|munitions|weapon(?:s)?|armed forces|defen[cs]e|militaire)\b", re.I)
 TRACKING = {"gclid", "fbclid", "msclkid"}
@@ -191,7 +191,7 @@ def parse_index(body: bytes, source: dict) -> list[dict]:
         p = urlsplit(href)
         if p.hostname != base.hostname or not p.path.startswith(prefix) or p.path.rstrip("/") == base.path.rstrip("/"):
             continue
-        if p.query or re.search(r"/(?:page|category|tag)/", p.path):
+        if p.query or re.search(r"/(?:page|category|tag|subject)/", p.path):
             continue
         title = tag.get_text(" ", strip=True)
         if len(title) < 12:
