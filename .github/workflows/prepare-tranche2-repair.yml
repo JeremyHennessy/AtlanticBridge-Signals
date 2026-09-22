@@ -1,0 +1,133 @@
+name: Prepare isolated tranche two source repairs
+on:
+  push:
+    branches: [feature/outcome-qualification-2-20260922]
+    paths: [.github/workflows/prepare-tranche2-repair.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 8
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply only inspected source repairs
+        run: |
+          test "$GITHUB_REF_NAME" = 'feature/outcome-qualification-2-20260922'
+          test "$(git rev-parse HEAD^)" = '204ac0115cd7d95a7df7a57b041449859355c0ca'
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('scripts/probe_company_sources.py');s=p.read_text()
+          old='"Accept": "application/json, text/html, application/xml;q=0.9"'
+          assert s.count(old)==1
+          s=s.replace(old,'"Accept": accept_header_for(target)')
+          mark='def unavailable_robots_allowed(status, target):'
+          assert s.count(mark)==1
+          s=s.replace(mark,'''def accept_header_for(target):
+              # robots.txt is a text/plain resource; do not negotiate it as a JSON/HTML API.
+              # Status errors and robots disallows still fail through the existing policy.
+              return ("text/plain, */*;q=0.1" if urlsplit(target).path == "/robots.txt"
+                      else "application/json, text/html, application/xml;q=0.9")
+          
+          
+          '''+mark)
+          p.write_text(s)
+          p=Path('src/atlanticbridge/outcome_qualification.py');s=p.read_text()
+          a="        'avanade-halifax-20220628': ('h1.page-title', 'article.article--full .field--name-body'),"
+          assert s.count(a)==1
+          s=s.replace(a,a+"\n        'nature-farnham-plan-20220315': ('h1', 'article.news-release'),\n        'roquette-rd-20200619': ('h1.page__heading', 'article.page__content'),")
+          a='    scoped.main.append(contents[0].extract())'
+          assert s.count(a)==1
+          s=s.replace(a,'''    region = contents[0].extract()
+              if source['id'] in {'nature-farnham-plan-20220315', 'roquette-rd-20200619'}:
+                  # These retained pages put the publication date in the article's own header.
+                  # Keep that source text, not unrelated site headers or a fabricated date.
+                  for header in region.select('header'):
+                      header.name = 'div'
+              scoped.main.append(region)''')
+          p.write_text(s)
+          p=Path('reviews/commercial_validation/discovery-review-2-2026-09-22.json');m=json.loads(p.read_text())
+          renames={'stellantis-ontario-20220502':'stellantis-investontario-20220502','enel-alberta-operating-20200521':'enel-issuer-alberta-operating-20200521'}
+          for source in m['sources']:
+              old=source['id']
+              if old in renames:
+                  m.setdefault('known_unavailable_paths',[]).append({'id':old,'url':source['url'],'status':'CAPTURED_PAGE_HAS_NO_ASSERTED_BODY','diagnostic_artifact_id':10723391513,'diagnostic_artifact_sha256':'3edea9f5529aefa4c8628307efa79950c7904b19104ca430e11ed49e069826f4','replacement_source_id':renames[old],'reason':'Original HTML is a JavaScript shell or PDF-only landing page. A separately named primary-publisher HTML document is reviewed; original failure is retained.'})
+                  source['id']=renames[old]
+              if old=='stellantis-ontario-20220502':
+                  source.update(url='https://www.investinontario.com/press-release/major-investments-secure-automotive-manufacturing-futures-windsor-and-brampton',publication_date_text='May 2, 2022',required_text=['$3.6 billion investment','Windsor and Brampton','two new research and development centres'])
+              if old=='enel-alberta-operating-20200521':
+                  source.update(url='https://corporate.enel.it/en/media/explore-press-releases/press/2020/05/enel-green-power-fuels-recovery-by-connecting-three-new-wind-farms-in-north-america0',publication_date_text='May 21, 2020')
+              if old=='nature-farnham-plan-20220315':source['reviewed_layout']={'title_selector':'h1','content_selector':'article.news-release'}
+              if old=='roquette-rd-20200619':source['reviewed_layout']={'title_selector':'h1.page__heading','content_selector':'article.page__content'}
+          for case in m['cases']:
+              for event in case['events']:event['source_id']=renames.get(event['source_id'],event['source_id'])
+              for key in ('prior_presence_evidence','named_entity_evidence'):
+                  if key in case:case[key]['source_id']=renames.get(case[key]['source_id'],case[key]['source_id'])
+              if case['id']=='enel-pincher-creek':
+                  case['prior_presence_evidence']={'source_id':'enel-issuer-alberta-operating-20200521','required_text':['Castle Rock Ridge I','began operations in 2012']}
+                  case['interpretation']+=' The same issuer document reports an existing Canadian wind farm operating since 2012; this is additional Canadian capacity rather than first entry.'
+          p.write_text(json.dumps(m,indent=2,ensure_ascii=False)+'\n')
+          p=Path('tests/test_document_source_repairs.py');assert not p.exists()
+          p.write_text('''import copy
+          import json
+          from pathlib import Path
+          import sys
+          import unittest
+          ROOT=Path(__file__).resolve().parents[1]
+          sys.path.insert(0,str(ROOT/'scripts'))
+          from probe_company_sources import accept_header_for, unavailable_robots_allowed
+          from atlanticbridge.outcome_qualification import parse_review_document
+          
+          class DocumentSourceRepairTests(unittest.TestCase):
+              def test_plain_text_robots_negotiation_only(self):
+                  self.assertEqual(accept_header_for('https://export.alberta.ca/robots.txt'),'text/plain, */*;q=0.1')
+                  self.assertEqual(accept_header_for('https://example.org/article'),'application/json, text/html, application/xml;q=0.9')
+              def test_no_access_failure_is_waived(self):
+                  for code in (401,403,406,429,500,503):
+                      self.assertFalse(unavailable_robots_allowed(code,'https://export.alberta.ca/robots.txt'))
+              def check_article(self,cid,heading,article):
+                  m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+                  s=copy.deepcopy(next(x for x in m['sources'] if x['id']==cid))
+                  s['required_text']=['Retained source fact']
+                  raw=f'<header>unrelated navigation</header><article class="{article}"><header><h1 class="{heading}">Primary title</h1><time>{s["publication_date_text"]}</time></header><p>Retained source fact</p></article>'.encode()
+                  rows=parse_review_document(raw,s)
+                  self.assertEqual(rows[0]['source_publication_date'],s['reviewed_publication_date'])
+                  self.assertNotIn('unrelated navigation',rows[0]['evidence_text'])
+                  with self.assertRaises(ValueError):parse_review_document(raw.replace(s['publication_date_text'].encode(),b'UNKNOWN'),s)
+                  with self.assertRaises(ValueError):parse_review_document(raw.replace(b'Retained source fact',b'gone'),s)
+                  with self.assertRaises(ValueError):parse_review_document(raw+raw,s)
+              def test_nature_article_header_date_is_preserved(self):
+                  self.check_article('nature-farnham-plan-20220315','','news-release')
+              def test_roquette_article_header_date_is_preserved(self):
+                  self.check_article('roquette-rd-20200619','page__heading','page__content')
+              def test_original_failed_paths_are_not_silently_erased(self):
+                  m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+                  self.assertEqual({r['id'] for r in m['known_unavailable_paths']},{'stellantis-ontario-20220502','enel-alberta-operating-20200521'})
+              def test_enel_prior_presence_is_explicit(self):
+                  m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+                  c=next(x for x in m['cases'] if x['id']=='enel-pincher-creek')
+                  self.assertIn('began operations in 2012',c['prior_presence_evidence']['required_text'])
+                  self.assertFalse(c['first_entry_confirmed'])
+          ''')
+          PY
+      - name: Reproduce complete regressions before committing
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs
+          git diff --check
+      - name: Commit only to the existing research branch and remove preparation workflow
+        run: |
+          git rm .github/workflows/prepare-tranche2-repair.yml
+          git add scripts/probe_company_sources.py src/atlanticbridge/outcome_qualification.py reviews/commercial_validation/discovery-review-2-2026-09-22.json tests/test_document_source_repairs.py
+          git config user.name 'AtlanticBridge source review'
+          git config user.email 'actions@users.noreply.github.com'
+          git commit -m 'Repair captured document layouts and robots MIME negotiation without waiving source checks'
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+          git rev-parse HEAD
