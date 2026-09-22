@@ -23,6 +23,7 @@ KINDS = {
     'IMPLEMENTATION_REPORTED': 'REPORTED_BY_DAY',
     'OPENING_REPORTED': 'REPORTED_BY_DAY',
     'OPERATING_BY_DATE': 'UPPER_BOUND_DAY',
+    'PROJECT_COMPLETED_BY_DATE': 'UPPER_BOUND_DAY',
     'SERVICE_AVAILABLE_BY_DATE': 'UPPER_BOUND_DAY',
     'OFFICE_ESTABLISHED_BY_DATE': 'UPPER_BOUND_DAY',
 }
@@ -57,6 +58,10 @@ def parse_review_document(body: bytes, source: dict) -> list[dict]:
     allowed = {
         'sanofi-flu-inauguration-20260916': ('title', '#ReleaseContent'),
         'avanade-halifax-20220628': ('h1.page-title', 'article.article--full .field--name-body'),
+        'nature-farnham-plan-20220315': ('h1', 'article.news-release'),
+        'roquette-rd-20200619': ('h1.page__heading', 'article.page__content'),
+        'enel-issuer-alberta-operating-20200521': ('h1', 'main free-text section[data-content]'),
+        'stellantis-investontario-20220502': ('h1', '.press-release-text .field--name-body'),
     }
     pair = (layout.get('title_selector'), layout.get('content_selector'))
     if pair != allowed.get(source['id']):
@@ -69,7 +74,33 @@ def parse_review_document(body: bytes, source: dict) -> list[dict]:
     # date and evidence anchors. Captured bytes and their SHA-256 remain unchanged.
     scoped = BeautifulSoup('<h1></h1><main></main>', 'html.parser')
     scoped.h1.string = headings[0].get_text(' ', strip=True)
-    scoped.main.append(contents[0].extract())
+    region = contents[0].extract()
+    if source['id'] in {'nature-farnham-plan-20220315', 'roquette-rd-20200619'}:
+        # These retained pages put the publication date in the article's own header.
+        # Keep that source text, not unrelated site headers or a fabricated date.
+        for header in region.select('header'):
+            header.name = 'div'
+    if source['id'] == 'enel-issuer-alberta-operating-20200521':
+        if layout != {'title_selector': 'h1', 'content_selector': 'main free-text section[data-content]',
+                      'date_selector': 'main article-header time', 'content_attribute': 'data-content'}:
+            raise ValueError('Unreviewed embedded content layout')
+        dates = soup.select('main article-header time')
+        content = region.get('data-content')
+        if len(dates) != 1 or not dates[0].get_text(strip=True) or not isinstance(content, str) or not content.strip():
+            raise ValueError('Missing or ambiguous embedded document content/date')
+        # The captured publisher markup uses a Vue component with escaped HTML in
+        # data-content. Parse those original bytes; do not synthesize the body/date.
+        scoped.main.append(dates[0].extract())
+        region = BeautifulSoup(content, 'html.parser')
+    if source['id'] == 'stellantis-investontario-20220502':
+        if layout != {'title_selector': 'h1', 'content_selector': '.press-release-text .field--name-body',
+                      'date_selector': '.press-release-date'}:
+            raise ValueError('Unreviewed Invest Ontario content/date layout')
+        dates = soup.select('.press-release-date')
+        if len(dates) != 1 or not dates[0].get_text(strip=True):
+            raise ValueError('Missing or ambiguous Invest Ontario publication date')
+        scoped.main.append(dates[0].extract())
+    scoped.main.append(region)
     return parse_article(str(scoped).encode('utf-8'), source)
 
 
