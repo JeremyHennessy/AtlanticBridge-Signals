@@ -1,0 +1,68 @@
+name: Prepare exact Invest Ontario article layout
+on:
+  push:
+    branches: [feature/outcome-qualification-2-20260922]
+    paths: [.github/workflows/prepare-invest-ontario-layout.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply captured article and date selectors only
+        run: |
+          test "$GITHUB_REF_NAME" = 'feature/outcome-qualification-2-20260922'
+          test "$(git rev-parse HEAD^)" = '71ea023926e55f94067463c765c5e1f64796aa71'
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('src/atlanticbridge/outcome_qualification.py');s=p.read_text()
+          a="        'enel-issuer-alberta-operating-20200521': ('h1', 'main free-text section[data-content]'),";assert s.count(a)==1
+          s=s.replace(a,a+"\n        'stellantis-investontario-20220502': ('h1', '.press-release-text .field--name-body'),")
+          a='    scoped.main.append(region)';assert s.count(a)==1
+          s=s.replace(a,'''    if source['id'] == 'stellantis-investontario-20220502':
+                  if layout != {'title_selector': 'h1', 'content_selector': '.press-release-text .field--name-body',
+                                'date_selector': '.press-release-date'}:
+                      raise ValueError('Unreviewed Invest Ontario content/date layout')
+                  dates = soup.select('.press-release-date')
+                  if len(dates) != 1 or not dates[0].get_text(strip=True):
+                      raise ValueError('Missing or ambiguous Invest Ontario publication date')
+                  scoped.main.append(dates[0].extract())
+              scoped.main.append(region)''')
+          p.write_text(s)
+          p=Path('reviews/commercial_validation/discovery-review-2-2026-09-22.json');j=json.loads(p.read_text())
+          src=next(x for x in j['sources'] if x['id']=='stellantis-investontario-20220502')
+          src['reviewed_layout']={'title_selector':'h1','content_selector':'.press-release-text .field--name-body','date_selector':'.press-release-date'}
+          p.write_text(json.dumps(j,indent=2,ensure_ascii=False)+'\n')
+          p=Path('tests/test_document_source_repairs.py');s=p.read_text();s+='''
+              def test_invest_ontario_decorative_article_does_not_replace_document(self):
+                  m=json.loads((ROOT/'reviews/commercial_validation/discovery-review-2-2026-09-22.json').read_text())
+                  src=copy.deepcopy(next(x for x in m['sources'] if x['id']=='stellantis-investontario-20220502'))
+                  raw=('<main><article class="media"><img alt="decorative"></article><h1>Issuer title</h1><p class="press-release-date">May 2, 2022</p><div class="press-release-text"><div class="field--name-body">'+'. '.join(src['required_text'])+'</div></div></main>').encode()
+                  self.assertEqual(parse_review_document(raw,src)[0]['source_publication_date'],'2022-05-02')
+                  with self.assertRaises(ValueError):parse_review_document(raw.replace(b'May 2, 2022',b'UNKNOWN'),src)
+                  with self.assertRaises(ValueError):parse_review_document(raw.replace(b'$3.6 billion investment',b'missing'),src)
+                  with self.assertRaises(ValueError):parse_review_document(raw+raw,src)
+          ''';p.write_text(s)
+          PY
+      - name: Full regression tests
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs
+          git diff --check
+      - name: Remove helper and commit research-only change
+        run: |
+          git rm .github/workflows/prepare-invest-ontario-layout.yml
+          git add src/atlanticbridge/outcome_qualification.py reviews/commercial_validation/discovery-review-2-2026-09-22.json tests/test_document_source_repairs.py
+          git config user.name 'AtlanticBridge source review'
+          git config user.email 'actions@users.noreply.github.com'
+          git commit -m 'Select actual Invest Ontario release body instead of decorative image article'
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
