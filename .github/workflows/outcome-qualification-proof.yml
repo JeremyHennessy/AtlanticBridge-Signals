@@ -1,0 +1,63 @@
+name: Documentary outcome qualification and recovery proof
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/atlanticbridge/outcome_qualification.py'
+      - 'scripts/probe_outcome_qualification.py'
+      - 'tests/test_outcome_qualification.py'
+      - 'reviews/commercial_validation/discovery-review-2026-09-22.json'
+      - '.github/workflows/outcome-qualification-proof.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Full unchanged-baseline and new regression tests
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -v
+          node --test tests/test_workspace.cjs
+      - name: First primary-source capture and disposable-copy recovery test
+        run: python scripts/probe_outcome_qualification.py --output artifacts/outcome-qualification/first --state artifacts/outcome-qualification/state.sqlite
+      - name: Second capture on the retained ledger
+        run: python scripts/probe_outcome_qualification.py --output artifacts/outcome-qualification/second --state artifacts/outcome-qualification/state.sqlite
+      - name: Verify persistent original observations across captures
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('artifacts/outcome-qualification')
+          a=json.loads((p/'first/reviewed-discovery.json').read_text())
+          b=json.loads((p/'second/reviewed-discovery.json').read_text())
+          first={r['id']:r['first_observed_at'] for r in a['records']}
+          assert all(first[r['id']]==r['first_observed_at'] for r in b['records'] if r['id'] in first)
+          assert b['summary']['documentary_reviewed_projects']==6
+          assert b['summary']['first_entry_training_labels']==0
+          assert b['summary']['new_public_alerts']==0
+          print(json.dumps(b['summary'],indent=2))
+          PY
+      - name: Retain exact tested source and unresolved gates
+        if: always()
+        run: |
+          mkdir -p artifacts/outcome-qualification
+          git rev-parse HEAD > artifacts/outcome-qualification/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/outcome-qualification/tested-source.tar.gz
+          python scripts/check_commercial_validation.py > artifacts/outcome-qualification/validation-readiness.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: outcome-qualification-${{ github.event.pull_request.head.sha || github.sha }}
+          path: artifacts/outcome-qualification/
+          retention-days: 90
+          if-no-files-found: error
