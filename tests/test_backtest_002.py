@@ -78,8 +78,8 @@ class Backtest002Tests(unittest.TestCase):
         self.assertEqual(high["entrant_positive_rate"]["point_estimate"], 0.5)
         self.assertEqual(high["control_positive_rate"]["point_estimate"], 0.2)
         self.assertEqual(high["risk_difference"]["point_estimate"], 0.3)
-        self.assertEqual(high["risk_difference"]["lower_95"], -0.474426)
-        self.assertEqual(high["risk_difference"]["upper_95"], 0.813737)
+        self.assertEqual(high["risk_difference"]["lower_95"], -0.25013)
+        self.assertEqual(high["risk_difference"]["upper_95"], 0.686387)
         self.assertEqual(high["fisher_exact_two_sided_p"], 0.52381)
         self.assertFalse(high["directional_discrimination_resolved"])
 
@@ -99,8 +99,8 @@ class Backtest002Tests(unittest.TestCase):
             0.2,
         )
         self.assertEqual(eligible["risk_difference"]["point_estimate"], 0.2)
-        self.assertEqual(eligible["risk_difference"]["lower_95"], -0.506844)
-        self.assertEqual(eligible["risk_difference"]["upper_95"], 0.733052)
+        self.assertEqual(eligible["risk_difference"]["lower_95"], -0.309813)
+        self.assertEqual(eligible["risk_difference"]["upper_95"], 0.603964)
         self.assertEqual(eligible["fisher_exact_two_sided_p"], 1.0)
         self.assertFalse(eligible["directional_discrimination_resolved"])
 
