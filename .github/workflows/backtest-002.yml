@@ -51,6 +51,9 @@ jobs:
           assert result["backtest_001_weighting_design_gate"] is True
           assert result["candidate_signal_count"] == 1
           assert result["inferentially_resolved_rows"] == 0
+          assert result["publication_gate_mode"] == (
+              "EXPLORATORY_NO_PREDECLARED_PRIMARY_ENDPOINT"
+          )
           assert (
               result["expansion_score_1_0_weight_publication_allowed"]
               is False
