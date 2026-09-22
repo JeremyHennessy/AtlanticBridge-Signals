@@ -55,6 +55,9 @@ jobs:
               result["expansion_score_1_0_weight_publication_allowed"]
               is False
           )
+          assert result["method"]["risk_difference_interval"] == (
+              "Newcombe 1998 method 10 hybrid score interval, 95%"
+          )
 
           cipo = result["signals"][0]
           assert cipo["signal_family"] == "CIPO_CANADIAN_TRADEMARK"
@@ -68,8 +71,8 @@ jobs:
           assert high["fisher_exact_two_sided_p"] == 0.52381
           assert high["risk_difference"] == {
               "point_estimate": 0.3,
-              "lower_95": -0.474426,
-              "upper_95": 0.813737,
+              "lower_95": -0.25013,
+              "upper_95": 0.686387,
           }
           assert high["directional_discrimination_resolved"] is False
 
@@ -81,8 +84,8 @@ jobs:
           assert eligible["fisher_exact_two_sided_p"] == 1.0
           assert eligible["risk_difference"] == {
               "point_estimate": 0.2,
-              "lower_95": -0.506844,
-              "upper_95": 0.733052,
+              "lower_95": -0.309813,
+              "upper_95": 0.603964,
           }
           assert eligible["directional_discrimination_resolved"] is False
           PY

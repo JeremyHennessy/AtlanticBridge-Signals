@@ -18,10 +18,16 @@ For each identity-qualified CIPO comparison at the existing 24, 12, 6 and
 3 month event-time cutoffs:
 
 - positive-rate uncertainty is reported with a 95% Wilson score interval;
-- entrant minus control risk difference uses independent Wilson bounds in a
-  Newcombe-style 95% interval;
+- entrant minus control risk difference uses the 95% Newcombe (1998) method 10
+  hybrid score interval for two independent proportions, combining the two
+  Wilson intervals without continuity correction;
 - association is tested with a two-sided Fisher exact test;
 - alpha is 0.05.
+
+Reference: Robert G. Newcombe, *Statistics in Medicine* 17 (1998), 873-890,
+"Interval estimation for the difference between independent proportions:
+comparison of eleven methods", DOI
+10.1002/(SICI)1097-0258(19980430)17:8<873::AID-SIM779>3.0.CO;2-I.
 
 The offsets remain descriptive diagnostics. No cutoff is promoted after seeing
 the data as a predeclared primary endpoint.
@@ -39,7 +45,7 @@ Controls: 1 present / 4 proven absent, positive rate 0.20.
 - entrant 95% Wilson interval: 0.150039 to 0.849961;
 - control 95% Wilson interval: 0.036224 to 0.624465;
 - risk difference: +0.30;
-- risk-difference 95% interval: -0.474426 to +0.813737;
+- Newcombe risk-difference 95% interval: -0.250130 to +0.686387;
 - two-sided Fisher exact p = 0.523810.
 
 ### HIGH or MEDIUM identity confidence
@@ -51,7 +57,7 @@ Controls: 1 present / 4 proven absent, positive rate 0.20.
 - entrant 95% Wilson interval: 0.117621 to 0.769276;
 - control 95% Wilson interval: 0.036224 to 0.624465;
 - risk difference: +0.20;
-- risk-difference 95% interval: -0.506844 to +0.733052;
+- Newcombe risk-difference 95% interval: -0.309813 to +0.603964;
 - two-sided Fisher exact p = 1.0.
 
 ## Interpretation
@@ -80,8 +86,8 @@ python scripts/run_backtest_002.py --output /tmp/backtest-002.json
 ```
 
 `tests/test_backtest_002.py` locks the Fisher reference tables, Wilson
-intervals, risk-difference intervals, candidate-signal boundary, and fail-closed
-publication gate.
+intervals, Newcombe method 10 risk-difference intervals, candidate-signal
+boundary, and fail-closed publication gate.
 
 ## Next gate
 

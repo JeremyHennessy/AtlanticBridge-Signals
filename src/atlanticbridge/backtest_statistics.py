@@ -16,17 +16,12 @@ def _ratio(numerator: int, denominator: int) -> float | None:
     return round(numerator / denominator, 6)
 
 
-def wilson_interval(successes: int, total: int) -> dict[str, float | int | None]:
-    if total < 0 or successes < 0 or successes > total:
+def _wilson_bounds_raw(
+    successes: int,
+    total: int,
+) -> tuple[float, float]:
+    if total <= 0 or successes < 0 or successes > total:
         raise ValueError("invalid binomial counts")
-    if total == 0:
-        return {
-            "successes": successes,
-            "total": total,
-            "point_estimate": None,
-            "lower_95": None,
-            "upper_95": None,
-        }
 
     p = successes / total
     z2 = Z_95 * Z_95
@@ -40,12 +35,28 @@ def wilson_interval(successes: int, total: int) -> dict[str, float | int | None]
         )
         / denominator
     )
+    return max(0.0, center - half), min(1.0, center + half)
+
+
+def wilson_interval(successes: int, total: int) -> dict[str, float | int | None]:
+    if total < 0 or successes < 0 or successes > total:
+        raise ValueError("invalid binomial counts")
+    if total == 0:
+        return {
+            "successes": successes,
+            "total": total,
+            "point_estimate": None,
+            "lower_95": None,
+            "upper_95": None,
+        }
+
+    lower, upper = _wilson_bounds_raw(successes, total)
     return {
         "successes": successes,
         "total": total,
-        "point_estimate": round(p, 6),
-        "lower_95": round(max(0.0, center - half), 6),
-        "upper_95": round(min(1.0, center + half), 6),
+        "point_estimate": round(successes / total, 6),
+        "lower_95": round(lower, 6),
+        "upper_95": round(upper, 6),
     }
 
 
@@ -98,31 +109,42 @@ def _newcombe_risk_difference(
     entrant_interval: dict[str, float | int | None],
     control_interval: dict[str, float | int | None],
 ) -> dict[str, float | None]:
-    entrant_point = entrant_interval["point_estimate"]
-    control_point = control_interval["point_estimate"]
-    if entrant_point is None or control_point is None:
+    entrant_successes = int(entrant_interval["successes"])
+    entrant_total = int(entrant_interval["total"])
+    control_successes = int(control_interval["successes"])
+    control_total = int(control_interval["total"])
+    if entrant_total == 0 or control_total == 0:
         return {
             "point_estimate": None,
             "lower_95": None,
             "upper_95": None,
         }
 
-    entrant_lower = entrant_interval["lower_95"]
-    entrant_upper = entrant_interval["upper_95"]
-    control_lower = control_interval["lower_95"]
-    control_upper = control_interval["upper_95"]
-    assert isinstance(entrant_lower, float)
-    assert isinstance(entrant_upper, float)
-    assert isinstance(control_lower, float)
-    assert isinstance(control_upper, float)
+    entrant_point = entrant_successes / entrant_total
+    control_point = control_successes / control_total
+    entrant_lower, entrant_upper = _wilson_bounds_raw(
+        entrant_successes,
+        entrant_total,
+    )
+    control_lower, control_upper = _wilson_bounds_raw(
+        control_successes,
+        control_total,
+    )
+
+    difference = entrant_point - control_point
+    lower_delta = math.sqrt(
+        (entrant_point - entrant_lower) ** 2
+        + (control_upper - control_point) ** 2
+    )
+    upper_delta = math.sqrt(
+        (entrant_upper - entrant_point) ** 2
+        + (control_point - control_lower) ** 2
+    )
 
     return {
-        "point_estimate": round(
-            float(entrant_point) - float(control_point),
-            6,
-        ),
-        "lower_95": round(entrant_lower - control_upper, 6),
-        "upper_95": round(entrant_upper - control_lower, 6),
+        "point_estimate": round(difference, 6),
+        "lower_95": round(difference - lower_delta, 6),
+        "upper_95": round(difference + upper_delta, 6),
     }
 
 
@@ -254,7 +276,7 @@ def build_backtest_002(
         "method": {
             "positive_rate_interval": "Wilson score interval, 95%",
             "risk_difference_interval": (
-                "Newcombe-style interval from independent Wilson bounds, 95%"
+                "Newcombe 1998 method 10 hybrid score interval, 95%"
             ),
             "association_test": "Fisher exact, two-sided",
             "alpha": ALPHA,
