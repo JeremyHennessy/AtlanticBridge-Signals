@@ -61,13 +61,16 @@ class ExpandedControlReviewBatch01Tests(unittest.TestCase):
         for row in self.batch["records"]:
             source = expansion_by_key[row["control_entity_key"]]
             for field in (
-                "investor_node_id",
                 "investor_name",
                 "investor_locality",
                 "ultimate_control_country",
                 "assigned_candidate_outcome_ids",
             ):
                 self.assertEqual(row[field], source[field])
+            self.assertEqual(
+                row["investor_node_id"],
+                source["control_entity_key"].removeprefix("node:"),
+            )
             self.assertEqual(
                 row["review_decision"],
                 "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY",
