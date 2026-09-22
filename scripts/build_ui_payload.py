@@ -10,12 +10,136 @@ ROOT = Path(__file__).resolve().parents[1]
 CASES_PATH = ROOT / "reviews" / "outcome_audit" / "2026-09-20-cases.json"
 IDENTITY_PATH = ROOT / "reviews" / "outcome_audit" / "2026-09-20-identity-dispositions.json"
 OUTPUT_PATH = ROOT / "ui" / "data" / "dashboard.json"
+CONTROL_IDENTITY_PATH = ROOT / "reviews" / "control_cohorts" / "2026-09-20-control-identity-decisions.json"
+EXPANDED_IDENTITY_PATHS = [
+    ROOT / "reviews" / "control_cohorts" / "2026-09-22-expanded-control-identity-batch-01.json",
+    ROOT / "reviews" / "control_cohorts" / "2026-09-22-expanded-control-identity-batch-02.json",
+]
+OUTCOME_COHORT_PATH = ROOT / "reviews" / "outcome_audit" / "2026-09-20-outcome-cohorts.json"
+
+
+def normalize_company_name(value: str | None) -> str:
+    return "".join(char.casefold() for char in (value or "") if char.isalnum())
+
+
+def build_research_cohort(cases: list[dict]) -> tuple[list[dict], int]:
+    historical_names = {
+        normalize_company_name(name)
+        for case in cases
+        for name in (case.get("investor_name"), case.get("canadian_business_name"))
+        if name
+    }
+    outcome_cohorts = json.loads(OUTCOME_COHORT_PATH.read_text(encoding="utf-8"))
+    candidate_by_id = {
+        row["outcome_record_id"]: row for row in outcome_cohorts["cases"]
+    }
+
+    control_doc = json.loads(CONTROL_IDENTITY_PATH.read_text(encoding="utf-8"))
+    selected: list[tuple[dict, str]] = [
+        (row, "ACCEPTED_BACKTEST_CONTROL")
+        for row in control_doc["records"]
+        if row.get("backtest_control_eligible") is True
+    ]
+    for path in EXPANDED_IDENTITY_PATHS:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+        selected.extend(
+            (row, "IDENTITY_QUALIFIED_RESEARCH_CONTROL")
+            for row in doc["records"]
+            if row.get("review_decision")
+            == "QUALIFIED_FOREIGN_OPERATING_LEGAL_ENTITY"
+        )
+
+    result = []
+    excluded_overlap = 0
+    seen = set()
+    for row, research_status in selected:
+        key = row["control_entity_key"]
+        if key in seen:
+            continue
+        seen.add(key)
+        names = {
+            normalize_company_name(row.get("investor_name")),
+            normalize_company_name(row.get("foreign_legal_name")),
+        }
+        names.discard("")
+        if names & historical_names:
+            excluded_overlap += 1
+            continue
+
+        assigned = row.get("assigned_candidate_outcome_ids") or []
+        matched_candidates = []
+        for outcome_id in assigned:
+            candidate = candidate_by_id.get(outcome_id, {})
+            matched_candidates.append(
+                {
+                    "outcome_id": outcome_id,
+                    "canadian_business_name": candidate.get("canadian_business_name"),
+                    "investor_name": candidate.get("investor_name"),
+                    "notification_month": candidate.get("notification_month"),
+                    "cohort": candidate.get("cohort"),
+                }
+            )
+
+        legal_identifier = row.get("foreign_legal_identifier")
+        if isinstance(legal_identifier, dict):
+            legal_identifier_display = " · ".join(
+                str(value)
+                for value in (
+                    legal_identifier.get("type"),
+                    legal_identifier.get("value"),
+                )
+                if value
+            )
+        else:
+            legal_identifier_display = str(legal_identifier or "")
+
+        result.append(
+            {
+                "id": key,
+                "display_name": row.get("foreign_legal_name")
+                or row.get("investor_name"),
+                "investor_name": row.get("investor_name"),
+                "investor_locality": row.get("investor_locality"),
+                "ultimate_control_country": row.get("ultimate_control_country"),
+                "foreign_legal_name": row.get("foreign_legal_name"),
+                "foreign_legal_identifier": legal_identifier_display or None,
+                "identity_confidence": row.get("identity_confidence"),
+                "research_status": research_status,
+                "later_new_business_month": row.get("later_new_business_month"),
+                "accepted_backtest_control_eligible": bool(
+                    row.get("backtest_control_eligible")
+                    or row.get("accepted_backtest_control_eligible")
+                ),
+                "negative_label_eligible": bool(
+                    row.get("negative_label_eligible")
+                ),
+                "matched_candidates": matched_candidates,
+                "rationale": row.get("rationale"),
+                "identity_evidence": [
+                    {
+                        "source_url": evidence.get("source_url"),
+                        "source_type": evidence.get("source_type"),
+                        "claim": evidence.get("claim"),
+                    }
+                    for evidence in row.get("identity_evidence", [])
+                ],
+            }
+        )
+
+    result.sort(
+        key=lambda row: (
+            str(row.get("ultimate_control_country") or ""),
+            str(row.get("display_name") or ""),
+        )
+    )
+    return result, excluded_overlap
 
 
 def build_payload() -> dict:
     cases_doc = json.loads(CASES_PATH.read_text(encoding="utf-8"))
     identity_doc = json.loads(IDENTITY_PATH.read_text(encoding="utf-8"))
     cases = cases_doc["cases"]
+    research_cohort, research_overlap_excluded = build_research_cohort(cases)
 
     classification_counts = Counter(case["outcome_classification"] for case in cases)
     source_type_counts = Counter(
@@ -105,6 +229,9 @@ def build_payload() -> dict:
         "audit_date": cases_doc.get("audit_date"),
         "summary": {
             "case_count": cases_doc["case_count"],
+            "research_cohort_count": len(research_cohort),
+            "browsable_company_count": cases_doc["case_count"] + len(research_cohort),
+            "research_historical_overlap_excluded": research_overlap_excluded,
             "evidence_case_count": sum(bool(case.get("additional_evidence")) for case in cases),
             "identity_supported": identity_doc.get("supported", 0),
             "identity_requires_review": identity_doc.get("requires_evidence_review", 0),
@@ -132,6 +259,7 @@ def build_payload() -> dict:
                 cases_with_verified_pre_notification_evidence,
         },
         "cases": ui_cases,
+        "research_cohort": research_cohort,
     }
 
 
