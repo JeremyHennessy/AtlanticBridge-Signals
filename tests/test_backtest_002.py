@@ -30,11 +30,11 @@ class Backtest002Tests(unittest.TestCase):
 
     def test_exact_fisher_reference_tables(self):
         self.assertEqual(
-            fisher_exact_two_sided(2, 2, 1, 4),
-            0.52381,
+            fisher_exact_two_sided(2, 2, 0, 2),
+            0.466667,
         )
         self.assertEqual(
-            fisher_exact_two_sided(2, 3, 1, 4),
+            fisher_exact_two_sided(2, 3, 0, 2),
             1.0,
         )
 
@@ -76,11 +76,12 @@ class Backtest002Tests(unittest.TestCase):
             and row["offset_months"] == 3
         )
         self.assertEqual(high["entrant_positive_rate"]["point_estimate"], 0.5)
-        self.assertEqual(high["control_positive_rate"]["point_estimate"], 0.2)
-        self.assertEqual(high["risk_difference"]["point_estimate"], 0.3)
-        self.assertEqual(high["risk_difference"]["lower_95"], -0.25013)
-        self.assertEqual(high["risk_difference"]["upper_95"], 0.686387)
-        self.assertEqual(high["fisher_exact_two_sided_p"], 0.52381)
+        self.assertEqual(high["control_positive_rate"]["point_estimate"], 0.0)
+        self.assertEqual(high["control_positive_rate"]["total"], 2)
+        self.assertEqual(high["risk_difference"]["point_estimate"], 0.5)
+        self.assertEqual(high["risk_difference"]["lower_95"], -0.244941)
+        self.assertEqual(high["risk_difference"]["upper_95"], 0.849961)
+        self.assertEqual(high["fisher_exact_two_sided_p"], 0.466667)
         self.assertFalse(high["directional_discrimination_resolved"])
 
     def test_high_or_medium_uncertainty_blocks_publication(self):
@@ -96,11 +97,12 @@ class Backtest002Tests(unittest.TestCase):
         )
         self.assertEqual(
             eligible["control_positive_rate"]["point_estimate"],
-            0.2,
+            0.0,
         )
-        self.assertEqual(eligible["risk_difference"]["point_estimate"], 0.2)
-        self.assertEqual(eligible["risk_difference"]["lower_95"], -0.309813)
-        self.assertEqual(eligible["risk_difference"]["upper_95"], 0.603964)
+        self.assertEqual(eligible["control_positive_rate"]["total"], 2)
+        self.assertEqual(eligible["risk_difference"]["point_estimate"], 0.4)
+        self.assertEqual(eligible["risk_difference"]["lower_95"], -0.315683)
+        self.assertEqual(eligible["risk_difference"]["upper_95"], 0.769276)
         self.assertEqual(eligible["fisher_exact_two_sided_p"], 1.0)
         self.assertFalse(eligible["directional_discrimination_resolved"])
 
