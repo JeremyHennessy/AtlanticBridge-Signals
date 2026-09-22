@@ -1,1 +1,5 @@
-{"status":"BOOTSTRAP_PENDING","artifact_id":10717489758,"sha256":"003c42f02705066074a87bc5cac33ac0c72833d1c4a03bed3b01a1c5b660874a"}
+{
+  "status": "INITIALIZED",
+  "artifact_id": 10717489758,
+  "sha256": "003c42f02705066074a87bc5cac33ac0c72833d1c4a03bed3b01a1c5b660874a"
+}
