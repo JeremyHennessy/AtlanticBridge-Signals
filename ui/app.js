@@ -810,10 +810,13 @@ async function init() {
   const results=await Promise.allSettled([
     fetchEvidence("data/dashboard.json",validatePayload),
     fetchEvidence("data/live-signals.json",validateLivePayload),
+    fetchEvidence("data/reviewed-evidence.json",ABReviewed.validate),
   ]);
   state.data=results[0].status==="fulfilled"?results[0].value:null;
   state.live=results[1].status==="fulfilled"?results[1].value:unavailableLivePayload("The current signal source could not be loaded. Saved work and available historical evidence remain accessible.");
-  loadWatched();renderMetrics();renderSignals();
+  reviewedCatalog=results[2].status==="fulfilled"?results[2].value:null;
+  loadWatched();renderMetrics();renderSignals();renderReviewedProjects();
+  $("monitoring-refresh").addEventListener("click",loadMonitoringHealth);
   if(state.data){loadSaved();renderSources();renderResearch();renderCases();$("load-status").hidden=true;}
   else {
     $("load-status").setAttribute("role","alert");$("load-status").innerHTML='Audited case evidence could not be loaded. No results or scores have been inferred. Current signals and your saved worklist remain independent. <button class="button" id="retry-load" type="button">Try again</button>';

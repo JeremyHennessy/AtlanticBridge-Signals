@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "status": "REVIEWED_HISTORY_NOT_CURRENT_ALERTS",
+  "baseline_commit": "4d87ea022b1ae5f439fe095b38b695a40ed6f830",
+  "proof_artifact_id": 10718724645,
+  "proof_archive_sha256": "46f6e0853b6848cc10d5982e54bebeac2bf810e6e3ede19062b470e6c39a75a6",
+  "project_count": 6,
+  "projects": [
+    {
+      "id": "3f0ad81898ea05df0368eac2ab6daff93febad166894a482ed0764a439f7cd02",
+      "project_key": "toronto-charles-best-influenza",
+      "company_name": "Sanofi",
+      "country": "France",
+      "location": "Toronto, ON",
+      "title": "Influenza vaccine production facility",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Influenza project: 2021 announcement and September 2026 inauguration. The 2021 source explicitly describes a separate diphtheria/tetanus/pertussis facility; that separate project must not supply the influenza opening date. An inauguration is not a verified first-production date.",
+      "next_action": "Check whether the inaugurated influenza facility has entered production and whether relevant supplier opportunities remain open.",
+      "prior_presence_status": "SOURCE_REPORTS_EXISTING_PRESENCE",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T21:08:09.417267+00:00",
+        "source_url": "https://sanoficanada.mediaroom.com/2026-09-16-Sanofi-inaugurates-new-flu-vaccine-facility,-Canadas-largest-biomanufacturing-investment",
+        "source_sha256": "5c6547679ebd13e2ba316094051bddcd921645c05e70cebdaeaaea89d23e95b0"
+      },
+      "latest_public_date": "2026-09-16",
+      "evidence": [
+        {
+          "source_id": "sanofi-flu-inauguration-20260916",
+          "source_url": "https://sanoficanada.mediaroom.com/2026-09-16-Sanofi-inaugurates-new-flu-vaccine-facility,-Canadas-largest-biomanufacturing-investment",
+          "source_publication_date": "2026-09-16",
+          "first_observed_at": "2026-09-22T21:07:48.520612+00:00",
+          "last_observed_at": "2026-09-22T21:08:09.417267+00:00",
+          "raw_sha256": "5c6547679ebd13e2ba316094051bddcd921645c05e70cebdaeaaea89d23e95b0"
+        },
+        {
+          "source_id": "sanofi-flu-plan-20210331",
+          "source_url": "https://www.canada.ca/en/innovation-science-economic-development/news/2021/03/the-government-of-canada-makes-historic-investment-to-strengthen-canadas-biomanufacturing-sector.html",
+          "source_publication_date": "2021-03-31",
+          "first_observed_at": "2026-09-22T21:07:46.835697+00:00",
+          "last_observed_at": "2026-09-22T21:08:07.233056+00:00",
+          "raw_sha256": "ee01b996d23d879cc4bcfe610605a566ec47d93eff290a8237a56d03ac330188"
+        }
+      ],
+      "events": [
+        {
+          "kind": "PROJECT_ANNOUNCED",
+          "date": "2021-03-31",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "sanofi-flu-plan-20210331",
+          "source_url": "https://www.canada.ca/en/innovation-science-economic-development/news/2021/03/the-government-of-canada-makes-historic-investment-to-strengthen-canadas-biomanufacturing-sector.html",
+          "raw_sha256": "ee01b996d23d879cc4bcfe610605a566ec47d93eff290a8237a56d03ac330188"
+        },
+        {
+          "kind": "INAUGURATION_REPORTED",
+          "date": "2026-09-16",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "sanofi-flu-inauguration-20260916",
+          "source_url": "https://sanoficanada.mediaroom.com/2026-09-16-Sanofi-inaugurates-new-flu-vaccine-facility,-Canadas-largest-biomanufacturing-investment",
+          "raw_sha256": "5c6547679ebd13e2ba316094051bddcd921645c05e70cebdaeaaea89d23e95b0"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "86bf17a563d2ea608714913eca0fa0d3db36f117f4f121417a65a3f62fc9eaf0",
+      "project_key": "st-thomas-battery-cell-factory",
+      "company_name": "Volkswagen",
+      "country": "Germany",
+      "location": "St. Thomas, ON",
+      "title": "Electric vehicle battery manufacturing facility",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "A battery-factory plan and implementation update, not an operational plant or first Canadian presence of the Volkswagen group. The 2027 year is a historical plan, not a current schedule guarantee.",
+      "next_action": "Verify the current construction and production schedule before considering outreach; do not reuse the historical 2027 plan as a current commitment.",
+      "prior_presence_status": "NOT_ESTABLISHED",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T21:08:02.353282+00:00",
+        "source_url": "https://www.volkswagen-group.com/en/press-releases/volkswagen-backed-powerco-se-reaches-significant-milestone-in-st-thomas-gigafactory-project-17962",
+        "source_sha256": "472c9aeb2d8a5327fe77e5b2cbecf1858426929086420748ec99e068e51ac6ce"
+      },
+      "latest_public_date": "2023-12-12",
+      "evidence": [
+        {
+          "source_id": "vw-powerco-progress-20231212",
+          "source_url": "https://www.volkswagen-group.com/en/press-releases/volkswagen-backed-powerco-se-reaches-significant-milestone-in-st-thomas-gigafactory-project-17962",
+          "source_publication_date": "2023-12-12",
+          "first_observed_at": "2026-09-22T21:07:41.968363+00:00",
+          "last_observed_at": "2026-09-22T21:08:02.353282+00:00",
+          "raw_sha256": "472c9aeb2d8a5327fe77e5b2cbecf1858426929086420748ec99e068e51ac6ce"
+        },
+        {
+          "source_id": "vw-powerco-plan-20230313",
+          "source_url": "https://www.volkswagen-group.com/en/press-releases/volkswagen-group-steps-up-activities-in-north-america-canada-chosen-as-location-for-first-overseas-gigafactory-of-its-battery-company-powerco-se-16930",
+          "source_publication_date": "2023-03-13",
+          "first_observed_at": "2026-09-22T21:07:38.368533+00:00",
+          "last_observed_at": "2026-09-22T21:08:01.485818+00:00",
+          "raw_sha256": "665b8c90a6e5f30e7b0f2b0d8a502fef2a06051d1ebacf36e29c2cd78d6f530f"
+        }
+      ],
+      "events": [
+        {
+          "kind": "PROJECT_ANNOUNCED",
+          "date": "2023-03-13",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "vw-powerco-plan-20230313",
+          "source_url": "https://www.volkswagen-group.com/en/press-releases/volkswagen-group-steps-up-activities-in-north-america-canada-chosen-as-location-for-first-overseas-gigafactory-of-its-battery-company-powerco-se-16930",
+          "raw_sha256": "665b8c90a6e5f30e7b0f2b0d8a502fef2a06051d1ebacf36e29c2cd78d6f530f"
+        },
+        {
+          "kind": "IMPLEMENTATION_REPORTED",
+          "date": "2023-12-12",
+          "date_basis": "REPORTED_BY_DAY",
+          "source_id": "vw-powerco-progress-20231212",
+          "source_url": "https://www.volkswagen-group.com/en/press-releases/volkswagen-backed-powerco-se-reaches-significant-milestone-in-st-thomas-gigafactory-project-17962",
+          "raw_sha256": "472c9aeb2d8a5327fe77e5b2cbecf1858426929086420748ec99e068e51ac6ce"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "1e42a52082d60e55f78e5e96e74c2902c7da6f6b311cc42d3c389c1cc830b39c",
+      "project_key": "burlington-cellular-agriculture",
+      "company_name": "The Cultivated B.",
+      "country": "Germany",
+      "location": "Burlington, ON",
+      "title": "Manufacturing facility and innovation hub for cellular agriculture operations",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Same-day announcement and planned ceremony. Do not turn future-tense ceremony language into independent confirmation that the ceremony or production occurred.",
+      "next_action": "Verify the facility's current operating status and corporate identity before treating the opening announcement as an active opportunity.",
+      "prior_presence_status": "NOT_ESTABLISHED",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T21:08:14.417571+00:00",
+        "source_url": "https://www.thecultivatedb.com/the-cultivated-b-expands-cellular-agriculture-operations-to-canada-with-facility/",
+        "source_sha256": "10203da181524beb677d8bb2f1659fe28e2366b3e54ae6a11a78a14ea40017e0"
+      },
+      "latest_public_date": "2022-10-27",
+      "evidence": [
+        {
+          "source_id": "tcb-burlington-20221027",
+          "source_url": "https://www.thecultivatedb.com/the-cultivated-b-expands-cellular-agriculture-operations-to-canada-with-facility/",
+          "source_publication_date": "2022-10-27",
+          "first_observed_at": "2026-09-22T21:07:53.217871+00:00",
+          "last_observed_at": "2026-09-22T21:08:14.417571+00:00",
+          "raw_sha256": "10203da181524beb677d8bb2f1659fe28e2366b3e54ae6a11a78a14ea40017e0"
+        }
+      ],
+      "events": [
+        {
+          "kind": "OPENING_ANNOUNCED",
+          "date": "2022-10-27",
+          "date_basis": "SOURCE_ASSERTED_DAY",
+          "source_id": "tcb-burlington-20221027",
+          "source_url": "https://www.thecultivatedb.com/the-cultivated-b-expands-cellular-agriculture-operations-to-canada-with-facility/",
+          "raw_sha256": "10203da181524beb677d8bb2f1659fe28e2366b3e54ae6a11a78a14ea40017e0"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "cf697b08bcc18aca49467618ca06f29450671843d33a7be9eede7ce0ababda72",
+      "project_key": "halifax-engineering-hub",
+      "company_name": "Avanade",
+      "country": "Ireland",
+      "location": "Halifax, NS",
+      "title": "Launch of a new engineering hub",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "The dated agency section reports an established Halifax office. Up to 700 jobs is conditional agreement potential, not actual jobs created. A local office is not first Canadian group entry, and Ireland is still the original agency card label, not newly verified legal control.",
+      "next_action": "Confirm the named Canadian legal entity and current office activity; do not treat the agency country label as verified parent control.",
+      "prior_presence_status": "NOT_ESTABLISHED",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T21:08:18.142820+00:00",
+        "source_url": "https://investnovascotia.ca/news-and-stories/disclosures-strategic-investment-fund-202223",
+        "source_sha256": "8f49712c5a5895ebb0bdd364f592b0026684cabc8ffe0743e3add66742eaf3c6"
+      },
+      "latest_public_date": "2022-06-28",
+      "evidence": [
+        {
+          "source_id": "avanade-halifax-20220628",
+          "source_url": "https://investnovascotia.ca/news-and-stories/disclosures-strategic-investment-fund-202223",
+          "source_publication_date": "2022-06-28",
+          "first_observed_at": "2026-09-22T21:07:56.604614+00:00",
+          "last_observed_at": "2026-09-22T21:08:18.142820+00:00",
+          "raw_sha256": "8f49712c5a5895ebb0bdd364f592b0026684cabc8ffe0743e3add66742eaf3c6"
+        }
+      ],
+      "events": [
+        {
+          "kind": "OFFICE_ESTABLISHED_BY_DATE",
+          "date": "2022-06-28",
+          "date_basis": "UPPER_BOUND_DAY",
+          "source_id": "avanade-halifax-20220628",
+          "source_url": "https://investnovascotia.ca/news-and-stories/disclosures-strategic-investment-fund-202223",
+          "raw_sha256": "8f49712c5a5895ebb0bdd364f592b0026684cabc8ffe0743e3add66742eaf3c6"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "09db8fe3c6f5d80c2110393698bfa613c312f07bd54a59f7df4deda7b3bf3d09",
+      "project_key": "toronto-tech-hub-and-canada-service",
+      "company_name": "Klarna",
+      "country": "Sweden",
+      "location": "Toronto, ON",
+      "title": "North American product development and tech hub",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "Issuer reports service availability and a Toronto hub. Hiring 500+ engineers by 2025 is a plan in this 2022 release, not verified realized jobs. Prior Canadian group presence and the exact office-opening day remain unverified.",
+      "next_action": "Confirm the current Toronto footprint and current hiring independently of the historical hiring target.",
+      "prior_presence_status": "NOT_ESTABLISHED",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T21:08:15.279636+00:00",
+        "source_url": "https://www.prnewswire.com/news-releases/klarna-expands-to-canada-with-flexible-pay-in-4-service-and-shopping-app-while-announcing-major-investment-in-local-economy-301487360.html",
+        "source_sha256": "9b09c593dae6936c87f54e622759fc261eaef52940e93c8712069ff4832780da"
+      },
+      "latest_public_date": "2022-02-22",
+      "evidence": [
+        {
+          "source_id": "klarna-canada-20220222",
+          "source_url": "https://www.prnewswire.com/news-releases/klarna-expands-to-canada-with-flexible-pay-in-4-service-and-shopping-app-while-announcing-major-investment-in-local-economy-301487360.html",
+          "source_publication_date": "2022-02-22",
+          "first_observed_at": "2026-09-22T21:07:54.303406+00:00",
+          "last_observed_at": "2026-09-22T21:08:15.279636+00:00",
+          "raw_sha256": "9b09c593dae6936c87f54e622759fc261eaef52940e93c8712069ff4832780da"
+        }
+      ],
+      "events": [
+        {
+          "kind": "SERVICE_AVAILABLE_BY_DATE",
+          "date": "2022-02-22",
+          "date_basis": "UPPER_BOUND_DAY",
+          "source_id": "klarna-canada-20220222",
+          "source_url": "https://www.prnewswire.com/news-releases/klarna-expands-to-canada-with-flexible-pay-in-4-service-and-shopping-app-while-announcing-major-investment-in-local-economy-301487360.html",
+          "raw_sha256": "9b09c593dae6936c87f54e622759fc261eaef52940e93c8712069ff4832780da"
+        },
+        {
+          "kind": "OPENING_REPORTED",
+          "date": "2022-02-22",
+          "date_basis": "REPORTED_BY_DAY",
+          "source_id": "klarna-canada-20220222",
+          "source_url": "https://www.prnewswire.com/news-releases/klarna-expands-to-canada-with-flexible-pay-in-4-service-and-shopping-app-while-announcing-major-investment-in-local-economy-301487360.html",
+          "raw_sha256": "9b09c593dae6936c87f54e622759fc261eaef52940e93c8712069ff4832780da"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    },
+    {
+      "id": "e138bf65c46301372bb83d0e1a0b499bc25c949378a3f30126aa58c4c7bbf7d2",
+      "project_key": "becancour-20mw-pem",
+      "company_name": "Air Liquide",
+      "country": "France",
+      "location": "Bécancour, QC",
+      "title": "New hydrogen facility in Bécancour",
+      "identity_scope": "REVIEWED_PROJECT_SOURCE_LOCAL_NOT_LEGAL_PARENT_JOIN",
+      "status": "DOCUMENTARY_HISTORY",
+      "summary": "The unit was operating by the publication date. Its exact first-production day is not established. This increased an existing complex, not first Canadian entry.",
+      "next_action": "Look for a newer capacity or procurement announcement; the recorded 2021 operation is historical context, not a new entry lead.",
+      "prior_presence_status": "SOURCE_REPORTS_EXISTING_PRESENCE",
+      "reviewer": "assistant-document-review-2026-09-22",
+      "source": {
+        "observed_at": "2026-09-22T21:08:11.383113+00:00",
+        "source_url": "https://www.prnewswire.com/news-releases/air-liquide-inaugurates-the-worlds-largest-low-carbon-hydrogen-membrane-based-production-unit-in-canada-301214697.html",
+        "source_sha256": "e2543f21ebdd37ca8ceac8c4d2a3a509258e2f755b154aea72299692aab09068"
+      },
+      "latest_public_date": "2021-01-26",
+      "evidence": [
+        {
+          "source_id": "airliquide-becancour-20210126-wire",
+          "source_url": "https://www.prnewswire.com/news-releases/air-liquide-inaugurates-the-worlds-largest-low-carbon-hydrogen-membrane-based-production-unit-in-canada-301214697.html",
+          "source_publication_date": "2021-01-26",
+          "first_observed_at": "2026-09-22T21:07:50.260645+00:00",
+          "last_observed_at": "2026-09-22T21:08:11.383113+00:00",
+          "raw_sha256": "e2543f21ebdd37ca8ceac8c4d2a3a509258e2f755b154aea72299692aab09068"
+        }
+      ],
+      "events": [
+        {
+          "kind": "OPERATING_BY_DATE",
+          "date": "2021-01-26",
+          "date_basis": "UPPER_BOUND_DAY",
+          "source_id": "airliquide-becancour-20210126-wire",
+          "source_url": "https://www.prnewswire.com/news-releases/air-liquide-inaugurates-the-worlds-largest-low-carbon-hydrogen-membrane-based-production-unit-in-canada-301214697.html",
+          "raw_sha256": "e2543f21ebdd37ca8ceac8c4d2a3a509258e2f755b154aea72299692aab09068"
+        }
+      ],
+      "legal_identity_confirmed": false,
+      "first_entry_confirmed": false,
+      "backtest_eligible": false,
+      "public_alert_allowed": false,
+      "independent_holdout": false
+    }
+  ]
+}

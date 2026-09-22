@@ -68,6 +68,8 @@
           <p class="table-footnote">Current signal semantics: an EU legal supplier is named in an official Canadian federal award notice. This confirms Canada-facing commercial activity; it does not establish first entry, a future expansion, or a probability.</p>
         </article>
         <p class="small muted">Open a company name to investigate its notices and record a next action. Your worklist and notes stay in this browser; export a backup to preserve them. No team sync or automated follow-up reminders are available.</p>
+        <section class="panel" aria-labelledby="reviewed-project-heading"><div class="panel-header"><div><p class="eyebrow">Separate evidence / Reviewed histories</p><h2 id="reviewed-project-heading">Company project histories</h2></div></div><div class="coverage-stack"><p>These six source-local project histories are not new alerts, verified parent identities, or additions to the procurement counts above. Open one to inspect its dated sources and save a next action.</p><div id="reviewed-project-list">Loading reviewed histories…</div></div></section>
+        <section class="panel" aria-labelledby="monitoring-heading"><div class="panel-header"><div><p class="eyebrow">Source operations / Separate from website builds</p><h2 id="monitoring-heading">Company-source monitoring</h2></div><button class="button" id="monitoring-refresh" type="button">Load monitoring status</button></div><div class="coverage-stack" id="monitoring-status" role="status">Load the latest collection history. Collection changes require review; they are not automatic public expansion alerts.</div></section>
       </section>
       <section id="worklist-view" data-route="worklist" hidden>
         <div class="page-heading"><div><p class="eyebrow">Your research workflow</p><h1>Company worklist</h1><p>Track what needs checking, record your next action, and return to the original evidence. Workflow status is your decision—not an expansion prediction.</p></div><a class="text-link" href="#signals">Back to signals →</a></div>
@@ -170,6 +172,7 @@
   <template id="empty-row-template"><tr><td colspan="6"><div class="empty-state"><h3>No cases match these filters.</h3><p>Try a broader company name or reset the filters. No results does not mean no Canadian activity.</p><button type="button" class="button" data-reset>Reset filters</button></div></td></tr></template>
   <noscript><p class="notice">Enable JavaScript to search and explore the audited evidence. No predictions are available in this preview.</p></noscript>
   <script src="workspace.js" defer></script>
+  <script src="reviewed.js" defer></script>
   <script src="workbench.js" defer></script>
   <script src="app.js" defer></script>
 </body>

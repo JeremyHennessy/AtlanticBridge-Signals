@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import {verifyReviewed} from "./reviewed_acceptance.mjs";
 import {verifyLiveDossiers,verifyWorkspace} from "./workspace_acceptance.mjs";
 import fs from "node:fs";
 import path from "node:path";
@@ -63,7 +64,7 @@ async function fetchLivePayload(page,label) {
   return validateLivePayload(payload,label);
 }
 async function exactAssets(page, label) {
-  for (const name of ["index.html","app.js","styles.css","workspace.js","workbench.js","workspace.css","data/dashboard.json"]) {
+  for (const name of ["index.html","app.js","styles.css","workspace.js","workbench.js","workspace.css","reviewed.js","data/reviewed-evidence.json","data/dashboard.json"]) {
     const actual=await page.evaluate(async name=>{const r=await fetch(new URL(name,location.href),{cache:"no-store"});if(!r.ok)throw new Error(`Asset HTTP ${r.status}: ${name}`);return r.text();},name);
     const expected=fs.readFileSync(path.join(root,"ui",name),"utf8");
     check(`${label}: ${name.endsWith(".json")?"identical audited payload":"exact deployed asset"} ${name}`,name.endsWith(".json")?isDeepStrictEqual(JSON.parse(actual),JSON.parse(expected)):actual===expected);
@@ -254,6 +255,7 @@ async function run(label,type,options) {
     await filters(page,label);await bookmarks(page,label);await allCases(page,label);
     await verifyLiveDossiers(page,live,label,out,check);
     await verifyWorkspace(browser,options,base,label,out,check);
+    await verifyReviewed(browser,options,base,label,out,check);
     check(`${label}: no console or page errors`,errors.length===0,errors.join(" | "));
     // Failure tests use a separate context: expected network errors are not mixed with normal acceptance.
     const failed=await browser.newContext(options);const broken=await failed.newPage();

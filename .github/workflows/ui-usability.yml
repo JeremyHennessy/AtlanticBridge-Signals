@@ -9,6 +9,8 @@ on:
       - "scripts/build_ui_payload.py"
       - "tests/ui_visual_acceptance.mjs"
       - "tests/workspace_acceptance.mjs"
+      - "tests/reviewed_acceptance.mjs"
+      - "tests/test_reviewed.cjs"
       - "tests/test_workspace.cjs"
       - ".github/workflows/ui-usability.yml"
   push:
@@ -19,6 +21,8 @@ on:
       - "scripts/build_ui_payload.py"
       - "tests/ui_visual_acceptance.mjs"
       - "tests/workspace_acceptance.mjs"
+      - "tests/reviewed_acceptance.mjs"
+      - "tests/test_reviewed.cjs"
       - "tests/test_workspace.cjs"
       - ".github/workflows/ui-usability.yml"
 
@@ -53,7 +57,7 @@ jobs:
         with:
           node-version: "22"
       - name: Test workspace persistence and evidence semantics
-        run: node --test tests/test_workspace.cjs
+        run: node --test tests/test_workspace.cjs tests/test_reviewed.cjs
       - name: Install browser test dependencies
         run: |
           npm install --no-save playwright@1.55.0
