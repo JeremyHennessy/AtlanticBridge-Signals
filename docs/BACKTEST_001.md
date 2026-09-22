@@ -69,43 +69,58 @@ identity is still unresolved. Source absence is not inferred for those rows.
 
 The current CIPO counts are the same at all four event-time cutoffs.
 
+Identity sensitivity preserves the original risk-set match. When an entrant
+stratum is excluded at a confidence tier, controls selected for that entrant
+stratum are excluded at the same tier. A control cannot remain in the HIGH
+comparison merely because the control itself has HIGH identity confidence when
+its matched entrant is LOW-confidence.
+
+This corrects the earlier unpaired sensitivity calculation that retained all
+five controls after excluding LOW-confidence entrants.
+
 ### HIGH identity confidence
 
 Entrants:
 
-- 4 identity-qualified entities;
+- 4 identity-qualified entrant strata;
 - 2 present;
 - 2 proven absent;
 - observed positive rate 0.50;
 - false-negative rate relative to the censored anchor target: 0.50.
 
-Controls:
+Matched controls:
 
-- 5 identity-qualified entities;
-- 1 present;
-- 4 proven absent;
-- observed positive rate / false-positive rate: 0.20.
+- 2 controls across 2 retained entrant strata;
+- 0 present;
+- 2 proven absent;
+- observed positive rate / false-positive rate: 0.00.
+
+The three Italian controls matched to the LOW-confidence Antea stratum are not
+part of the HIGH sensitivity comparison.
 
 ### HIGH or MEDIUM identity confidence
 
 Entrants:
 
-- 5 identity-qualified entities;
+- 5 identity-qualified entrant strata;
 - 2 present;
 - 3 proven absent;
 - observed positive rate 0.40;
 - false-negative rate relative to the censored anchor target: 0.60.
 
-Controls remain:
+Matched controls:
 
-- 5 entities;
-- 1 present;
-- 4 proven absent;
-- false-positive rate 0.20.
+- 2 controls across 2 retained entrant strata;
+- 0 present;
+- 2 proven absent;
+- false-positive rate 0.00.
 
-These rates are estimable only on the identity-qualified subset. The full
-seven-entrant cohort still contains two unresolved foreign identities, so the
-full-cohort CIPO false rates remain fail-closed.
+The MEDIUM Digitary stratum currently has no accepted matched control, so adding
+it changes the entrant denominator but not the matched control denominator.
+
+These rates are estimable only on the matched identity-qualified subset. The
+full seven-entrant cohort still contains two unresolved foreign identities, so
+the full-cohort CIPO false rates remain fail-closed.
 
 ## CanadaBuys and TED
 
@@ -119,8 +134,10 @@ For each family:
 - 40 `ABSENT_WITH_PROVEN_COVERAGE`;
 - 8 `UNKNOWN_UNVERIFIED_COVERAGE`.
 
-On the HIGH and HIGH-or-MEDIUM identity-qualified subsets, each therefore has:
+On the matched HIGH and HIGH-or-MEDIUM identity-qualified subsets, each
+therefore has:
 
+- 2 matched controls, both proven absent;
 - false-positive rate 0.0;
 - false-negative rate 1.0.
 
