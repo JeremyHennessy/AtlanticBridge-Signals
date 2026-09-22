@@ -3,23 +3,14 @@ name: Deploy Evidence Console to GitHub Pages
 on:
   push:
     branches: [main]
-    paths:
-      - "index.html"
-      - "ui/**"
-      - "src/atlanticbridge/live_signals.py"
-      - "src/atlanticbridge/canadabuys_store.py"
-      - "src/atlanticbridge/sources/canadabuys.py"
-      - "scripts/build_ui_payload.py"
-      - "scripts/build_live_signals.py"
-      - "reviews/outcome_audit/**"
-      - "tests/test_live_signals.py"
-      - "tests/ui_visual_acceptance.mjs"
-      - ".github/workflows/pages.yml"
+    # The legacy publisher runs on every main push. Do not leave it unopposed
+    # on documentation/research commits while Pages remains branch-based.
   schedule:
     - cron: "17 10 * * *"
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -31,6 +22,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout exact revision
         uses: actions/checkout@v6
@@ -76,7 +68,7 @@ jobs:
           PY
             mv /tmp/live-signals.json ui/data/live-signals.json
           else
-            echo "::error::Current CanadaBuys refresh failed. Aborting Pages deployment so the previously hosted feed remains in place."
+            echo "::error::Current CanadaBuys refresh failed. Aborting custom Pages deployment."
             exit 1
           fi
 
@@ -87,6 +79,46 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: ui
+
+      - name: Wait for legacy Pages publisher to settle
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          build_type="$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "/repos/${GITHUB_REPOSITORY}/pages" \
+            --jq '.build_type // "legacy"')"
+
+          case "$build_type" in
+            workflow)
+              echo "Pages uses Actions publishing; no legacy publisher to wait for."
+              exit 0
+              ;;
+            legacy) ;;
+            *)
+              echo "::error::Unrecognized Pages build type: $build_type"
+              exit 1
+              ;;
+          esac
+
+          echo "Waiting for legacy Pages publication of ${GITHUB_SHA} before deploying the generated feed."
+          for attempt in $(seq 1 60); do
+            state="$(gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              "/repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${GITHUB_SHA}&per_page=30" \
+              --jq '[.workflow_runs[] | select(.path == "dynamic/pages/pages-build-deployment")] | sort_by(.id) | last | .status // ""')"
+            if [ "$state" = "completed" ]; then
+              echo "Legacy publisher completed; custom deployment may proceed."
+              exit 0
+            fi
+            echo "Legacy publisher: ${state:-not-visible-yet} ($attempt/60)"
+            sleep 5
+          done
+          echo "::error::Legacy publisher did not settle; refusing to race production deployments."
+          exit 1
 
   deploy:
     needs: build

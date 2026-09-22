@@ -1,0 +1,39 @@
+name: Workflow syntax
+
+on:
+  pull_request:
+    branches: [main]
+    paths: [".github/workflows/**"]
+  push:
+    branches: [main]
+    paths: [".github/workflows/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install syntax-check dependency only
+        run: python -m pip install PyYAML==6.0.2
+      - name: Parse workflow YAML and shell blocks
+        run: |
+          python - <<'PY'
+          import pathlib, subprocess, yaml
+          paths = sorted(pathlib.Path('.github/workflows').glob('*.y*ml'))
+          assert paths, 'No workflows found'
+          for path in paths:
+              doc = yaml.load(path.read_text(), Loader=yaml.BaseLoader)
+              assert isinstance(doc, dict) and 'on' in doc and 'jobs' in doc, path
+              for job in doc['jobs'].values():
+                  for step in job.get('steps', []):
+                      if 'run' in step and step.get('shell', 'bash') in ('bash', 'sh'):
+                          subprocess.run(['bash', '-n'], input=step['run'], text=True, check=True)
+              print(f'PASS {path}')
+          PY
