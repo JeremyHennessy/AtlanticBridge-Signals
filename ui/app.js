@@ -340,19 +340,7 @@ function filteredCases() {
     return nameOrder;
   });
 }
-function formatMoney(value, currency) {
-  const amount = Number(String(value || "").replace(/,/g,""));
-  if (!Number.isFinite(amount)) return value ? `${value} ${currency || ""}`.trim() : "Amount not stated";
-  try {
-    return new Intl.NumberFormat("en-CA", {
-      style:"currency",
-      currency: currency || "CAD",
-      maximumFractionDigits: amount >= 1000 ? 0 : 2,
-    }).format(amount);
-  } catch (_) {
-    return `${amount.toLocaleString("en-CA")} ${currency || ""}`.trim();
-  }
-}
+function formatMoney(value, currency) { return ABWorkspace.money(value,currency); }
 
 function formatTimestamp(value) {
   if (!value) return "Unknown";
@@ -370,14 +358,15 @@ function activeLiveSignals() {
 }
 
 function liveSignalsForWindow(days=90) {
-  return activeLiveSignals().filter(signal => Number(signal.recency_days) <= days);
+  return activeLiveSignals().filter(signal => {const age=ABWorkspace.signalAge(signal);return age!==null && age>=0 && age<=days;});
 }
 
 function filteredSignals() {
   const q=state.signalQuery.trim().toLocaleLowerCase();
   const maxDays=state.signalWindow === "all" ? null : Number(state.signalWindow);
   return activeLiveSignals().filter(signal => {
-    if(maxDays != null && Number(signal.recency_days) > maxDays)return false;
+    const age=ABWorkspace.signalAge(signal);
+    if(maxDays != null && (age===null || age<0 || age>maxDays))return false;
     if(state.signalCountry && signal.country !== state.signalCountry)return false;
     if(state.signalView === "watched" && !state.watched.has(signal.company_id))return false;
     if(!q)return true;
@@ -386,27 +375,8 @@ function filteredSignals() {
   }).sort((a,b)=>String(b.publicly_available_date||"").localeCompare(String(a.publicly_available_date||"")) || String(a.company_name||"").localeCompare(String(b.company_name||"")));
 }
 
-function loadWatched() {
-  try {
-    const value=JSON.parse(localStorage.getItem(WATCH_KEY)||"[]");
-    if(!Array.isArray(value))throw new Error("Invalid watchlist");
-    state.watched=new Set(value.filter(x=>typeof x==="string"&&x));
-  } catch (_) {
-    state.watched=new Set();
-    showToast("Watched companies could not be loaded. The signal feed is still available.");
-  }
-}
-
-function toggleWatched(companyId) {
-  if(!companyId)return;
-  const next=new Set(state.watched);
-  next.has(companyId)?next.delete(companyId):next.add(companyId);
-  try {localStorage.setItem(WATCH_KEY,JSON.stringify([...next]));}
-  catch(_){showToast("This browser could not update the watchlist.");return;}
-  state.watched=next;
-  renderSignals();
-  showToast(next.has(companyId)?"Company watched in this browser.":"Company removed from this browser watchlist.");
-}
+function loadWatched() { initializeWorklist(); }
+function toggleWatched(companyId) { return toggleWorkCompany(companyId); }
 
 function populateSignalCountries() {
   const select=$("signal-country-filter");
@@ -460,7 +430,8 @@ function renderSignals() {
   $("signal-metric-countries").textContent=countries.size;
   $("signal-metric-latest").textContent=latest?formatDate(latest):"—";
   $("signal-count-label").textContent=`${rows.length} signal${rows.length===1?"":"s"} · ${companyIds.size} compan${companyIds.size===1?"y":"ies"}`;
-  $("signal-freshness").innerHTML=`<strong>Live source refreshed ${escapeHtml(formatTimestamp(state.live.source?.observed_at || state.live.generated_at))}.</strong><span>${escapeHtml(state.live.source?.label || "Current source")} · ${escapeHtml(state.live.summary?.signal_count ?? 0)} source-backed events in the available feed.</span>`;
+  $("signal-freshness").innerHTML=`<strong>${escapeHtml(liveFreshnessText())}</strong><span>${escapeHtml(workSourceCoverage())}</span>`;
+  $("signal-freshness").dataset.freshness=ABWorkspace.feedHealth(state.live).state;
 
   if(!rows.length){
     root.innerHTML='<div class="empty-state signal-empty"><h3>No signals match these filters.</h3><p>The underlying current feed is unchanged.</p><button class="button button-secondary" type="button" data-signal-reset>Reset signal filters</button></div>';
@@ -474,8 +445,8 @@ function renderSignals() {
     const amount=formatMoney(signal.contract_amount,signal.contract_currency);
     return `<article class="live-signal-item" data-live-signal-id="${escapeHtml(signal.id)}" data-company-id="${escapeHtml(signal.company_id)}">
       <div class="live-signal-main">
-        <div class="live-signal-date"><span class="eyebrow">${escapeHtml(kind)}</span><strong>${escapeHtml(formatDate(signal.publicly_available_date))}</strong><span>${escapeHtml(signal.recency_days)}d ago</span></div>
-        <div class="live-signal-company"><div class="live-signal-company-line"><h3>${escapeHtml(signal.company_name)}</h3><span class="status-chip status-existing">${escapeHtml(signal.country)}</span></div><p>${escapeHtml(signal.title || signal.award_description || "Federal award notice")}</p><span class="live-signal-buyer">${escapeHtml(signal.contracting_entity || "Canadian federal contracting entity not stated")}</span></div>
+        <div class="live-signal-date"><span class="eyebrow">${escapeHtml(kind)}</span><strong>${escapeHtml(formatDate(signal.publicly_available_date))}</strong><span>${ABWorkspace.signalAge(signal)===null || ABWorkspace.signalAge(signal)<0 ? "Public date unverified" : escapeHtml(ABWorkspace.signalAge(signal))+"d ago"}</span></div>
+        <div class="live-signal-company"><div class="live-signal-company-line"><h3><a class="company-dossier-link" href="${companyHash(signal.company_id)}">${escapeHtml(signal.company_name)}</a></h3><span class="status-chip status-existing">${escapeHtml(signal.country)}</span></div><p>${escapeHtml(signal.title || signal.award_description || "Federal award notice")}</p><span class="live-signal-buyer">${escapeHtml(signal.contracting_entity || "Canadian federal contracting entity not stated")}</span></div>
         <div class="live-signal-value"><strong>${escapeHtml(amount)}</strong><span>${escapeHtml(signal.reference_number || "No reference")}</span></div>
         <button class="save-button signal-watch" type="button" data-watch-company="${escapeHtml(signal.company_id)}" aria-pressed="${watched}" aria-label="${watched?"Unwatch":"Watch"} ${escapeHtml(signal.company_name)}" title="${watched?"Remove company from watchlist":"Watch company in this browser"}">${watched?"★":"☆"}</button>
       </div>
@@ -485,20 +456,18 @@ function renderSignals() {
 }
 
 function renderMetrics() {
-  const s = state.data.summary;
+  const s = state.data?.summary;
   const live90=liveSignalsForWindow(90);
   const liveCompanies90=new Set(live90.map(x=>x.company_id));
-  els.auditDate.textContent = state.live?.status==="ACTIVE"
-    ? `Live: ${formatDate(state.live.summary?.latest_public_date)} · Audit: ${formatDate(state.data.audit_date)}`
-    : `Case audit: ${formatDate(state.data.audit_date)}`;
-  els.metricCases.textContent = s.case_count;
-  els.metricEvidence.textContent = s.research_cohort_count;
+  els.auditDate.textContent = `Source checked: ${formatDate(state.live?.source?.observed_at?.slice(0,10))} · Case audit: ${formatDate(state.data?.audit_date)}`;
+  if(s){els.metricCases.textContent=s.case_count;els.metricEvidence.textContent=s.research_cohort_count;}
   $("metric-live-signals").textContent = state.live?.status==="ACTIVE" ? live90.length : "—";
   $("metric-live-companies").textContent = state.live?.status==="ACTIVE" ? liveCompanies90.size : "—";
   $("signal-nav-count").textContent = state.live?.status==="ACTIVE" ? live90.length : "—";
   $("overview-live-status").textContent = state.live?.status==="ACTIVE"
-    ? `${live90.length} current signal${live90.length===1?"":"s"} in the last 90 days · refreshed ${formatTimestamp(state.live.source?.observed_at || state.live.generated_at)}.`
+    ? `${live90.length} signal${live90.length===1?"":"s"} dated within 90 days. ${liveFreshnessText()}`
     : "Current signal feed unavailable. Historical evidence remains available.";
+  if(!s){$("data-note").textContent="Audited cases unavailable; current signals and saved work are independent.";populateSignalCountries();return;}
   els.metricIdentity.textContent = s.identity_supported;
   els.metricModel.textContent = s.model_eligible_count;
   for (const [label,bar,count] of [[els.coverageBefore,els.coverageBeforeBar,s.before_notification_month],[els.coverageSame,els.coverageSameBar,s.same_notification_month],[els.coveragePublication,els.coveragePublicationBar,s.cases_with_verified_pre_notification_evidence]]) {
@@ -737,15 +706,16 @@ async function copyCaseLink() {
   catch(_){const fallback=$("case-link-fallback");fallback.hidden=false;fallback.innerHTML='<label class="small">Copy this case link<input class="copied-link" readonly aria-label="Case link"></label>';const input=fallback.querySelector("input");input.value=url.href;input.focus();input.select();showToast("Clipboard unavailable. Select and copy the case link shown here.");}
 }
 function route() {
-  if(!state.data)return;
+  if(!state.data && !state.live)return;
   const [raw="overview",search=""]=location.hash.slice(1).split("?");
   if(raw === "main-content"){$("main-content").focus();return;}
-  const valid=["overview","signals","companies","research","markets","coverage","guide"];
+  if(!workCanNavigate(location.hash))return;
+  const valid=["overview","signals","companies","research","markets","coverage","guide","company","worklist"];
   const previousRoute=state.route;
   const requested=raw||"overview";state.route=valid.includes(requested)?requested:"overview";
   const p=new URLSearchParams(search);
   if(previousRoute!==state.route){$("main-content").focus({preventScroll:true});window.scrollTo(0,0);}
-  document.title=`AtlanticBridge Signals — ${{overview:"Overview",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  document.title=`AtlanticBridge Signals — ${{overview:"Overview",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use",company:"Company dossier",worklist:"Company worklist"}[state.route]}`;
   $("route-notice").hidden=valid.includes(requested);
   if(!valid.includes(requested))$("route-notice").textContent="That view was not found. Showing the overview instead.";
   document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!==state.route;});
@@ -758,7 +728,7 @@ function route() {
     if(state.signalCountry && ![...$("signal-country-filter").options].some(o=>o.value===state.signalCountry)){const o=new Option(`Not in current feed: ${state.signalCountry}`,state.signalCountry);$("signal-country-filter").add(o);}
     syncSignalControls();renderSignals();
   }
-  if(state.route === "companies") {
+  if(state.route === "companies" && state.data) {
     state.query=p.get("q")||"";state.country=p.get("country")||"";state.classification=p.get("finding")||"";state.evidence=["with","without"].includes(p.get("evidence"))?p.get("evidence"):"";state.sort=["newest","evidence"].includes(p.get("sort"))?p.get("sort"):"name";state.view=["early","registry","saved"].includes(p.get("view"))?p.get("view"):"all";
     // Keep unsupported filters visible as a recoverable empty state, not silently broader results.
     for(const [id,value] of [["country-filter",state.country],["classification-filter",state.classification]])if(value && ![...$(id).options].some(o=>o.value===value)){const o=new Option(`Not in this audit: ${value}`,value);$(id).add(o);}
@@ -766,7 +736,7 @@ function route() {
     const id=p.get("case");if(id && state.data.cases.some(x=>x.id===id)){openCase(id);return;}
     if(id){$("route-notice").textContent="That case is not in this audited dataset. Search the available cases below.";$("route-notice").hidden=false;}
   }
-  if(state.route === "research") {
+  if(state.route === "research" && state.data) {
     state.researchQuery=p.get("q")||"";
     state.researchRole=["ACCEPTED_BACKTEST_CONTROL","IDENTITY_QUALIFIED_RESEARCH_CONTROL"].includes(p.get("role"))?p.get("role"):"";
     state.researchCipo=["PRESENT","ABSENT_WITH_PROVEN_COVERAGE","UNKNOWN_UNVERIFIED_COVERAGE"].includes(p.get("cipo"))?p.get("cipo"):"";
@@ -774,9 +744,13 @@ function route() {
     syncResearchControls();
     renderResearch();
   }
-  hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  if(["companies","research","coverage"].includes(state.route) && !state.data){$("route-notice").hidden=false;$("route-notice").textContent="Audited case evidence is unavailable—not zero cases. Your worklist remains available.";}
+  if(state.route === "worklist") {workQuery=p.get("q")||"";workStatus=Object.hasOwn(ABWorkspace.STATUSES,p.get("status"))?p.get("status"):"";workDue=p.get("due")==="1";renderWorklist();}
+  if(state.route === "company") renderCompany(p.get("id") || "");
+  hideDrawer();if(state.route!=="company")document.title=`AtlanticBridge Signals — ${{overview:"Overview",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use",company:"Company dossier",worklist:"Company worklist"}[state.route]}`;
 }
 function bindEvents() {
+  bindWorkEvents();
   const mobileFilters=window.matchMedia("(max-width:760px)");
   if(mobileFilters.matches)$("advanced-filters").open=false;
   mobileFilters.addEventListener("change",event=>{if(!event.matches)$("advanced-filters").open=true;});
@@ -824,24 +798,23 @@ function validateLivePayload(data) {
 
 async function init() {
   bindEvents();
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
-  try {
-    const response=await fetch("data/dashboard.json",{cache:"no-store",signal:controller.signal});
-    if(!response.ok)throw new Error(`Dashboard payload returned HTTP ${response.status}`);
-    state.data=validatePayload(await response.json());
-    try {
-      const liveResponse=await fetch("data/live-signals.json",{cache:"no-store",signal:controller.signal});
-      if(!liveResponse.ok)throw new Error(`Live signal payload returned HTTP ${liveResponse.status}`);
-      state.live=validateLivePayload(await liveResponse.json());
-    } catch(liveError) {
-      console.warn(liveError);
-      state.live=unavailableLivePayload("The current signal source could not be loaded. Historical evidence is still available.");
-    }
-    loadSaved();loadWatched();renderMetrics();renderSources();renderSignals();renderResearch();renderCases();$("load-status").hidden=true;route();
-  } catch(error) {
-    console.error(error);state.data=null;state.live=unavailableLivePayload("Case evidence failed to load.");$("load-status").hidden=false;$("load-status").setAttribute("role","alert");$("load-status").innerHTML='The audited case evidence could not be loaded. No results or scores have been inferred. <button class="button" id="retry-load" type="button">Try again</button>';
-    $("retry-load").addEventListener("click",()=>location.reload());els.caseCountLabel.textContent="Data unavailable—not zero cases";$("audit-date").textContent="Case evidence unavailable";$("data-note").textContent="Case evidence unavailable. Interface version: 22 September 2026.";
-    document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!=="overview";});
-  } finally {clearTimeout(timeout);}
+  async function fetchEvidence(path, validate) {
+    const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);
+    try {const response=await fetch(path,{cache:"no-store",signal:controller.signal});if(!response.ok)throw new Error(`Evidence HTTP ${response.status}`);return validate(await response.json());}
+    finally {clearTimeout(timer);}
+  }
+  const results=await Promise.allSettled([
+    fetchEvidence("data/dashboard.json",validatePayload),
+    fetchEvidence("data/live-signals.json",validateLivePayload),
+  ]);
+  state.data=results[0].status==="fulfilled"?results[0].value:null;
+  state.live=results[1].status==="fulfilled"?results[1].value:unavailableLivePayload("The current signal source could not be loaded. Saved work and available historical evidence remain accessible.");
+  loadWatched();renderMetrics();renderSignals();
+  if(state.data){loadSaved();renderSources();renderResearch();renderCases();$("load-status").hidden=true;}
+  else {
+    $("load-status").setAttribute("role","alert");$("load-status").innerHTML='Audited case evidence could not be loaded. No results or scores have been inferred. Current signals and your saved worklist remain independent. <button class="button" id="retry-load" type="button">Try again</button>';
+    $("retry-load").addEventListener("click",()=>location.reload());els.caseCountLabel.textContent="Data unavailable—not zero cases";
+  }
+  route();
 }
 init();

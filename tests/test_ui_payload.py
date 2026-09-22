@@ -102,7 +102,12 @@ class UIPayloadTests(unittest.TestCase):
         styles = (ROOT / "ui" / "styles.css").read_text()
         self.assertIn("AtlanticBridge Signals", index)
         self.assertIn("Evidence Console", index)
-        self.assertIn('fetch("data/dashboard.json"', app)
+        self.assertIn('fetchEvidence("data/dashboard.json",validatePayload)', app)
+        self.assertIn('fetchEvidence("data/live-signals.json",validateLivePayload)', app)
+        self.assertIn('Promise.allSettled', app)
+        for filename in ('workspace.js', 'workbench.js', 'workspace.css'):
+            self.assertTrue((ROOT / "ui" / filename).is_file())
+            self.assertIn(filename, index)
         self.assertIn("buildCaseTimeline", app)
         self.assertIn("Timeline order follows the recorded date precision", app)
         self.assertIn(".case-timeline", styles)

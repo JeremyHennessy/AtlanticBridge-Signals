@@ -1,0 +1,26 @@
+/* Only the added dossier/worklist views and their explicit entry points. */
+.company-dossier-link{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.work-breadcrumbs{display:flex;justify-content:space-between;gap:18px;margin-bottom:25px}
+.dossier-columns{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.dossier-columns .panel-header h2,.dossier-timeline h2{font-size:21px}
+#company-title{overflow-wrap:anywhere;font-size:32px}
+.work-form{display:grid;gap:17px;padding:24px}
+.work-form label,.worklist-filters>label,.work-portability label{font-size:12px;font-weight:600;color:var(--muted);display:grid;gap:6px}
+.work-form>p{margin:0}.work-form textarea{font:inherit;font-size:14px;color:var(--ink);width:100%;min-height:120px;resize:vertical;border:1px solid #c6d3ce;border-radius:7px;padding:10px;background:white}
+.work-form textarea:focus-visible{outline:3px solid #218b7d;outline-offset:4px}
+.work-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.dossier-timeline,.work-portability{margin-top:26px}.dossier-evidence .coverage-stack>p{margin-top:0}
+.work-row-heading{display:flex;justify-content:space-between;align-items:start;gap:20px}
+.work-row-heading h3{font-size:17px;margin:0 0 10px}.work-row-heading>span{font-size:12px;white-space:nowrap}
+.company-notice{border-bottom:1px solid var(--line);padding-bottom:22px;overflow-wrap:anywhere}.company-notice:last-child{border-bottom:0;padding-bottom:0}
+.company-notice p{font-size:13px}.company-notice summary{cursor:pointer;min-height:40px;font-size:13px;font-weight:600}
+.notice-facts{display:grid;grid-template-columns:150px minmax(0,1fr);font-size:12px;gap:10px 20px}.notice-facts dt{color:var(--muted)}.notice-facts dd{margin:0;overflow-wrap:anywhere}
+.worklist-filters{display:grid;grid-template-columns:2fr 1fr 1fr auto;align-items:end;gap:16px;padding:24px}
+.worklist-filters .work-checkbox{display:flex;align-items:center;gap:10px;min-height:44px}.work-checkbox input{width:18px;min-height:18px}
+.worklist-row{display:grid;grid-template-columns:1.3fr .7fr 1.6fr auto;gap:20px;padding:24px;border-top:1px solid var(--line);align-items:start;overflow-wrap:anywhere}
+.work-company-link{font-size:16px;font-weight:650}.worklist-row p{margin:5px 0;white-space:pre-wrap}
+.work-overdue{color:var(--amber);font-weight:650}.worklist-row .text-button{padding:0}.work-portability .coverage-stack>p{margin-top:0}
+#signal-freshness[data-freshness=stale],#signal-freshness[data-freshness=unverified]{background:var(--amber-soft);border-color:#eadab8;color:var(--amber)}
+#work-import-confirm{justify-self:start}#work-import-state{margin:0}#company-share-fallback{margin-bottom:20px}#work-save-state{white-space:pre-wrap}
+@media(max-width:760px){.dossier-columns{grid-template-columns:1fr;gap:18px}#company-title{font-size:27px}.work-form{padding:18px}.work-form textarea{font-size:16px}.worklist-filters{grid-template-columns:1fr 1fr;padding:18px;gap:12px}.worklist-filters>label:first-child{grid-column:1/-1}.worklist-row{grid-template-columns:1fr auto;padding:18px;gap:12px}.worklist-row>div:nth-child(3){grid-column:1/-1}.worklist-row>button{grid-column:2;grid-row:3}.work-row-heading{display:block}.work-row-heading>span{display:block;margin-bottom:8px}.notice-facts{grid-template-columns:1fr;gap:5px}.notice-facts dd{margin-bottom:10px}.work-actions .button{font-size:12px}#work-import-file{max-width:100%;font-size:12px}}
+@media(max-width:380px){.worklist-filters{grid-template-columns:1fr}.worklist-filters>label:first-child{grid-column:auto}.worklist-row{grid-template-columns:1fr}.worklist-row>div:nth-child(3),.worklist-row>button{grid-column:auto;grid-row:auto}.work-breadcrumbs{font-size:12px;gap:10px}}
