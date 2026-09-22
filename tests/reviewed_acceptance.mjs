@@ -12,6 +12,20 @@ export async function verifyReviewed(browser,options,base,label,out,check){
     await page.evaluate(()=>location.hash='#signals');
     await page.locator('[data-reviewed-project]').first().waitFor();
     const procurement=await page.locator('[data-live-signal-id]').count();
+    if(process.env.REQUIRE_LIVE_SIGNALS==='1'){
+      let actual=null;
+      for(let attempt=0;attempt<12&&!actual;attempt++){
+        actual=await page.evaluate(async()=>{try{const r=await fetch('https://raw.githubusercontent.com/JeremyHennessy/AtlanticBridge-Signals/monitoring-state/health.json',{cache:'no-store'});return r.ok?await r.json():null;}catch(_){return null;}});
+        if(!actual)await page.waitForTimeout(5000);
+      }
+      check(`${label}: actual public monitoring state is accessible`,actual?.schema_version===1&&actual.sources?.length===8&&actual.run_id&&actual.last_attempt_at);
+      await page.locator('#monitoring-refresh').click();
+      await page.waitForFunction(()=>!document.querySelector('#monitoring-refresh')?.disabled);
+      const liveHealth=await page.locator('#monitoring-status').innerText();
+      check(`${label}: real monitoring status renders without fixture replacement`,!liveHealth.includes('could not be loaded')&&actual.sources.every(source=>liveHealth.includes(source.id)));
+      check(`${label}: real monitoring retains fourteen-day qualification`,liveHealth.includes('14-day operational target')&&liveHealth.includes('No prediction has been validated'));
+      await page.locator('#monitoring-status').screenshot({path:path.join(out,`${label}-actual-monitoring-status.png`)});
+    }
     check(`${label}: six reviewed project links`,await page.locator('[data-reviewed-project]').count()===catalog.project_count);
     for(const p of catalog.projects){
       await page.evaluate(id=>location.hash='#company?id='+id,p.id);
