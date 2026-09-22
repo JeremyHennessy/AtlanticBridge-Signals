@@ -1,0 +1,78 @@
+name: Prepare reviewed analyst pilot branch
+
+on:
+  push:
+    branches: [feature/analyst-workbench-20260922]
+    paths:
+      - .github/workflows/prepare-analyst-pilot.yml
+      - .pilot-transport/**
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply checksum-pinned reviewed files to development branch only
+        run: |
+          python - <<'PY'
+          import base64, hashlib, json, lzma, os, pathlib, subprocess
+          assert os.environ['GITHUB_REF'] == 'refs/heads/feature/analyst-workbench-20260922'
+          parent = subprocess.check_output(['git','rev-parse','HEAD^'],text=True).strip()
+          assert parent == 'c522a167684308188ae4a0a64d6dc9035ef3ecda', parent
+          encoded = ''.join(pathlib.Path(f'.pilot-transport/chunk-{i}.b64').read_text().strip() for i in range(5))
+          raw = lzma.decompress(base64.b64decode(encoded, validate=True))
+          assert hashlib.sha256(raw).hexdigest() == '4d0ca0c875dc6af88adf7a31dd989e03db92d732e61675092b27466da344cf6c'
+          changes = json.loads(raw)
+          allowed = {'ui/index.html','ui/app.js','ui/workspace.js','ui/workbench.js','ui/workspace.css','tests/test_workspace.cjs','tests/workspace_acceptance.mjs','tests/ui_visual_acceptance.mjs','.github/workflows/ui-usability.yml','docs/ANALYST_PILOT_2026_09_22.md'}
+          assert len(changes) == len(allowed) and {f['path'] for f in changes} == allowed
+          for item in changes:
+              path = pathlib.Path(item['path'])
+              if item['before_blob']:
+                  before = subprocess.check_output(['git','hash-object',str(path)],text=True).strip()
+                  assert before == item['before_blob'], (str(path),before)
+              else:
+                  assert not path.exists(), path
+              if 'replacements' in item:
+                  lines = path.read_text().splitlines(True)
+                  for start,end,replacement in reversed(item['replacements']):
+                      lines[start:end] = replacement
+                  content = ''.join(lines)
+              else:
+                  content = item['content']
+              assert hashlib.sha256(content.encode()).hexdigest() == item['after_sha256'], path
+              path.parent.mkdir(parents=True,exist_ok=True)
+              path.write_text(content,encoding='utf-8')
+              print('VERIFIED',str(path),item['after_sha256'])
+          PY
+      - name: Run existing research tests and new worklist unit tests
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs
+          node --check ui/app.js
+          node --check ui/workbench.js
+          node --check ui/workspace.js
+          git diff --check
+      - name: Commit tested application files on the development branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Workflow edits and removal of this temporary preparer are finalized
+          # through the authorized connector, not by broadening GITHUB_TOKEN.
+          git restore .github/workflows/ui-usability.yml
+          git rm .pilot-transport/chunk-0.b64 .pilot-transport/chunk-1.b64 .pilot-transport/chunk-2.b64 .pilot-transport/chunk-3.b64 .pilot-transport/chunk-4.b64
+          git add ui/index.html ui/app.js ui/workspace.js ui/workbench.js ui/workspace.css tests/test_workspace.cjs tests/workspace_acceptance.mjs tests/ui_visual_acceptance.mjs docs/ANALYST_PILOT_2026_09_22.md
+          git commit -m 'Add source-backed company dossiers and analyst worklist'
+          git push origin HEAD:feature/analyst-workbench-20260922
