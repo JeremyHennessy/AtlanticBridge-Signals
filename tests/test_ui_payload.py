@@ -34,6 +34,13 @@ class UIPayloadTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["identity_supported"], 12)
         self.assertEqual(payload["summary"]["identity_requires_review"], 0)
         self.assertEqual(len(payload["cases"]), payload["summary"]["case_count"])
+        self.assertEqual(payload["summary"]["research_cohort_count"], 13)
+        self.assertEqual(payload["summary"]["browsable_company_count"], 40)
+        self.assertEqual(payload["summary"]["research_historical_overlap_excluded"], 1)
+        self.assertEqual(len(payload["research_cohort"]), 13)
+        self.assertTrue(all(not row["negative_label_eligible"] for row in payload["research_cohort"]))
+        historical_names = {case["investor_name"].casefold() for case in payload["cases"] if case.get("investor_name")}
+        self.assertTrue(all(row["display_name"].casefold() not in historical_names for row in payload["research_cohort"]))
 
     def test_ui_publication_cutoff_matches_canonical_gate(self):
         payload = ui_payload.build_payload()

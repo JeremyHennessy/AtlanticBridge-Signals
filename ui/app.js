@@ -43,6 +43,14 @@ function classificationClass(value) {
   return "status-unresolved";
 }
 
+function formatResearchStatus(value) {
+  const labels = {
+    ACCEPTED_BACKTEST_CONTROL: "Accepted control",
+    IDENTITY_QUALIFIED_RESEARCH_CONTROL: "Identity-qualified",
+  };
+  return labels[value] || value || "Research";
+}
+
 function formatPublicationStatus(value) {
   const labels = {
     VERIFIED_BEFORE_NOTIFICATION_MONTH: "Public before notification",
@@ -313,6 +321,7 @@ function renderMetrics() {
   els.metricEvidence.textContent = s.evidence_case_count;
   $("metric-public").textContent = s.cases_with_verified_pre_notification_evidence;
   $("metric-countries").textContent = new Set(state.data.cases.map(x => x.ultimate_control_country).filter(Boolean)).size;
+  $("metric-browsable").textContent = s.browsable_company_count;
   els.metricIdentity.textContent = s.identity_supported;
   els.metricModel.textContent = s.model_eligible_count;
   for (const [label,bar,count] of [[els.coverageBefore,els.coverageBeforeBar,s.before_notification_month],[els.coverageSame,els.coverageSameBar,s.same_notification_month],[els.coveragePublication,els.coveragePublicationBar,s.cases_with_verified_pre_notification_evidence]]) {
@@ -327,6 +336,39 @@ function renderMetrics() {
 function renderSources() {
   els.sourceTypes.innerHTML = Object.entries(state.data.summary.source_type_counts).map(([type,count]) => `<div class="source-row"><span>${escapeHtml(formatSourceType(type))}</span><span class="source-count">${escapeHtml(count)}</span></div>`).join("");
 }
+function renderResearch() {
+  const rows = state.data.research_cohort || [];
+  $("research-count").textContent = rows.length;
+  $("research-accepted-count").textContent = rows.filter(x => x.research_status === "ACCEPTED_BACKTEST_CONTROL").length;
+  $("research-qualified-count").textContent = rows.filter(x => x.research_status === "IDENTITY_QUALIFIED_RESEARCH_CONTROL").length;
+  const root = $("research-companies");
+  if (!rows.length) {
+    root.innerHTML = '<div class="empty-state panel"><h3>No expanded research companies are published.</h3><p>This is unavailable—not evidence that no additional companies exist.</p></div>';
+    return;
+  }
+  root.innerHTML = rows.map(item => {
+    const sources = (item.identity_evidence || []).map(source => {
+      const url = safeUrl(source.source_url);
+      const label = formatSourceType(source.source_type);
+      return url
+        ? `<li><a class="source-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a><span>${escapeHtml(source.claim || "Primary-source identity evidence")}</span></li>`
+        : `<li><strong>${escapeHtml(label)}</strong><span>${escapeHtml(source.claim || "Primary-source identity evidence")}</span></li>`;
+    }).join("");
+    const matched = (item.matched_candidates || []).map(candidate => {
+      const name = candidate.canadian_business_name || candidate.investor_name || "Audited candidate";
+      return `${escapeHtml(name)} · ${escapeHtml(formatDate(candidate.notification_month))}`;
+    }).join("; ");
+    const statusClass = item.research_status === "ACCEPTED_BACKTEST_CONTROL" ? "status-existing" : "status-establishment";
+    return `<article class="research-card panel" data-research-id="${escapeHtml(item.id)}">
+      <div class="research-card-head"><div><span class="eyebrow">${escapeHtml(item.ultimate_control_country || "Country unknown")}</span><h2>${escapeHtml(item.display_name)}</h2></div><span class="status-chip ${statusClass}">${escapeHtml(formatResearchStatus(item.research_status))}</span></div>
+      <div class="research-card-meta"><span><strong>Later Canadian new-business record</strong>${escapeHtml(formatDate(item.later_new_business_month))}</span><span><strong>Identity confidence</strong>${escapeHtml(item.identity_confidence || "Unknown")}</span><span><strong>Legal identifier</strong>${escapeHtml(item.foreign_legal_identifier || "Not recorded")}</span><span><strong>Matched research stratum</strong>${matched || "Not recorded"}</span></div>
+      <p class="research-rationale">${escapeHtml(item.rationale || "Identity-qualified historical research entity.")}</p>
+      <details class="research-sources"><summary>Primary identity evidence · ${(item.identity_evidence || []).length} source${(item.identity_evidence || []).length === 1 ? "" : "s"}</summary><ul>${sources}</ul></details>
+      <p class="small muted">Historical research entity · not a current expansion prediction · not a permanent negative.</p>
+    </article>`;
+  }).join("");
+}
+
 function savedButton(item) {
   const saved = state.saved.has(item.id);
   return `<button class="save-button" type="button" data-save="${escapeHtml(item.id)}" aria-pressed="${saved}" aria-label="${saved ? "Unsave" : "Save"} ${escapeHtml(item.canadian_business_name)}" title="${saved ? "Remove from saved cases" : "Save in this browser"}">${saved ? "★" : "☆"}</button>`;
@@ -385,11 +427,11 @@ function toggleSaved(id) {
 function caseSummary(item) {
   const found=formatClassification(item.outcome_classification);
   let known=item.audit_note || "This historical case is recorded in the audited Investment Canada new-business cohort.";
-  let unknown="The exact first Canadian operations date is not established. Expansion likelihood is not validated, and Nova Scotia fit is not assessed here.";
+  let unknown="The exact first Canadian operations date is not established. Expansion likelihood is not validated, and Canadian market fit is not assessed here.";
   let next="Establish the first operating window and verify when each supporting source became public. Do not treat the filing month as the opening date.";
   if(item.outcome_classification === "EXISTING_CANADIAN_PRESENCE") next="Separate prior Canadian activity from the notified business event, and verify the parent-to-business identity link before treating this as a new-entry case.";
   if(!item.evidence_count) next="Locate original company or government evidence beyond the registry, confirm the investor identity, and establish what the Canadian business actually did.";
-  if(item.first_canadian_operations_date) unknown="A first-operations date is recorded below. That alone does not validate a predictive score or establish Nova Scotia fit.";
+  if(item.first_canadian_operations_date) unknown="A first-operations date is recorded below. That alone does not validate a predictive score or establish Canadian market fit.";
   return `<div class="case-summary"><article class="summary-block"><h3>What we know · ${escapeHtml(found)}</h3><p>${escapeHtml(known)}</p></article><article class="summary-block unknown"><h3>What remains unknown</h3><p>${escapeHtml(unknown)}</p></article><article class="summary-block next"><h3>Next research step</h3><p>${escapeHtml(next)}</p></article></div>`;
 }
 function openCase(id) {
@@ -414,12 +456,12 @@ function route() {
   if(!state.data)return;
   const [raw="overview",search=""]=location.hash.slice(1).split("?");
   if(raw === "main-content"){$("main-content").focus();return;}
-  const valid=["overview","companies","markets","coverage","guide"];
+  const valid=["overview","companies","research","markets","coverage","guide"];
   const previousRoute=state.route;
   const requested=raw||"overview";state.route=valid.includes(requested)?requested:"overview";
   const p=new URLSearchParams(search);
   if(previousRoute!==state.route){$("main-content").focus({preventScroll:true});window.scrollTo(0,0);}
-  document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
   $("route-notice").hidden=valid.includes(requested);
   if(!valid.includes(requested))$("route-notice").textContent="That view was not found. Showing the overview instead.";
   document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!==state.route;});
@@ -432,7 +474,7 @@ function route() {
     const id=p.get("case");if(id && state.data.cases.some(x=>x.id===id)){openCase(id);return;}
     if(id){$("route-notice").textContent="That case is not in this audited dataset. Search the available cases below.";$("route-notice").hidden=false;}
   }
-  hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
+  hideDrawer();document.title=`AtlanticBridge Signals — ${{overview:"Overview",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use"}[state.route]}`;
 }
 function bindEvents() {
   const mobileFilters=window.matchMedia("(max-width:760px)");
@@ -454,8 +496,10 @@ function bindEvents() {
   window.addEventListener("storage",event=>{if(event.key===SAVE_KEY){loadSaved();renderCases();if(state.caseId){const button=$("detail-save");const saved=state.saved.has(state.caseId);button.textContent=saved?"★ Saved in this browser":"☆ Save this case";button.setAttribute("aria-pressed",String(saved));}}});
 }
 function validatePayload(data) {
-  if(!data || !data.summary || !Array.isArray(data.cases) || data.summary.case_count!==data.cases.length)throw new Error("Invalid case payload");
+  if(!data || !data.summary || !Array.isArray(data.cases) || data.summary.case_count!==data.cases.length || !Array.isArray(data.research_cohort) || data.summary.research_cohort_count!==data.research_cohort.length)throw new Error("Invalid case payload");
   if(new Set(data.cases.map(x=>x.id)).size!==data.cases.length)throw new Error("Duplicate case IDs");
+  if(new Set(data.research_cohort.map(x=>x.id)).size!==data.research_cohort.length)throw new Error("Duplicate research IDs");
+  if(data.summary.browsable_company_count!==data.cases.length+data.research_cohort.length)throw new Error("Invalid browsable company count");
   for(const x of data.cases)if(typeof x.id!=="string" || !x.id || !Array.isArray(x.evidence) || x.evidence_count!==x.evidence.length || typeof x.model_eligible!=="boolean")throw new Error("Invalid case record");
   return data;
 }
@@ -465,7 +509,7 @@ async function init() {
   try {
     const response=await fetch("data/dashboard.json",{cache:"no-store",signal:controller.signal});
     if(!response.ok)throw new Error(`Dashboard payload returned HTTP ${response.status}`);
-    state.data=validatePayload(await response.json());loadSaved();renderMetrics();renderSources();renderCases();$("load-status").hidden=true;route();
+    state.data=validatePayload(await response.json());loadSaved();renderMetrics();renderSources();renderResearch();renderCases();$("load-status").hidden=true;route();
   } catch(error) {
     console.error(error);state.data=null;$("load-status").hidden=false;$("load-status").setAttribute("role","alert");$("load-status").innerHTML='The case evidence could not be loaded. No results or scores have been inferred. <button class="button" id="retry-load" type="button">Try again</button>';
     $("retry-load").addEventListener("click",()=>location.reload());els.caseCountLabel.textContent="Data unavailable—not zero cases";$("audit-date").textContent="Case evidence unavailable";$("data-note").textContent="Case evidence unavailable. Interface version: 22 September 2026.";

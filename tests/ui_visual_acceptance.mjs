@@ -17,13 +17,30 @@ async function overflow(page, label) {
   check(`${label}: no page-level horizontal overflow`,value.document<=value.viewport+2 && value.body<=value.viewport+2,JSON.stringify(value));
 }
 async function ready(page) {
-  await page.locator('body[data-ui-version="2026-09-22-canada-wide-01"]').waitFor();
+  await page.locator('body[data-ui-version="2026-09-22-research-01"]').waitFor();
   await page.waitForFunction(expected => document.querySelector("#metric-cases")?.textContent === String(expected), dashboard.cases.length);
 }
 async function go(page, route) {
   await page.evaluate(hash => { location.hash = hash; }, route);
   await page.waitForFunction(hash => location.hash === hash, route);
   await page.waitForTimeout(60);
+}
+async function captureRoute(page, label, route) {
+  const {height,dpr} = await page.evaluate(() => ({
+    height: document.documentElement.scrollHeight,
+    dpr: window.devicePixelRatio || 1,
+  }));
+  const baseName = path.join(out,`${label}-${route}`);
+  if (height * dpr <= 30000) {
+    await page.screenshot({path:`${baseName}.png`,fullPage:true});
+    return;
+  }
+  await page.evaluate(() => window.scrollTo(0,0));
+  await page.screenshot({path:`${baseName}-top.png`});
+  await page.evaluate(() => window.scrollTo(0,document.documentElement.scrollHeight));
+  await page.waitForTimeout(60);
+  await page.screenshot({path:`${baseName}-bottom.png`});
+  await page.evaluate(() => window.scrollTo(0,0));
 }
 async function exactAssets(page, label) {
   for (const name of ["index.html","app.js","styles.css","data/dashboard.json"]) {
@@ -132,10 +149,15 @@ async function run(label,type,options) {
     page.on("pageerror",e=>errors.push(String(e)));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
     const response=await page.goto(base,{waitUntil:"networkidle",timeout:30000});
     check(`${label}: page HTTP success`,response?.ok());await ready(page);await exactAssets(page,label);
-    for(const route of ["overview","companies","markets","coverage","guide"]) {
+    for(const route of ["overview","companies","research","markets","coverage","guide"]) {
       await go(page,`#${route}`);await page.locator(`#${route}-view`).waitFor();await overflow(page,`${label}/${route}`);
-      await page.screenshot({path:path.join(out,`${label}-${route}.png`),fullPage:true});
+      await captureRoute(page,label,route);
     }
+    await go(page,"#research");
+    check(`${label}: expanded research cards`,await page.locator("[data-research-id]").count()===dashboard.research_cohort.length);
+    check(`${label}: 40-company universe`,await page.locator("#metric-browsable").innerText()===String(dashboard.summary.browsable_company_count));
+    const researchText=await page.locator("#research-view").innerText();
+    check(`${label}: research role boundary`,researchText.includes("not a current expansion prediction") && researchText.includes("Accepted control") && researchText.includes("Identity-qualified"));
     await go(page,"#markets");
     const marketText=await page.locator("#markets-view").innerText();
     check(`${label}: Canada-wide market scope`,marketText.includes("Nova Scotia-specific evidence remains useful") && marketText.includes("Ontario") && marketText.includes("Québec") && marketText.includes("British Columbia"));

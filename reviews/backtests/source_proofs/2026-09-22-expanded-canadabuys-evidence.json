@@ -1,0 +1,176 @@
+{
+  "coverage": [
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "deutschebahninternationaloperationsgmbh"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:213007",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "sksweldingsystemsgmbh"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:213010",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "rwesupplyandtradinggmbh",
+        "rwesupplytradinggmbh"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:213011",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "europassistancesa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:214179",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "leafspacespa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:214722",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "nordengineeringfrance"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:214936",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "generalmedicalmeratespa"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:238423",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "wizdigitalserviceslimited"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:239953",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    },
+    {
+      "absence_coverage_proven": true,
+      "aliases_normalized": [
+        "innoscriptase"
+      ],
+      "coverage_end_exclusive": "2023-06-01",
+      "coverage_sources": [
+        "LEGACY_2012_TO_2022_08",
+        "FISCAL_2022_2023_BRIDGE",
+        "COMPLETE_2022_08_ONWARD"
+      ],
+      "coverage_start_date": "2012-02-03",
+      "coverage_status": "COMPLETE_OFFICIAL_FEDERAL_AWARD_NOTICE_EXACT_ALIAS_HISTORY_2012_ONWARD",
+      "entity_id": "control:node:242323",
+      "identity_eligible": true,
+      "signal_family": "CANADABUYS_AWARD"
+    }
+  ],
+  "coverage_definition": "Union of the official legacy 2012-to-2022-08 file, overlapping 2022-2023 fiscal bridge file, and all-awards 2022-08-08-onward file. Non-hits are absence only for the narrow exact-alias signal, not proof that the corporate group had no federal procurement relationship.",
+  "records": [],
+  "schema_version": 1,
+  "semantic_window": {
+    "canonical_key_sha256": "7fd80a290a9d106839bdb30bab7c4ea28ee9255f00ec7412612cd5a6ea26f9ca",
+    "coverage_start_date": "2012-02-03",
+    "exact_reviewed_alias_matches": 0,
+    "max_backtest_cutoff_exclusive": "2023-06-01",
+    "unique_reference_amendment_keys": 105200
+  },
+  "source_definition": "Exact reviewed foreign legal-entity alias appears as supplierLegalName in the authoritative federal CanadaBuys award-notice corpus on or after 2012-02-03 and before the event-time cutoff.",
+  "source_family": "CANADABUYS_AWARD",
+  "summary": {
+    "entity_count": 9,
+    "semantic_window_exact_reviewed_alias_matches": 0,
+    "semantic_window_unique_reference_amendment_keys": 105200,
+    "source_file_count": 3
+  }
+}

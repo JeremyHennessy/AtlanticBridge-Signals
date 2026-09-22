@@ -1,0 +1,202 @@
+name: Expanded research signal scan
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "reviews/backtests/2026-09-22-expanded-research-entities.json"
+      - "reviews/backtests/2026-09-22-expanded-source-proof-manifest.json"
+      - "reviews/backtests/source_proofs/2026-09-22-expanded-*.json"
+      - "scripts/build_expanded_research_entities.py"
+      - "scripts/build_event_time_snapshots.py"
+      - "src/atlanticbridge/event_time_signals.py"
+      - "tests/test_expanded_research_entities.py"
+      - ".github/workflows/expanded-research-signal-scan.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: expanded-research-signal-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  accept-pinned-proofs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Verify reviewed cohort
+        run: python -m unittest tests.test_expanded_research_entities -v
+      - name: Verify pinned source-proof hashes and boundaries
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          manifest=json.loads(Path("reviews/backtests/2026-09-22-expanded-source-proof-manifest.json").read_text())
+          assert manifest["cohort_entity_count"] == 9
+          proofs={}
+          for source,meta in manifest["proofs"].items():
+              path=Path(meta["path"])
+              digest=hashlib.sha256(path.read_bytes()).hexdigest()
+              assert digest == meta["sha256"], (source,digest,meta["sha256"])
+              proofs[source]=json.loads(path.read_text())
+
+          cipo=proofs["cipo"]
+          assert cipo["summary"] == {
+              "advertised_evidence_count": 0,
+              "applicant_match_rows": 0,
+              "applicant_rows_scanned": 1232437,
+              "entity_count": 9,
+              "event_rows_scanned": 23244288,
+              "interested_party_rows_scanned": 5349993,
+              "matched_application_count": 0,
+              "matched_event_rows": 0,
+          }
+          assert cipo["records"] == []
+          assert cipo["known_coverage_gap"]["absence_inference_allowed"] is False
+          assert all(row["coverage_status"] == "PRESENCE_ONLY_KNOWN_GAP" for row in cipo["coverage"])
+
+          ted=proofs["ted"]
+          assert ted["summary"]["entity_count"] == 9
+          assert ted["summary"]["complete_entity_query_sets"] == 9
+          assert ted["summary"]["evidence_record_count"] == 0
+          assert ted["records"] == []
+          assert all(row["absence_coverage_proven"] is True for row in ted["coverage"])
+
+          canada=proofs["canadabuys"]
+          assert canada["summary"]["entity_count"] == 9
+          assert canada["semantic_window"]["unique_reference_amendment_keys"] == 105200
+          assert canada["semantic_window"]["exact_reviewed_alias_matches"] == 0
+          assert canada["records"] == []
+          assert all(row["absence_coverage_proven"] is True for row in canada["coverage"])
+          PY
+      - name: Compose event-time snapshots from pinned proofs
+        run: |
+          mkdir -p expanded-output
+          python scripts/build_event_time_snapshots.py             --entities reviews/backtests/2026-09-22-expanded-research-entities.json             --evidence reviews/backtests/source_proofs/2026-09-22-expanded-canadabuys-evidence.json             --evidence reviews/backtests/source_proofs/2026-09-22-expanded-ted-evidence.json             --evidence reviews/backtests/source_proofs/2026-09-22-expanded-cipo-researcher-evidence.json             --combined-evidence-output expanded-output/combined-evidence.json             --output expanded-output/event-time-snapshots.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("expanded-output/event-time-snapshots.json").read_text())
+          assert p["summary"]["entity_count"] == 9
+          rows=[
+              row for row in p["snapshots"]
+              if row["signal_family"] in {
+                  "CIPO_CANADIAN_TRADEMARK",
+                  "TED_CONTRACT_AWARD",
+                  "CANADABUYS_AWARD",
+              }
+          ]
+          cipo=[row for row in rows if row["signal_family"]=="CIPO_CANADIAN_TRADEMARK"]
+          ted=[row for row in rows if row["signal_family"]=="TED_CONTRACT_AWARD"]
+          canada=[row for row in rows if row["signal_family"]=="CANADABUYS_AWARD"]
+          assert len(cipo) == len(ted) == len(canada) == 36
+          assert {row["state"] for row in cipo} == {"UNKNOWN_UNVERIFIED_COVERAGE"}
+          assert {row["state"] for row in ted} == {"ABSENT_WITH_PROVEN_COVERAGE"}
+          assert {row["state"] for row in canada} == {"ABSENT_WITH_PROVEN_COVERAGE"}
+          print(json.dumps(p["summary"],indent=2,sort_keys=True))
+          PY
+      - name: Retain compact composition proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: expanded-research-pinned-composition-${{ github.event.pull_request.head.sha || github.sha }}
+          path: expanded-output/
+          retention-days: 90
+          if-no-files-found: error
+
+  live-canadabuys:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - uses: actions/cache@v4
+        with:
+          path: expanded-output/canadabuys-cache
+          key: canadabuys-award-history-20260921-v1
+      - name: Reproduce accepted CanadaBuys proof
+        run: |
+          mkdir -p expanded-output/proofs
+          python scripts/collect_backtest_canadabuys.py             --entities reviews/backtests/2026-09-22-expanded-research-entities.json             --cache-dir expanded-output/canadabuys-cache             --output expanded-output/canadabuys-live.json
+          python scripts/build_source_proof_artifact.py             --source canadabuys             --input expanded-output/canadabuys-live.json             --output expanded-output/proofs/canadabuys.json             --expected reviews/backtests/source_proofs/2026-09-22-expanded-canadabuys-evidence.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: expanded-live-canadabuys
+          path: expanded-output/proofs/canadabuys.json
+          retention-days: 90
+          if-no-files-found: warn
+
+  live-ted:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Reproduce accepted TED proof
+        run: |
+          mkdir -p expanded-output/proofs
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.collect_backtest_ted import collect
+          entities=json.loads(Path("reviews/backtests/2026-09-22-expanded-research-entities.json").read_text())
+          payload=collect(entities_payload=entities)
+          assert payload["summary"]["entity_count"] == 9
+          assert payload["summary"]["complete_entity_query_sets"] == 9
+          Path("expanded-output/ted-live.json").write_text(
+              json.dumps(payload,ensure_ascii=False,indent=2,sort_keys=True)+"\n"
+          )
+          PY
+          python scripts/build_source_proof_artifact.py             --source ted             --input expanded-output/ted-live.json             --output expanded-output/proofs/ted.json             --expected reviews/backtests/source_proofs/2026-09-22-expanded-ted-evidence.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: expanded-live-ted
+          path: expanded-output/proofs/ted.json
+          retention-days: 90
+          if-no-files-found: warn
+
+  live-cipo:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - uses: actions/cache@v4
+        with:
+          path: expanded-output/cipo-cache
+          key: cipo-researcher-2025-01-28-v1
+      - name: Reproduce accepted CIPO presence proof
+        run: |
+          mkdir -p expanded-output/proofs
+          python scripts/collect_backtest_cipo.py             --entities reviews/backtests/2026-09-22-expanded-research-entities.json             --cache-dir expanded-output/cipo-cache             --output expanded-output/cipo-live.json
+          python scripts/build_source_proof_artifact.py             --source cipo             --input expanded-output/cipo-live.json             --output expanded-output/proofs/cipo.json             --expected reviews/backtests/source_proofs/2026-09-22-expanded-cipo-researcher-evidence.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: expanded-live-cipo
+          path: expanded-output/proofs/cipo.json
+          retention-days: 90
+          if-no-files-found: warn
