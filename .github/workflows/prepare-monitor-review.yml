@@ -1,0 +1,57 @@
+name: Prepare metadata review routing
+on:
+  push:
+    branches: [feature/monitor-review-prepare-20260923]
+    paths: [.github/workflows/prepare-monitor-review.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply only the reviewed integration points
+        run: |
+          test "$GITHUB_REF_NAME" = 'feature/monitor-review-prepare-20260923'
+          test "$(git rev-parse HEAD^)" = 'c718949f90ba752bf8f2f53a2cd2614309c4f7a3'
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('ui/index.html');s=p.read_text();mark='        <details class="panel"><summary>Company review decisions and unresolved checks</summary>';assert s.count(mark)==1
+          s=s.replace(mark,'        <details class="panel" id="monitor-review-panel"><summary>Monitored source changes / Needs review</summary><div class="coverage-stack"><p>Review metadata changes without mixing observation dates into the published-news queue. Source restrictions and unresolved identities remain explicit.</p><button class="button" id="monitor-review-load" type="button">Load monitored changes</button><p id="monitor-review-status" role="status">Not loaded. Collection and qualification are separate.</p><div id="monitor-review-list"></div></div></details>\n'+mark)
+          s=s.replace('  <script src="opportunities.js" defer></script>','  <script src="opportunities.js" defer></script>\n  <script src="monitor-review.js" defer></script>');p.write_text(s)
+          p=Path('ui/app.js');s=p.read_text();mark='  bindOpportunityQueue();';assert s.count(mark)==1;s=s.replace(mark,mark+'\n  $("monitor-review-load").addEventListener("click",loadMonitorReview);');p.write_text(s)
+          p=Path('tests/ui_visual_acceptance.mjs');s=p.read_text();s="import {verifyMonitorReview} from './monitor_review_acceptance.mjs';\n"+s;s=s.replace('"opportunities.js","data/company-reviews.json"','"opportunities.js","monitor-review.js","data/company-reviews.json"');mark='    await verifyOpportunityPaths(browser,options,base,label,out,check);';assert s.count(mark)==1;s=s.replace(mark,mark+'\n    await verifyMonitorReview(browser,options,base,label,out,check);');p.write_text(s)
+          PY
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs tests/test_monitor_review.cjs
+          node --check tests/monitor_review_acceptance.mjs
+          git diff --check
+          test -z "$(git diff --name-only -- ui/data ui/styles.css ui/workspace.css)"
+      - name: Commit only non-workflow integration files
+        run: |
+          git add ui/index.html ui/app.js tests/ui_visual_acceptance.mjs
+          test -z "$(git diff --cached --name-only -- .github/workflows)"
+          git config user.name 'AtlanticBridge monitor review'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Connect existing metadata checkpoint to company review workflow'
+          mkdir -p artifacts/monitor-review
+          git archive --format=tar.gz HEAD > artifacts/monitor-review/tested-source.tar.gz
+          git rev-parse HEAD > artifacts/monitor-review/tested-commit.txt
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: monitor-review-prepared
+          path: artifacts/monitor-review/
+          retention-days: 30
+          if-no-files-found: error
