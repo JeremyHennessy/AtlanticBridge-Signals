@@ -213,7 +213,18 @@ def parse_article(body: bytes, source: dict) -> list[dict]:
     title = meta.get("content", "") if meta else (heading.get_text(" ", strip=True) if heading else "")
     for tag in soup(["script", "style", "nav", "header", "footer", "aside"]):
         tag.decompose()
-    content = soup.find("article") or soup.find("main") or soup
+    selector = source.get("reviewed_content_selector")
+    if selector is not None:
+        # Content scoping is source-contract data, not a generic fallback. Add each
+        # selector explicitly in code review so a layout change fails closed.
+        if selector not in {"main"}:
+            raise ValueError("Unreviewed article content selector")
+        matches = soup.select(selector)
+        if len(matches) != 1:
+            raise ValueError("Reviewed article content selector is missing or ambiguous")
+        content = matches[0]
+    else:
+        content = soup.find("article") or soup.find("main") or soup
     plain = content.get_text(" ", strip=True)
     for required in source.get("required_text", []):
         if required.casefold() not in " ".join(plain.split()).casefold():
