@@ -1,3 +1,4 @@
+import {capturePage} from './bounded_screenshot.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -27,7 +28,7 @@ export async function verifyMonitorReview(browser,options,base,label,out,check){
   check(`${label}: monitor observation is not fabricated publication`,(await page.locator('#monitor-review-list').innerText()).includes('Unknown; not replaced by observation time'));
   check(`${label}: monitor record remains unqualified`,(await page.locator('#monitor-review-status').innerText()).includes('No change is a qualified opportunity'));
   const box=await page.evaluate(()=>({w:innerWidth,s:document.documentElement.scrollWidth}));check(`${label}: monitor fixture fits`,box.s<=box.w+2);
-  await page.screenshot({path:path.join(out,`${label}-monitor-review-fixture.png`),fullPage:true});
+  await capturePage(page,path.join(out,`${label}-monitor-review-fixture.png`));
   await page.locator('#monitor-review-list .button').click();await page.locator('#work-action').waitFor();
   check(`${label}: monitored change opens exact reviewed company`,await page.locator('#company-title').innerText()===review.company_name);
   await page.locator('#work-action').fill('TEST ONLY: follow up this metadata change');await page.locator('#work-save').click();
@@ -44,7 +45,7 @@ export async function verifyMonitorReview(browser,options,base,label,out,check){
    await page.locator('#monitor-review-load').click();await page.waitForFunction(()=>!document.querySelector('#monitor-review-load').disabled);
    check(`${label}: real retained checkpoint renders`,await page.locator('#monitor-review-list').getAttribute('data-checksum')===expected.checkpoint_checksum);
    check(`${label}: actual monitored metadata counts`,await page.locator('[data-monitor-review-item]').count()===expected.items.length,JSON.stringify(expected.counts));
-   await page.screenshot({path:path.join(out,`${label}-actual-monitor-review.png`),fullPage:true});
+   await capturePage(page,path.join(out,`${label}-actual-monitor-review.png`));
   }
   check(`${label}: monitor routing no page errors`,errors.length===0,errors.join(' | '));
  }finally{await context.close();}

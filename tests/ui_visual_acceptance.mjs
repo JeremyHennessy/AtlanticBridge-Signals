@@ -1,3 +1,4 @@
+import {verifyCaptureLimit} from './bounded_screenshot.mjs';
 import {verifyCaseBriefs} from './case_briefs_acceptance.mjs';
 import {verifyMonitorReview} from './monitor_review_acceptance.mjs';
 import assert from "node:assert/strict";
@@ -171,6 +172,7 @@ async function bookmarks(page,label) {
 async function run(label,type,options) {
   const browser=await type.launch({headless:true});
   try {
+    await verifyCaptureLimit(browser,options,label,out,check);
     const context=await browser.newContext(options);const page=await context.newPage();const errors=[];
     page.on("pageerror",e=>errors.push(String(e)));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
     const response=await page.goto(base,{waitUntil:"networkidle",timeout:30000});

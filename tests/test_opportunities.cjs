@@ -67,3 +67,5 @@ test('company-only publication and observation clocks remain separately bound',(
   const before=JSON.stringify(r),q=api.queue(null,{projects:[]},r,now);
   assert.equal(q.current[0].day,'2026-09-20');assert.equal(q.current[0].observed_at,'2026-09-22T00:00:00Z');assert.equal(JSON.stringify(r),before);
 });
+
+require('node:test')('bounded screenshot plan regressions',async()=>{await import('./test_bounded_screenshot.mjs');});
