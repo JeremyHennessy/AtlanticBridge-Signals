@@ -1,0 +1,45 @@
+
+function completeReview(projectId=id){
+  const data=register(),r=data.decisions[0];r.project_id=projectId;r.decision='QUALIFIED_FOR_INVESTIGATION';
+  for(const k of api.checks){r.checks[k]='SUPPORTED';r.check_sources[k]=['fixture'];}
+  r.current_status_date='2026-09-20';r.current_status_source_id='fixture';return data;
+}
+test('REGRESSION company-only qualification creates a stable opportunity and dossier identity',()=>{
+  const r=completeReview(null),q=api.queue(null,{projects:[]},r,now);
+  assert.equal(q.qualified.length,1);assert.equal(q.qualified[0].id,'review:'+sid);assert.equal(q.qualified[0].company_id,sid);
+  assert.equal(api.reviewGroups(r).get(sid).review_only,true);assert.equal(q.qualification_count,1);
+});
+test('REGRESSION old project with recent qualification appears without redating history',()=>{
+  const r=completeReview(),p=project('2020-01-01'),before=JSON.stringify(p),q=api.queue(null,{projects:[p]},r,now);
+  assert.equal(q.current.length,0);assert.equal(q.qualified.length,1);assert.equal(q.history.length,1);
+  assert.equal(q.qualified[0].day,'2020-01-01');assert.equal(q.qualified[0].qualification_evidence.source_publication_date,'2026-09-20');
+  assert.equal(JSON.stringify(p),before);assert.equal(q.qualified[0].source_url,p.source.source_url);
+});
+test('company-only unqualified records stay held and are never legal-parent merged by label',()=>{
+  const r=register();r.decisions[0].project_id=null;
+  r.decisions.push({...r.decisions[0],id:'d'.repeat(64)});r.decision_count=2;
+  const q=api.queue(null,{projects:[]},r,now);assert.equal(q.qualified.length,0);assert.equal(q.current.length,2);
+  assert.equal(new Set(q.current.map(x=>x.company_id)).size,2);
+});
+test('undated company-only evidence does not create a public date or recent item',()=>{
+  const r=register();r.decisions[0].project_id=null;r.decisions[0].evidence[0].source_publication_date=null;
+  const q=api.queue(null,{projects:[]},r,now);assert.equal(q.current.length,0);assert.equal(q.qualified.length,0);
+  assert.equal(api.reviewGroups(r).get(sid).latest_public_date,'');
+});
+test('company-only qualification expires independently of original publication',()=>{
+  const r=completeReview(null),q=api.queue(null,{projects:[]},r,Date.parse('2027-01-01'));assert.equal(q.qualified.length,0);
+  assert.equal(api.reviewGroups(r).size,1);
+});
+test('two reviews cannot silently overwrite one project qualification',()=>{
+  const r=register();r.decisions.push({...r.decisions[0],id:'d'.repeat(64)});r.decision_count=2;
+  assert.throws(()=>api.validate(r),/duplicate source-local project/);
+});
+test('qualification never depends on a procurement refresh and never duplicates a recent project',()=>{
+  const r=completeReview(),q=api.queue({status:'UNAVAILABLE'}, {projects:[project('2026-09-20')]},r,now);
+  assert.equal(q.qualified.length,1);assert.equal(q.current.length,1);assert.equal(q.qualified[0].id,q.current[0].id);
+});
+test('company-only publication and observation clocks remain separately bound',()=>{
+  const r=completeReview(null),d=r.decisions[0];d.evidence.push({...d.evidence[0],source_id:'undated',source_publication_date:null,observed_at:'2026-09-22T21:00:00Z'});
+  const before=JSON.stringify(r),q=api.queue(null,{projects:[]},r,now);
+  assert.equal(q.current[0].day,'2026-09-20');assert.equal(q.current[0].observed_at,'2026-09-22T00:00:00Z');assert.equal(JSON.stringify(r),before);
+});
