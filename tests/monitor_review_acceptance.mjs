@@ -27,6 +27,12 @@ export async function verifyMonitorReview(browser,options,base,label,out,check){
   check(`${label}: source-bound metadata routes one review`,await page.locator('[data-monitor-review-item]').count()===1);
   check(`${label}: monitor observation is not fabricated publication`,(await page.locator('#monitor-review-list').innerText()).includes('Unknown; not replaced by observation time'));
   check(`${label}: monitor record remains unqualified`,(await page.locator('#monitor-review-status').innerText()).includes('No change is a qualified opportunity'));
+  check(`${label}: unknown source-use state keeps original record link`,await page.locator('#monitor-review-list .source-link').count()===1);
+  await page.evaluate(id=>{const row=opportunityRegister.decisions.find(r=>r.id===id);row.checks.source_reuse='CONTRADICTED';},review.id);
+  await page.locator('#monitor-review-load').click();await page.waitForFunction(()=>!document.querySelector('#monitor-review-load').disabled);
+  check(`${label}: contradicted source-use state withholds corporate link`,await page.locator('#monitor-review-list .source-link').count()===0&&(await page.locator('#monitor-review-list').innerText()).includes('link withheld'));
+  await page.evaluate(id=>{const row=opportunityRegister.decisions.find(r=>r.id===id);row.checks.source_reuse='UNKNOWN';},review.id);
+  await page.locator('#monitor-review-load').click();await page.waitForFunction(()=>!document.querySelector('#monitor-review-load').disabled);
   const box=await page.evaluate(()=>({w:innerWidth,s:document.documentElement.scrollWidth}));check(`${label}: monitor fixture fits`,box.s<=box.w+2);
   await capturePage(page,path.join(out,`${label}-monitor-review-fixture.png`));
   await page.locator('#monitor-review-list .button').click();await page.locator('#work-action').waitFor();
