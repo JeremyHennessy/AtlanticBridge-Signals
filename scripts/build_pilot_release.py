@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SIX_SHA = '6777f23591c1263da741133f69de62757ca256b1267a7663afb1dc3240a80125'
 DOC_ID, DOC_SHA = 10724340100, 'eb1a6546cf4306118d0dc77cbb7e665468230a169cefed7ed5dc56ef52acaf0a'
 MON_ID, MON_SHA = 10720884358, 'db6e1b2055d27d3bf945a2c2ce228321b3425d1dea4c6baaf4d9d78f7713e802'
+QUAL_ID, QUAL_SHA = 10729310481, '478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365'
 CHECKS = ('legal_identity', 'corporate_group', 'civilian_scope', 'canadian_relevance', 'current_status', 'source_reuse')
 NEXT = {
  'cellcentric-burnaby':'Confirm the current Canadian operating entity, production activity and civilian supplier requirements at the Burnaby facility; do not treat its relocation as first entry.',
@@ -57,8 +58,8 @@ def checked_report(z, stage):
     if report.get('failures'): raise ValueError('Failed source proof cannot produce accepted UI data')
     return report
 
-def build(documentary_zip, monitor_zip):
-    dz=archive(documentary_zip,DOC_SHA);mz=archive(monitor_zip,MON_SHA)
+def build(documentary_zip, monitor_zip, qualification_zip):
+    dz=archive(documentary_zip,DOC_SHA);mz=archive(monitor_zip,MON_SHA);qz=archive(qualification_zip,QUAL_SHA)
     for stage in ('first','second'):
         r=checked_report(dz,stage)
         if r['summary']['successful_source_paths']!=11 or r['summary']['source_records']!=81 or r['summary']['change_events']!=0: raise ValueError('Unaccepted documentary source proof')
@@ -112,7 +113,54 @@ def build(documentary_zip, monitor_zip):
         if name not in {'DeepL','Pleo'}:
             checks['canadian_relevance']='SUPPORTED';links['canadian_relevance']=[i for i in ids if settings[i]['kind']=='article']
         decisions.append(dict(id=ident('company-review-v1',name),project_id=None,company_name=name,decision='HOLD',review_date='2026-09-22',reviewer='assistant-source-review-2026-09-22',reason=reason,next_action=next_action,checks=checks,check_sources=links,evidence=refs,current_status_date=None,current_status_source_id=None,first_entry_confirmed=False,predictive_score_allowed=False,independent_holdout=False))
-    register={'schema_version':1,'status':'REVIEW_REGISTER_NOT_PREDICTIONS','decision_count':20,'decisions':decisions,'proofs':[{'artifact_id':DOC_ID,'archive_sha256':DOC_SHA},{'artifact_id':MON_ID,'archive_sha256':MON_SHA}],'qualification_completed':False,'scope':'Documented triage decisions, not twenty identity-qualified companies or twenty qualified opportunities.'}
+    # Add only source-bound facts from the accepted current-qualification proof.
+    # Undated current pages may support a HOLD check but can never satisfy the
+    # dated <=90-day requirement for QUALIFIED_FOR_INVESTIGATION.
+    qfirst=checked_report(qz,'first');qsecond=checked_report(qz,'second')
+    if qfirst['summary']!={'sources_requested':5,'sources_observed':5,'source_failures':0,'observations':5,'events':0,'raw_responses_verified':10} or qsecond['summary']!={'sources_requested':5,'sources_observed':5,'source_failures':0,'observations':5,'events':0,'raw_responses_verified':10}:
+        raise ValueError('Unexpected current qualification proof summary')
+    qobs={r['source_id']:r for r in qsecond['observations']}
+    if set(qobs)!={'adyen-current-affiliate-20260701','ubisoft-sherbrooke-current','accenture-stcatharines-current','gd-montreal-hub-20260616','sanofi-canada-current'}:
+        raise ValueError('Unexpected current qualification source set')
+    qresponses=[r for r in qsecond['responses'] if 'sha256' in r]
+    def current_evidence(name,sid,supported,reason,next_action,current_date=None):
+        row=next(d for d in decisions if d['company_name']==name)
+        o=qobs[sid]
+        matches=[x for x in qresponses if x.get('final_url')==o['source_url'] and x.get('status')==200]
+        if len(matches)!=1: raise ValueError('Ambiguous retained current source response: '+sid)
+        response=matches[0]
+        evidence={'source_id':sid,'source_url':o['source_url'],'raw_sha256':response['sha256'],
+                  'observed_at':response['retrieved_at'],'source_publication_date':o['source_publication_date']}
+        if any(e['source_id']==sid for e in row['evidence']): raise ValueError('Duplicate current qualification evidence')
+        row['evidence'].append(evidence)
+        for check in supported:
+            row['checks'][check]='SUPPORTED'
+            if sid not in row['check_sources'][check]: row['check_sources'][check].append(sid)
+        row['review_date']='2026-09-23';row['reason']+=' '+reason;row['next_action']=next_action
+        if current_date is not None:
+            if o['source_publication_date']!=current_date: raise ValueError('Current-status date is not source-bound')
+            row['current_status_date']=current_date;row['current_status_source_id']=sid
+    current_evidence('Adyen Canada Ltd.','adyen-current-affiliate-20260701',
+        ('legal_identity','corporate_group','civilian_scope','canadian_relevance','current_status'),
+        'A dated Adyen legal page lists Adyen Canada Ltd. at a Canadian address among the wholly-owned Adyen affiliates used to provide payment services. Commercial source-reuse permission remains unverified.',
+        'Complete source-reuse/legal-use review and identify a concrete current commercial requirement before promotion.','2026-07-01')
+    current_evidence('Ubisoft','ubisoft-sherbrooke-current',
+        ('civilian_scope','canadian_relevance','current_status'),
+        'The current official Sherbrooke careers/location page reports more than thirty employees and active talent recruitment. The page is undated, so retrieval is not treated as a public status date.',
+        'Resolve the exact Canadian legal entity/group and source-reuse terms; obtain a dated current-status source before promotion.')
+    current_evidence('Accenture','accenture-stcatharines-current',
+        ('civilian_scope','canadian_relevance','current_status'),
+        'A current official Accenture job page says Accenture Niagara is growing and the role is onsite at the St. Catharines office. The page is undated, so retrieval is not a public status date.',
+        'Resolve the exact Canadian legal operator/group and source-reuse terms; retain a dated current-status source before promotion.')
+    current_evidence('Giesecke+Devrient','gd-montreal-hub-20260616',
+        ('canadian_relevance','current_status'),
+        'G+D’s dated issuer release reports the Montréal AI Hub launched and first projects started, while also describing security-critical domains and long-standing Canadian presence. Civilian-only scope is therefore not inferred.',
+        'Refresh the hub status with evidence inside the 90-day window and resolve the Canadian legal operator, dual-use/civilian scope and source-reuse terms.','2026-06-16')
+    current_evidence('Sanofi','sanofi-canada-current',
+        ('civilian_scope','canadian_relevance','current_status'),
+        'Sanofi’s current Canada page describes active Canadian biopharma operations and the new Toronto influenza manufacturing facility. The page is undated and does not establish an exact production-start date.',
+        'Resolve the exact Canadian legal entity/group and source-reuse terms, then obtain dated evidence of production/operating status before promotion.')
+    register={'schema_version':1,'status':'REVIEW_REGISTER_NOT_PREDICTIONS','decision_count':20,'decisions':decisions,'proofs':[{'artifact_id':DOC_ID,'archive_sha256':DOC_SHA},{'artifact_id':MON_ID,'archive_sha256':MON_SHA},{'artifact_id':QUAL_ID,'archive_sha256':QUAL_SHA}],'qualification_completed':False,'scope':'Documented triage decisions with partial source-bound qualification progress, not twenty qualified opportunities.'}
     if len(decisions)!=20: raise ValueError('Unexpected decision count')
     # Select an operational review roster, keeping known-history bias explicit. Exact labels
     # group repeated discovery cards only; this is never a legal-parent entity-resolution join.
@@ -136,12 +184,12 @@ def build(documentary_zip, monitor_zip):
     return catalog,register,cohort
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--documentary-proof',required=True);ap.add_argument('--monitor-proof',required=True);ap.add_argument('--check',action='store_true');args=ap.parse_args()
-    outputs=build(args.documentary_proof,args.monitor_proof)
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--documentary-proof',required=True);ap.add_argument('--monitor-proof',required=True);ap.add_argument('--qualification-proof',required=True);ap.add_argument('--check',action='store_true');args=ap.parse_args()
+    outputs=build(args.documentary_proof,args.monitor_proof,args.qualification_proof)
     for relative,value in zip(('ui/data/reviewed-evidence.json','ui/data/company-reviews.json','reviews/pilot/operational-cohort-2026-09-22.json'),outputs):
         path=ROOT/relative;encoded=json.dumps(value,indent=2,ensure_ascii=False)+'\n'
         if args.check:
             if path.read_text()!=encoded:raise ValueError('Non-deterministic or mismatched release data: '+relative)
         else:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(encoded)
-    print(json.dumps({'reviewed_projects':15,'documented_triage_decisions':20,'source_local_review_targets':50,'fifty_company_monitoring_qualification_complete':False,'predictive_validation_complete':False}))
+    print(json.dumps({'reviewed_projects':15,'documented_triage_decisions':20,'source_local_review_targets':50,'current_qualification_sources':5,'qualified_for_investigation':0,'fifty_company_monitoring_qualification_complete':False,'predictive_validation_complete':False}))
 if __name__=='__main__':main()
