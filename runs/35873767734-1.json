@@ -1,8 +1,6 @@
 {
-  "schema_version": 1,
-  "status": "OBSERVED",
-  "last_attempt_at": "2026-09-23T14:23:40.238294+00:00",
-  "run_id": "35873767734-1",
+  "id": "35873767734-1",
+  "finished_at": "2026-09-23T14:23:40.238294+00:00",
   "sources": [
     {
       "id": "mistral-official-careers",
@@ -13,8 +11,7 @@
       "raw_sha256": "d92e30c706e338f76c69421cc40cd61e941f6055438b4868718fb3ceb2d8e04c",
       "canada_location_candidates": 6,
       "scope_held_candidates": 6,
-      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE",
-      "last_success_at": "2026-09-23T14:23:22.121005+00:00"
+      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE"
     },
     {
       "id": "mistral-official-news",
@@ -25,8 +22,7 @@
       "raw_sha256": "c3da5e4248ca9f0babf95167fb7f6024ef941198bf2b76668d28e69b2439ab67",
       "canada_location_candidates": 0,
       "scope_held_candidates": 0,
-      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-09-23T14:23:23.019143+00:00"
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
     },
     {
       "id": "montreal-international-news",
@@ -37,8 +33,7 @@
       "raw_sha256": "303c201aa40dfcdfdc4a93dc8289c1bd995e8cee7b8c8177e9c7e882977cf218",
       "canada_location_candidates": 11,
       "scope_held_candidates": 0,
-      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-09-23T14:23:27.143813+00:00"
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
     },
     {
       "id": "mistral-montreal-announcement",
@@ -49,8 +44,7 @@
       "raw_sha256": "7c92ef39fa532ff0fc68d9dbb3adc4fdfc87c6a21c6b7f4df84983e9ebbe6fb4",
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
-      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-09-23T14:23:29.715906+00:00"
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
     },
     {
       "id": "gd-montreal-announcement",
@@ -61,8 +55,7 @@
       "raw_sha256": "0a237c03788f5051a47f08620d2eaaf3015c62960390fe1c5bf7521c269db74e",
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
-      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-09-23T14:23:32.243388+00:00"
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
     },
     {
       "id": "adyen-payments-membership",
@@ -73,8 +66,7 @@
       "raw_sha256": "7f4307ad7a5f026e73dec32b3a6bf43f39872b1db0408b81cf449cbbe16b0b77",
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
-      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-09-23T14:23:34.524608+00:00"
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
     },
     {
       "id": "deepl-official-careers",
@@ -85,8 +77,7 @@
       "raw_sha256": "d981e4aba15719f3f4a61473c4544b055dd5f6838fcdb443b70a0573514bc4f6",
       "canada_location_candidates": 0,
       "scope_held_candidates": 0,
-      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE",
-      "last_success_at": "2026-09-23T14:23:36.752243+00:00"
+      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE"
     },
     {
       "id": "pleo-official-careers",
@@ -97,17 +88,7 @@
       "raw_sha256": "b43b1ff6cb5662c390c205c78f02ddb1a0227cbdf9b16e0c4a41241f59ce4f1b",
       "canada_location_candidates": 0,
       "scope_held_candidates": 0,
-      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE",
-      "last_success_at": "2026-09-23T14:23:40.220750+00:00"
+      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE"
     }
-  ],
-  "successful_days": 2,
-  "consecutive_successful_days": 2,
-  "operational_target_days": 14,
-  "operational_target_met": false,
-  "retained_observation_count": 381,
-  "review_only_change_count": 13,
-  "public_alert_count": 0,
-  "predictive_validation_complete": false,
-  "retention": "Metadata and fingerprints retained in Git; raw responses in 90-day Actions artifacts. Not a twelve-month raw archive."
+  ]
 }
