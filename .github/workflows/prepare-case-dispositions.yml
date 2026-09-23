@@ -1,0 +1,90 @@
+name: Prepare five evidence-bound case dispositions
+on:
+  push:
+    branches: [feature/five-case-prepare-20260923]
+    paths: [.github/workflows/prepare-case-dispositions.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply only reviewed non-workflow integration points
+        run: |
+          test "$GITHUB_REF_NAME" = 'feature/five-case-prepare-20260923'
+          test "$(git rev-parse HEAD^)" = '7994878aedcbd56cff6fcd4a98fada9e6d66b144'
+          python - <<'PY'
+          from pathlib import Path
+          def edit(path,old,new):
+              p=Path(path);s=p.read_text();assert s.count(old)==1,(path,old[:80]);p.write_text(s.replace(old,new))
+          edit('scripts/build_pilot_release.py',"ap.add_argument('--qualification2-proof',required=True);","ap.add_argument('--qualification2-proof',required=True);ap.add_argument('--original-six-proof',required=True);ap.add_argument('--nature-pdf-proof',required=True);")
+          edit('scripts/build_pilot_release.py','    outputs=apply(outputs,args.qualification2_proof,archive,checked_report)\n','    outputs=apply(outputs,args.qualification2_proof,archive,checked_report)\n    from case_dispositions import apply as dispositions\n    outputs=dispositions(outputs,args.original_six_proof,args.nature_pdf_proof,archive,checked_report)\n')
+          edit('scripts/build_pilot_release.py',"'reviews/pilot/operational-cohort-2026-09-22.json'),outputs)","'reviews/pilot/operational-cohort-2026-09-22.json','ui/data/case-briefs.json'),outputs)")
+          edit('scripts/build_pilot_release.py',"'current_qualification_sources':14","'current_qualification_sources':14,'completed_case_dispositions':5")
+          edit('scripts/archive_evidence.py','PINS = {\n',"PINS = {\n    10718724645: '46f6e0853b6848cc10d5982e54bebeac2bf810e6e3ede19062b470e6c39a75a6',\n    10724109813: '6f5f5b169681f0bbc0b01d116f97cb3ee0a254385619f094cd101d8c98c415cc',\n")
+          edit('ui/app.js','    fetchEvidence("data/company-reviews.json",ABOpportunities.validate),','    fetchEvidence("data/company-reviews.json",ABOpportunities.validate),\n    fetchEvidence("data/case-briefs.json",ABCaseBriefs.validate),')
+          edit('ui/app.js','  opportunityRegister=results[3].status==="fulfilled"?results[3].value:null;','  opportunityRegister=results[3].status==="fulfilled"?results[3].value:null;\n  caseBriefs=results[4].status==="fulfilled"?results[4].value:null;renderCaseBriefIndex();')
+          edit('ui/index.html','        <details class="panel" id="monitor-review-panel">','        <details class="panel" id="case-brief-panel"><summary>Focused case reviews / Reviewed assessment and next action</summary><div class="coverage-stack" id="case-brief-index">Loading focused assessments…</div></details>\n        <details class="panel" id="monitor-review-panel">')
+          edit('ui/index.html','  <script src="monitor-review.js" defer></script>','  <script src="monitor-review.js" defer></script>\n  <script src="case-briefs.js" defer></script>')
+          edit('ui/workbench.js','renderReviewedCompany(reviewed);return;','renderReviewedCompany(reviewed);if(typeof renderCaseBrief===\'function\')renderCaseBrief(id);return;')
+          edit('ui/workbench.js','renderCompanyReview(review);return;','renderCompanyReview(review);if(typeof renderCaseBrief===\'function\')renderCaseBrief(id);return;')
+          edit('ui/reviewed.js','${escapeHtml(p.next_action)}','${escapeHtml((typeof opportunityRegister!==\'undefined\'?opportunityRegister?.decisions.find(r=>r.project_id===p.id)?.next_action:null)||p.next_action)}')
+          edit('tests/test_pilot_release.py',"for name in ('Ubisoft','Accenture','Sanofi'):","for name in ('Ubisoft','Accenture'):")
+          edit('tests/test_pilot_release.py',"        gd=by['Giesecke+Devrient']","        self.assertEqual(by['Sanofi']['current_status_date'],'2026-09-16')\n        self.assertEqual(by['Sanofi']['current_status_source_id'],'sanofi-flu-inauguration-20260916')\n        gd=by['Giesecke+Devrient']")
+          edit('tests/test_pilot_release.py','{build.DOC_ID,build.MON_ID,build.QUAL_ID,10729682735}','{build.DOC_ID,build.MON_ID,build.QUAL_ID,10729682735,10718724645,10724109813}')
+          edit('tests/test_qualification_progress2.py','test_remaining_eighteen_decisions_are_unchanged','test_remaining_sixteen_decisions_are_unchanged')
+          edit('tests/test_qualification_progress2.py',"not in ('Cellcentric','Roquette')","not in ('Cellcentric','Roquette','Sanofi','Nature Energy')")
+          edit('tests/test_qualification_progress2.py','075754f3c477dba5907eb52d444a8e10b2f96c7fd72478e2b53b3404c0a431b0','ddc66ba3d1c99c74d491564ab0700abaf5c0cab6344147b3ee8e062b7a1433ed')
+          p=Path('tests/ui_visual_acceptance.mjs');p.write_text("import {verifyCaseBriefs} from './case_briefs_acceptance.mjs';\n"+p.read_text())
+          edit(str(p),'"monitor-review.js","data/company-reviews.json"','"monitor-review.js","case-briefs.js","data/case-briefs.json","data/company-reviews.json"')
+          edit(str(p),'    await verifyMonitorReview(browser,options,base,label,out,check);','    await verifyMonitorReview(browser,options,base,label,out,check);\n    await verifyCaseBriefs(browser,options,base,label,out,check);')
+          PY
+      - name: Rebuild from exact retained evidence and run all tests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -m pip install -e .
+          command -v pdftotext >/dev/null || { sudo apt-get update && sudo apt-get install -y poppler-utils; }
+          python scripts/fetch_accepted_proof.py --artifact-id 10724340100 --output "$RUNNER_TEMP/doc.zip"
+          python scripts/fetch_accepted_proof.py --artifact-id 10720884358 --output "$RUNNER_TEMP/mon.zip"
+          python scripts/fetch_accepted_proof.py --artifact-id 10729310481 --output "$RUNNER_TEMP/q1.zip"
+          python scripts/fetch_accepted_proof.py --artifact-id 10729682735 --output "$RUNNER_TEMP/q2.zip"
+          python scripts/fetch_accepted_proof.py --artifact-id 10718724645 --output "$RUNNER_TEMP/six.zip"
+          python scripts/fetch_accepted_proof.py --artifact-id 10724109813 --output "$RUNNER_TEMP/pdf.zip"
+          python scripts/build_pilot_release.py --documentary-proof "$RUNNER_TEMP/doc.zip" --monitor-proof "$RUNNER_TEMP/mon.zip" --qualification-proof "$RUNNER_TEMP/q1.zip" --qualification2-proof "$RUNNER_TEMP/q2.zip" --original-six-proof "$RUNNER_TEMP/six.zip" --nature-pdf-proof "$RUNNER_TEMP/pdf.zip"
+          echo '062cba7c1d30d132bcd8e80132a611b10728ed29619479cb12379fee2c903aa7  ui/data/company-reviews.json' | sha256sum -c -
+          echo '1bb691e1863b5d63e9b3ebf0e73d0d001e71628b24907ddd62d9b2b8bf77c743  ui/data/case-briefs.json' | sha256sum -c -
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs tests/test_monitor_review.cjs tests/test_case_briefs.cjs
+          node --check tests/case_briefs_acceptance.mjs
+          git diff --check
+          test -z "$(git diff --name-only -- ui/data/reviewed-evidence.json reviews/pilot/operational-cohort-2026-09-22.json ui/styles.css ui/workspace.css)"
+      - name: Commit only non-workflow integration and generated data
+        run: |
+          git add scripts/build_pilot_release.py scripts/archive_evidence.py tests/test_pilot_release.py tests/test_qualification_progress2.py tests/ui_visual_acceptance.mjs ui/app.js ui/index.html ui/workbench.js ui/reviewed.js ui/data/company-reviews.json ui/data/case-briefs.json
+          test -z "$(git diff --cached --name-only -- .github/workflows)"
+          git config user.name 'AtlanticBridge case review'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Integrate five case dispositions preserving dates and project boundaries'
+          mkdir -p artifacts/cases
+          git rev-parse HEAD > artifacts/cases/prepared-head.txt
+          git archive --format=tar.gz HEAD > artifacts/cases/tested-source.tar.gz
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: five-cases-prepared
+          path: artifacts/cases/
+          retention-days: 90
+          if-no-files-found: error
