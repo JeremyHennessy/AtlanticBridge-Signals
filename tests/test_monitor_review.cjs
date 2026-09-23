@@ -25,3 +25,5 @@ test('duplicate events do not inflate the denominator',async()=>{const {checkpoi
 test('future source clocks and orphan observations fail',async()=>{const {checkpoint:c,register:r}=fixture();c.tables.company_source_state[0].last_success='2027-01-01T00:00:00Z';await assert.rejects(()=>api.parse(encoded(c),r,now));});
 test('invalid normalized publication day fails',async()=>{const {checkpoint:c,register:r}=fixture();changeRecord(c,x=>x.source_publication_date='2026-02-30');await assert.rejects(()=>api.parse(encoded(c),r,now));});
 module.exports={fixture,encoded,now};
+
+test('contradicted source reuse withholds the public source link',()=>{assert.equal(api.sourceLinkAllowed({source_reuse:'CONTRADICTED'}),false);assert.equal(api.sourceLinkAllowed({source_reuse:'UNKNOWN'}),true);assert.equal(api.sourceLinkAllowed({source_reuse:'SUPPORTED'}),true);});
