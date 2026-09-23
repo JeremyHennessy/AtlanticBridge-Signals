@@ -1,0 +1,61 @@
+name: Prepare screenshot transport repair
+on:
+  push:
+    branches: [fix/capture-limit-prepare-20260923]
+    paths: [.github/workflows/prepare-capture-repair.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Patch only test screenshot transport
+        run: |
+          test "$GITHUB_REF_NAME" = 'fix/capture-limit-prepare-20260923'
+          test "$(git rev-parse HEAD^)" = '7b8e7242cf6d118b3b03354f900834c67e6c4f17'
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          for name in ('opportunities_acceptance.mjs','monitor_review_acceptance.mjs'):
+              p=Path('tests')/name;s=p.read_text()
+              s="import {capturePage} from './bounded_screenshot.mjs';\n"+s
+              s,n=re.subn(r'await page\.screenshot\(\{path:(path\.join\(out,`[^`]+`\)),fullPage:true\}\)',r'await capturePage(page,\1)',s)
+              assert n==(5 if name=='opportunities_acceptance.mjs' else 2),(name,n)
+              p.write_text(s)
+          p=Path('tests/ui_visual_acceptance.mjs');s=p.read_text();s="import {verifyCaptureLimit} from './bounded_screenshot.mjs';\n"+s
+          mark='  const browser=await type.launch({headless:true});\n  try {';assert s.count(mark)==1;s=s.replace(mark,mark+'\n    await verifyCaptureLimit(browser,options,label,out,check);');p.write_text(s)
+          p=Path('tests/test_opportunities.cjs');p.write_text(p.read_text()+"\nrequire('node:test')('bounded screenshot plan regressions',async()=>{await import('./test_bounded_screenshot.mjs');});\n")
+          PY
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs tests/test_monitor_review.cjs tests/test_case_briefs.cjs
+          node --check tests/bounded_screenshot.mjs
+          git diff --check
+          test -z "$(git diff --name-only -- ui scripts .github/workflows)"
+      - name: Commit only test files
+        run: |
+          git add tests/opportunities_acceptance.mjs tests/monitor_review_acceptance.mjs tests/ui_visual_acceptance.mjs tests/test_opportunities.cjs
+          git config user.name 'AtlanticBridge capture validation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Capture long WebKit pages at original device scale without truncation'
+          mkdir -p artifacts/capture
+          git rev-parse HEAD > artifacts/capture/prepared-head.txt
+          git archive --format=tar.gz HEAD > artifacts/capture/tested-source.tar.gz
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshot-repair-prepared
+          path: artifacts/capture/
+          retention-days: 30
+          if-no-files-found: error
