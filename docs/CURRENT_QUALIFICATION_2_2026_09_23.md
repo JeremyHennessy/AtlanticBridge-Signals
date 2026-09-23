@@ -17,3 +17,12 @@ This source-only tranche tests two existing HOLD decisions, Cellcentric and Roqu
 - Roquette's legal notice states that website information may not be republished without prior written consent and separately restricts third-party hyperlinks absent approval. This means commercial/public source reuse must remain unresolved/restricted unless a permitted source or written approval is established.
 
 No company is automatically promoted. In particular, an open-government licence for a government dataset does not transfer rights to separate corporate webpages. Acceptance requires both captures, raw hashes, replay idempotence and full regressions.
+
+
+## Initial live-proof failure and bounded repair
+
+Initial exact-head run `35810395522` failed only `cellcentric-supplier-current`; the other eight reviewed paths were observed successfully and the existing company-source proof remained green. Diagnostic artifact `10729277461` has SHA-256 `fbbc5f99c21b6508d3677cda1d0314a96acd58c82866527be89597af4721070d`.
+
+The retained Cellcentric supplier HTML contains the required supplier-inquiry text in its single page `<main>`, but also contains multiple earlier `<article>` elements used as PDF/document cards. The generic article parser therefore selected an unrelated PDF card and correctly failed its required anchor instead of treating the source as absent.
+
+The repair is source-contract scoped: `cellcentric-supplier-current` explicitly requests the single reviewed `main` region. The parser accepts only that reviewed selector, requires exactly one match, and otherwise fails closed. Default parsing for every existing source is unchanged. Regression coverage requires the unscoped decorative-card fixture to fail, rejects unreviewed selectors, and rejects ambiguous duplicate `main` regions. No source anchor, robots/TLS rule or access control is weakened.
