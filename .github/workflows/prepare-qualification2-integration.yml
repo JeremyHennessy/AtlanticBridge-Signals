@@ -20,10 +20,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Apply exact tested integration edits on the isolated branch
+      - name: Apply only non-workflow implementation edits
         run: |
           test "$GITHUB_REF_NAME" = 'feature/qualification2-integration-20260923'
-          test "$(git rev-parse HEAD^)" = 'd5eb7244d83a9e68abe5fe835b74b810785a5a1f'
+          test "$(git rev-parse HEAD^)" = 'cd9473d5ed8b3cdc22865b744563950fd2436b64'
+          test "$(git hash-object .github/workflows/pilot-release-proof.yml)" = '84cc394a0c45abe72b01ad97eac15623ffedcf96'
           python - <<'PY'
           from pathlib import Path
           p=Path('scripts/build_pilot_release.py');s=p.read_text();old="ap.add_argument('--qualification-proof',required=True);";assert s.count(old)==1;s=s.replace(old,old+"ap.add_argument('--qualification2-proof',required=True);")
@@ -31,9 +32,6 @@ jobs:
           s=s.replace("'current_qualification_sources':5","'current_qualification_sources':14")
           s=s.replace('       --monitor-proof monitor.zip\n','       --monitor-proof monitor.zip --qualification-proof qualification.zip\n       --qualification2-proof qualification2.zip\n');p.write_text(s)
           p=Path('scripts/archive_evidence.py');s=p.read_text();old="    10729310481: '478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365',\n";assert s.count(old)==1;s=s.replace(old,old+"    10729682735: '39892597bcdf03f6ba7e093ece34c7618f0dff8450d8c77c30951745b1ff2064',\n");p.write_text(s)
-          p=Path('.github/workflows/pilot-release-proof.yml');s=p.read_text();old="      - 'scripts/build_pilot_release.py'\n";assert s.count(old)==1;s=s.replace(old,old+"      - 'scripts/qualification_progress2.py'\n      - 'tests/test_qualification_progress2.py'\n")
-          old='          python scripts/fetch_accepted_proof.py --artifact-id 10729310481 --output "$RUNNER_TEMP/qualification.zip"\n';assert s.count(old)==1;s=s.replace(old,old+'          python scripts/fetch_accepted_proof.py --artifact-id 10729682735 --output "$RUNNER_TEMP/qualification2.zip"\n')
-          s=s.replace('--qualification-proof "$RUNNER_TEMP/qualification.zip" --check','--qualification-proof "$RUNNER_TEMP/qualification.zip" --qualification2-proof "$RUNNER_TEMP/qualification2.zip" --check');p.write_text(s)
           p=Path('tests/test_pilot_release.py');s=p.read_text();old='{build.DOC_ID,build.MON_ID,build.QUAL_ID})';assert s.count(old)==1;s=s.replace(old,'{build.DOC_ID,build.MON_ID,build.QUAL_ID,10729682735})');p.write_text(s)
           PY
       - name: Regenerate exclusively from accepted artifacts and test
@@ -50,21 +48,22 @@ jobs:
           python -m unittest discover -s tests -q
           node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
           git diff --check
-      - name: Remove preparation file and commit branch-only implementation
+      - name: Commit non-workflow files on this branch only
         run: |
-          git rm .github/workflows/prepare-qualification2-integration.yml
-          git add scripts/build_pilot_release.py scripts/archive_evidence.py .github/workflows/pilot-release-proof.yml tests/test_pilot_release.py ui/data/company-reviews.json
-          test -z "$(git diff --name-only -- ui/data/reviewed-evidence.json reviews/pilot/operational-cohort-2026-09-22.json)"
+          git add scripts/build_pilot_release.py scripts/archive_evidence.py tests/test_pilot_release.py ui/data/company-reviews.json
+          test -z "$(git diff --name-only -- ui/data/reviewed-evidence.json reviews/pilot/operational-cohort-2026-09-22.json .github/workflows)"
+          test -z "$(git diff --cached --name-only -- .github/workflows)"
           git config user.name 'AtlanticBridge qualification integration'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'Integrate accepted Cellcentric and Roquette evidence without cross-project claims'
-          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
           mkdir -p artifacts/integration
           git rev-parse HEAD > artifacts/integration/prepared-head.txt
           git archive --format=tar.gz HEAD > artifacts/integration/tested-source.tar.gz
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: prepared-qualification2
           path: artifacts/integration/
           retention-days: 90
+          if-no-files-found: error
