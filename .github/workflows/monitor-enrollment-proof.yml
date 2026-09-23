@@ -1,0 +1,90 @@
+name: Monitor source enrollment proof
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'reviews/company_sources/pilot-2026-09-22.json'
+      - 'scripts/run_company_monitor.py'
+      - 'src/atlanticbridge/monitoring_checkpoint.py'
+      - 'tests/test_monitor_enrollment.py'
+      - 'tests/test_monitoring_checkpoint.py'
+      - '.github/workflows/company-monitor.yml'
+      - '.github/workflows/monitor-enrollment-proof.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install and run deterministic tests
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+      - name: Resolve exact current source state and reviewed additions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/enrollment
+          git fetch --no-tags origin monitoring-state
+          git show FETCH_HEAD:checkpoint.json > artifacts/enrollment/starting-checkpoint.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from atlanticbridge.monitoring_checkpoint import validate
+          from scripts.archive_evidence import PINS
+          from scripts.run_company_monitor import reviewed_additions
+          manifest=json.loads(Path('reviews/company_sources/pilot-2026-09-22.json').read_text())
+          state=validate(json.loads(Path('artifacts/enrollment/starting-checkpoint.json').read_text()))
+          known={r['id'] for r in state['tables']['company_source_state']}
+          added=reviewed_additions(manifest,known)
+          expected={'ubisoft-sherbrooke-current','accenture-stcatharines-current','sanofi-canada-current','cellcentric-supplier-current','roquette-locations-current'}
+          assert added==expected,(added,known)
+          approvals={a['id']:a for a in manifest['enrollment']['approved_additions']}
+          for sid in added:
+              a=approvals[sid]
+              assert PINS[a['proof_artifact_id']]==a['proof_archive_sha256']
+          subset={'schema_version':1,'sources':[s for s in manifest['sources'] if s['id'] in added]}
+          Path('artifacts/enrollment/additions.json').write_text(json.dumps(subset,indent=2)+'\n')
+          Path('artifacts/enrollment/known-source-count.txt').write_text(str(len(known))+'\n')
+          PY
+      - name: Capture every proposed addition twice without generating baseline events
+        run: |
+          python scripts/probe_company_sources.py --manifest artifacts/enrollment/additions.json --output artifacts/enrollment/first --state artifacts/enrollment/proof.sqlite
+          python scripts/probe_company_sources.py --manifest artifacts/enrollment/additions.json --output artifacts/enrollment/second --state artifacts/enrollment/proof.sqlite
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('artifacts/enrollment')
+          expected={'ubisoft-sherbrooke-current','accenture-stcatharines-current','sanofi-canada-current','cellcentric-supplier-current','roquette-locations-current'}
+          for stage in ('first','second'):
+              r=json.loads((root/stage/'report.json').read_text())
+              assert r['summary']['sources_requested']==5
+              assert r['summary']['sources_observed']==5
+              assert r['summary']['source_failures']==0
+              assert set(x['id'] for x in r['sources'])==expected
+              assert not r['failures']
+              assert len(r['events'])==0
+              for response in r['responses']:
+                  if 'sha256' in response:
+                      raw=(root/stage/'raw'/(response['sha256']+'.bin')).read_bytes()
+                      assert hashlib.sha256(raw).hexdigest()==response['sha256']
+          PY
+      - name: Preserve exact tested source and state provenance
+        if: always()
+        run: |
+          git rev-parse HEAD > artifacts/enrollment/tested-commit.txt
+          git rev-parse FETCH_HEAD > artifacts/enrollment/starting-state-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/enrollment/tested-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: monitor-enrollment-${{ github.event.pull_request.head.sha }}
+          path: artifacts/enrollment/
+          retention-days: 90
+          if-no-files-found: error
