@@ -1,0 +1,7 @@
+# Hosted long-page screenshot boundary
+
+PR117 was deployed as 7b8e7242cf6d118b3b03354f900834c67e6c4f17, but hosted acceptance35877456323 failed during iPhone screenshot capture after2,581passed checks. The retained artifact10758069646 ZIP SHA2564de8a058206b0212224d823cf549dd0da3efd93a41e6efffeb7cc528d39371b3 records WebKit's32,767-pixel screenshot-dimension limit at opportunities_acceptance.mjs:20. The actual queue width check393/393passed immediately beforehand. This is not a source-data or layout correction, and that failed run is not counted as accepted.
+
+The small test-only repair preserves the actual device scale, page content, current source rows, semantic checks and scroll position. Ordinary pages keep their original full-page image. Long pages are captured as overlapping original-scale viewport images with a JSON coverage manifest, checking that the full document height was covered without gaps. Height changes or excessive capture budgets fail instead of truncating evidence. The current opportunity and monitor-review screenshot calls use this bounded capture. An isolated14,000-CSS-pixel fixture explicitly exercises the iPhone limit in PR browser acceptance, plus four deterministic boundary tests.
+
+No UI file, CSS, production JSON, source collector, saved-work schema, case assessment or qualification gate changes. Exact post-merge hosted acceptance and all actual image sections remain required. Synthetic capture-fixture images are not screenshots of the live application.
