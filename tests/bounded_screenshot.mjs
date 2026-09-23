@@ -38,7 +38,7 @@ export async function verifyCaptureLimit(browser,options,label,out,check){
     // Isolated long test document exceeds the iPhone screenshot limit without
     // changing any live page or dismissing content to make the test pass.
     const height=14000;
-    await page.setContent(`<main style="height:${height}px"><h1>TEST ONLY: complete long-page capture</h1><p style="position:absolute;top:${height-80}px">TEST END MARKER</p></main>`);
+    await page.setContent(`<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><main style="height:${height}px"><h1>TEST ONLY: complete long-page capture</h1><p style="position:absolute;top:${height-80}px">TEST END MARKER</p></main></body></html>`);
     const report=await capturePage(page,path.join(out,label+'-long-capture-fixture.png'));
     check(`${label}: long screenshot keeps device scale and complete vertical coverage`,(options.deviceScaleFactor||1)*height>30000 ? report.mode==='viewport-sections'&&report.fullVerticalCoverage===true&&report.sections.length>1 : report.mode==='full');
     check(`${label}: long screenshot restores original scroll`,await page.evaluate(()=>scrollY)===0);
