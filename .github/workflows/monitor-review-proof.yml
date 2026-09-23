@@ -1,0 +1,63 @@
+name: Retained metadata review proof
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ui/monitor-review.js'
+      - 'ui/opportunities.js'
+      - 'tests/test_monitor_review.cjs'
+      - 'tests/monitor_review_acceptance.mjs'
+      - 'src/atlanticbridge/monitoring_checkpoint.py'
+      - '.github/workflows/monitor-review-proof.yml'
+permissions:
+  contents: read
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test independent routing boundaries
+        run: |
+          python -m pip install -e .
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs tests/test_monitor_review.cjs
+      - name: Read one exact production metadata snapshot without modifying it
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/metadata-review
+          gh api repos/JeremyHennessy/AtlanticBridge-Signals/branches/monitoring-state --jq '.commit.sha' > artifacts/metadata-review/state-commit.txt
+          STATE="$(cat artifacts/metadata-review/state-commit.txt)"
+          gh api "repos/JeremyHennessy/AtlanticBridge-Signals/contents/checkpoint.json?ref=$STATE" --jq '.content' | base64 -d > artifacts/metadata-review/checkpoint.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from atlanticbridge.monitoring_checkpoint import validate
+          p=Path('artifacts/metadata-review/checkpoint.json')
+          assert p.stat().st_size <= 16*1024*1024
+          c=validate(json.loads(p.read_text()))
+          print('Original Python checkpoint validation:',c['checksum'])
+          PY
+          node - <<'JS'
+          const fs=require('node:fs'),api=require('./ui/monitor-review.js');
+          (async()=>{const raw=fs.readFileSync('artifacts/metadata-review/checkpoint.json','utf8'),register=JSON.parse(fs.readFileSync('ui/data/company-reviews.json'));const result=await api.parse(raw,register);fs.writeFileSync('artifacts/metadata-review/report.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result.counts));})().catch(e=>{console.error(e);process.exitCode=1;});
+          JS
+      - name: Preserve tested code and exact-state provenance
+        if: always()
+        run: |
+          mkdir -p artifacts/metadata-review
+          git rev-parse HEAD > artifacts/metadata-review/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/metadata-review/tested-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: metadata-review-${{ github.event.pull_request.head.sha }}
+          path: artifacts/metadata-review/
+          retention-days: 90
+          if-no-files-found: error
