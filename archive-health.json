@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "status": "VERIFIED_DRAFT_COPY",
+  "verified_at": "2026-09-23T00:04:08.363301+00:00",
+  "archive_run_id": "35800327127",
+  "code_commit": "ad584e8e9e376d04750104dd9d8cfa939c527790",
+  "release_id": 394196967,
+  "release_tag": "evidence-v1-2026-09",
+  "draft": true,
+  "items": [
+    {
+      "artifact_id": 10717489758,
+      "original_workflow_run": 35780391451,
+      "raw_response_count": 17,
+      "archive_asset": {
+        "asset_id": 582516779,
+        "name": "artifact-10717489758-003c42f027050660.zip",
+        "sha256": "003c42f02705066074a87bc5cac33ac0c72833d1c4a03bed3b01a1c5b660874a",
+        "size": 2410979,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10720884358,
+      "original_workflow_run": 35789513264,
+      "raw_response_count": 34,
+      "archive_asset": {
+        "asset_id": 582516861,
+        "name": "artifact-10720884358-db6e1b2055d27d3b.zip",
+        "sha256": "db6e1b2055d27d3bf945a2c2ce228321b3425d1dea4c6baaf4d9d78f7713e802",
+        "size": 3040348,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10724340100,
+      "original_workflow_run": 35796287072,
+      "raw_response_count": 44,
+      "archive_asset": {
+        "asset_id": 582516943,
+        "name": "artifact-10724340100-eb1a6546cf430611.zip",
+        "sha256": "eb1a6546cf4306118d0dc77cbb7e665468230a169cefed7ed5dc56ef52acaf0a",
+        "size": 1248797,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10721658027,
+      "original_workflow_run": 35789889987,
+      "raw_response_count": 17,
+      "archive_asset": {
+        "asset_id": 582519446,
+        "name": "artifact-10721658027-89afb7b5f1dc5a54.zip",
+        "sha256": "89afb7b5f1dc5a540b21506d8e92c7378f232d88ebfc9ee222d4a7668128042e",
+        "size": 1226521,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 582519517,
+        "name": "checkpoint-49b2668507ad07c81b73cbe00fdc85a676576ca4-a1ac5e1db79a5c6d.json",
+        "sha256": "a1ac5e1db79a5c6d5a8a3afd1464d5fd3bebbd034f64f69d1e4b9248a5b5886f",
+        "size": 432361,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "4abddd6af0b4181f5c4eb94829409d0d2658403e7fdf5c306b9947457e209b34",
+        "run_id": "35789889987-1",
+        "observations": 373,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 1,
+        "data_commit": "49b2668507ad07c81b73cbe00fdc85a676576ca4"
+      }
+    }
+  ],
+  "production_monitor_artifacts_archived": 1,
+  "monitor_run_scan_window": 20,
+  "retention_policy": "Retain while referenced, at least 18 months from capture; no automatic deletion. GitHub draft assets have no Actions artifact expiration clock.",
+  "limitations": [
+    "Same-provider mutable/deletable backup, not immutable storage or an off-site copy.",
+    "An access-controlled copy does not grant commercial redistribution rights.",
+    "Does not establish elapsed operational reliability, completed company qualification or predictive validity."
+  ]
+}
