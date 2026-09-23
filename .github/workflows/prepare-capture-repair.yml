@@ -22,7 +22,7 @@ jobs:
       - name: Patch only test screenshot transport
         run: |
           test "$GITHUB_REF_NAME" = 'fix/capture-limit-prepare-20260923'
-          test "$(git rev-parse HEAD^)" = '7b8e7242cf6d118b3b03354f900834c67e6c4f17'
+          test "$(git rev-parse HEAD^)" = 'a025ea1751ca749c759768c17c518615f84d745b'
           python - <<'PY'
           import re
           from pathlib import Path
