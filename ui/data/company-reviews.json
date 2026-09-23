@@ -288,27 +288,41 @@
       "project_id": "09c804fbe214143cfb4fb4898731c4f08dc4afae4ead98a47b6e3ce396eb7437",
       "company_name": "Cellcentric",
       "decision": "HOLD",
-      "review_date": "2026-09-22",
+      "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "The June 29, 2022 source reports a grand opening and move to a larger Burnaby facility. It explicitly compares the new site with a previous production facility and says the Canadian operation had been based in Burnaby for decades. This is relocation/expansion of an existing Canadian presence, not first Canadian entry; inauguration is not an independently verified first-production date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
-      "next_action": "Confirm the current Canadian operating entity, production activity and civilian supplier requirements at the Burnaby facility; do not treat its relocation as first entry.",
+      "reason": "The 2022 Burnaby record remains an expansion/relocation history, not first Canadian entry. The current official contact page names cellcentric Fuel Cell Canada Inc.; the ISED table independently matches its Burnaby name and postal locality for importer year 2024. Current corporate pages describe a Burnaby engineering site and civilian heavy-duty fuel-cell applications. The supplier enquiry route is company-wide, not proof of a Burnaby purchase or contract. These pages are undated. Founding ownership does not settle later shareholder changes. The separately captured 2023 CID dataset licence does not establish rights for the 2024 table or corporate pages. Current group/control and intended source reuse remain unresolved.",
+      "next_action": "Review the company-wide supplier enquiry route for relevant civilian fuel-cell work, then confirm whether any requirement serves Burnaby. Verify shareholder changes and permission for the intended source use; retain dated Canadian-site evidence before qualification.",
       "checks": {
-        "legal_identity": "UNKNOWN",
+        "legal_identity": "SUPPORTED",
         "corporate_group": "UNKNOWN",
-        "civilian_scope": "UNKNOWN",
+        "civilian_scope": "SUPPORTED",
         "canadian_relevance": "SUPPORTED",
-        "current_status": "UNKNOWN",
+        "current_status": "SUPPORTED",
         "source_reuse": "UNKNOWN"
       },
       "check_sources": {
-        "legal_identity": [],
-        "corporate_group": [],
-        "civilian_scope": [],
+        "legal_identity": [
+          "cellcentric-contact-current",
+          "cellcentric-ised-importer-current"
+        ],
+        "corporate_group": [
+          "cellcentric-home-current"
+        ],
+        "civilian_scope": [
+          "cellcentric-home-current",
+          "cellcentric-supplier-current"
+        ],
         "canadian_relevance": [
           "cellcentric-burnaby-20220629"
         ],
-        "current_status": [],
-        "source_reuse": []
+        "current_status": [
+          "cellcentric-contact-current",
+          "cellcentric-home-current"
+        ],
+        "source_reuse": [
+          "cellcentric-legal-current",
+          "cid-open-data-licence-metadata"
+        ]
       },
       "evidence": [
         {
@@ -317,6 +331,48 @@
           "raw_sha256": "7cb5793c6590bbc95dbda02146b97d921c7e4948e5ee2fbe0323332de187b0ba",
           "observed_at": "2026-09-22T23:13:09.193071+00:00",
           "source_publication_date": "2022-06-29"
+        },
+        {
+          "source_id": "cellcentric-contact-current",
+          "source_url": "https://www.cellcentric.net/en-us/contact",
+          "raw_sha256": "f785b206a6a7788fedbad92b478d87a040c61e18d060f7aef92da79df3188d85",
+          "observed_at": "2026-09-23T02:32:35.968617+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "cellcentric-home-current",
+          "source_url": "https://www.cellcentric.net/en-us",
+          "raw_sha256": "122a564576c74b3d5917f0bda684c74114ec89aca15989902e0511df573b036c",
+          "observed_at": "2026-09-23T02:32:36.842947+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "cellcentric-supplier-current",
+          "source_url": "https://www.cellcentric.net/en-us/supplier",
+          "raw_sha256": "457e69ed43a9561f1163c4fac13b1ae31cd6767c4dea45c23beafb77f22380b2",
+          "observed_at": "2026-09-23T02:32:37.713785+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "cellcentric-ised-importer-current",
+          "source_url": "https://ised-isde.canada.ca/app/ixb/cid-bdic/productReport.html?hsCode=850300",
+          "raw_sha256": "c9f6c406b794926fcf97a588bd19b501ff4e45f46e489ce23bdedc2f13fa55d0",
+          "observed_at": "2026-09-23T02:32:39.616824+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "cellcentric-legal-current",
+          "source_url": "https://www.cellcentric.net/en-us/en-us/legal-notice",
+          "raw_sha256": "78a6cd7d0c57fe9cfa25ca3ee130b528cb771b1d5b370a2263cf4cb7c0863fbe",
+          "observed_at": "2026-09-23T02:32:40.469860+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "cid-open-data-licence-metadata",
+          "source_url": "https://open.canada.ca/data/en/dataset/873cfcb0-1c9b-4a48-a366-076697069bb9",
+          "raw_sha256": "0a06933524ec6026a5e597ce826a1d912f7e09a26ae3d368c4e29222c51cc9e1",
+          "observed_at": "2026-09-23T02:33:05.793051+00:00",
+          "source_publication_date": null
         }
       ],
       "current_status_date": null,
@@ -476,17 +532,17 @@
       "project_id": "a827fa9bc84cc318b200d7294b14caff286f199cb8319d3068de2f8728d75ec8",
       "company_name": "Roquette",
       "decision": "HOLD",
-      "review_date": "2026-09-22",
+      "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "Protein Industries Canada announced a Winnipeg-datelined collaborative R&D project involving Roquette and Prairie Fava. This primary evidence supports an R&D project and broader Canadian plant-protein investment; it does not independently establish the investment card's characterization of a distinct Roquette R&D centre facility in Winnipeg. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
-      "next_action": "Determine whether the record describes a collaborative R&D project or a separate facility, then verify the location, operator and current requirements.",
+      "reason": "The original agency source supports a Winnipeg-datelined collaborative R&D project; it does not establish a separate Winnipeg R&D facility. The newly reviewed corporate location and September 4, 2026 hiring sources concern Roquette Canada Ltd. at Portage la Prairie, a different location and activity. They cannot verify the original R&D project operator or current status. The corporate legal notice states prior-approval restrictions for republication and hyperlinks; no permission for the intended reuse has been established. The corporate-source reuse check is therefore contradicted, not silently approved. The original independent agency evidence remains retained.",
+      "next_action": "Obtain current, project-specific Winnipeg R&D evidence from a permitted primary source. Treat the Portage plant and its engineering vacancy separately; do not transfer their date, operator or activity to this case. Resolve the corporate source-use restrictions before publication or promotion.",
       "checks": {
         "legal_identity": "UNKNOWN",
         "corporate_group": "UNKNOWN",
         "civilian_scope": "UNKNOWN",
         "canadian_relevance": "SUPPORTED",
         "current_status": "UNKNOWN",
-        "source_reuse": "UNKNOWN"
+        "source_reuse": "CONTRADICTED"
       },
       "check_sources": {
         "legal_identity": [],
@@ -496,7 +552,9 @@
           "roquette-rd-20200619"
         ],
         "current_status": [],
-        "source_reuse": []
+        "source_reuse": [
+          "roquette-legal-current"
+        ]
       },
       "evidence": [
         {
@@ -505,6 +563,27 @@
           "raw_sha256": "f9f9538d9ebdcf6dc19ab4920295dc65468129441bc7e64b786f5305e2084563",
           "observed_at": "2026-09-22T23:13:17.476531+00:00",
           "source_publication_date": "2020-06-19"
+        },
+        {
+          "source_id": "roquette-locations-current",
+          "source_url": "https://www.roquette.com/locations",
+          "raw_sha256": "8a0ed3fb66a5580b5a3233605203bf0babdee31fa8f9ecfe6b9000cecabf2ddd",
+          "observed_at": "2026-09-23T02:32:42.291412+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "roquette-job-portage-20260904",
+          "source_url": "https://www.roquette.com/careers/job-opportunities/3rd-class-power-engineer2",
+          "raw_sha256": "1bbb61d284e32681c9b2ae882e6e3e80ee4b6cc87be19b5e66708f9aadb75f4b",
+          "observed_at": "2026-09-23T02:32:43.119639+00:00",
+          "source_publication_date": "2026-09-04"
+        },
+        {
+          "source_id": "roquette-legal-current",
+          "source_url": "https://www.roquette.com/legal/legal-notice",
+          "raw_sha256": "1fd6dafe71b639cbf58a29c1367682bfc00dba1619c4f9f3e1a7cb9ee889532c",
+          "observed_at": "2026-09-23T02:32:43.896994+00:00",
+          "source_publication_date": null
         }
       ],
       "current_status_date": null,
@@ -951,8 +1030,12 @@
     {
       "artifact_id": 10729310481,
       "archive_sha256": "478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365"
+    },
+    {
+      "artifact_id": 10729682735,
+      "archive_sha256": "39892597bcdf03f6ba7e093ece34c7618f0dff8450d8c77c30951745b1ff2064"
     }
   ],
   "qualification_completed": false,
-  "scope": "Documented triage decisions with partial source-bound qualification progress, not twenty qualified opportunities."
+  "scope": "Twenty project-local review decisions with source-bound partial qualification. No fully qualified opportunities; different facilities, source permissions and ownership changes remain separate."
 }
