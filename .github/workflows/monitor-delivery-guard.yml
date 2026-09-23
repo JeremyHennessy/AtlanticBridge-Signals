@@ -1,0 +1,56 @@
+name: Monitor delivery guard
+on:
+  schedule:
+    - cron: '47 11 * * *'
+  workflow_run:
+    workflows: [Deploy Evidence Console to GitHub Pages]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/monitor-delivery-guard.yml'
+      - 'scripts/check_monitor_delivery.py'
+      - 'tests/test_monitor_delivery.py'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: monitor-delivery-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'production' }}
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p test_monitor_delivery.py -v
+  delivery:
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Detect absent collection without retrying failed or active runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/check_monitor_delivery.py --output artifacts/delivery/report.json --dispatch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: monitor-delivery-${{ github.run_id }}
+          path: artifacts/delivery/
+          retention-days: 90
