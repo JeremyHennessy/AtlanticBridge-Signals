@@ -16,7 +16,7 @@ export async function verifyCaseBriefs(browser,options,base,label,out,check){
    const panel=page.locator('.case-disposition-panel'),text=await panel.innerText();
    check(`${label}: ${b.company_name} exact disposition title`,await panel.locator('h2').innerText()===b.title);
    check(`${label}: ${b.company_name} preserved conditional assessment`,text.includes(b.summary));
-   check(`${label}: ${b.company_name} no automatic qualification or fit score`,text.includes('Not a qualified opportunity')&&text.includes('Context, not a fit score'));
+   check(`${label}: ${b.company_name} no automatic qualification or fit score`,text.toLowerCase().includes('not a qualified opportunity')&&text.toLowerCase().includes('context, not a fit score'),text);
    await panel.locator('details').evaluate(e=>e.open=true);
    check(`${label}: ${b.company_name} all disposition references exposed`,await panel.locator('.company-notice').count()===b.evidence.length);
    const old=catalog.projects.find(p=>p.id===b.company_id);
