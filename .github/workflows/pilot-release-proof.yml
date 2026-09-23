@@ -5,6 +5,10 @@ on:
     paths:
       - 'ui/**'
       - 'scripts/build_pilot_release.py'
+      - 'scripts/case_dispositions.py'
+      - 'tests/test_case_dispositions.py'
+      - 'tests/test_case_briefs.cjs'
+      - 'tests/case_briefs_acceptance.mjs'
       - 'scripts/qualification_progress2.py'
       - 'tests/test_qualification_progress2.py'
       - 'scripts/analyse_pilot.py'
@@ -34,13 +38,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python -m pip install -e .
+          command -v pdftotext >/dev/null || { sudo apt-get update && sudo apt-get install -y poppler-utils; }
           python scripts/fetch_accepted_proof.py --artifact-id 10724340100 --output "$RUNNER_TEMP/documentary.zip"
           python scripts/fetch_accepted_proof.py --artifact-id 10720884358 --output "$RUNNER_TEMP/monitor.zip"
           python scripts/fetch_accepted_proof.py --artifact-id 10729310481 --output "$RUNNER_TEMP/qualification.zip"
           python scripts/fetch_accepted_proof.py --artifact-id 10729682735 --output "$RUNNER_TEMP/qualification2.zip"
-          python scripts/build_pilot_release.py --documentary-proof "$RUNNER_TEMP/documentary.zip" --monitor-proof "$RUNNER_TEMP/monitor.zip" --qualification-proof "$RUNNER_TEMP/qualification.zip" --qualification2-proof "$RUNNER_TEMP/qualification2.zip" --check
+          python scripts/fetch_accepted_proof.py --artifact-id 10718724645 --output "$RUNNER_TEMP/original-six.zip"
+          python scripts/fetch_accepted_proof.py --artifact-id 10724109813 --output "$RUNNER_TEMP/nature-pdf.zip"
+          python scripts/build_pilot_release.py --documentary-proof "$RUNNER_TEMP/documentary.zip" --monitor-proof "$RUNNER_TEMP/monitor.zip" --qualification-proof "$RUNNER_TEMP/qualification.zip" --qualification2-proof "$RUNNER_TEMP/qualification2.zip" --original-six-proof "$RUNNER_TEMP/original-six.zip" --nature-pdf-proof "$RUNNER_TEMP/nature-pdf.zip" --check
           python -m unittest discover -s tests -v
-          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs tests/test_monitor_review.cjs tests/test_case_briefs.cjs
           mkdir -p artifacts/pilot-release
           python scripts/analyse_pilot.py reviews/pilot/participant-records-template.json --output artifacts/pilot-release/empty-pilot-result.json
       - name: Preserve exact tested code and data provenance
@@ -49,7 +56,7 @@ jobs:
           mkdir -p artifacts/pilot-release
           git rev-parse HEAD > artifacts/pilot-release/tested-commit.txt
           git archive --format=tar.gz HEAD > artifacts/pilot-release/tested-source.tar.gz
-          sha256sum ui/data/company-reviews.json ui/data/reviewed-evidence.json reviews/pilot/operational-cohort-2026-09-22.json > artifacts/pilot-release/data-sha256.txt
+          sha256sum ui/data/case-briefs.json ui/data/company-reviews.json ui/data/reviewed-evidence.json reviews/pilot/operational-cohort-2026-09-22.json > artifacts/pilot-release/data-sha256.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:

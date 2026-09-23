@@ -10,8 +10,8 @@
       "decision": "HOLD",
       "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "Influenza project: 2021 announcement and September 2026 inauguration. The 2021 source explicitly describes a separate diphtheria/tetanus/pertussis facility; that separate project must not supply the influenza opening date. An inauguration is not a verified first-production date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification. Sanofi’s current Canada page describes active Canadian biopharma operations and the new Toronto influenza manufacturing facility. The page is undated and does not establish an exact production-start date.",
-      "next_action": "Resolve the exact Canadian legal entity/group and source-reuse terms, then obtain dated evidence of production/operating status before promotion.",
+      "reason": "The dated September 16, 2026 issuer release inaugurates the Toronto Charles Best influenza building and calls the facility operational, but explicitly plans vaccine production for early 2027 subject to regulatory approval. This is a material expansion of an existing Canadian campus, not first entry or verified vaccine production. Exact facility operator/group and intended source reuse remain unresolved.",
+      "next_action": "Check regulatory approval and an actual production-start announcement for the Charles Best influenza building; do not substitute activity at the separate diphtheria/tetanus/pertussis facility. Confirm the facility legal operator and intended source-use terms before qualification.",
       "checks": {
         "legal_identity": "UNKNOWN",
         "corporate_group": "UNKNOWN",
@@ -32,7 +32,7 @@
           "sanofi-canada-current"
         ],
         "current_status": [
-          "sanofi-canada-current"
+          "sanofi-flu-inauguration-20260916"
         ],
         "source_reuse": []
       },
@@ -59,8 +59,8 @@
           "source_publication_date": null
         }
       ],
-      "current_status_date": null,
-      "current_status_source_id": null,
+      "current_status_date": "2026-09-16",
+      "current_status_source_id": "sanofi-flu-inauguration-20260916",
       "first_entry_confirmed": false,
       "predictive_score_allowed": false,
       "independent_holdout": false
@@ -428,10 +428,10 @@
       "project_id": "831d5d02c8df568c46d57b7c69b5a593a2ad457d9eecf3d4573e55b985a4f514",
       "company_name": "Nature Energy",
       "decision": "HOLD",
-      "review_date": "2026-09-22",
+      "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "Nature Energy announced land acquisition and a planned Farnham biogas facility in March 2022. A March 2023 Investment Canada record later names Nature Energy Farnham Inc. among entities acquired by Shell Petroleum N.V. and reports United Kingdom ultimate control at that time. The original Danish card label therefore must not be treated as current corporate control. This review does not establish an opening/operating date or the project's current status. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
-      "next_action": "Verify the latest project status, including the unresolved reported withdrawal, and current ownership before treating Farnham as an active project. Retrieve and review the cited primary PDF.",
+      "reason": "The 2022 Nature Energy Farnham plan and 2023 Shell acquisition history remain retained. Énergir’s 2025 climate report, page 52, reports Nature Energy’s withdrawal in fiscal year 2025 and ÉDI’s acquisition of the Farnham site to continue development. The foreign partner’s exit is not cancellation of the whole project. The report provides no verified exact publication day here; its planned construction/deployment periods do not establish current operations or a new Nature Energy entry.",
+      "next_action": "Do not treat Farnham as an active Nature Energy entry opportunity. Obtain a recent, permitted ÉDI project update before evaluating continuing development under its operator. Keep the fiscal-year withdrawal amendment separate from any future operational or ownership event.",
       "checks": {
         "legal_identity": "UNKNOWN",
         "corporate_group": "UNKNOWN",
@@ -448,7 +448,9 @@
           "nature-farnham-plan-20220315",
           "nature-farnham-ised-20230320"
         ],
-        "current_status": [],
+        "current_status": [
+          "energir-farnham-fy2025-pdf-page52"
+        ],
         "source_reuse": []
       },
       "evidence": [
@@ -465,6 +467,16 @@
           "raw_sha256": "751b8b8c6fa769676982637e2533cd234deb049cb112a68b03630118717445a7",
           "observed_at": "2026-09-22T23:13:13.867221+00:00",
           "source_publication_date": "2023-03-20"
+        },
+        {
+          "source_id": "energir-farnham-fy2025-pdf-page52",
+          "source_url": "https://energir.com/files/energir_common/import/Fichiers/Corporatifs/Dev%20durable/Rapport-climat-2025_EN.pdf",
+          "raw_sha256": "bf156e3ae322bd12803a93a72c04f09fc35799393601de8c638556cc319a6cea",
+          "observed_at": "2026-09-22T23:53:46.951409+00:00",
+          "source_publication_date": null,
+          "page": 52,
+          "event_period": "Fiscal year 2025",
+          "publication_precision": "UNKNOWN"
         }
       ],
       "current_status_date": null,
@@ -1034,6 +1046,14 @@
     {
       "artifact_id": 10729682735,
       "archive_sha256": "39892597bcdf03f6ba7e093ece34c7618f0dff8450d8c77c30951745b1ff2064"
+    },
+    {
+      "artifact_id": 10718724645,
+      "archive_sha256": "46f6e0853b6848cc10d5982e54bebeac2bf810e6e3ede19062b470e6c39a75a6"
+    },
+    {
+      "artifact_id": 10724109813,
+      "archive_sha256": "6f5f5b169681f0bbc0b01d116f97cb3ee0a254385619f094cd101d8c98c415cc"
     }
   ],
   "qualification_completed": false,

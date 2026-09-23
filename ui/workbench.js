@@ -61,8 +61,8 @@ function liveFreshnessText() {
 }
 function renderCompany(id) {
   workCompanyId=id;workDirty=false;workConflict=false;
-  const reviewed=reviewedProject(id);if(reviewed){renderReviewedCompany(reviewed);return;}
-  const review=typeof companyOnlyReview==='function'?companyOnlyReview(id):null;if(review){renderCompanyReview(review);return;}
+  const reviewed=reviewedProject(id);if(reviewed){renderReviewedCompany(reviewed);if(typeof renderCaseBrief==='function')renderCaseBrief(id);return;}
+  const review=typeof companyOnlyReview==='function'?companyOnlyReview(id):null;if(review){renderCompanyReview(review);if(typeof renderCaseBrief==='function')renderCaseBrief(id);return;}
   const company=workCompanies().get(id), saved=workEntry(id);
   const root=$("company-content");
   if (!company && !saved) {
