@@ -40,7 +40,8 @@
         "08.12.2026",
         "04.01.2027"
       ],
-      "role": "CURRENT_SUPPLIER_INQUIRY_PATH_UNDATED"
+      "role": "CURRENT_SUPPLIER_INQUIRY_PATH_UNDATED",
+      "reviewed_content_selector": "main"
     },
     {
       "id": "cellcentric-ised-importer-current",
