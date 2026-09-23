@@ -8,27 +8,32 @@
       "project_id": "3f0ad81898ea05df0368eac2ab6daff93febad166894a482ed0764a439f7cd02",
       "company_name": "Sanofi",
       "decision": "HOLD",
-      "review_date": "2026-09-22",
+      "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "Influenza project: 2021 announcement and September 2026 inauguration. The 2021 source explicitly describes a separate diphtheria/tetanus/pertussis facility; that separate project must not supply the influenza opening date. An inauguration is not a verified first-production date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
-      "next_action": "Check whether the inaugurated influenza facility has entered production and whether relevant supplier opportunities remain open.",
+      "reason": "Influenza project: 2021 announcement and September 2026 inauguration. The 2021 source explicitly describes a separate diphtheria/tetanus/pertussis facility; that separate project must not supply the influenza opening date. An inauguration is not a verified first-production date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification. Sanofi’s current Canada page describes active Canadian biopharma operations and the new Toronto influenza manufacturing facility. The page is undated and does not establish an exact production-start date.",
+      "next_action": "Resolve the exact Canadian legal entity/group and source-reuse terms, then obtain dated evidence of production/operating status before promotion.",
       "checks": {
         "legal_identity": "UNKNOWN",
         "corporate_group": "UNKNOWN",
-        "civilian_scope": "UNKNOWN",
+        "civilian_scope": "SUPPORTED",
         "canadian_relevance": "SUPPORTED",
-        "current_status": "UNKNOWN",
+        "current_status": "SUPPORTED",
         "source_reuse": "UNKNOWN"
       },
       "check_sources": {
         "legal_identity": [],
         "corporate_group": [],
-        "civilian_scope": [],
+        "civilian_scope": [
+          "sanofi-canada-current"
+        ],
         "canadian_relevance": [
           "sanofi-flu-inauguration-20260916",
-          "sanofi-flu-plan-20210331"
+          "sanofi-flu-plan-20210331",
+          "sanofi-canada-current"
         ],
-        "current_status": [],
+        "current_status": [
+          "sanofi-canada-current"
+        ],
         "source_reuse": []
       },
       "evidence": [
@@ -45,6 +50,13 @@
           "raw_sha256": "ee01b996d23d879cc4bcfe610605a566ec47d93eff290a8237a56d03ac330188",
           "observed_at": "2026-09-22T21:08:07.233056+00:00",
           "source_publication_date": "2021-03-31"
+        },
+        {
+          "source_id": "sanofi-canada-current",
+          "source_url": "https://www.sanofi.com/en/canada/our-company",
+          "raw_sha256": "b2a2ce4cdc666fc3518541c4ec3315a3e77c1158b037568615a4ab975ba07b7a",
+          "observed_at": "2026-09-23T02:08:12.473253+00:00",
+          "source_publication_date": null
         }
       ],
       "current_status_date": null,
@@ -410,26 +422,31 @@
       "project_id": "f779e54385e76734508a8c449b1fa4572ad70cc55987233227d7495b9d875e83",
       "company_name": "Ubisoft",
       "decision": "HOLD",
-      "review_date": "2026-09-22",
+      "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "Ubisoft announced its fourth Quebec studio in Sherbrooke on November 16, 2021, together with training/accelerator investments. The same source says this occurred nearly 25 years after the group's first entry into Quebec. It is expansion of an established Canadian presence; the release is not independent proof of an exact operating commencement date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
-      "next_action": "Confirm whether this studio is currently operating and hiring and identify the Canadian legal entity before outreach.",
+      "reason": "Ubisoft announced its fourth Quebec studio in Sherbrooke on November 16, 2021, together with training/accelerator investments. The same source says this occurred nearly 25 years after the group's first entry into Quebec. It is expansion of an established Canadian presence; the release is not independent proof of an exact operating commencement date. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification. The current official Sherbrooke careers/location page reports more than thirty employees and active talent recruitment. The page is undated, so retrieval is not treated as a public status date.",
+      "next_action": "Resolve the exact Canadian legal entity/group and source-reuse terms; obtain a dated current-status source before promotion.",
       "checks": {
         "legal_identity": "UNKNOWN",
         "corporate_group": "UNKNOWN",
-        "civilian_scope": "UNKNOWN",
+        "civilian_scope": "SUPPORTED",
         "canadian_relevance": "SUPPORTED",
-        "current_status": "UNKNOWN",
+        "current_status": "SUPPORTED",
         "source_reuse": "UNKNOWN"
       },
       "check_sources": {
         "legal_identity": [],
         "corporate_group": [],
-        "civilian_scope": [],
-        "canadian_relevance": [
-          "ubisoft-sherbrooke-20211116"
+        "civilian_scope": [
+          "ubisoft-sherbrooke-current"
         ],
-        "current_status": [],
+        "canadian_relevance": [
+          "ubisoft-sherbrooke-20211116",
+          "ubisoft-sherbrooke-current"
+        ],
+        "current_status": [
+          "ubisoft-sherbrooke-current"
+        ],
         "source_reuse": []
       },
       "evidence": [
@@ -439,6 +456,13 @@
           "raw_sha256": "769103fdb45bb5de0b3ac90dfb67ec3a569fb9ee39c4376f0773dca63716257a",
           "observed_at": "2026-09-22T23:13:15.482641+00:00",
           "source_publication_date": "2021-11-16"
+        },
+        {
+          "source_id": "ubisoft-sherbrooke-current",
+          "source_url": "https://www.ubisoft.com/en-us/company/careers/locations/sherbrooke",
+          "raw_sha256": "557740b49e487cc7739fd22ec62a342de691599bc7834b630e7ac76b000ec628",
+          "observed_at": "2026-09-23T02:08:07.026532+00:00",
+          "source_publication_date": null
         }
       ],
       "current_status_date": null,
@@ -620,26 +644,31 @@
       "project_id": "6d4687413b57ee1e1f34d2725cbc0720872cf4f42b46953d79d07a22c6c6f1ed",
       "company_name": "Accenture",
       "decision": "HOLD",
-      "review_date": "2026-09-22",
+      "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "Accenture reported opening its St. Catharines intelligent operations centre on January 15, 2020. The same release says it was the company's second location in Niagara, third intelligent operations centre in Canada, and that Accenture had been in the Niagara region since 2001. This is an expansion of established Canadian operations, not first entry. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification.",
-      "next_action": "Confirm the centre’s present activity, hiring and legal operator. The source documents expansion of an existing Canadian business.",
+      "reason": "Accenture reported opening its St. Catharines intelligent operations centre on January 15, 2020. The same release says it was the company's second location in Niagara, third intelligent operations centre in Canada, and that Accenture had been in the Niagara region since 2001. This is an expansion of established Canadian operations, not first entry. Exact legal identity, ownership, present status, civilian scope and commercial source reuse still require separate qualification. A current official Accenture job page says Accenture Niagara is growing and the role is onsite at the St. Catharines office. The page is undated, so retrieval is not a public status date.",
+      "next_action": "Resolve the exact Canadian legal operator/group and source-reuse terms; retain a dated current-status source before promotion.",
       "checks": {
         "legal_identity": "UNKNOWN",
         "corporate_group": "UNKNOWN",
-        "civilian_scope": "UNKNOWN",
+        "civilian_scope": "SUPPORTED",
         "canadian_relevance": "SUPPORTED",
-        "current_status": "UNKNOWN",
+        "current_status": "SUPPORTED",
         "source_reuse": "UNKNOWN"
       },
       "check_sources": {
         "legal_identity": [],
         "corporate_group": [],
-        "civilian_scope": [],
-        "canadian_relevance": [
-          "accenture-stcatharines-20200115"
+        "civilian_scope": [
+          "accenture-stcatharines-current"
         ],
-        "current_status": [],
+        "canadian_relevance": [
+          "accenture-stcatharines-20200115",
+          "accenture-stcatharines-current"
+        ],
+        "current_status": [
+          "accenture-stcatharines-current"
+        ],
         "source_reuse": []
       },
       "evidence": [
@@ -649,6 +678,13 @@
           "raw_sha256": "61970d1030b54f953425f06de10c0489ff3412f00af3cf0cf1d9029d18fcea80",
           "observed_at": "2026-09-22T23:13:29.110929+00:00",
           "source_publication_date": "2020-01-15"
+        },
+        {
+          "source_id": "accenture-stcatharines-current",
+          "source_url": "https://www.accenture.com/ca-en/careers/jobdetails?id=R00358752_en",
+          "raw_sha256": "6e918588709bcb55e145944fd07eea5ae733562483140870f2a59e4ced3b0fb0",
+          "observed_at": "2026-09-23T02:08:08.400719+00:00",
+          "source_publication_date": null
         }
       ],
       "current_status_date": null,
@@ -795,16 +831,16 @@
       "project_id": null,
       "company_name": "Giesecke+Devrient",
       "decision": "HOLD",
-      "review_date": "2026-09-22",
+      "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "The Montreal announcement describes an AI centre and explicitly reports Canadian presence since 1962. It is an expansion context record, not first Canadian entry.",
-      "next_action": "Verify the operating entity, current centre activity and civilian commercial needs; retain existing Canadian presence in the classification.",
+      "reason": "The Montreal announcement describes an AI centre and explicitly reports Canadian presence since 1962. It is an expansion context record, not first Canadian entry. G+D’s dated issuer release reports the Montréal AI Hub launched and first projects started, while also describing security-critical domains and long-standing Canadian presence. Civilian-only scope is therefore not inferred.",
+      "next_action": "Refresh the hub status with evidence inside the 90-day window and resolve the Canadian legal operator, dual-use/civilian scope and source-reuse terms.",
       "checks": {
         "legal_identity": "UNKNOWN",
         "corporate_group": "UNKNOWN",
         "civilian_scope": "UNKNOWN",
         "canadian_relevance": "SUPPORTED",
-        "current_status": "UNKNOWN",
+        "current_status": "SUPPORTED",
         "source_reuse": "UNKNOWN"
       },
       "check_sources": {
@@ -812,9 +848,12 @@
         "corporate_group": [],
         "civilian_scope": [],
         "canadian_relevance": [
-          "gd-montreal-announcement"
+          "gd-montreal-announcement",
+          "gd-montreal-hub-20260616"
         ],
-        "current_status": [],
+        "current_status": [
+          "gd-montreal-hub-20260616"
+        ],
         "source_reuse": []
       },
       "evidence": [
@@ -825,10 +864,17 @@
           "raw_sha256": "c8c3e1d2bf38975155c71cfaee67c7695138cf33057144ed4873a60000a805e0",
           "observed_at": "2026-09-22T21:56:14.706579+00:00",
           "source_publication_date": "2026-06-17"
+        },
+        {
+          "source_id": "gd-montreal-hub-20260616",
+          "source_url": "https://www.gi-de.com/en/about-us/press/press-releases/g-d-launches-ai-hub-in-montreal-to-advance-secure-ai-for-critical-infrastructure",
+          "raw_sha256": "a9ad14e0fd2677feba2ed1d4f5019bb2b70455cd453f3c1ff26292d35687e924",
+          "observed_at": "2026-09-23T02:08:11.192954+00:00",
+          "source_publication_date": "2026-06-16"
         }
       ],
-      "current_status_date": null,
-      "current_status_source_id": null,
+      "current_status_date": "2026-06-16",
+      "current_status_source_id": "gd-montreal-hub-20260616",
       "first_entry_confirmed": false,
       "predictive_score_allowed": false,
       "independent_holdout": false
@@ -838,26 +884,35 @@
       "project_id": null,
       "company_name": "Adyen Canada Ltd.",
       "decision": "HOLD",
-      "review_date": "2026-09-22",
+      "review_date": "2026-09-23",
       "reviewer": "assistant-source-review-2026-09-22",
-      "reason": "The source documents Payments Canada membership. Membership is not a verified first office, first operation or first Canadian entry.",
-      "next_action": "Resolve the Canadian member-to-European-parent relationship and identify a concrete current operational or commercial requirement.",
+      "reason": "The source documents Payments Canada membership. Membership is not a verified first office, first operation or first Canadian entry. A dated Adyen legal page lists Adyen Canada Ltd. at a Canadian address among the wholly-owned Adyen affiliates used to provide payment services. Commercial source-reuse permission remains unverified.",
+      "next_action": "Complete source-reuse/legal-use review and identify a concrete current commercial requirement before promotion.",
       "checks": {
-        "legal_identity": "UNKNOWN",
-        "corporate_group": "UNKNOWN",
-        "civilian_scope": "UNKNOWN",
+        "legal_identity": "SUPPORTED",
+        "corporate_group": "SUPPORTED",
+        "civilian_scope": "SUPPORTED",
         "canadian_relevance": "SUPPORTED",
-        "current_status": "UNKNOWN",
+        "current_status": "SUPPORTED",
         "source_reuse": "UNKNOWN"
       },
       "check_sources": {
-        "legal_identity": [],
-        "corporate_group": [],
-        "civilian_scope": [],
-        "canadian_relevance": [
-          "adyen-payments-membership"
+        "legal_identity": [
+          "adyen-current-affiliate-20260701"
         ],
-        "current_status": [],
+        "corporate_group": [
+          "adyen-current-affiliate-20260701"
+        ],
+        "civilian_scope": [
+          "adyen-current-affiliate-20260701"
+        ],
+        "canadian_relevance": [
+          "adyen-payments-membership",
+          "adyen-current-affiliate-20260701"
+        ],
+        "current_status": [
+          "adyen-current-affiliate-20260701"
+        ],
         "source_reuse": []
       },
       "evidence": [
@@ -868,10 +923,17 @@
           "raw_sha256": "7510c3404dc406b7aaba876377314a66b588887ea6a526cc0df2d0839c839265",
           "observed_at": "2026-09-22T21:56:16.007887+00:00",
           "source_publication_date": "2026-07-14"
+        },
+        {
+          "source_id": "adyen-current-affiliate-20260701",
+          "source_url": "https://www.adyen.com/en_GB/legal/list-of-adyen-subprocessors",
+          "raw_sha256": "99809d9e90e2701593826411368db60999a21e5ea98b70adbd1de4a0d82b39f1",
+          "observed_at": "2026-09-23T02:08:05.722065+00:00",
+          "source_publication_date": "2026-07-01"
         }
       ],
-      "current_status_date": null,
-      "current_status_source_id": null,
+      "current_status_date": "2026-07-01",
+      "current_status_source_id": "adyen-current-affiliate-20260701",
       "first_entry_confirmed": false,
       "predictive_score_allowed": false,
       "independent_holdout": false
@@ -885,8 +947,12 @@
     {
       "artifact_id": 10720884358,
       "archive_sha256": "db6e1b2055d27d3bf945a2c2ce228321b3425d1dea4c6baaf4d9d78f7713e802"
+    },
+    {
+      "artifact_id": 10729310481,
+      "archive_sha256": "478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365"
     }
   ],
   "qualification_completed": false,
-  "scope": "Documented triage decisions, not twenty identity-qualified companies or twenty qualified opportunities."
+  "scope": "Documented triage decisions with partial source-bound qualification progress, not twenty qualified opportunities."
 }
