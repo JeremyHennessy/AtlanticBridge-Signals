@@ -93,6 +93,19 @@ def main() -> int:
             (out / 'enrollment-failure.json').write_text(json.dumps({'schema_version': 1,
                 'policy': 'NO_STATE_CHANGE_ON_ENROLLMENT_FAILURE', 'failures': enrollment_failures}, indent=2) + '\n')
             raise ValueError('Enrollment preflight failed; no new source state was written')
+        if additions:
+            # Exercise every new contract against a disposable restoration of the
+            # exact checkpoint before mutating the production ledger.
+            trial = Ledger(':memory:')
+            try:
+                restore(trial, previous)
+                trial_observed = datetime.now(timezone.utc).isoformat()
+                for source in [s for s in sources if s['id'] in additions]:
+                    rows, sha, _ = pending_additions[source['id']]
+                    if trial.apply(source, rows, trial_observed, sha):
+                        raise AssertionError('Enrollment trial emitted review events')
+            finally:
+                trial.close()
         for source in sources:
             try:
                 rows, sha, coverage = pending_additions.get(source['id']) or collect(source, capture)
