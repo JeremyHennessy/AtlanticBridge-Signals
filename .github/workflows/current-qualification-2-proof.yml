@@ -1,0 +1,77 @@
+name: Current qualification source proof tranche 2
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'reviews/commercial_validation/current-qualification-2-2026-09-23.json'
+      - '.github/workflows/current-qualification-2-proof.yml'
+      - 'docs/CURRENT_QUALIFICATION_2_2026_09_23.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Full regressions
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
+      - name: Capture nine reviewed paths twice
+        run: |
+          mkdir -p artifacts/current-qualification-2
+          python scripts/probe_company_sources.py --manifest reviews/commercial_validation/current-qualification-2-2026-09-23.json --output artifacts/current-qualification-2/first --state artifacts/current-qualification-2/state.sqlite
+          python scripts/probe_company_sources.py --manifest reviews/commercial_validation/current-qualification-2-2026-09-23.json --output artifacts/current-qualification-2/second --state artifacts/current-qualification-2/state.sqlite
+      - name: Verify complete source set and replay
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('artifacts/current-qualification-2')
+          wanted={'cellcentric-contact-current','cellcentric-home-current','cellcentric-supplier-current','cellcentric-ised-importer-current','cellcentric-legal-current','roquette-locations-current','roquette-job-portage-20260904','roquette-legal-current','cid-open-data-licence-metadata'}
+          reports=[]
+          for stage in ('first','second'):
+              report=json.loads((root/stage/'report.json').read_text());reports.append(report)
+              assert report['summary']['sources_requested']==9
+              assert report['summary']['sources_observed']==9
+              assert report['summary']['source_failures']==0
+              assert report['summary']['observations']==9
+              assert {s['id'] for s in report['sources']}==wanted
+              assert not report['failures']
+              for response in report['responses']:
+                  if 'sha256' in response:
+                      raw=(root/stage/'raw'/(response['sha256']+'.bin')).read_bytes()
+                      assert hashlib.sha256(raw).hexdigest()==response['sha256']
+          a,b=reports
+          assert len(b['events'])==0
+          aa={r['source_id']:r for r in a['observations']};bb={r['source_id']:r for r in b['observations']}
+          assert aa.keys()==bb.keys()==wanted
+          for sid in wanted:
+              for key in ('source_id','company_candidate','source_publication_date','source_url','evidence_text'):
+                  assert aa[sid][key]==bb[sid][key]
+          roq=bb['roquette-job-portage-20260904']
+          assert roq['source_publication_date']=='2026-09-04'
+          assert bb['cellcentric-contact-current']['source_publication_date'] is None
+          PY
+      - name: Preserve exact tested source
+        if: always()
+        run: |
+          mkdir -p artifacts/current-qualification-2
+          git rev-parse HEAD > artifacts/current-qualification-2/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/current-qualification-2/tested-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: current-qualification-2-${{ github.event.pull_request.head.sha || github.sha }}
+          path: artifacts/current-qualification-2/
+          retention-days: 90
+          if-no-files-found: error

@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "purpose": "Bounded current operating, supplier-path, identity and rights-boundary evidence for Cellcentric and Roquette. No automatic qualification, score, alert or permission inference.",
+  "baseline_commit": "11bfc986463ba714cd9a338fafa8a7aaf3c65491",
+  "public_alert_allowed": false,
+  "sources": [
+    {
+      "id": "cellcentric-contact-current",
+      "kind": "article",
+      "company": "Cellcentric",
+      "url": "https://www.cellcentric.net/en-us/contact",
+      "required_text": [
+        "cellcentric location in Burnaby",
+        "cellcentric Fuel Cell Canada Inc",
+        "5250 Riverbend Drive",
+        "Burnaby, BC, V3N 0G2"
+      ],
+      "role": "CURRENT_CANADIAN_ENTITY_AND_LOCATION_UNDATED"
+    },
+    {
+      "id": "cellcentric-home-current",
+      "kind": "article",
+      "company": "Cellcentric",
+      "url": "https://www.cellcentric.net/en-us",
+      "required_text": [
+        "50:50 joint venture between Daimler Truck AG and Volvo Group AB",
+        "advanced engineering site in Burnaby, Canada",
+        "August 2026"
+      ],
+      "role": "CURRENT_GROUP_AND_BURNABY_OPERATING_CONTEXT_UNDATED"
+    },
+    {
+      "id": "cellcentric-supplier-current",
+      "kind": "article",
+      "company": "Cellcentric",
+      "url": "https://www.cellcentric.net/en-us/supplier",
+      "required_text": [
+        "Become a part of the hydrogen powertrain supply chain",
+        "Contact for supplier inquiries",
+        "08.12.2026",
+        "04.01.2027"
+      ],
+      "role": "CURRENT_SUPPLIER_INQUIRY_PATH_UNDATED",
+      "reviewed_content_selector": "main"
+    },
+    {
+      "id": "cellcentric-ised-importer-current",
+      "kind": "article",
+      "company": "Cellcentric",
+      "url": "https://ised-isde.canada.ca/app/ixb/cid-bdic/productReport.html?hsCode=850300",
+      "required_text": [
+        "CELLCENTRIC FUEL CELL CANADA INC.",
+        "Burnaby",
+        "British Columbia",
+        "V3N 0G2"
+      ],
+      "role": "GOVERNMENT_CANADIAN_IMPORTER_IDENTITY_LOCATION_DATA"
+    },
+    {
+      "id": "cellcentric-legal-current",
+      "kind": "article",
+      "company": "Cellcentric",
+      "url": "https://www.cellcentric.net/en-us/en-us/legal-notice",
+      "required_text": [
+        "these Internet pages cannot be deemed to provide any license rights",
+        "cellcentric GmbH & Co. KG"
+      ],
+      "role": "RIGHTS_BOUNDARY_NOT_PERMISSION"
+    },
+    {
+      "id": "roquette-locations-current",
+      "kind": "article",
+      "company": "Roquette",
+      "url": "https://www.roquette.com/locations",
+      "required_text": [
+        "Roquette Canada Ltd.",
+        "40117 Road 65N",
+        "Portage la Prairie",
+        "Production sites"
+      ],
+      "role": "CURRENT_CANADIAN_ENTITY_AND_PRODUCTION_LOCATION_UNDATED"
+    },
+    {
+      "id": "roquette-job-portage-20260904",
+      "kind": "article",
+      "company": "Roquette",
+      "url": "https://www.roquette.com/careers/job-opportunities/3rd-class-power-engineer2",
+      "required_text": [
+        "Portage la Prairie, Canada",
+        "Posted on September 04, 2026",
+        "state-of-the-art 1st-Class Steam/Refrigeration Facility",
+        "on-site, full-time shift position"
+      ],
+      "reviewed_publication_date": "2026-09-04",
+      "publication_date_text": "September 04, 2026",
+      "role": "DATED_CURRENT_PLANT_OPERATION_AND_HIRING"
+    },
+    {
+      "id": "roquette-legal-current",
+      "kind": "article",
+      "company": "Roquette",
+      "url": "https://www.roquette.com/legal/legal-notice",
+      "required_text": [
+        "may not republish any such information in any manner without the prior written consent of Roquette",
+        "third party websites may hyperlink to site provided they have prior written approval from Roquette"
+      ],
+      "role": "RIGHTS_BOUNDARY_REQUIRES_EXPLICIT_REVIEW"
+    },
+    {
+      "id": "cid-open-data-licence-metadata",
+      "kind": "article",
+      "company": "Cellcentric",
+      "url": "https://open.canada.ca/data/en/dataset/873cfcb0-1c9b-4a48-a366-076697069bb9",
+      "required_text": [
+        "Canadian Importers Database (2023)",
+        "Innovation, Science and Economic Development Canada",
+        "Licence: Open Government Licence - Canada"
+      ],
+      "role": "OPEN_GOVERNMENT_DATASET_LICENCE_METADATA_VERSION_SPECIFIC"
+    }
+  ]
+}

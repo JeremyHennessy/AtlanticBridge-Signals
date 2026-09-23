@@ -125,6 +125,22 @@ class ParserTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_article(body.replace(b"June 25", b"June 26"), source)
 
+    def test_article_reviewed_content_scope_is_explicit_and_fail_closed(self):
+        source = dict(SOURCE, kind="article", required_text=["supplier inquiries"],
+                      reviewed_content_selector="main")
+        body = b"<html><article><p>Unrelated PDF card</p></article><main><h1>Supplier page</h1><p>Contact for supplier inquiries</p></main></html>"
+        row = parse_article(body, source)[0]
+        self.assertIn("supplier inquiries", row["evidence_text"])
+        unscoped = dict(source)
+        unscoped.pop("reviewed_content_selector")
+        with self.assertRaises(ValueError):
+            parse_article(body, unscoped)
+        bad = dict(source, reviewed_content_selector="article")
+        with self.assertRaises(ValueError):
+            parse_article(body, bad)
+        with self.assertRaises(ValueError):
+            parse_article(body.replace(b"</main>", b"</main><main>duplicate</main>"), source)
+
     def test_atom_updated_not_publication(self):
         body = b'<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Canada office</title><link href="https://example.org/a"/><updated>2026-06-25T00:00:00Z</updated></entry></feed>'
         self.assertIsNone(parse_feed(body, dict(SOURCE, kind="feed"))[0]["source_publication_date"])
