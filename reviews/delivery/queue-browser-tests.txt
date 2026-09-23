@@ -1,0 +1,58 @@
+
+// Independent fixture contexts exercise qualification routes without promoting live data.
+export async function verifyOpportunityPaths(browser,options,base,label,out,check){
+  const context=await browser.newContext(options),page=await context.newPage(),errors=[];
+  page.on('pageerror',e=>errors.push(String(e)));
+  const fit=async suffix=>{const box=await page.evaluate(()=>({w:innerWidth,s:document.documentElement.scrollWidth}));check(`${label}: qualification path ${suffix} fits`,box.s<=box.w+2,JSON.stringify(box));};
+  try{
+    await page.goto(base+'#opportunities',{waitUntil:'networkidle'});
+    await page.locator('#opportunity-review-register').waitFor();
+    await page.locator('details:has(#opportunity-review-register)').evaluate(e=>e.open=true);
+    const real=register.decisions.find(r=>r.company_name==='Adyen Canada Ltd.'&&r.project_id===null);
+    const link=page.locator(`[data-review-decision="${real.id}"] .company-dossier-link`);
+    check(`${label}: actual company-only review has stable link`,await link.getAttribute('href')==='#company?id='+real.id);
+    await link.click();await page.locator('#work-save').waitFor();
+    check(`${label}: company-only dossier has actual name`,await page.locator('#company-title').innerText()===real.company_name);
+    check(`${label}: review dossier never inherits procurement supplier semantics`,!(await page.locator('#company-content').innerText()).includes('Supplier address country'));
+    check(`${label}: all company-only evidence available`,await page.locator('[data-company-review-evidence]').count()===real.evidence.length);
+    await page.locator('#work-action').fill('TEST ONLY: retain company-only investigation');
+    await page.locator('#work-notes').fill('TEST ONLY: notes must survive source outage');
+    await page.locator('#work-save').click();await page.waitForFunction(()=>document.querySelector('#work-save-state')?.textContent.includes('Saved in this browser'));
+    const saved=await page.evaluate(()=>localStorage.getItem('atlanticbridge.analyst-workspace.v1'));
+    await page.reload({waitUntil:'networkidle'});
+    check(`${label}: company-only notes survive reload`,await page.locator('#work-action').inputValue()==='TEST ONLY: retain company-only investigation');
+    await fit('actual company-only');await page.screenshot({path:path.join(out,`${label}-company-only-review.png`),fullPage:true});
+    await page.evaluate(()=>location.hash='#worklist');await page.locator('#worklist-view').waitFor({state:'visible'});
+    check(`${label}: company-only worklist is not a procurement count`,(await page.locator(`[data-worklist-id="${real.id}"]`).innerText()).includes('review evidence references'));
+    await page.locator(`[data-worklist-id="${real.id}"] .work-company-link`).click();await page.locator('#work-save').waitFor();
+    await page.route('**/data/company-reviews.json',route=>route.fulfill({status:503,body:'TEST review outage'}));
+    await page.reload({waitUntil:'networkidle'});
+    check(`${label}: review outage preserves exact work bytes`,await page.evaluate(()=>localStorage.getItem('atlanticbridge.analyst-workspace.v1'))===saved);
+    check(`${label}: saved company-only dossier survives evidence outage`,await page.locator('#work-action').inputValue()==='TEST ONLY: retain company-only investigation');
+    check(`${label}: saved review outage not fabricated supplier`,(await page.locator('#company-content').innerText()).includes('Saved country label'));
+    await page.unroute('**/data/company-reviews.json');
+    const today=new Date(await page.evaluate(()=>Date.now())).toISOString().slice(0,10);
+    const old=catalog.projects.find(p=>p.latest_public_date<'2025-01-01');
+    const ref={source_id:'TEST_ONLY_CURRENT_QUALIFICATION',source_url:'https://example.org/test-only-evidence',raw_sha256:'a'.repeat(64),observed_at:today+'T00:00:00Z',source_publication_date:today};
+    const qualified=(row)=>({...structuredClone(row),decision:'QUALIFIED_FOR_INVESTIGATION',review_date:today,reviewer:'TEST_ONLY_NOT_A_REAL_REVIEW',current_status_date:today,current_status_source_id:ref.source_id,evidence:[ref],checks:Object.fromEntries(api.checks.map(k=>[k,'SUPPORTED'])),check_sources:Object.fromEntries(api.checks.map(k=>[k,[ref.source_id]]))});
+    const fixture=structuredClone(register);
+    fixture.decisions=fixture.decisions.map(r=>r.project_id===old.id||r.id===real.id?qualified(r):r);
+    await page.route('**/data/company-reviews.json',route=>route.fulfill({contentType:'application/json',body:JSON.stringify(fixture)}));
+    await page.goto(base+'#opportunities?view=qualified',{waitUntil:'networkidle'});
+    check(`${label}: both qualified path regressions render`,await page.locator('[data-opportunity-id]').count()===2);
+    check(`${label}: company-only qualified card exists`,await page.locator(`[data-opportunity-id="review:${real.id}"]`).count()===1);
+    const oldCard=page.locator(`[data-opportunity-id="project:${old.id}"]`);
+    check(`${label}: old project qualifies on newer status evidence`,await oldCard.count()===1);
+    check(`${label}: old project date remains unmodified`,(await oldCard.locator('p.small.muted').innerText()).includes(String(new Date(old.latest_public_date).getUTCFullYear())));
+    check(`${label}: newer qualification source visible separately`,(await oldCard.innerText()).includes('Qualification status evidence'));
+    await fit('qualified fixtures');await page.screenshot({path:path.join(out,`${label}-qualified-path-fixtures.png`),fullPage:true});
+    await page.locator(`[data-opportunity-id="review:${real.id}"] .company-dossier-link`).click();await page.locator('#work-save').waitFor();
+    check(`${label}: qualification never overwrites saved work`,await page.locator('#work-action').inputValue()==='TEST ONLY: retain company-only investigation');
+    check(`${label}: new dossier shows qualification, not prediction`,(await page.locator('#company-content').innerText()).includes('Qualified for investigation'));
+    // Every current status date is expired here; changing the original project date cannot revive it.
+    fixture.decisions=fixture.decisions.map(r=>r.decision==='QUALIFIED_FOR_INVESTIGATION'?{...r,review_date:'2020-01-01',current_status_date:'2020-01-01',evidence:[{...ref,source_publication_date:'2020-01-01'}]}:r);
+    await page.goto(base+'#opportunities?view=qualified',{waitUntil:'networkidle'});
+    check(`${label}: both expired qualifications excluded`,await page.locator('[data-opportunity-id]').count()===0);
+    check(`${label}: path acceptance no page errors`,errors.length===0,errors.join(' | '));
+  }finally{await context.close();}
+}
