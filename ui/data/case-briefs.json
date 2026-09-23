@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "status": "REVIEWED_DISPOSITIONS_NOT_QUALIFIED_LEADS",
+  "brief_count": 5,
+  "briefs": [
+    {
+      "id": "682c685fa6b8e6cbea1647bf60fdac4ea6f268bb0df39b2559df1d8767743867",
+      "company_id": "682c685fa6b8e6cbea1647bf60fdac4ea6f268bb0df39b2559df1d8767743867",
+      "company_name": "Adyen Canada Ltd.",
+      "disposition": "MEMBERSHIP_NOT_ENTRY",
+      "title": "Membership documented; commercial requirement still to establish",
+      "reviewed_on": "2026-09-23",
+      "summary": "The retained July 2026 membership and affiliate evidence support a Canadian payment-network relationship and the named Canadian affiliate. They do not establish first Canadian entry, a new office, or a specific open commercial requirement.",
+      "next_action": "Identify a dated, concrete Canadian expansion or partnership requirement and resolve the intended source-use review before promotion.",
+      "documented_location": "Canada / payment-network participation",
+      "market_context": "Membership is a Canadian relationship, not a recommended office location or a market-fit score.",
+      "latest_source_publication_date": "2026-07-14",
+      "event_time_basis": "Dated membership document",
+      "evidence": [
+        {
+          "source_id": "adyen-payments-membership",
+          "source_url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member",
+          "entry_url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member",
+          "raw_sha256": "7510c3404dc406b7aaba876377314a66b588887ea6a526cc0df2d0839c839265",
+          "observed_at": "2026-09-22T21:56:16.007887+00:00",
+          "source_publication_date": "2026-07-14"
+        },
+        {
+          "source_id": "adyen-current-affiliate-20260701",
+          "source_url": "https://www.adyen.com/en_GB/legal/list-of-adyen-subprocessors",
+          "raw_sha256": "99809d9e90e2701593826411368db60999a21e5ea98b70adbd1de4a0d82b39f1",
+          "observed_at": "2026-09-23T02:08:05.722065+00:00",
+          "source_publication_date": "2026-07-01"
+        }
+      ],
+      "remaining_checks": [
+        "source_reuse"
+      ],
+      "source_use_state": "UNKNOWN",
+      "qualified": false,
+      "public_alert_allowed": false,
+      "predictive_score_allowed": false,
+      "market_fit_score": null
+    },
+    {
+      "id": "987ffa08cf1b1ee63966806f210ebb5c8a36e1ad76b689a2e824f2a1181ad218",
+      "company_id": "09c804fbe214143cfb4fb4898731c4f08dc4afae4ead98a47b6e3ce396eb7437",
+      "company_name": "Cellcentric",
+      "disposition": "PRESENCE_WITH_UNRESOLVED_DEMAND",
+      "title": "Burnaby presence supported; supplier demand remains unconfirmed",
+      "reviewed_on": "2026-09-23",
+      "summary": "Retained company and ISED evidence identify the Burnaby company/locality and current engineering context. The supplier-inquiry route is company-wide, not a Burnaby contract. Founding ownership must not be substituted for a current shareholder review.",
+      "next_action": "Review the company-wide supplier enquiry route for relevant civilian fuel-cell work, then confirm whether any requirement serves Burnaby. Verify shareholder changes and permission for the intended source use; retain dated Canadian-site evidence before qualification.",
+      "documented_location": "Burnaby, British Columbia",
+      "market_context": "Site-specific engineering context only. A wider hydrogen-market or supplier-fit conclusion has not been scored.",
+      "latest_source_publication_date": null,
+      "event_time_basis": "Undated current pages; observation dates remain separate",
+      "evidence": [
+        {
+          "source_id": "cellcentric-contact-current",
+          "source_url": "https://www.cellcentric.net/en-us/contact",
+          "raw_sha256": "f785b206a6a7788fedbad92b478d87a040c61e18d060f7aef92da79df3188d85",
+          "observed_at": "2026-09-23T02:32:35.968617+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "cellcentric-home-current",
+          "source_url": "https://www.cellcentric.net/en-us",
+          "raw_sha256": "122a564576c74b3d5917f0bda684c74114ec89aca15989902e0511df573b036c",
+          "observed_at": "2026-09-23T02:32:36.842947+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "cellcentric-supplier-current",
+          "source_url": "https://www.cellcentric.net/en-us/supplier",
+          "raw_sha256": "457e69ed43a9561f1163c4fac13b1ae31cd6767c4dea45c23beafb77f22380b2",
+          "observed_at": "2026-09-23T02:32:37.713785+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "cellcentric-ised-importer-current",
+          "source_url": "https://ised-isde.canada.ca/app/ixb/cid-bdic/productReport.html?hsCode=850300",
+          "raw_sha256": "c9f6c406b794926fcf97a588bd19b501ff4e45f46e489ce23bdedc2f13fa55d0",
+          "observed_at": "2026-09-23T02:32:39.616824+00:00",
+          "source_publication_date": null
+        }
+      ],
+      "remaining_checks": [
+        "corporate_group",
+        "source_reuse"
+      ],
+      "source_use_state": "UNKNOWN",
+      "qualified": false,
+      "public_alert_allowed": false,
+      "predictive_score_allowed": false,
+      "market_fit_score": null
+    },
+    {
+      "id": "f58c134e21b9dee9dc0f6ecae0623a7d17cf3805a208a34ff2aeed8508eca64f",
+      "company_id": "a827fa9bc84cc318b200d7294b14caff286f199cb8319d3068de2f8728d75ec8",
+      "company_name": "Roquette",
+      "disposition": "DIFFERENT_PROJECT_EVIDENCE",
+      "title": "Portage evidence does not qualify the Winnipeg R&D case",
+      "reviewed_on": "2026-09-23",
+      "summary": "The September 2026 plant vacancy and Roquette Canada location concern Portage la Prairie. The original record concerns a Winnipeg-datelined R&D collaboration, not an independently established Winnipeg facility. These are separate activities; the newer date and plant operator do not transfer to the R&D case.",
+      "next_action": "Obtain current, project-specific Winnipeg R&D evidence from a permitted primary source. Treat the Portage plant and its engineering vacancy separately; do not transfer their date, operator or activity to this case. Resolve the corporate source-use restrictions before publication or promotion.",
+      "documented_location": "Winnipeg R&D context / separate Portage la Prairie plant",
+      "market_context": "Manitoba activity is documented, but this is not a comparison or recommendation between the two locations.",
+      "latest_source_publication_date": "2026-09-04",
+      "event_time_basis": "Date belongs to the separate Portage vacancy",
+      "evidence": [
+        {
+          "source_id": "roquette-rd-20200619",
+          "source_url": "https://www.proteinindustriescanada.ca/news-releases/investment-to-further-pea-and-fava-bean-processing-on-the-prairies",
+          "raw_sha256": "f9f9538d9ebdcf6dc19ab4920295dc65468129441bc7e64b786f5305e2084563",
+          "observed_at": "2026-09-22T23:13:17.476531+00:00",
+          "source_publication_date": "2020-06-19"
+        },
+        {
+          "source_id": "roquette-locations-current",
+          "source_url": "https://www.roquette.com/locations",
+          "raw_sha256": "8a0ed3fb66a5580b5a3233605203bf0babdee31fa8f9ecfe6b9000cecabf2ddd",
+          "observed_at": "2026-09-23T02:32:42.291412+00:00",
+          "source_publication_date": null
+        },
+        {
+          "source_id": "roquette-job-portage-20260904",
+          "source_url": "https://www.roquette.com/careers/job-opportunities/3rd-class-power-engineer2",
+          "raw_sha256": "1bbb61d284e32681c9b2ae882e6e3e80ee4b6cc87be19b5e66708f9aadb75f4b",
+          "observed_at": "2026-09-23T02:32:43.119639+00:00",
+          "source_publication_date": "2026-09-04"
+        },
+        {
+          "source_id": "roquette-legal-current",
+          "source_url": "https://www.roquette.com/legal/legal-notice",
+          "raw_sha256": "1fd6dafe71b639cbf58a29c1367682bfc00dba1619c4f9f3e1a7cb9ee889532c",
+          "observed_at": "2026-09-23T02:32:43.896994+00:00",
+          "source_publication_date": null
+        }
+      ],
+      "remaining_checks": [
+        "legal_identity",
+        "corporate_group",
+        "civilian_scope",
+        "current_status",
+        "source_reuse"
+      ],
+      "source_use_state": "CONTRADICTED",
+      "qualified": false,
+      "public_alert_allowed": false,
+      "predictive_score_allowed": false,
+      "market_fit_score": null
+    },
+    {
+      "id": "a999d21a7e3b1e4eb82e050fbb97fa86e512eb2cc1d075a8e8985a6a2e24d0a4",
+      "company_id": "3f0ad81898ea05df0368eac2ab6daff93febad166894a482ed0764a439f7cd02",
+      "company_name": "Sanofi",
+      "disposition": "INAUGURATED_PRODUCTION_PENDING",
+      "title": "Influenza facility inaugurated; production remains conditional",
+      "reviewed_on": "2026-09-23",
+      "summary": "The dated September 16, 2026 issuer release inaugurates the Toronto Charles Best influenza building and calls the facility operational, but explicitly plans vaccine production for early 2027 subject to regulatory approval. This is a material expansion of an existing Canadian campus, not first entry or verified vaccine production. Exact facility operator/group and intended source reuse remain unresolved.",
+      "next_action": "Check regulatory approval and an actual production-start announcement for the Charles Best influenza building; do not substitute activity at the separate diphtheria/tetanus/pertussis facility. Confirm the facility legal operator and intended source-use terms before qualification.",
+      "documented_location": "Toronto, Ontario / Charles Best influenza building",
+      "market_context": "Expansion of an existing biomanufacturing campus; not first entry or a forecast of regional demand.",
+      "latest_source_publication_date": "2026-09-16",
+      "event_time_basis": "Inauguration report; prospective production is not actual production",
+      "evidence": [
+        {
+          "source_id": "sanofi-flu-inauguration-20260916",
+          "source_url": "https://sanoficanada.mediaroom.com/2026-09-16-Sanofi-inaugurates-new-flu-vaccine-facility,-Canadas-largest-biomanufacturing-investment",
+          "raw_sha256": "5c6547679ebd13e2ba316094051bddcd921645c05e70cebdaeaaea89d23e95b0",
+          "observed_at": "2026-09-22T21:08:09.417267+00:00",
+          "source_publication_date": "2026-09-16"
+        }
+      ],
+      "remaining_checks": [
+        "legal_identity",
+        "corporate_group",
+        "source_reuse"
+      ],
+      "source_use_state": "UNKNOWN",
+      "qualified": false,
+      "public_alert_allowed": false,
+      "predictive_score_allowed": false,
+      "market_fit_score": null
+    },
+    {
+      "id": "3d9755a52e8ced8db65f8e95b779db2b6731ccf17ad74c9f9a08af24f79ef211",
+      "company_id": "831d5d02c8df568c46d57b7c69b5a593a2ad457d9eecf3d4573e55b985a4f514",
+      "company_name": "Nature Energy",
+      "disposition": "PARTNER_WITHDRAWAL_PROJECT_CONTINUATION",
+      "title": "Foreign partner withdrew; the project continued under ÉDI",
+      "reviewed_on": "2026-09-23",
+      "summary": "The retained Énergir report states that Nature Energy withdrew in fiscal 2025 and that ÉDI acquired the Farnham site to continue the project. Development and planned deployment are not verified operation. This corrective history must not be presented as an active new Nature Energy entry.",
+      "next_action": "Do not treat Farnham as an active Nature Energy entry opportunity. Obtain a recent, permitted ÉDI project update before evaluating continuing development under its operator. Keep the fiscal-year withdrawal amendment separate from any future operational or ownership event.",
+      "documented_location": "Farnham, Québec / RNG project",
+      "market_context": "Continuing project development must be evaluated under the correct operator, separately from the withdrawn foreign partner.",
+      "latest_source_publication_date": null,
+      "event_time_basis": "Fiscal year 2025 withdrawal; exact publication day unknown",
+      "evidence": [
+        {
+          "source_id": "energir-farnham-fy2025-pdf-page52",
+          "source_url": "https://energir.com/files/energir_common/import/Fichiers/Corporatifs/Dev%20durable/Rapport-climat-2025_EN.pdf",
+          "raw_sha256": "bf156e3ae322bd12803a93a72c04f09fc35799393601de8c638556cc319a6cea",
+          "observed_at": "2026-09-22T23:53:46.951409+00:00",
+          "source_publication_date": null,
+          "page": 52,
+          "event_period": "Fiscal year 2025",
+          "publication_precision": "UNKNOWN"
+        }
+      ],
+      "remaining_checks": [
+        "legal_identity",
+        "corporate_group",
+        "civilian_scope",
+        "current_status",
+        "source_reuse"
+      ],
+      "source_use_state": "UNKNOWN",
+      "qualified": false,
+      "public_alert_allowed": false,
+      "predictive_score_allowed": false,
+      "market_fit_score": null
+    }
+  ],
+  "proofs": [
+    {
+      "artifact_id": 10718724645,
+      "archive_sha256": "46f6e0853b6848cc10d5982e54bebeac2bf810e6e3ede19062b470e6c39a75a6"
+    },
+    {
+      "artifact_id": 10724109813,
+      "archive_sha256": "6f5f5b169681f0bbc0b01d116f97cb3ee0a254385619f094cd101d8c98c415cc"
+    }
+  ],
+  "scope": "Five source-bound case dispositions; no independent customer review, legal-use permission, quantified market-fit or predictive validation."
+}
