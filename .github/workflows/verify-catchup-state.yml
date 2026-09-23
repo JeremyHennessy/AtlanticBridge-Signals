@@ -1,0 +1,59 @@
+name: Verify recovered source clocks
+on:
+  push:
+    branches: [diagnostic/monitor-schedule-20260923]
+    paths: [.github/workflows/verify-catchup-state.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: cd1cbc5c3d1894e5d06075e73422e8b5fe1ae20b
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - name: Verify exact original identities and first-observation clocks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/catchup
+          python - <<'PY'
+          import base64,hashlib,json,pathlib,subprocess,tempfile
+          from atlanticbridge.monitoring_checkpoint import validate,restore,checkpoint,health
+          from atlanticbridge.company_sources import Ledger
+          repo='repos/JeremyHennessy/AtlanticBridge-Signals'
+          oldref='49b2668507ad07c81b73cbe00fdc85a676576ca4';newref='432e01342b243c7250e6df2d631512cffed4514d'
+          def get(ref,path):
+              data=json.loads(subprocess.check_output(['gh','api',repo+'/contents/'+path+'?ref='+ref]))
+              return base64.b64decode(data['content'])
+          oldraw=get(oldref,'checkpoint.json');newraw=get(newref,'checkpoint.json')
+          old=validate(json.loads(oldraw));new=validate(json.loads(newraw))
+          oldrows={r['id']:r for r in old['tables']['company_observations']};newrows={r['id']:r for r in new['tables']['company_observations']}
+          assert len(oldrows)==373 and len(newrows)==381
+          assert oldrows.keys()<=newrows.keys()
+          assert all(r['first_seen']==newrows[k]['first_seen'] for k,r in oldrows.items())
+          assert all(r['last_seen']<=newrows[k]['last_seen'] for k,r in oldrows.items())
+          h=json.loads(get(newref,'health.json'));assert health(new)==h
+          assert h['successful_days']==2 and h['consecutive_successful_days']==2
+          assert h['review_only_change_count']==11 and h['public_alert_count']==0
+          with tempfile.TemporaryDirectory() as tmp:
+              ledger=Ledger(str(pathlib.Path(tmp)/'restore.sqlite'));restore(ledger,new)
+              assert ledger.db.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
+              assert checkpoint(ledger,runs=new['runs'])==new
+              ledger.close()
+          result={'schema_version':1,'original_commit':oldref,'recovered_commit':newref,'original_observations':373,'retained_observations':381,'original_ids_preserved':True,'all_original_first_seen_preserved':True,'last_seen_monotonic':True,'new_observations':8,'review_only_changes':11,'public_alerts':0,'successful_utc_dates':2,'exact_sqlite_restoration':True,'sqlite_integrity':'ok','original_checkpoint_sha256':hashlib.sha256(oldraw).hexdigest(),'recovered_checkpoint_sha256':hashlib.sha256(newraw).hexdigest(),'trigger':'manual_catchup_not_cron_validation'}
+          pathlib.Path('artifacts/catchup/report.json').write_text(json.dumps(result,indent=2)+'\n')
+          print(json.dumps(result,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: catchup-clock-verification
+          path: artifacts/catchup/
+          retention-days: 90
+          if-no-files-found: error
