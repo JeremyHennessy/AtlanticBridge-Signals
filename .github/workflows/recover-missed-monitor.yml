@@ -1,0 +1,55 @@
+name: Recover missed monitor once
+on:
+  push:
+    branches: [diagnostic/monitor-schedule-20260923]
+    paths: [.github/workflows/recover-missed-monitor.yml]
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: monitor-recovery-controller
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: cd1cbc5c3d1894e5d06075e73422e8b5fe1ae20b
+      - name: Verify exact baseline, active workflow and missing date before dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/recovery
+          python - <<'PY'
+          import subprocess,json,datetime,pathlib
+          root=pathlib.Path('artifacts/recovery');repo='repos/JeremyHennessy/AtlanticBridge-Signals'
+          def get(path):return json.loads(subprocess.check_output(['gh','api',repo+path]))
+          main=get('/branches/main')['commit']['sha'];wf=get('/actions/workflows/company-monitor.yml')
+          data=get('/contents/health.json?ref=monitoring-state')
+          import base64
+          health=json.loads(base64.b64decode(data['content']))
+          runs=get('/actions/workflows/company-monitor.yml/runs?branch=main&per_page=100')['workflow_runs']
+          now=datetime.datetime.now(datetime.timezone.utc);today=now.date().isoformat()
+          decision={'checked_at':now.isoformat(),'main':main,'workflow_state':wf['state'],'previous_health':health,'dispatch_accepted':False}
+          assert main=='cd1cbc5c3d1894e5d06075e73422e8b5fe1ae20b','Main changed; re-evaluate'
+          assert today=='2026-09-23' and (now.hour,now.minute)>=(9,37),'Recovery outside reviewed day/window'
+          assert wf['state']=='active','Do not override a disabled workflow'
+          active=[r for r in runs if r['status']!='completed']
+          attempted=[r for r in runs if r['created_at'][:10]==today and r['event'] in ('schedule','workflow_dispatch','push')]
+          if active or attempted or health['last_attempt_at'][:10]==today:
+              decision['outcome']='NO_DISPATCH_EXISTING_RUN_OR_STATE';decision['existing_runs']=[r['id'] for r in active+attempted]
+          else:
+              subprocess.run(['gh','api','--method','POST',repo+'/actions/workflows/company-monitor.yml/dispatches','-f','ref=main'],check=True)
+              decision['dispatch_accepted']=True;decision['outcome']='MANUAL_CATCH_UP_REQUESTED_NOT_SCHEDULE_PROOF'
+          (root/'dispatch.json').write_text(json.dumps(decision,indent=2)+'\n')
+          print(json.dumps({k:v for k,v in decision.items() if k!='previous_health'}))
+          PY
+          git archive --format=tar.gz HEAD > artifacts/recovery/baseline-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: missed-monitor-recovery
+          path: artifacts/recovery/
+          retention-days: 90
