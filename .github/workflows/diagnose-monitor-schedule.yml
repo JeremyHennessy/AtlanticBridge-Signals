@@ -1,0 +1,34 @@
+name: Inspect missing monitor schedule
+on:
+  push:
+    branches: [diagnostic/monitor-schedule-20260923]
+    paths: [.github/workflows/diagnose-monitor-schedule.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read trigger configuration and executions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts/diagnostic
+          gh api repos/JeremyHennessy/AtlanticBridge-Signals --jq '{default_branch,archived,disabled,pushed_at,created_at}' > artifacts/diagnostic/repository.json
+          gh api repos/JeremyHennessy/AtlanticBridge-Signals/actions/workflows/company-monitor.yml --jq '{id,name,path,state,created_at,updated_at}' > artifacts/diagnostic/workflow.json
+          gh api 'repos/JeremyHennessy/AtlanticBridge-Signals/actions/workflows/company-monitor.yml/runs?per_page=100' --jq '{total_count,runs:[.workflow_runs[]|{id,head_sha,head_branch,event,status,conclusion,created_at,updated_at,actor:.actor.login}]}' > artifacts/diagnostic/monitor-runs.json
+          gh api 'repos/JeremyHennessy/AtlanticBridge-Signals/actions/runs?event=schedule&per_page=100' --jq '{total_count,runs:[.workflow_runs[]|{id,name,event,status,conclusion,created_at,updated_at}]}' > artifacts/diagnostic/scheduled-runs.json
+          gh api repos/JeremyHennessy/AtlanticBridge-Signals/branches/main --jq '.commit.sha' > artifacts/diagnostic/main-sha.txt
+          gh api 'repos/JeremyHennessy/AtlanticBridge-Signals/contents/health.json?ref=monitoring-state' --jq '.content' | base64 -d > artifacts/diagnostic/health.json
+          date -u +%FT%TZ > artifacts/diagnostic/checked-at.txt
+          git archive --format=tar.gz cd1cbc5c3d1894e5d06075e73422e8b5fe1ae20b > artifacts/diagnostic/baseline-source.tar.gz
+          cat artifacts/diagnostic/repository.json artifacts/diagnostic/workflow.json artifacts/diagnostic/monitor-runs.json artifacts/diagnostic/scheduled-runs.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: monitor-schedule-diagnostic
+          path: artifacts/diagnostic/
+          retention-days: 90
