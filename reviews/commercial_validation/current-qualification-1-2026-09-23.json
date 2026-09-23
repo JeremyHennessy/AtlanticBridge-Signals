@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "purpose": "Bounded current-status and identity/group qualification evidence for five existing HOLD decisions. No automatic qualification, score, alert or commercial-reuse approval.",
+  "baseline_commit": "ad584e8e9e376d04750104dd9d8cfa939c527790",
+  "public_alert_allowed": false,
+  "sources": [
+    {
+      "id": "adyen-current-affiliate-20260701",
+      "kind": "article",
+      "company": "Adyen Canada Ltd.",
+      "url": "https://www.adyen.com/en_GB/legal/list-of-adyen-subprocessors",
+      "required_text": [
+        "Last Updated: July 1, 2026",
+        "wholly-owned affiliates",
+        "Adyen Canada Ltd."
+      ],
+      "reviewed_publication_date": "2026-07-01",
+      "publication_date_text": "July 1, 2026",
+      "role": "CURRENT_AFFILIATE_IDENTITY_GROUP_AND_CANADA_PRESENCE"
+    },
+    {
+      "id": "ubisoft-sherbrooke-current",
+      "kind": "article",
+      "company": "Ubisoft",
+      "url": "https://www.ubisoft.com/en-us/company/careers/locations/sherbrooke",
+      "required_text": [
+        "Today, there are more than thirty employees",
+        "We're looking for committed creators"
+      ],
+      "role": "CURRENT_STUDIO_OPERATION_AND_HIRING_PAGE_UNDATED"
+    },
+    {
+      "id": "accenture-stcatharines-current",
+      "kind": "article",
+      "company": "Accenture",
+      "url": "https://www.accenture.com/ca-en/careers/jobdetails?id=R00358752_en",
+      "required_text": [
+        "St. Catharines, Ontario",
+        "Accenture Niagara is growing",
+        "This role is located onsite at our St. Catharines office"
+      ],
+      "role": "CURRENT_ST_CATHARINES_HIRING_PAGE_UNDATED"
+    },
+    {
+      "id": "gd-montreal-hub-20260616",
+      "kind": "article",
+      "company": "Giesecke+Devrient",
+      "url": "https://www.gi-de.com/en/about-us/press/press-releases/g-d-launches-ai-hub-in-montreal-to-advance-secure-ai-for-critical-infrastructure",
+      "required_text": [
+        "launch of its AI Hub in Montréal, Canada",
+        "G+D has operated in Canada since 1962",
+        "First projects of the hub already started"
+      ],
+      "reviewed_publication_date": "2026-06-16",
+      "publication_date_text": "16/06/2026",
+      "role": "DATED_HUB_LAUNCH_AND_EXISTING_CANADIAN_PRESENCE"
+    },
+    {
+      "id": "sanofi-canada-current",
+      "kind": "article",
+      "company": "Sanofi",
+      "url": "https://www.sanofi.com/en/canada/our-company",
+      "required_text": [
+        "A Leading Biopharma Company in Canada",
+        "new state-of-the-art influenza vaccine manufacturing facility in Toronto"
+      ],
+      "role": "CURRENT_CANADA_MANUFACTURING_PAGE_UNDATED"
+    }
+  ]
+}
