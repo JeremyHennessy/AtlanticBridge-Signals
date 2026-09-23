@@ -17,9 +17,11 @@ export async function capturePage(page,filename){
   const ext=path.extname(filename),stem=filename.slice(0,-ext.length),sections=[];
   try{
     for(const [index,y] of plan.offsets.entries()){
-      await page.evaluate(top=>window.scrollTo({left:0,top,behavior:'instant'}),y);
-      await page.waitForFunction(top=>Math.abs(scrollY-top)<=2,y);
-      const position=await page.evaluate(()=>({y:scrollY,height:Math.max(document.documentElement.scrollHeight,document.body?.scrollHeight||0)}));
+      const position=await page.evaluate(async top=>{
+        window.scrollTo(0,top);
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        return {y:scrollY,height:Math.max(document.documentElement.scrollHeight,document.body?.scrollHeight||0)};
+      },y);
       if(position.height!==dims.height)throw Error('Page height changed during capture; do not silently truncate');
       const file=`${stem}-part-${String(index+1).padStart(3,'0')}${ext}`;
       await page.screenshot({path:file,fullPage:false});
@@ -28,7 +30,7 @@ export async function capturePage(page,filename){
     if(sections[0].top>2||sections.at(-1).bottom<dims.height-2||sections.some((s,i)=>i&&s.top>sections[i-1].bottom))throw Error('Screenshot coverage has a gap');
     const report={mode:plan.mode,height:dims.height,viewportHeight:dims.viewportHeight,devicePixelRatio:dims.dpr,fullVerticalCoverage:true,sections};
     fs.writeFileSync(stem+'-capture.json',JSON.stringify(report,null,2)+'\n');return report;
-  }finally{await page.evaluate(({x,y})=>window.scrollTo({left:x,top:y,behavior:'instant'}),dims);}
+  }finally{await page.evaluate(({x,y})=>window.scrollTo(x,y),dims);}
 }
 export async function verifyCaptureLimit(browser,options,label,out,check){
   const context=await browser.newContext(options),page=await context.newPage();
