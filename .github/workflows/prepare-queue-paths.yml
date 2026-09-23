@@ -1,0 +1,61 @@
+name: Prepare bounded queue path repair
+on:
+  push:
+    branches: [fix/qualification-queue-paths-20260923]
+    paths: [.github/workflows/prepare-queue-paths.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply exact local-tested source edits
+        run: |
+          test "$GITHUB_REF_NAME" = 'fix/qualification-queue-paths-20260923'
+          test "$(git rev-parse HEAD^)" = '144d08b91a71afcc5df8777485ceda4e3e1db47d'
+          python scripts/_prepare_queue_paths.py
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p=Path('tests/opportunities_acceptance.mjs');s=p.read_text()
+          s=s.replace("await page.locator('#opportunity-review-register').waitFor();","await page.locator('#opportunity-review-register').waitFor({state:'attached'});")
+          s=s.replace("await page.goto(base+'#opportunities?view=qualified',{waitUntil:'networkidle'});","await page.goto(base+'#opportunities?view=qualified',{waitUntil:'networkidle'});await page.reload({waitUntil:'networkidle'});")
+          p.write_text(s)
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='a27e6066dd3b5012e8ef7c9214fd4dc7bd2da2166196b73cf2025b86be7a40c1'
+          PY
+      - name: Run all deterministic regressions
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
+          node --check tests/opportunities_acceptance.mjs
+          git diff --check
+          test -z "$(git diff --name-only -- ui/data ui/style.css ui/workspace.css)"
+      - name: Commit source changes without workflow modifications
+        run: |
+          git add ui/opportunities.js ui/workbench.js ui/reviewed.js tests/test_opportunities.cjs tests/opportunities_acceptance.mjs tests/ui_visual_acceptance.mjs
+          test -z "$(git diff --cached --name-only -- .github/workflows)"
+          git config user.name 'AtlanticBridge queue repair'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Repair company-only and older-project qualification paths'
+          mkdir -p artifacts/queue-paths
+          git rev-parse HEAD > artifacts/queue-paths/prepared-head.txt
+          git archive --format=tar.gz HEAD > artifacts/queue-paths/tested-source.tar.gz
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: queue-paths-prepared
+          path: artifacts/queue-paths/
+          retention-days: 30
+          if-no-files-found: error
