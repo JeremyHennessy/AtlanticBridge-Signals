@@ -1,3 +1,4 @@
+import {verifyMonitorReview} from './monitor_review_acceptance.mjs';
 import assert from "node:assert/strict";
 import {verifyOpportunities,verifyOpportunityPaths} from "./opportunities_acceptance.mjs";
 import {verifyReviewed} from "./reviewed_acceptance.mjs";
@@ -65,7 +66,7 @@ async function fetchLivePayload(page,label) {
   return validateLivePayload(payload,label);
 }
 async function exactAssets(page, label) {
-  for (const name of ["index.html","app.js","styles.css","workspace.js","workbench.js","workspace.css","reviewed.js","opportunities.js","data/company-reviews.json","data/reviewed-evidence.json","data/dashboard.json"]) {
+  for (const name of ["index.html","app.js","styles.css","workspace.js","workbench.js","workspace.css","reviewed.js","opportunities.js","monitor-review.js","data/company-reviews.json","data/reviewed-evidence.json","data/dashboard.json"]) {
     const actual=await page.evaluate(async name=>{const r=await fetch(new URL(name,location.href),{cache:"no-store"});if(!r.ok)throw new Error(`Asset HTTP ${r.status}: ${name}`);return r.text();},name);
     const expected=fs.readFileSync(path.join(root,"ui",name),"utf8");
     check(`${label}: ${name.endsWith(".json")?"identical audited payload":"exact deployed asset"} ${name}`,name.endsWith(".json")?isDeepStrictEqual(JSON.parse(actual),JSON.parse(expected)):actual===expected);
@@ -259,6 +260,7 @@ async function run(label,type,options) {
     await verifyReviewed(browser,options,base,label,out,check);
     await verifyOpportunities(browser,options,base,label,out,check);
     await verifyOpportunityPaths(browser,options,base,label,out,check);
+    await verifyMonitorReview(browser,options,base,label,out,check);
     check(`${label}: no console or page errors`,errors.length===0,errors.join(" | "));
     // Failure tests use a separate context: expected network errors are not mixed with normal acceptance.
     const failed=await browser.newContext(options);const broken=await failed.newPage();

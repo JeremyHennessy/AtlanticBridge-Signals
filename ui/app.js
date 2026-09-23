@@ -757,6 +757,7 @@ function route() {
 function bindEvents() {
   bindWorkEvents();
   bindOpportunityQueue();
+  $("monitor-review-load").addEventListener("click",loadMonitorReview);
   const mobileFilters=window.matchMedia("(max-width:760px)");
   if(mobileFilters.matches)$("advanced-filters").open=false;
   mobileFilters.addEventListener("change",event=>{if(!event.matches)$("advanced-filters").open=true;});
