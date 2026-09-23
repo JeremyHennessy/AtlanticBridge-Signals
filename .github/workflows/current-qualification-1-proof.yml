@@ -1,0 +1,72 @@
+name: Current qualification source proof
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'reviews/commercial_validation/current-qualification-1-2026-09-23.json'
+      - '.github/workflows/current-qualification-1-proof.yml'
+      - 'docs/CURRENT_QUALIFICATION_1_2026_09_23.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install project and run regressions
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -q
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
+      - name: Capture five reviewed sources twice on one isolated ledger
+        run: |
+          mkdir -p artifacts/current-qualification-1
+          python scripts/probe_company_sources.py --manifest reviews/commercial_validation/current-qualification-1-2026-09-23.json --output artifacts/current-qualification-1/first --state artifacts/current-qualification-1/state.sqlite
+          python scripts/probe_company_sources.py --manifest reviews/commercial_validation/current-qualification-1-2026-09-23.json --output artifacts/current-qualification-1/second --state artifacts/current-qualification-1/state.sqlite
+      - name: Verify exact source set, hashes and replay
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('artifacts/current-qualification-1')
+          wanted={'adyen-current-affiliate-20260701','ubisoft-sherbrooke-current','accenture-stcatharines-current','gd-montreal-hub-20260616','sanofi-canada-current'}
+          for stage in ('first','second'):
+              report=json.loads((root/stage/'report.json').read_text())
+              assert report['summary']['sources_requested']==5
+              assert report['summary']['sources_observed']==5
+              assert report['summary']['source_failures']==0
+              assert report['summary']['observations']==5
+              assert {s['id'] for s in report['sources']}==wanted
+              assert not report['failures']
+              for response in report['responses']:
+                  if 'sha256' in response:
+                      raw=(root/stage/'raw'/(response['sha256']+'.bin')).read_bytes()
+                      assert hashlib.sha256(raw).hexdigest()==response['sha256']
+          a=json.loads((root/'first/report.json').read_text())
+          b=json.loads((root/'second/report.json').read_text())
+          assert len(b['events'])==0
+          by_a={r['id']:r for r in a['observations']}
+          by_b={r['id']:r for r in b['observations']}
+          assert by_a.keys()==by_b.keys()
+          for rid in by_a:
+              for k in ('source_id','source_record_id','company_candidate','source_publication_date','source_url','evidence_text'):
+                  assert by_a[rid][k]==by_b[rid][k]
+          PY
+      - name: Preserve exact tested source
+        if: always()
+        run: |
+          mkdir -p artifacts/current-qualification-1
+          git rev-parse HEAD > artifacts/current-qualification-1/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/current-qualification-1/tested-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: current-qualification-1-${{ github.event.pull_request.head.sha || github.sha }}
+          path: artifacts/current-qualification-1/
+          retention-days: 90
+          if-no-files-found: error
