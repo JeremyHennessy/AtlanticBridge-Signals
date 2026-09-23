@@ -1,0 +1,101 @@
+name: Verified evidence retention
+on:
+  pull_request:
+    branches: [main]
+    paths: ['scripts/archive_evidence.py', 'scripts/fetch_accepted_proof.py', 'tests/test_evidence_archive.py', '.github/workflows/evidence-retention.yml', '.github/workflows/pilot-release-proof.yml', 'docs/EVIDENCE_RETENTION_2026_09_22.md']
+  push:
+    branches: [main]
+    paths: ['scripts/archive_evidence.py', 'scripts/fetch_accepted_proof.py', 'tests/test_evidence_archive.py', '.github/workflows/evidence-retention.yml']
+  workflow_run:
+    workflows: [Persistent company monitoring]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '17 11 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('archive-proof-{0}', github.event.pull_request.number) || 'company-monitor-production' }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -v
+          node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
+  archive:
+    needs: verify
+    if: >-
+      needs.verify.result == 'success' &&
+      ((github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'feature/evidence-retention-20260922') ||
+      (github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_repository.full_name == github.repository)))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - name: Isolate proof state or read production metadata branch
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = 'pull_request' ]; then
+            mkdir -p "$RUNNER_TEMP/archive-state"
+          else
+            git fetch --no-tags origin monitoring-state
+            git worktree add --detach "$RUNNER_TEMP/archive-state" FETCH_HEAD
+          fi
+      - name: Archive accepted evidence and verify actual restoration
+        id: archive
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/archive_evidence.py --state-dir "$RUNNER_TEMP/archive-state" --report-dir artifacts/retention
+      - name: Commit archive metadata only after production attempt
+        if: github.event_name != 'pull_request'
+        run: |
+          test -f "$RUNNER_TEMP/archive-state/archive-attempt.json"
+          git -C "$RUNNER_TEMP/archive-state" config user.name 'AtlanticBridge evidence retention'
+          git -C "$RUNNER_TEMP/archive-state" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$RUNNER_TEMP/archive-state" add archive-attempt.json
+          for file in archive-health.json archive-manifests; do
+            if [ -e "$RUNNER_TEMP/archive-state/$file" ]; then git -C "$RUNNER_TEMP/archive-state" add "$file"; fi
+          done
+          git -C "$RUNNER_TEMP/archive-state" diff --cached --name-only | grep -Ev '^(archive-attempt.json|archive-health.json|archive-manifests/)' > /tmp/unexpected-archive-paths || true
+          test ! -s /tmp/unexpected-archive-paths
+          git -C "$RUNNER_TEMP/archive-state" commit -m "Record evidence archive ${GITHUB_RUN_ID}"
+          git -C "$RUNNER_TEMP/archive-state" push origin HEAD:refs/heads/monitoring-state
+          git -C "$RUNNER_TEMP/archive-state" rev-parse HEAD > artifacts/retention/archive-data-commit.txt
+      - name: Preserve exact tested code and non-sensitive report
+        if: always()
+        run: |
+          mkdir -p artifacts/retention
+          git rev-parse HEAD > artifacts/retention/tested-commit.txt
+          git archive --format=tar.gz HEAD > artifacts/retention/tested-source.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence-retention-${{ github.run_id }}
+          path: artifacts/retention/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Keep incomplete archive attempts failed
+        if: steps.archive.outcome != 'success'
+        run: exit 1
