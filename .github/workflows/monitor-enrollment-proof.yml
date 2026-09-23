@@ -36,9 +36,11 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
+          import sys
+          sys.path.insert(0, str(Path('scripts').resolve()))
           from atlanticbridge.monitoring_checkpoint import validate
-          from scripts.archive_evidence import PINS
-          from scripts.run_company_monitor import reviewed_additions
+          from archive_evidence import PINS
+          from run_company_monitor import reviewed_additions
           manifest=json.loads(Path('reviews/company_sources/pilot-2026-09-22.json').read_text())
           state=validate(json.loads(Path('artifacts/enrollment/starting-checkpoint.json').read_text()))
           known={r['id'] for r in state['tables']['company_source_state']}
