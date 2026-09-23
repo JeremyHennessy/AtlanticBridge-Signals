@@ -1,0 +1,10 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),api=require('../ui/case-briefs.js');
+const load=()=>JSON.parse(fs.readFileSync('ui/data/case-briefs.json'));
+test('five validated dispositions retain stable dossier identity',()=>{const d=api.validate(load());assert.equal(d.brief_count,5);for(const b of d.briefs)assert.equal(api.get(d,b.company_id).id,b.id);});
+test('disposition cannot enable probability, public alert or qualification',()=>{for(const k of ['qualified','public_alert_allowed','predictive_score_allowed','market_fit_score']){const d=load();d.briefs[0][k]=true;assert.throws(()=>api.validate(d));}});
+test('duplicate dossiers rejected',()=>{const d=load();d.briefs[1].company_id=d.briefs[0].company_id;assert.throws(()=>api.validate(d));});
+test('PDF evidence remains explicitly undated with page locator',()=>{const b=api.validate(load()).briefs.find(b=>b.company_name==='Nature Energy');assert.equal(b.evidence[0].source_publication_date,null);assert.equal(b.evidence[0].page,52);});
+test('invented PDF publication date does not pass evidence binding',()=>{const d=load(),b=d.briefs.find(b=>b.company_name==='Nature Energy');b.latest_source_publication_date='2025-01-01';assert.throws(()=>api.validate(d),/Unbound/);});
+test('restricted corporate references do not suppress independent source reference',()=>{const d=api.validate(load()),b=d.briefs.find(b=>b.company_name==='Roquette');for(const e of b.evidence)assert.equal(api.linkAllowed(b,e),new URL(e.source_url).hostname!=='www.roquette.com');});
+test('unsafe URLs or raw hashes fail closed',()=>{for(const mutate of [e=>e.source_url='javascript:alert(1)',e=>e.raw_sha256='not-source',e=>e.page=-1]){const d=load();mutate(d.briefs[0].evidence[0]);assert.throws(()=>api.validate(d));}});
+test('future review or publication evidence fails closed',()=>{const d=load();d.briefs[0].reviewed_on='2099-01-01';assert.throws(()=>api.validate(d));});

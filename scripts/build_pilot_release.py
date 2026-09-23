@@ -185,14 +185,16 @@ def build(documentary_zip, monitor_zip, qualification_zip):
     return catalog,register,cohort
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--documentary-proof',required=True);ap.add_argument('--monitor-proof',required=True);ap.add_argument('--qualification-proof',required=True);ap.add_argument('--qualification2-proof',required=True);ap.add_argument('--check',action='store_true');args=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--documentary-proof',required=True);ap.add_argument('--monitor-proof',required=True);ap.add_argument('--qualification-proof',required=True);ap.add_argument('--qualification2-proof',required=True);ap.add_argument('--original-six-proof',required=True);ap.add_argument('--nature-pdf-proof',required=True);ap.add_argument('--check',action='store_true');args=ap.parse_args()
     outputs=build(args.documentary_proof,args.monitor_proof,args.qualification_proof)
     from qualification_progress2 import apply
     outputs=apply(outputs,args.qualification2_proof,archive,checked_report)
-    for relative,value in zip(('ui/data/reviewed-evidence.json','ui/data/company-reviews.json','reviews/pilot/operational-cohort-2026-09-22.json'),outputs):
+    from case_dispositions import apply as dispositions
+    outputs=dispositions(outputs,args.original_six_proof,args.nature_pdf_proof,archive,checked_report)
+    for relative,value in zip(('ui/data/reviewed-evidence.json','ui/data/company-reviews.json','reviews/pilot/operational-cohort-2026-09-22.json','ui/data/case-briefs.json'),outputs):
         path=ROOT/relative;encoded=json.dumps(value,indent=2,ensure_ascii=False)+'\n'
         if args.check:
             if path.read_text()!=encoded:raise ValueError('Non-deterministic or mismatched release data: '+relative)
         else:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(encoded)
-    print(json.dumps({'reviewed_projects':15,'documented_triage_decisions':20,'source_local_review_targets':50,'current_qualification_sources':14,'qualified_for_investigation':0,'fifty_company_monitoring_qualification_complete':False,'predictive_validation_complete':False}))
+    print(json.dumps({'reviewed_projects':15,'documented_triage_decisions':20,'source_local_review_targets':50,'current_qualification_sources':14,'completed_case_dispositions':5,'qualified_for_investigation':0,'fifty_company_monitoring_qualification_complete':False,'predictive_validation_complete':False}))
 if __name__=='__main__':main()

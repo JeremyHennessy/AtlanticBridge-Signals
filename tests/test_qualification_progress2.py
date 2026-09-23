@@ -10,10 +10,10 @@ q=importlib.util.module_from_spec(spec);spec.loader.exec_module(q)
 def load():return json.loads((ROOT/'ui/data/company-reviews.json').read_text())
 class QualificationProgressTwoTests(unittest.TestCase):
     def setUp(self):self.data=load();self.rows={r['company_name']:r for r in self.data['decisions']}
-    def test_remaining_eighteen_decisions_are_unchanged(self):
-        rows=[r for r in self.data['decisions'] if r['company_name'] not in ('Cellcentric','Roquette')]
+    def test_remaining_sixteen_decisions_are_unchanged(self):
+        rows=[r for r in self.data['decisions'] if r['company_name'] not in ('Cellcentric','Roquette','Sanofi','Nature Energy')]
         raw=json.dumps(rows,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
-        self.assertEqual(hashlib.sha256(raw).hexdigest(),'075754f3c477dba5907eb52d444a8e10b2f96c7fd72478e2b53b3404c0a431b0')
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),'ddc66ba3d1c99c74d491564ab0700abaf5c0cab6344147b3ee8e062b7a1433ed')
     def test_cellcentric_entity_is_source_bound_not_parent_guess(self):
         r=self.rows['Cellcentric'];self.assertEqual(r['checks']['legal_identity'],'SUPPORTED')
         self.assertEqual(set(r['check_sources']['legal_identity']),{'cellcentric-contact-current','cellcentric-ised-importer-current'})

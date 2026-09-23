@@ -48,17 +48,19 @@ class PilotReleaseTests(unittest.TestCase):
         self.assertEqual(adyen['current_status_date'],'2026-07-01')
         self.assertEqual(adyen['current_status_source_id'],'adyen-current-affiliate-20260701')
         self.assertEqual(adyen['decision'],'HOLD')
-        for name in ('Ubisoft','Accenture','Sanofi'):
+        for name in ('Ubisoft','Accenture'):
             self.assertEqual(by[name]['checks']['current_status'],'SUPPORTED')
             self.assertEqual(by[name]['checks']['civilian_scope'],'SUPPORTED')
             self.assertIsNone(by[name]['current_status_date'])
             self.assertEqual(by[name]['decision'],'HOLD')
+        self.assertEqual(by['Sanofi']['current_status_date'],'2026-09-16')
+        self.assertEqual(by['Sanofi']['current_status_source_id'],'sanofi-flu-inauguration-20260916')
         gd=by['Giesecke+Devrient']
         self.assertEqual(gd['checks']['current_status'],'SUPPORTED')
         self.assertEqual(gd['checks']['civilian_scope'],'UNKNOWN')
         self.assertEqual(gd['current_status_date'],'2026-06-16')
         self.assertEqual(gd['decision'],'HOLD')
-        self.assertEqual({p['artifact_id'] for p in d['proofs']},{build.DOC_ID,build.MON_ID,build.QUAL_ID,10729682735})
+        self.assertEqual({p['artifact_id'] for p in d['proofs']},{build.DOC_ID,build.MON_ID,build.QUAL_ID,10729682735,10718724645,10724109813})
 
     def test_wrong_artifact_cannot_build_data(self):
         import tempfile

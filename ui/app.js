@@ -815,11 +815,13 @@ async function init() {
     fetchEvidence("data/live-signals.json",validateLivePayload),
     fetchEvidence("data/reviewed-evidence.json",ABReviewed.validate),
     fetchEvidence("data/company-reviews.json",ABOpportunities.validate),
+    fetchEvidence("data/case-briefs.json",ABCaseBriefs.validate),
   ]);
   state.data=results[0].status==="fulfilled"?results[0].value:null;
   state.live=results[1].status==="fulfilled"?results[1].value:unavailableLivePayload("The current signal source could not be loaded. Saved work and available historical evidence remain accessible.");
   reviewedCatalog=results[2].status==="fulfilled"?results[2].value:null;
   opportunityRegister=results[3].status==="fulfilled"?results[3].value:null;
+  caseBriefs=results[4].status==="fulfilled"?results[4].value:null;renderCaseBriefIndex();
   loadWatched();renderMetrics();renderSignals();renderReviewedProjects();
   $("monitoring-refresh").addEventListener("click",loadMonitoringHealth);
   if(state.data){loadSaved();renderSources();renderResearch();renderCases();$("load-status").hidden=true;}
