@@ -37,7 +37,7 @@
 
 let reviewedCatalog=null;
 function reviewedProject(id){return reviewedCatalog?.projects.find(p=>p.id===id)||null;}
-function workFeedFor(id){const p=reviewedProject(id);return p?{source:p.source}:state.live;}
+function workFeedFor(id){const p=reviewedProject(id);if(p)return {source:p.source};const c=typeof ABOpportunities!=='undefined'?ABOpportunities.reviewGroups(typeof opportunityRegister==='undefined'?null:opportunityRegister).get(id):null;return c?{source:c.source}:state.live;}
 function renderReviewedProjects(){
   const root=$('reviewed-project-list');if(!root)return;
   if(!reviewedCatalog){root.innerHTML='<p>Reviewed project history is unavailable. Existing procurement signals and saved notes are unaffected.</p>';return;}

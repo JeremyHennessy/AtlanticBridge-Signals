@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {verifyOpportunities} from "./opportunities_acceptance.mjs";
+import {verifyOpportunities,verifyOpportunityPaths} from "./opportunities_acceptance.mjs";
 import {verifyReviewed} from "./reviewed_acceptance.mjs";
 import {verifyLiveDossiers,verifyWorkspace} from "./workspace_acceptance.mjs";
 import fs from "node:fs";
@@ -258,6 +258,7 @@ async function run(label,type,options) {
     await verifyWorkspace(browser,options,base,label,out,check);
     await verifyReviewed(browser,options,base,label,out,check);
     await verifyOpportunities(browser,options,base,label,out,check);
+    await verifyOpportunityPaths(browser,options,base,label,out,check);
     check(`${label}: no console or page errors`,errors.length===0,errors.join(" | "));
     // Failure tests use a separate context: expected network errors are not mixed with normal acceptance.
     const failed=await browser.newContext(options);const broken=await failed.newPage();
