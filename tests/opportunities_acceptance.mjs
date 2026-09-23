@@ -1,3 +1,4 @@
+import {capturePage} from './bounded_screenshot.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
@@ -17,7 +18,7 @@ export async function verifyOpportunities(browser,options,base,label,out,check){
     check(`${label}: opportunity register decision count`,await page.locator('[data-review-decision]').count()===20);
     check(`${label}: opportunity qualification is not fabricated`,await page.locator('#opportunity-qualified-count').innerText()==='0');
     check(`${label}: opportunity existing watch store untouched`,await page.evaluate(()=>localStorage.getItem('atlanticbridge.analyst-workspace.v1')===null||JSON.parse(localStorage.getItem('atlanticbridge.analyst-workspace.v1')).entries.length===0));
-    await fit('current');await page.screenshot({path:path.join(out,`${label}-opportunity-current.png`),fullPage:true});
+    await fit('current');await capturePage(page,path.join(out,`${label}-opportunity-current.png`));
     await page.locator('[data-opportunity-view="qualified"]').click();
     check(`${label}: qualified empty state explains held evidence`,(await page.locator('#opportunity-list').innerText()).includes('No loaded current item has passed every qualification check'));
     await page.locator('[data-opportunity-view="history"]').click();
@@ -27,7 +28,7 @@ export async function verifyOpportunities(browser,options,base,label,out,check){
     check(`${label}: opportunity search narrows source-local records`,await page.locator('[data-opportunity-id]').count()===1);
     await page.reload({waitUntil:'networkidle'});
     check(`${label}: opportunity URL search survives reload`,await page.locator('#opportunity-search').inputValue()==='cellcentric'&&await page.locator('[data-opportunity-id]').count()===1);
-    await fit('searched history');await page.screenshot({path:path.join(out,`${label}-opportunity-history.png`),fullPage:true});
+    await fit('searched history');await capturePage(page,path.join(out,`${label}-opportunity-history.png`));
     await page.locator('#opportunity-list .company-dossier-link').first().click();await page.locator('#work-action').waitFor();
     const project=catalog.projects.find(p=>p.company_name.toLowerCase().includes('cellcentric'));
     check(`${label}: opportunity opens actual project dossier`,await page.locator('#company-title').innerText()===project.company_name);
@@ -46,7 +47,7 @@ export async function verifyOpportunities(browser,options,base,label,out,check){
     check(`${label}: all queue sources unavailable not zero activity`,await page.locator('#opportunity-current-count').innerText()==='Unverified');
     check(`${label}: independent failure warnings visible`,(await page.locator('#opportunity-coverage').innerText()).includes('Missing coverage is not zero activity'));
     check(`${label}: all source failures preserve notes bytes`,await page.evaluate(()=>localStorage.getItem('atlanticbridge.analyst-workspace.v1'))===saved);
-    await page.screenshot({path:path.join(out,`${label}-opportunity-unavailable.png`),fullPage:true});
+    await capturePage(page,path.join(out,`${label}-opportunity-unavailable.png`));
     check(`${label}: opportunity no JavaScript page errors`,errors.length===0,errors.join(' | '));
   }finally{await context.close();}
 }
@@ -73,7 +74,7 @@ export async function verifyOpportunityPaths(browser,options,base,label,out,chec
     const saved=await page.evaluate(()=>localStorage.getItem('atlanticbridge.analyst-workspace.v1'));
     await page.reload({waitUntil:'networkidle'});
     check(`${label}: company-only notes survive reload`,await page.locator('#work-action').inputValue()==='TEST ONLY: retain company-only investigation');
-    await fit('actual company-only');await page.screenshot({path:path.join(out,`${label}-company-only-review.png`),fullPage:true});
+    await fit('actual company-only');await capturePage(page,path.join(out,`${label}-company-only-review.png`));
     await page.evaluate(()=>location.hash='#worklist');await page.locator('#worklist-view').waitFor({state:'visible'});
     check(`${label}: company-only worklist is not a procurement count`,(await page.locator(`[data-worklist-id="${real.id}"]`).innerText()).includes('review evidence references'));
     await page.locator(`[data-worklist-id="${real.id}"] .work-company-link`).click();await page.locator('#work-save').waitFor();
@@ -97,7 +98,7 @@ export async function verifyOpportunityPaths(browser,options,base,label,out,chec
     check(`${label}: old project qualifies on newer status evidence`,await oldCard.count()===1);
     check(`${label}: old project date remains unmodified`,(await oldCard.locator('p.small.muted').innerText()).includes(String(new Date(old.latest_public_date).getUTCFullYear())));
     check(`${label}: newer qualification source visible separately`,(await oldCard.innerText()).includes('Qualification status evidence'));
-    await fit('qualified fixtures');await page.screenshot({path:path.join(out,`${label}-qualified-path-fixtures.png`),fullPage:true});
+    await fit('qualified fixtures');await capturePage(page,path.join(out,`${label}-qualified-path-fixtures.png`));
     await page.locator(`[data-opportunity-id="review:${real.id}"] .company-dossier-link`).click();await page.locator('#work-save').waitFor();
     check(`${label}: qualification never overwrites saved work`,await page.locator('#work-action').inputValue()==='TEST ONLY: retain company-only investigation');
     check(`${label}: new dossier shows qualification, not prediction`,(await page.locator('#company-content').innerText()).includes('Qualified for investigation'));
