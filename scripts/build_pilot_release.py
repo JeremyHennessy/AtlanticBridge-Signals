@@ -19,6 +19,7 @@ SIX_SHA = '6777f23591c1263da741133f69de62757ca256b1267a7663afb1dc3240a80125'
 DOC_ID, DOC_SHA = 10724340100, 'eb1a6546cf4306118d0dc77cbb7e665468230a169cefed7ed5dc56ef52acaf0a'
 MON_ID, MON_SHA = 10720884358, 'db6e1b2055d27d3bf945a2c2ce228321b3425d1dea4c6baaf4d9d78f7713e802'
 QUAL_ID, QUAL_SHA = 10729310481, '478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365'
+QUAL2_ID, QUAL2_SHA = 10729682735, '39892597bcdf03f6ba7e093ece34c7618f0dff8450d8c77c30951745b1ff2064'
 CHECKS = ('legal_identity', 'corporate_group', 'civilian_scope', 'canadian_relevance', 'current_status', 'source_reuse')
 NEXT = {
  'cellcentric-burnaby':'Confirm the current Canadian operating entity, production activity and civilian supplier requirements at the Burnaby facility; do not treat its relocation as first entry.',
@@ -58,8 +59,8 @@ def checked_report(z, stage):
     if report.get('failures'): raise ValueError('Failed source proof cannot produce accepted UI data')
     return report
 
-def build(documentary_zip, monitor_zip, qualification_zip):
-    dz=archive(documentary_zip,DOC_SHA);mz=archive(monitor_zip,MON_SHA);qz=archive(qualification_zip,QUAL_SHA)
+def build(documentary_zip, monitor_zip, qualification_zip, qualification2_zip):
+    dz=archive(documentary_zip,DOC_SHA);mz=archive(monitor_zip,MON_SHA);qz=archive(qualification_zip,QUAL_SHA);q2z=archive(qualification2_zip,QUAL2_SHA)
     for stage in ('first','second'):
         r=checked_report(dz,stage)
         if r['summary']['successful_source_paths']!=11 or r['summary']['source_records']!=81 or r['summary']['change_events']!=0: raise ValueError('Unaccepted documentary source proof')
@@ -160,7 +161,58 @@ def build(documentary_zip, monitor_zip, qualification_zip):
         ('civilian_scope','canadian_relevance','current_status'),
         'Sanofi’s current Canada page describes active Canadian biopharma operations and the new Toronto influenza manufacturing facility. The page is undated and does not establish an exact production-start date.',
         'Resolve the exact Canadian legal entity/group and source-reuse terms, then obtain dated evidence of production/operating status before promotion.')
-    register={'schema_version':1,'status':'REVIEW_REGISTER_NOT_PREDICTIONS','decision_count':20,'decisions':decisions,'proofs':[{'artifact_id':DOC_ID,'archive_sha256':DOC_SHA},{'artifact_id':MON_ID,'archive_sha256':MON_SHA},{'artifact_id':QUAL_ID,'archive_sha256':QUAL_SHA}],'qualification_completed':False,'scope':'Documented triage decisions with partial source-bound qualification progress, not twenty qualified opportunities.'}
+    # Tranche two remains qualification evidence, not automatic promotion. Corporate
+    # source rights are evaluated separately from open-government dataset rights.
+    q2first=checked_report(q2z,'first');q2second=checked_report(q2z,'second')
+    expected_q2={'sources_requested':9,'sources_observed':9,'source_failures':0,'observations':9,'events':0,'raw_responses_verified':13}
+    if q2first['summary']!=expected_q2 or q2second['summary']!=expected_q2:
+        raise ValueError('Unexpected tranche-two qualification proof summary')
+    q2obs={r['source_id']:r for r in q2second['observations']}
+    q2wanted={'cellcentric-contact-current','cellcentric-home-current','cellcentric-supplier-current',
+              'cellcentric-ised-importer-current','cellcentric-legal-current','roquette-locations-current',
+              'roquette-job-portage-20260904','roquette-legal-current','cid-open-data-licence-metadata'}
+    if set(q2obs)!=q2wanted:
+        raise ValueError('Unexpected tranche-two qualification source set')
+    q2responses=[r for r in q2second['responses'] if 'sha256' in r]
+    def add_q2_evidence(row,sid):
+        o=q2obs[sid]
+        matches=[x for x in q2responses if x.get('final_url')==o['source_url'] and x.get('status')==200]
+        if len(matches)!=1: raise ValueError('Ambiguous retained tranche-two response: '+sid)
+        response=matches[0]
+        evidence={'source_id':sid,'source_url':o['source_url'],'raw_sha256':response['sha256'],
+                  'observed_at':response['retrieved_at'],'source_publication_date':o['source_publication_date']}
+        if any(e['source_id']==sid for e in row['evidence']): raise ValueError('Duplicate tranche-two evidence')
+        row['evidence'].append(evidence)
+        return evidence
+    def support(row,check,*ids):
+        row['checks'][check]='SUPPORTED'
+        for sid in ids:
+            if sid not in row['check_sources'][check]: row['check_sources'][check].append(sid)
+    cell=next(d for d in decisions if d['company_name']=='Cellcentric')
+    for sid in ('cellcentric-contact-current','cellcentric-home-current','cellcentric-supplier-current',
+                'cellcentric-ised-importer-current','cellcentric-legal-current','cid-open-data-licence-metadata'):
+        add_q2_evidence(cell,sid)
+    support(cell,'legal_identity','cellcentric-contact-current','cellcentric-ised-importer-current')
+    support(cell,'civilian_scope','cellcentric-home-current','cellcentric-supplier-current')
+    support(cell,'canadian_relevance','cellcentric-contact-current','cellcentric-ised-importer-current')
+    support(cell,'current_status','cellcentric-contact-current','cellcentric-home-current','cellcentric-supplier-current')
+    cell['review_date']='2026-09-23'
+    cell['reason']+=' Current official pages name cellcentric Fuel Cell Canada Inc. in Burnaby, describe active heavy-duty fuel-cell engineering and supplier procurement, and ISED independently lists the same Canadian importer identity/location. The corporate homepage states the cellcentric venture is 50:50 Daimler Truck / Volvo Group, but this tranche does not independently establish the ownership chain of the Canadian corporation. Open Government Licence metadata applies to the reviewed CID dataset, not to separate cellcentric webpages.'
+    cell['next_action']='Resolve the Canadian corporation ownership chain and corporate-page reuse terms, and obtain a dated current-status source before promotion.'
+    roq=next(d for d in decisions if d['company_name']=='Roquette')
+    for sid in ('roquette-locations-current','roquette-job-portage-20260904','roquette-legal-current'):
+        add_q2_evidence(roq,sid)
+    support(roq,'legal_identity','roquette-locations-current')
+    support(roq,'civilian_scope','roquette-job-portage-20260904')
+    support(roq,'canadian_relevance','roquette-locations-current','roquette-job-portage-20260904')
+    support(roq,'current_status','roquette-job-portage-20260904')
+    roq['checks']['source_reuse']='CONTRADICTED'
+    roq['check_sources']['source_reuse']=['roquette-legal-current']
+    roq['current_status_date']='2026-09-04';roq['current_status_source_id']='roquette-job-portage-20260904'
+    roq['review_date']='2026-09-23'
+    roq['reason']+=' Roquette’s current locations page names Roquette Canada Ltd. at the Portage la Prairie production site, and a September 4, 2026 official job posting documents ongoing on-site plant utility operations. Roquette’s legal notice states website information may not be republished without prior written consent and separately restricts third-party hyperlinks; source reuse is therefore explicitly blocked pending permission or a different permitted evidence source.'
+    roq['next_action']='Resolve the Roquette Canada Ltd. parent relationship and obtain an approved/reusable evidence path before any public qualification.'
+    register={'schema_version':1,'status':'REVIEW_REGISTER_NOT_PREDICTIONS','decision_count':20,'decisions':decisions,'proofs':[{'artifact_id':DOC_ID,'archive_sha256':DOC_SHA},{'artifact_id':MON_ID,'archive_sha256':MON_SHA},{'artifact_id':QUAL_ID,'archive_sha256':QUAL_SHA},{'artifact_id':QUAL2_ID,'archive_sha256':QUAL2_SHA}],'qualification_completed':False,'scope':'Documented triage decisions with partial source-bound qualification progress, not twenty qualified opportunities.'}
     if len(decisions)!=20: raise ValueError('Unexpected decision count')
     # Select an operational review roster, keeping known-history bias explicit. Exact labels
     # group repeated discovery cards only; this is never a legal-parent entity-resolution join.
@@ -184,12 +236,12 @@ def build(documentary_zip, monitor_zip, qualification_zip):
     return catalog,register,cohort
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--documentary-proof',required=True);ap.add_argument('--monitor-proof',required=True);ap.add_argument('--qualification-proof',required=True);ap.add_argument('--check',action='store_true');args=ap.parse_args()
-    outputs=build(args.documentary_proof,args.monitor_proof,args.qualification_proof)
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--documentary-proof',required=True);ap.add_argument('--monitor-proof',required=True);ap.add_argument('--qualification-proof',required=True);ap.add_argument('--qualification2-proof',required=True);ap.add_argument('--check',action='store_true');args=ap.parse_args()
+    outputs=build(args.documentary_proof,args.monitor_proof,args.qualification_proof,args.qualification2_proof)
     for relative,value in zip(('ui/data/reviewed-evidence.json','ui/data/company-reviews.json','reviews/pilot/operational-cohort-2026-09-22.json'),outputs):
         path=ROOT/relative;encoded=json.dumps(value,indent=2,ensure_ascii=False)+'\n'
         if args.check:
             if path.read_text()!=encoded:raise ValueError('Non-deterministic or mismatched release data: '+relative)
         else:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(encoded)
-    print(json.dumps({'reviewed_projects':15,'documented_triage_decisions':20,'source_local_review_targets':50,'current_qualification_sources':5,'qualified_for_investigation':0,'fifty_company_monitoring_qualification_complete':False,'predictive_validation_complete':False}))
+    print(json.dumps({'reviewed_projects':15,'documented_triage_decisions':20,'source_local_review_targets':50,'current_qualification_sources':14,'qualified_for_investigation':0,'fifty_company_monitoring_qualification_complete':False,'predictive_validation_complete':False}))
 if __name__=='__main__':main()
