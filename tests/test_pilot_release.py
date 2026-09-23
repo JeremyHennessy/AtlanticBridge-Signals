@@ -60,6 +60,25 @@ class PilotReleaseTests(unittest.TestCase):
         self.assertEqual(gd['decision'],'HOLD')
         self.assertEqual({p['artifact_id'] for p in d['proofs']},{build.DOC_ID,build.MON_ID,build.QUAL_ID})
 
+    def test_tranche_two_progress_remains_held_and_rights_aware(self):
+        d=load('ui/data/company-reviews.json');by={r['company_name']:r for r in d['decisions']}
+        cell=by['Cellcentric']
+        self.assertEqual(cell['decision'],'HOLD')
+        for check in ('legal_identity','civilian_scope','canadian_relevance','current_status'):
+            self.assertEqual(cell['checks'][check],'SUPPORTED')
+        self.assertEqual(cell['checks']['corporate_group'],'UNKNOWN')
+        self.assertEqual(cell['checks']['source_reuse'],'UNKNOWN')
+        self.assertIsNone(cell['current_status_date'])
+        roq=by['Roquette']
+        self.assertEqual(roq['decision'],'HOLD')
+        for check in ('legal_identity','civilian_scope','canadian_relevance','current_status'):
+            self.assertEqual(roq['checks'][check],'SUPPORTED')
+        self.assertEqual(roq['checks']['corporate_group'],'UNKNOWN')
+        self.assertEqual(roq['checks']['source_reuse'],'CONTRADICTED')
+        self.assertEqual(roq['current_status_date'],'2026-09-04')
+        self.assertEqual(roq['current_status_source_id'],'roquette-job-portage-20260904')
+        self.assertEqual({p['artifact_id'] for p in d['proofs']},{build.DOC_ID,build.MON_ID,build.QUAL_ID,build.QUAL2_ID})
+
     def test_wrong_artifact_cannot_build_data(self):
         import tempfile
         with tempfile.TemporaryDirectory() as t:
