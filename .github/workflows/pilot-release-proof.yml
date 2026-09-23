@@ -5,6 +5,8 @@ on:
     paths:
       - 'ui/**'
       - 'scripts/build_pilot_release.py'
+      - 'scripts/qualification_progress2.py'
+      - 'tests/test_qualification_progress2.py'
       - 'scripts/analyse_pilot.py'
       - 'scripts/archive_evidence.py'
       - 'scripts/fetch_accepted_proof.py'
@@ -35,7 +37,8 @@ jobs:
           python scripts/fetch_accepted_proof.py --artifact-id 10724340100 --output "$RUNNER_TEMP/documentary.zip"
           python scripts/fetch_accepted_proof.py --artifact-id 10720884358 --output "$RUNNER_TEMP/monitor.zip"
           python scripts/fetch_accepted_proof.py --artifact-id 10729310481 --output "$RUNNER_TEMP/qualification.zip"
-          python scripts/build_pilot_release.py --documentary-proof "$RUNNER_TEMP/documentary.zip" --monitor-proof "$RUNNER_TEMP/monitor.zip" --qualification-proof "$RUNNER_TEMP/qualification.zip" --check
+          python scripts/fetch_accepted_proof.py --artifact-id 10729682735 --output "$RUNNER_TEMP/qualification2.zip"
+          python scripts/build_pilot_release.py --documentary-proof "$RUNNER_TEMP/documentary.zip" --monitor-proof "$RUNNER_TEMP/monitor.zip" --qualification-proof "$RUNNER_TEMP/qualification.zip" --qualification2-proof "$RUNNER_TEMP/qualification2.zip" --check
           python -m unittest discover -s tests -v
           node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
           mkdir -p artifacts/pilot-release

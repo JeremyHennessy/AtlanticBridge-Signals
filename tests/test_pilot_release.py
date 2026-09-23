@@ -58,7 +58,7 @@ class PilotReleaseTests(unittest.TestCase):
         self.assertEqual(gd['checks']['civilian_scope'],'UNKNOWN')
         self.assertEqual(gd['current_status_date'],'2026-06-16')
         self.assertEqual(gd['decision'],'HOLD')
-        self.assertEqual({p['artifact_id'] for p in d['proofs']},{build.DOC_ID,build.MON_ID,build.QUAL_ID})
+        self.assertEqual({p['artifact_id'] for p in d['proofs']},{build.DOC_ID,build.MON_ID,build.QUAL_ID,10729682735})
 
     def test_wrong_artifact_cannot_build_data(self):
         import tempfile
