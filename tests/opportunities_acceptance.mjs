@@ -19,7 +19,8 @@ export async function verifyOpportunities(browser,options,base,label,out,check){
     check(`${label}: opportunity qualification is not fabricated`,await page.locator('#opportunity-qualified-count').innerText()==='0');
     check(`${label}: opportunity existing watch store untouched`,await page.evaluate(()=>localStorage.getItem('atlanticbridge.analyst-workspace.v1')===null||JSON.parse(localStorage.getItem('atlanticbridge.analyst-workspace.v1')).entries.length===0));
     check(`${label}: qualification progress visible without expanding details`,(await page.locator('[data-opportunity-id]').first().innerText()).includes('Qualification:'));
-    check(`${label}: qualification blocker summary visible`,api.checks.every(k=>(documentText=>documentText.includes(api.checkLabels[k]))(await page.locator('#opportunity-gates').innerText())));
+    const gateText=await page.locator('#opportunity-gates').innerText();
+    check(`${label}: qualification blocker summary visible`,api.checks.every(k=>gateText.includes(api.checkLabels[k])));
     const legalBlockers=model.current.filter(r=>api.readiness(r.decision).blockers.includes('legal_identity')).length;
     await page.locator('#opportunity-blocker').selectOption('legal_identity');
     check(`${label}: legal-identity blocker filter`,await page.locator('[data-opportunity-id]').count()===legalBlockers);
