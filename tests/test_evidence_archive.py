@@ -43,6 +43,20 @@ class ArchiveTests(unittest.TestCase):
     def test_restore_bound_to_actual_health(self):
         ledger=Ledger(':memory:');value=checkpoint(ledger);ledger.db.close()
         with self.assertRaises(ValueError):a.inspect_checkpoint(json.dumps(value).encode(),{})
+    def test_restore_accepts_only_explicit_legacy_additive_health_omissions(self):
+        ledger=Ledger(':memory:');value=checkpoint(ledger);ledger.db.close()
+        observed=health(value)
+        observed.pop('operational_source_count')
+        observed.pop('reliability_scope')
+        result=a.inspect_checkpoint(json.dumps(value).encode(),observed)
+        self.assertTrue(result['exact_state_restore'])
+    def test_restore_rejects_legacy_snapshot_with_real_mismatch(self):
+        ledger=Ledger(':memory:');value=checkpoint(ledger);ledger.db.close()
+        observed=health(value)
+        observed.pop('operational_source_count')
+        observed.pop('reliability_scope')
+        observed['public_alert_count']=1
+        with self.assertRaises(ValueError):a.inspect_checkpoint(json.dumps(value).encode(),observed)
     def test_restore_corrupt_checkpoint(self):
         ledger=Ledger(':memory:');value=checkpoint(ledger);ledger.db.close();value['checksum']='bad'
         with self.assertRaises(ValueError):a.inspect_checkpoint(json.dumps(value).encode(),{})
