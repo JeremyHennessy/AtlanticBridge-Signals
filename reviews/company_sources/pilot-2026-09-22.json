@@ -5,13 +5,176 @@
   "public_alert_allowed": false,
   "origin_scope": "EU company candidates; source-local brand binding only, legal identities remain separately reviewed",
   "sources": [
-    {"id": "mistral-official-careers", "kind": "careers", "company": "Mistral AI", "url": "https://mistral.ai/careers/", "role": "CURRENT_HIRING_OBSERVATION"},
-    {"id": "mistral-official-news", "kind": "index", "company": "Mistral AI", "url": "https://mistral.ai/news/", "article_path_prefix": "/news/", "role": "COMPANY_ANNOUNCEMENT_DISCOVERY"},
-    {"id": "montreal-international-news", "kind": "index", "company": null, "url": "https://www.montrealinternational.com/en/news/", "article_path_prefix": "/en/news/", "role": "OUTCOME_DISCOVERY_ALL_ORIGINS_REQUIRE_REVIEW"},
-    {"id": "mistral-montreal-announcement", "kind": "article", "company": "Mistral AI", "url": "https://www.montrealinternational.com/en/news/mistral-ai-selects-montreal-for-its-canadian-hub/", "required_text": ["first establishment in Canada"], "reviewed_publication_date": "2026-06-25", "publication_date_text": "June 25, 2026", "role": "CALIBRATION_ANNOUNCED_FIRST_ESTABLISHMENT_NOT_VERIFIED_OPENING"},
-    {"id": "gd-montreal-announcement", "kind": "article", "company": "Giesecke+Devrient", "url": "https://www.montrealinternational.com/en/news/gd-selects-montreal-to-establish-its-global-artificial-intelligence-centre-of-excellence-at-mila/", "required_text": ["Established in Canada since 1962"], "reviewed_publication_date": "2026-06-17", "publication_date_text": "June 17, 2026", "role": "CALIBRATION_EXISTING_PRESENCE_EXPANSION_NOT_FIRST_ENTRY"},
-    {"id": "adyen-payments-membership", "kind": "article", "company": "Adyen Canada Ltd.", "url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member", "required_text": ["Adyen Canada Ltd"], "reviewed_publication_date": "2026-07-14", "publication_date_text": "July 14, 2026", "role": "CALIBRATION_MEMBERSHIP_NOT_FIRST_OPERATION"},
-    {"id": "deepl-official-careers", "kind": "careers", "company": "DeepL", "url": "https://www.deepl.com/en/careers", "role": "CURRENT_HIRING_OBSERVATION"},
-    {"id": "pleo-official-careers", "kind": "careers", "company": "Pleo", "url": "https://www.pleo.io/en/careers", "role": "CURRENT_HIRING_OBSERVATION"}
-  ]
+    {
+      "id": "mistral-official-careers",
+      "kind": "careers",
+      "company": "Mistral AI",
+      "url": "https://mistral.ai/careers/",
+      "role": "CURRENT_HIRING_OBSERVATION"
+    },
+    {
+      "id": "mistral-official-news",
+      "kind": "index",
+      "company": "Mistral AI",
+      "url": "https://mistral.ai/news/",
+      "article_path_prefix": "/news/",
+      "role": "COMPANY_ANNOUNCEMENT_DISCOVERY"
+    },
+    {
+      "id": "montreal-international-news",
+      "kind": "index",
+      "company": null,
+      "url": "https://www.montrealinternational.com/en/news/",
+      "article_path_prefix": "/en/news/",
+      "role": "OUTCOME_DISCOVERY_ALL_ORIGINS_REQUIRE_REVIEW"
+    },
+    {
+      "id": "mistral-montreal-announcement",
+      "kind": "article",
+      "company": "Mistral AI",
+      "url": "https://www.montrealinternational.com/en/news/mistral-ai-selects-montreal-for-its-canadian-hub/",
+      "required_text": [
+        "first establishment in Canada"
+      ],
+      "reviewed_publication_date": "2026-06-25",
+      "publication_date_text": "June 25, 2026",
+      "role": "CALIBRATION_ANNOUNCED_FIRST_ESTABLISHMENT_NOT_VERIFIED_OPENING"
+    },
+    {
+      "id": "gd-montreal-announcement",
+      "kind": "article",
+      "company": "Giesecke+Devrient",
+      "url": "https://www.montrealinternational.com/en/news/gd-selects-montreal-to-establish-its-global-artificial-intelligence-centre-of-excellence-at-mila/",
+      "required_text": [
+        "Established in Canada since 1962"
+      ],
+      "reviewed_publication_date": "2026-06-17",
+      "publication_date_text": "June 17, 2026",
+      "role": "CALIBRATION_EXISTING_PRESENCE_EXPANSION_NOT_FIRST_ENTRY"
+    },
+    {
+      "id": "adyen-payments-membership",
+      "kind": "article",
+      "company": "Adyen Canada Ltd.",
+      "url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member",
+      "required_text": [
+        "Adyen Canada Ltd"
+      ],
+      "reviewed_publication_date": "2026-07-14",
+      "publication_date_text": "July 14, 2026",
+      "role": "CALIBRATION_MEMBERSHIP_NOT_FIRST_OPERATION"
+    },
+    {
+      "id": "deepl-official-careers",
+      "kind": "careers",
+      "company": "DeepL",
+      "url": "https://www.deepl.com/en/careers",
+      "role": "CURRENT_HIRING_OBSERVATION"
+    },
+    {
+      "id": "pleo-official-careers",
+      "kind": "careers",
+      "company": "Pleo",
+      "url": "https://www.pleo.io/en/careers",
+      "role": "CURRENT_HIRING_OBSERVATION"
+    },
+    {
+      "id": "ubisoft-sherbrooke-current",
+      "kind": "article",
+      "company": "Ubisoft",
+      "url": "https://www.ubisoft.com/en-us/company/careers/locations/sherbrooke",
+      "required_text": [
+        "Today, there are more than thirty employees",
+        "We're looking for committed creators"
+      ],
+      "role": "CURRENT_STUDIO_OPERATION_AND_HIRING_PAGE_UNDATED"
+    },
+    {
+      "id": "accenture-stcatharines-current",
+      "kind": "article",
+      "company": "Accenture",
+      "url": "https://www.accenture.com/ca-en/careers/jobdetails?id=R00358752_en",
+      "required_text": [
+        "St. Catharines, Ontario",
+        "Accenture Niagara is growing",
+        "This role is located onsite at our St. Catharines office"
+      ],
+      "role": "CURRENT_ST_CATHARINES_HIRING_PAGE_UNDATED"
+    },
+    {
+      "id": "sanofi-canada-current",
+      "kind": "article",
+      "company": "Sanofi",
+      "url": "https://www.sanofi.com/en/canada/our-company",
+      "required_text": [
+        "A Leading Biopharma Company in Canada",
+        "new state-of-the-art influenza vaccine manufacturing facility in Toronto"
+      ],
+      "role": "CURRENT_CANADA_MANUFACTURING_PAGE_UNDATED"
+    },
+    {
+      "id": "cellcentric-supplier-current",
+      "kind": "article",
+      "company": "Cellcentric",
+      "url": "https://www.cellcentric.net/en-us/supplier",
+      "required_text": [
+        "Become a part of the hydrogen powertrain supply chain",
+        "Contact for supplier inquiries",
+        "08.12.2026",
+        "04.01.2027"
+      ],
+      "role": "CURRENT_SUPPLIER_INQUIRY_PATH_UNDATED",
+      "reviewed_content_selector": "main"
+    },
+    {
+      "id": "roquette-locations-current",
+      "kind": "article",
+      "company": "Roquette",
+      "url": "https://www.roquette.com/locations",
+      "required_text": [
+        "Roquette Canada Ltd.",
+        "40117 Road 65N",
+        "Portage la Prairie",
+        "Production sites"
+      ],
+      "role": "CURRENT_CANADIAN_ENTITY_AND_PRODUCTION_LOCATION_UNDATED"
+    }
+  ],
+  "enrollment": {
+    "cohort_version": 2,
+    "policy": "ADDITIVE_BASELINE_NO_EVENTS",
+    "reviewed_at": "2026-09-23",
+    "approved_additions": [
+      {
+        "id": "ubisoft-sherbrooke-current",
+        "proof_artifact_id": 10729310481,
+        "proof_archive_sha256": "478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365",
+        "source_contract_sha256": "75ac363837e353717a98333f96fbd0661682e3d072d193b86b8525321fe53c96"
+      },
+      {
+        "id": "accenture-stcatharines-current",
+        "proof_artifact_id": 10729310481,
+        "proof_archive_sha256": "478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365",
+        "source_contract_sha256": "c7feb2f7eabb97d59bdbfb579f66237e76f1703506255bcaa7d718482b48a2e0"
+      },
+      {
+        "id": "sanofi-canada-current",
+        "proof_artifact_id": 10729310481,
+        "proof_archive_sha256": "478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365",
+        "source_contract_sha256": "a92a3badf5acec12f2ef8dd7490988d4b617fdd6853e389b7b0501ebc08e8898"
+      },
+      {
+        "id": "cellcentric-supplier-current",
+        "proof_artifact_id": 10729682735,
+        "proof_archive_sha256": "39892597bcdf03f6ba7e093ece34c7618f0dff8450d8c77c30951745b1ff2064",
+        "source_contract_sha256": "b7bde711e13f15ae4f4eb944925cd7aef6cf6507817f48691c7b88f2f1f79c78"
+      },
+      {
+        "id": "roquette-locations-current",
+        "proof_artifact_id": 10729682735,
+        "proof_archive_sha256": "39892597bcdf03f6ba7e093ece34c7618f0dff8450d8c77c30951745b1ff2064",
+        "source_contract_sha256": "8bb931683b308d70c4b38022be3f4df1e17c2bef9e7b6a0afde45d39b0e6c55d"
+      }
+    ]
+  }
 }

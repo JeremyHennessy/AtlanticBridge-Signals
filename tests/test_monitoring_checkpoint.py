@@ -75,6 +75,21 @@ class MonitoringCheckpointTests(unittest.TestCase):
         runs=[{'id':str(i),'finished_at':LATER,'sources':[{'id':'fixture','status':'OBSERVED'}]} for i in range(14)]
         result=health(checkpoint(self.ledger,runs=runs))
         self.assertEqual(result['successful_days'],1);self.assertFalse(result['operational_target_met'])
+    def test_expanded_source_set_resets_current_reliability_clock(self):
+        other=dict(SOURCE,id='fixture-two')
+        self.ledger.apply(other,[record(other,'two','Canada second source','https://example.org/two')],LATER,'b'*64)
+        runs=[
+            {'id':'old-1','finished_at':'2026-09-21T20:00:00Z','sources':[{'id':'fixture','status':'OBSERVED'}]},
+            {'id':'old-2','finished_at':'2026-09-22T20:00:00Z','sources':[{'id':'fixture','status':'OBSERVED'}]},
+            {'id':'expanded','finished_at':'2026-09-23T20:00:00Z','sources':[{'id':'fixture','status':'OBSERVED'},{'id':'fixture-two','status':'OBSERVED'}]},
+        ]
+        result=health(checkpoint(self.ledger,runs=runs))
+        self.assertEqual(result['successful_days'],1)
+        self.assertEqual(result['consecutive_successful_days'],1)
+        self.assertEqual(result['operational_source_count'],2)
+        self.assertEqual(result['reliability_scope'],'CURRENT_SOURCE_SET_ONLY')
+        self.assertFalse(result['operational_target_met'])
+
     def test_source_failure_is_degraded_not_zero(self):
         runs=[{'id':'failed','finished_at':LATER,'sources':[{'id':'fixture','status':'UNVERIFIED_SOURCE_FAILURE','records':None}]}]
         result=health(checkpoint(self.ledger,runs=runs))

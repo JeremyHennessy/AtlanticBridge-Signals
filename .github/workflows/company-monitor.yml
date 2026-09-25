@@ -10,6 +10,7 @@ on:
       - 'src/atlanticbridge/monitoring_checkpoint.py'
       - 'scripts/run_company_monitor.py'
       - 'scripts/bootstrap_company_monitor.py'
+      - 'reviews/company_sources/pilot-2026-09-22.json'
   pull_request:
     branches: [main]
     paths:
@@ -17,6 +18,7 @@ on:
       - 'src/atlanticbridge/monitoring_checkpoint.py'
       - 'scripts/run_company_monitor.py'
       - 'scripts/bootstrap_company_monitor.py'
+      - 'reviews/company_sources/pilot-2026-09-22.json'
       - 'tests/test_monitoring_checkpoint.py'
 permissions:
   contents: read
@@ -66,6 +68,19 @@ jobs:
           assert len(b['runs'])==len(a['runs'])+2
           assert b['runs'][-2]['finished_at'][:10]==b['runs'][-1]['finished_at'][:10]
           assert all('evidence_text' not in json.loads(r['payload']) for r in b['tables']['company_observations'])
+          added={'ubisoft-sherbrooke-current','accenture-stcatharines-current','sanofi-canada-current','cellcentric-supplier-current','roquette-locations-current'}
+          first=json.loads((p/'first/report.json').read_text())
+          by_id={r['id']:r for r in first['sources']}
+          assert added <= by_id.keys()
+          assert all(by_id[i]['status']=='OBSERVED' and by_id[i]['enrollment_baseline'] is True and by_id[i]['change_events']==0 for i in added)
+          second=json.loads((p/'second/report.json').read_text())
+          by_second={r['id']:r for r in second['sources']}
+          assert all(by_second[i]['status']=='OBSERVED' and by_second[i]['enrollment_baseline'] is False for i in added)
+          health=json.loads((p/'state/health.json').read_text())
+          assert health['operational_source_count']==13
+          assert health['reliability_scope']=='CURRENT_SOURCE_SET_ONLY'
+          # Two same-day verification processes cannot become two operational days.
+          assert health['successful_days']==1
           PY
       - name: Preserve test evidence
         if: always()

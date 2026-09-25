@@ -124,7 +124,14 @@ def health(value: dict) -> dict:
     runs = value['runs']
     states = {r['id']: r for r in value['tables']['company_source_state']}
     latest = runs[-1] if runs else None
-    good_days = sorted({r['finished_at'][:10] for r in runs if r['sources'] and all(s['status'] == 'OBSERVED' for s in r['sources'])})
+    latest_source_ids = tuple(sorted(s['id'] for s in latest['sources'])) if latest else ()
+    # Reliability belongs to the current source cohort. Days from a smaller or
+    # different source set cannot count toward the expanded cohort's 14-day run.
+    def same_current_cohort(run):
+        ids = [s.get('id') for s in run.get('sources', [])]
+        return len(ids) == len(set(ids)) and tuple(sorted(ids)) == latest_source_ids
+    good_days = sorted({r['finished_at'][:10] for r in runs if r['sources'] and same_current_cohort(r)
+                        and all(s['status'] == 'OBSERVED' for s in r['sources'])})
     # A run repeated 14 times in one day never becomes 14 days of reliability.
     streak = 0
     if latest:
@@ -141,5 +148,7 @@ def health(value: dict) -> dict:
             'operational_target_days': 14, 'operational_target_met': streak >= 14 and bool(latest) and all(s['status'] == 'OBSERVED' for s in latest['sources']),
             'retained_observation_count': len(value['tables']['company_observations']),
             'review_only_change_count': len(value['tables']['company_observation_events']),
+            'operational_source_count': len(latest_source_ids),
+            'reliability_scope': 'CURRENT_SOURCE_SET_ONLY',
             'public_alert_count': 0, 'predictive_validation_complete': False,
             'retention': 'Metadata and fingerprints retained in Git; raw responses in 90-day Actions artifacts. Not a twelve-month raw archive.'}
