@@ -30,6 +30,7 @@ async function toggleWorkCompany(id) {
   try {
     await workLocked(()=>old ? workStore.remove(id) : workStore.put(ABWorkspace.blankEntry(id,workCompanies().get(id),state.live)));
     state.watched=new Set(workStore.entries().map(e=>e.id));renderSignals();
+    if(typeof renderTodaySummary==="function")renderTodaySummary();
     if (state.route==="worklist") renderWorklist();
     showToast(old?"Company removed from this local worklist.":"Company added to your local worklist.");
     const button=[...document.querySelectorAll("#signals-list [data-watch-company]")].find(n=>n.dataset.watchCompany===id);

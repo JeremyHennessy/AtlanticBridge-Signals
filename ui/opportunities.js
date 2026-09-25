@@ -96,6 +96,18 @@
 });
 
 let opportunityRegister=null;
+function renderTodaySummary(){
+  const qualifiedNode=$("today-qualified-count"), workNode=$("today-work-count"), listNode=$("today-priority-list");
+  if(!qualifiedNode||!workNode||!listNode)return;
+  const model=ABOpportunities.queue(state.live,reviewedCatalog,opportunityRegister);
+  qualifiedNode.textContent=model.qualification_count!==null?String(model.qualification_count):"Unverified";
+  if(typeof workStore!=="undefined"&&workStore&&typeof workError!=="undefined"&&!workError){
+    const open=workStore.entries().filter(entry=>entry.status!=="closed").length;
+    workNode.textContent=String(open);
+  } else workNode.textContent="Unverified";
+  const rows=model.current.slice(0,5);
+  listNode.innerHTML=rows.length?rows.map(r=>`<article class="company-notice" data-today-opportunity="${escapeHtml(r.id)}"><div class="work-row-heading"><h3><a class="company-dossier-link" href="${companyHash(r.company_id)}">${escapeHtml(r.company_name)}</a></h3><span class="status-chip ${r.qualified?"status-establishment":"status-unresolved"}">${r.qualified?"Qualified for investigation":"Needs review"}</span></div><p><strong>${escapeHtml(r.title)}</strong> · ${escapeHtml(r.location)}</p><p class="small muted">${escapeHtml(r.kind)} · Public document: ${escapeHtml(formatDate(r.day))}</p><p><strong>Next action:</strong> ${escapeHtml(r.next_action)}</p><div class="work-actions"><a class="button" href="${companyHash(r.company_id)}">Open dossier →</a><a class="source-link" href="${escapeHtml(r.source_url)}" target="_blank" rel="noopener noreferrer">Original source ↗</a></div></article>`).join(""):`<div class="empty-state"><h3>${model.source_available||model.history_available?"No current review items in the loaded 90-day window.":"Current review coverage is unavailable."}</h3><p>Missing source coverage remains unknown. Historical cases and saved work are still available.</p></div>`;
+}
 function renderOpportunityQueue(params=new URLSearchParams(location.hash.split('?')[1]||'')){
   const model=ABOpportunities.queue(state.live,reviewedCatalog,opportunityRegister),view=['qualified','history'].includes(params.get('view'))?params.get('view'):'current',query=params.get('q')||'';
   const rows=ABOpportunities.select(model,view,query);

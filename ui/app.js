@@ -475,7 +475,7 @@ function renderMetrics() {
     bar.style.width = `${s.case_count ? Math.min(100,100*count/s.case_count) : 0}%`;
   }
   els.medianLead.textContent = s.median_days_before_notification_month == null ? "Unknown" : `${s.median_days_before_notification_month} days`;
-  $("data-note").textContent = `Live feed: ${state.live?.status==="ACTIVE"?formatTimestamp(state.live.source?.observed_at || state.live.generated_at):"unavailable"} · Case audit: ${formatDate(state.data.audit_date)} · ${s.case_count} audited cases · ${s.research_cohort_count} research companies · UI: 22 September 2026.`;
+  $("data-note").textContent = `Live feed: ${state.live?.status==="ACTIVE"?formatTimestamp(state.live.source?.observed_at || state.live.generated_at):"unavailable"} · Case audit: ${formatDate(state.data.audit_date)} · ${s.case_count} audited cases · ${s.research_cohort_count} research companies · UI: 25 September 2026.`;
   const countries = [...new Set(state.data.cases.map(x => x.ultimate_control_country).filter(Boolean))].sort();
   $("country-filter").innerHTML = '<option value="">All countries</option>' + countries.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join("");
   populateSignalCountries();
@@ -719,7 +719,7 @@ function route() {
   const requested=raw||"overview";state.route=valid.includes(requested)?requested:"overview";
   const p=new URLSearchParams(search);
   if(previousRoute!==state.route){$("main-content").focus({preventScroll:true});window.scrollTo(0,0);}
-  document.title=`AtlanticBridge Signals — ${{overview:"Overview",opportunities:"Opportunity review queue",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use",company:"Company dossier",worklist:"Company worklist"}[state.route]}`;
+  document.title=`AtlanticBridge Signals — ${{overview:"Today",opportunities:"Opportunity review queue",signals:"Current signals",companies:"Company cases",research:"Research cohort",markets:"Canadian markets",coverage:"Evidence coverage",guide:"How to use",company:"Company dossier",worklist:"Company worklist"}[state.route]}`;
   $("route-notice").hidden=valid.includes(requested);
   if(!valid.includes(requested))$("route-notice").textContent="That view was not found. Showing the overview instead.";
   document.querySelectorAll("[data-route]").forEach(section=>{section.hidden=section.dataset.route!==state.route;});
@@ -822,7 +822,7 @@ async function init() {
   reviewedCatalog=results[2].status==="fulfilled"?results[2].value:null;
   opportunityRegister=results[3].status==="fulfilled"?results[3].value:null;
   caseBriefs=results[4].status==="fulfilled"?results[4].value:null;renderCaseBriefIndex();
-  loadWatched();renderMetrics();renderSignals();renderReviewedProjects();
+  loadWatched();renderMetrics();renderTodaySummary();renderSignals();renderReviewedProjects();
   $("monitoring-refresh").addEventListener("click",loadMonitoringHealth);
   if(state.data){loadSaved();renderSources();renderResearch();renderCases();$("load-status").hidden=true;}
   else {
