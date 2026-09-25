@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
-  "run_id": "36022901018",
-  "attempt_at": "2026-09-24T15:49:44.641027+00:00",
-  "status": "VERIFIED_DRAFT_COPY"
+  "run_id": "36139051466",
+  "attempt_at": "2026-09-25T13:08:31.778857+00:00",
+  "status": "FAILED",
+  "error_type": "ValueError",
+  "detail": "Checkpoint does not match captured monitoring health"
 }
