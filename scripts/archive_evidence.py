@@ -94,9 +94,19 @@ def inspect_zip(raw: bytes, expected: str):
     if not count: raise ValueError('Archive contains no retained raw responses')
     return z,count
 
+LEGACY_ADDITIVE_HEALTH_FIELDS = {'operational_source_count', 'reliability_scope'}
+
 def inspect_checkpoint(raw: bytes, observed_health: dict):
     value=validate(json.loads(raw))
-    if health(value)!=observed_health: raise ValueError('Checkpoint does not match captured monitoring health')
+    expected_health=health(value)
+    if not isinstance(observed_health,dict):
+        raise ValueError('Checkpoint does not match captured monitoring health')
+    missing=set(expected_health)-set(observed_health)
+    extra=set(observed_health)-set(expected_health)
+    # Historical monitor artifacts predate these derived cohort-health fields.
+    # Permit only their absence; every field actually captured must still match exactly.
+    if extra or (missing-LEGACY_ADDITIVE_HEALTH_FIELDS) or any(expected_health[k]!=v for k,v in observed_health.items()):
+        raise ValueError('Checkpoint does not match captured monitoring health')
     with tempfile.TemporaryDirectory() as tmp:
         ledger=Ledger(str(Path(tmp)/'restore.sqlite'))
         restore(ledger,value)
