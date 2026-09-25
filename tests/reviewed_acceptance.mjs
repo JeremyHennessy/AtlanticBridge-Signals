@@ -18,7 +18,7 @@ export async function verifyReviewed(browser,options,base,label,out,check){
         actual=await page.evaluate(async()=>{try{const r=await fetch('https://raw.githubusercontent.com/JeremyHennessy/AtlanticBridge-Signals/monitoring-state/health.json',{cache:'no-store'});return r.ok?await r.json():null;}catch(_){return null;}});
         if(!actual)await page.waitForTimeout(5000);
       }
-      check(`${label}: actual public monitoring state is accessible`,actual?.schema_version===1&&actual.sources?.length===8&&actual.run_id&&actual.last_attempt_at);
+      check(`${label}: actual public monitoring state is accessible`,actual?.schema_version===1&&Array.isArray(actual.sources)&&actual.sources.length>0&&actual.operational_source_count===actual.sources.length&&actual.run_id&&actual.last_attempt_at);
       await page.locator('#monitoring-refresh').click();
       await page.waitForFunction(()=>!document.querySelector('#monitoring-refresh')?.disabled);
       const liveHealth=await page.locator('#monitoring-status').innerText();
