@@ -218,7 +218,7 @@ async function run(label,type,options) {
     check(`${label}: overview research count`,await page.locator("#metric-evidence").innerText()===String(dashboard.summary.research_cohort_count));
     const presentCount=dashboard.research_cohort.filter(x=>(x.signal_analysis||[]).some(s=>s.signal_family==="CIPO_CANADIAN_TRADEMARK" && s.state==="PRESENT")).length;
     const overviewText=await page.locator("#overview-view").innerText();
-    check(`${label}: overview live/research boundary`,overviewText.includes("Source facts, analyst decisions, and historical research remain separate.") && overviewText.includes("Historical cases and research controls remain available"));
+    check(`${label}: overview live/research boundary`,overviewText.includes("Source facts, analyst decisions, and historical research remain separate.") && overviewText.includes("Historical cases and research controls remain separate context."));
     await go(page,"#research");
     check(`${label}: research CIPO signal count`,await page.locator("#research-cipo-present-count").innerText()===String(presentCount));
     check(`${label}: expanded research rows`,await page.locator("[data-research-id]").count()===dashboard.research_cohort.length);
