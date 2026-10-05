@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
-  "run_id": "37214307005",
-  "attempt_at": "2026-10-04T15:47:36.978273+00:00",
-  "status": "VERIFIED_DRAFT_COPY"
+  "run_id": "37358811158",
+  "attempt_at": "2026-10-05T18:49:26.504202+00:00",
+  "status": "FAILED",
+  "error_type": "ValueError",
+  "detail": "Draft privacy check failed or inconclusive: HTTP 403"
 }
