@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "run_id": "38750936276",
-  "attempt_at": "2026-10-15T14:23:54.329088+00:00",
+  "run_id": "38761607759",
+  "attempt_at": "2026-10-15T15:35:32.221937+00:00",
   "status": "FAILED",
   "error_type": "KeyError"
 }
