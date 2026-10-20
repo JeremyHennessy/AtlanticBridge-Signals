@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "run_id": "39294277427",
-  "attempt_at": "2026-10-19T17:27:51.496549+00:00",
+  "run_id": "39439530840",
+  "attempt_at": "2026-10-20T14:28:55.979238+00:00",
   "status": "FAILED",
-  "error_type": "KeyError"
+  "error_type": "JSONDecodeError"
 }
