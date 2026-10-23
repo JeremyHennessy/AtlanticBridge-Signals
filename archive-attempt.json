@@ -1,8 +1,7 @@
 {
   "schema_version": 1,
-  "run_id": "39808842848",
-  "attempt_at": "2026-10-22T15:52:34.251844+00:00",
+  "run_id": "39969208590",
+  "attempt_at": "2026-10-23T14:23:49.719995+00:00",
   "status": "FAILED",
-  "error_type": "ValueError",
-  "detail": "Proof download failed: HTTP 503"
+  "error_type": "JSONDecodeError"
 }
