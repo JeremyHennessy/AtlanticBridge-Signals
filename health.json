@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
   "status": "DEGRADED",
-  "last_attempt_at": "2026-10-24T13:34:02.543846+00:00",
-  "run_id": "40098642681-1",
+  "last_attempt_at": "2026-10-25T13:53:50.309535+00:00",
+  "run_id": "40199666381-1",
   "sources": [
     {
       "id": "mistral-official-careers",
       "source_url": "https://mistral.ai/careers/",
       "status": "OBSERVED",
       "records": 225,
-      "change_events": 3,
-      "raw_sha256": "15888695466a0acc77101419a0bf888807b818a79c44d9af5e4eb74602cbf251",
+      "change_events": 1,
+      "raw_sha256": "8e171f71c9f7d7d96f4f5c5a54b132c5c3c09e6a21cb6797d5127163155e9490",
       "enrollment_baseline": false,
       "canada_location_candidates": 8,
       "scope_held_candidates": 8,
       "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE",
-      "last_success_at": "2026-10-24T13:33:34.844986+00:00"
+      "last_success_at": "2026-10-25T13:53:25.718160+00:00"
     },
     {
       "id": "mistral-official-news",
@@ -28,7 +28,7 @@
       "canada_location_candidates": 0,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:33:35.829840+00:00"
+      "last_success_at": "2026-10-25T13:53:26.705999+00:00"
     },
     {
       "id": "montreal-international-news",
@@ -36,12 +36,12 @@
       "status": "OBSERVED",
       "records": 12,
       "change_events": 0,
-      "raw_sha256": "665f9f0e82c95228e4cc80dbc4b2544d35f7aaecc89523f82ced5a0d07b69c54",
+      "raw_sha256": "ed94f524e9ce56e80492dfff8728092529b72ad8e8beb470f477ea41320b00f2",
       "enrollment_baseline": false,
       "canada_location_candidates": 11,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:33:39.908698+00:00"
+      "last_success_at": "2026-10-25T13:53:29.926416+00:00"
     },
     {
       "id": "mistral-montreal-announcement",
@@ -49,12 +49,12 @@
       "status": "OBSERVED",
       "records": 1,
       "change_events": 0,
-      "raw_sha256": "ace4ecf2ace405fa8835cff836a033a55b021cce9ad1bab2d2e2121eb7920a21",
+      "raw_sha256": "1beea626485b408dc762f039995cbcd0f683588b5a5e163e46dbcaaa971eec7f",
       "enrollment_baseline": false,
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:33:42.404870+00:00"
+      "last_success_at": "2026-10-25T13:53:31.955086+00:00"
     },
     {
       "id": "gd-montreal-announcement",
@@ -62,12 +62,12 @@
       "status": "OBSERVED",
       "records": 1,
       "change_events": 0,
-      "raw_sha256": "add8e8b699fde88d9f4b46016d75564923c812a2bc44a54b033fef1da6b17c86",
+      "raw_sha256": "2dd45fbabdedc0e6fcc8136c290cbe51a02558582945c8e9770862a99eb75515",
       "enrollment_baseline": false,
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:33:44.746683+00:00"
+      "last_success_at": "2026-10-25T13:53:34.040182+00:00"
     },
     {
       "id": "adyen-payments-membership",
@@ -75,12 +75,12 @@
       "status": "OBSERVED",
       "records": 1,
       "change_events": 0,
-      "raw_sha256": "2497a8278e6f10d64cb8f14765ac6a88c839cf2984c5db45d2e6263bf6b0e887",
+      "raw_sha256": "7680c446a1bf8edc4de9e228fac25b125206f2a027930b774b98fac11a87e194",
       "enrollment_baseline": false,
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:33:46.244253+00:00"
+      "last_success_at": "2026-10-25T13:53:35.758257+00:00"
     },
     {
       "id": "deepl-official-careers",
@@ -93,7 +93,7 @@
       "canada_location_candidates": 0,
       "scope_held_candidates": 0,
       "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE",
-      "last_success_at": "2026-10-24T13:33:48.602813+00:00"
+      "last_success_at": "2026-10-25T13:53:38.083471+00:00"
     },
     {
       "id": "pleo-official-careers",
@@ -106,7 +106,7 @@
       "canada_location_candidates": 0,
       "scope_held_candidates": 0,
       "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE",
-      "last_success_at": "2026-10-24T13:33:51.794644+00:00"
+      "last_success_at": "2026-10-25T13:53:41.002680+00:00"
     },
     {
       "id": "ubisoft-sherbrooke-current",
@@ -114,12 +114,12 @@
       "status": "OBSERVED",
       "records": 1,
       "change_events": 0,
-      "raw_sha256": "e6621f78dfff38b09e1f18236ff7d6888d4b0a1eabeb3d0b7c77dadde9d3ac75",
+      "raw_sha256": "30ebd40c0155166cb2a9987f7c8ae083a63d8b1571b3d5be36e513dbb248f68c",
       "enrollment_baseline": false,
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:33:53.715745+00:00"
+      "last_success_at": "2026-10-25T13:53:42.791010+00:00"
     },
     {
       "id": "accenture-stcatharines-current",
@@ -137,12 +137,12 @@
       "status": "OBSERVED",
       "records": 1,
       "change_events": 0,
-      "raw_sha256": "2e9368e28ea0c90db3c0331de7c2216df91676b4ceb87043230d9c844cce2a1a",
+      "raw_sha256": "93460a44c35a685c5b5113914982e6b732b5ed12f0b961b8f55c88ce4c713fd2",
       "enrollment_baseline": false,
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:33:57.992542+00:00"
+      "last_success_at": "2026-10-25T13:53:46.874028+00:00"
     },
     {
       "id": "cellcentric-supplier-current",
@@ -155,7 +155,7 @@
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:33:59.804907+00:00"
+      "last_success_at": "2026-10-25T13:53:48.546853+00:00"
     },
     {
       "id": "roquette-locations-current",
@@ -163,12 +163,12 @@
       "status": "OBSERVED",
       "records": 1,
       "change_events": 0,
-      "raw_sha256": "be2cd6efe2a35f4f2cee324a32774da31ce17238e4f1d90e8edfba8acd77e6df",
+      "raw_sha256": "c78ed8f19dc8b6ea0c942f93f7c13f94afa47227890f9263193f8870bef11975",
       "enrollment_baseline": false,
       "canada_location_candidates": 1,
       "scope_held_candidates": 0,
       "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF",
-      "last_success_at": "2026-10-24T13:34:02.535118+00:00"
+      "last_success_at": "2026-10-25T13:53:50.300862+00:00"
     }
   ],
   "successful_days": 5,
@@ -176,7 +176,7 @@
   "operational_target_days": 14,
   "operational_target_met": false,
   "retained_observation_count": 500,
-  "review_only_change_count": 335,
+  "review_only_change_count": 336,
   "operational_source_count": 13,
   "reliability_scope": "CURRENT_SOURCE_SET_ONLY",
   "public_alert_count": 0,
