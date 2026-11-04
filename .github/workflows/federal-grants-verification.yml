@@ -1,0 +1,54 @@
+name: Federal grants collector verification
+on:
+  push:
+    branches:
+      - fix/reliability-archive-pilot-20261104
+    paths:
+      - src/atlanticbridge/sources/federal_grants.py
+      - src/atlanticbridge/cli.py
+      - tests/test_federal_grants_collector.py
+      - .github/workflows/federal-grants-verification.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package
+        run: python -m pip install --no-deps .
+      - name: Run bounded collector unit tests
+        run: python -m unittest discover -s tests -p test_federal_grants_collector.py -v
+      - name: Run one bounded official API smoke
+        run: |
+          python -m atlanticbridge collect-grants-context \
+            --recipient-name "Mediphage Bioceuticals, Inc." \
+            --limit 1 \
+            --timeout-seconds 20 \
+            --output "$RUNNER_TEMP/grants-smoke.json"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path(os.environ["RUNNER_TEMP"]) / "grants-smoke.json"
+          result = json.loads(path.read_text(encoding="utf-8"))
+          assert result["source"] == "canada_federal_grants_contributions"
+          assert result["requested_limit"] == 1
+          assert result["records_returned_by_api"] == len(result["records"])
+          assert result["records_matching_exact_recipient"] == len(result["records"])
+          assert len(result["records"]) <= 1
+          print(json.dumps({
+              "source": result["source"],
+              "records_returned_by_api": result["records_returned_by_api"],
+              "records_matching_exact_recipient": result["records_matching_exact_recipient"],
+              "api_query_has_more_results": result["api_query_has_more_results"],
+              "coverage": result["coverage"],
+              "retrieved_at": result["retrieved_at"],
+              "raw_record_content_printed": False,
+          }, sort_keys=True))
+          PY
