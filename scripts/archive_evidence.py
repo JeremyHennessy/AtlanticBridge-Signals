@@ -37,6 +37,15 @@ PINS = {
 def sha(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
+def parse_json(raw: bytes | str, context: str):
+    """Decode JSON while retaining only safe source context, never response bodies."""
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f'{context} was not valid JSON (line {exc.lineno}, column {exc.colno})'
+        ) from None
+
 class SafeRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         if urllib.parse.urlsplit(newurl).scheme != 'https':
@@ -70,7 +79,8 @@ class Client:
         code, raw = self.request(url, method, body)
         if code not in (200,201): raise ValueError(f'GitHub archive request failed: HTTP {code}')
         try:
-            return json.loads(raw)
+            endpoint=urllib.parse.urlsplit(url).path
+            return parse_json(raw, f'GitHub API {method} {endpoint}')
         except json.JSONDecodeError as exc:
             # Keep diagnostics useful without logging response bodies, tokens, or
             # signed redirect URLs. Endpoint paths and byte counts are sufficient
@@ -105,7 +115,7 @@ def inspect_zip(raw: bytes, expected: str):
 LEGACY_ADDITIVE_HEALTH_FIELDS = {'operational_source_count', 'reliability_scope'}
 
 def inspect_checkpoint(raw: bytes, observed_health: dict):
-    value=validate(json.loads(raw))
+    value=validate(parse_json(raw,'retained checkpoint.json'))
     expected_health=health(value)
     if not isinstance(observed_health,dict):
         raise ValueError('Checkpoint does not match captured monitoring health')
@@ -148,7 +158,7 @@ def store_asset(client, release, name, raw):
         url='https://uploads.github.com/repos/'+REPO+f"/releases/{release['id']}/assets?name="+urllib.parse.quote(name,safe='')
         code,data=client.request(url,'POST',raw,mime='application/octet-stream')
         if code!=201:raise ValueError(f'Archive upload failed: HTTP {code}')
-        asset=json.loads(data)
+        asset=parse_json(data,'GitHub release asset upload response')
     endpoint=API+f"/releases/assets/{asset['id']}"
     code, restored=client.request(endpoint,binary=True)
     if code!=200 or restored!=raw:raise ValueError('Existing/uploaded archive asset differs; never overwrite it')
@@ -176,7 +186,7 @@ def archive_one(client, artifact, expected, release, monitoring=False, raw_overr
     if monitoring:
         data_sha=z.read('data-commit.txt').decode().strip()
         if not re.fullmatch('[0-9a-f]{40}',data_sha):raise ValueError('Missing exact data-state revision')
-        observed=json.loads(z.read('health.json'))
+        observed=parse_json(z.read('health.json'),'retained health.json')
         run_id=str(artifact['workflow_run']['id'])+'-'+str(observed['run_id'].split('-')[-1])
         if observed['run_id']!=run_id:raise ValueError('Captured health belongs to a different run')
         state=client.json(API+'/contents/checkpoint.json?ref='+data_sha)
@@ -197,7 +207,7 @@ def accepted_proof(client, artifact_id):
     expected=PINS[artifact_id]
     code,metadata=client.request(API+f'/actions/artifacts/{artifact_id}')
     if code==200:
-        info=json.loads(metadata)
+        info=parse_json(metadata,'GitHub Actions artifact metadata')
         if info.get('expired') is not True:
             status,raw=client.request(API+f'/actions/artifacts/{artifact_id}/zip',binary=True)
             if status==200:
