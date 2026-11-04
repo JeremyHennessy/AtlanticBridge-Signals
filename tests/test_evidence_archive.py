@@ -14,6 +14,24 @@ from atlanticbridge.company_sources import Ledger
 from atlanticbridge.monitoring_checkpoint import checkpoint,health
 
 class ArchiveTests(unittest.TestCase):
+    def test_invalid_api_json_reports_endpoint_without_exposing_body(self):
+        from unittest.mock import MagicMock
+        client=a.Client('TEST-SECRET-TOKEN')
+        response=MagicMock()
+        response.__enter__.return_value=response
+        response.status=200
+        response.read.return_value=b'<html>PRIVATE-RESPONSE-BODY</html>'
+        client.opener.open=MagicMock(return_value=response)
+
+        with self.assertRaises(ValueError) as caught:
+            client.json(a.API+'/actions/artifacts/123')
+
+        message=str(caught.exception)
+        self.assertIn('GitHub API GET /repos/JeremyHennessy/AtlanticBridge-Signals/actions/artifacts/123',message)
+        self.assertIn('line 1, column',message)
+        self.assertNotIn('PRIVATE-RESPONSE-BODY',message)
+        self.assertNotIn('TEST-SECRET-TOKEN',message)
+
     def raw_zip(self,content=b'evidence',name=None):
         out=io.BytesIO()
         with zipfile.ZipFile(out,'w') as z:z.writestr(name or 'raw/'+a.sha(content)+'.bin',content)
