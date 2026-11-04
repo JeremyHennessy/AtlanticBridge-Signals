@@ -228,9 +228,10 @@ def collect_grants_context(
             "commercial market fit, or current Canadian operating status."
         ),
         "privacy_note": (
-            The request filters to the exact legal recipient and API recipient-type code F, shown by the official UI as For-profit organization, 
-            "requests only allowlisted metadata, and omits descriptive free text, postal codes, "
-            "business numbers, and all unrequested source fields."
+            "The request filters to the exact legal recipient and API recipient-type code F "
+            "(displayed by the official UI as For-profit organization), requests only "
+            "allowlisted metadata, and omits personal-information fields, descriptive free "
+            "text, postal codes, business numbers, source coverage text, and all unrequested fields."
         ),
         "response_sha256": hashlib.sha256(raw).hexdigest(),
         "records": projected,
