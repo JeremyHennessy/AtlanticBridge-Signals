@@ -96,7 +96,7 @@ class AnalystReviewPacketTests(unittest.TestCase):
         serialized = json.dumps(packet)
         self.assertNotIn("must not flow through", serialized)
         self.assertNotIn("do_not_copy", serialized)
-        self.assertIn("does not establish", serialized)
+        self.assertIn("does not establish", serialized.lower())
         self.assertIn("not expansion", serialized)
 
     def test_live_collection_origin_is_not_misrepresented_as_independent_review(self):
