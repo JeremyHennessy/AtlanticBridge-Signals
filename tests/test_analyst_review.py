@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import unittest
 
 from atlanticbridge.analyst_review import build_review_packet
@@ -148,6 +149,32 @@ class AnalystReviewPacketTests(unittest.TestCase):
                 "nova_scotia_awarded_public_tenders",
                 {"vendor": "Example Inc."},
             )])
+
+    def test_packet_carries_response_hash_only_when_well_formed(self):
+        collection = _collection(
+            "nova_scotia_awarded_public_tenders",
+            {"tender_id": "SYNTHETIC-HASH-1", "vendor": "Example Inc."},
+            response_sha256="a" * 64,
+        )
+        packet = build_review_packet([collection])
+        self.assertEqual(packet["collections"][0]["response_sha256"], "a" * 64)
+        collection["response_sha256"] = "not-a-sha256"
+        packet = build_review_packet([collection])
+        self.assertIsNone(packet["collections"][0]["response_sha256"])
+
+    def test_local_ui_has_no_network_or_automatic_storage_and_is_not_publicly_wired(self):
+        root = Path(__file__).resolve().parents[1]
+        app = (root / "local_analyst_review" / "app.js").read_text(encoding="utf-8")
+        page = (root / "local_analyst_review" / "index.html").read_text(encoding="utf-8")
+        public_page = (root / "ui" / "index.html").read_text(encoding="utf-8")
+        for forbidden in ("fetch(", "XMLHttpRequest", "sendBeacon", "localStorage", "sessionStorage"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, app)
+        self.assertIn("textContent", app)
+        self.assertIn("LOCAL_ANALYST_REVIEW_ONLY", app)
+        self.assertNotIn("local_analyst_review", public_page)
+        self.assertIn("Open local review packet", page)
+        self.assertIn("Opening an official source link performs normal browser navigation", page)
 
     def test_naive_date_values_are_allowed_only_for_source_event_dates(self):
         packet = build_review_packet([_collection(
