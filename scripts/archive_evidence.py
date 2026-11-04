@@ -79,7 +79,7 @@ class Client:
         code, raw = self.request(url, method, body)
         if code not in (200,201): raise ValueError(f'GitHub archive request failed: HTTP {code}')
         endpoint=urllib.parse.urlsplit(url).path
-        return parse_json(raw, f'GitHub API {method} {endpoint}')
+        return parse_json(raw, f'GitHub API {method} {endpoint} (HTTP {code}, bytes {len(raw)})')
     def pages(self, path):
         rows=[]
         for page in range(1,21):
