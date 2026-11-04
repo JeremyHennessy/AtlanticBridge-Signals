@@ -51,7 +51,6 @@ FIELDS = (
     "foreign_currency_value",
     "agreement_start_date",
     "agreement_end_date",
-    "coverage",
     "naics_identifier",
     "owner_org_title",
 )
@@ -202,6 +201,11 @@ def collect_grants_context(
         "source": SOURCE_NAME,
         "dataset_id": DATASET_ID,
         "dataset_url": DATASET_URL,
+        "source_attribution": (
+            "Source: Government of Canada, Proactive Disclosure - Grants and Contributions, "
+            f"{DATASET_URL}; used under the Open Government Licence - Canada "
+            "(https://open.canada.ca/en/open-government-licence-canada)."
+        ),
         "resource_id": RESOURCE_ID,
         "api_url": query_url,
         "source_license": SOURCE_LICENSE,
@@ -209,7 +213,8 @@ def collect_grants_context(
         "source_update_frequency": "QUARTERLY",
         "retrieved_at": datetime.now(timezone.utc).isoformat(),
         "requested_recipient_legal_name": recipient_name,
-        "requested_recipient_type": RECIPIENT_TYPE_CODE,
+        "requested_recipient_type_code": RECIPIENT_TYPE_CODE,
+        "requested_recipient_type_label": RECIPIENT_TYPE_LABEL,
         "requested_limit": limit,
         "total_count_for_exact_query": total,
         "records_returned_by_api": len(rows),
@@ -223,7 +228,7 @@ def collect_grants_context(
             "commercial market fit, or current Canadian operating status."
         ),
         "privacy_note": (
-            "The request filters to the exact legal recipient and for-profit recipient type, "
+            The request filters to the exact legal recipient and API recipient-type code F, shown by the official UI as For-profit organization, 
             "requests only allowlisted metadata, and omits descriptive free text, postal codes, "
             "business numbers, and all unrequested source fields."
         ),
