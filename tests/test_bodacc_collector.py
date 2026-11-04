@@ -63,7 +63,7 @@ class BODACCCollectorTests(unittest.TestCase):
 
     def test_parses_only_exact_siren_and_minimizes_fields_with_provenance(self):
         payload = {
-            "total_count": 2,
+            "total_count": 3,
             "records": [
                 _api_row("A202600000001", "752461681,752 461 681"),
                 _api_row("A202600000002", "111222333"),
@@ -86,7 +86,7 @@ class BODACCCollectorTests(unittest.TestCase):
         self.assertEqual(result.response_sha256, hashlib.sha256(raw).hexdigest())
         self.assertEqual(result.records_matching_exact_siren, 1)
         self.assertEqual(result.records_excluded_by_exact_siren_check, 1)
-        self.assertFalse(result.api_query_has_more_results)
+        self.assertTrue(result.api_query_has_more_results)
         self.assertEqual(result.records[0].publication_age_days, 1)
         self.assertEqual(
             result.records[0].publication_freshness,
@@ -113,6 +113,21 @@ class BODACCCollectorTests(unittest.TestCase):
         self.assertIn("NOT_AN_ABSENCE_PROOF", result.coverage)
         with self.assertRaises(ValueError):
             bodacc._parse_records([_api_row("x", "752461681")] * 2, siren="752461681", retrieved_date=date(2026, 11, 3), limit=1, since_date=date(2026, 10, 1))
+
+
+    def test_rejects_records_before_the_requested_date_bound(self):
+        old = _api_row("A202600000003", "752461681", published="2026-09-30")
+        with patch.object(
+            bodacc,
+            "_fetch_payload",
+            return_value=({"total_count": 1, "records": [old]}, "c" * 64),
+        ):
+            with self.assertRaisesRegex(ValueError, "before the requested lower date bound"):
+                bodacc.collect_siren_notices(
+                    "752461681",
+                    "2026-10-01",
+                    retrieved_at=datetime(2026, 11, 3, tzinfo=timezone.utc),
+                )
 
     def test_schema_drift_and_non_official_notice_urls_fail_closed(self):
         with patch.object(
