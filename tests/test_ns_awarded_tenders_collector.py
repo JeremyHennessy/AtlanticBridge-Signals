@@ -34,6 +34,18 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
         self.assertEqual(params["$limit"], ["7"])
         self.assertEqual(params["$select"], [",".join(FIELDS)])
         self.assertEqual(params["$where"], ["upper(vendor) = 'BELL CANADA'"])
+        self.assertEqual(REQUIRED_TYPES, {
+            "tender_id": "text",
+            "entity": "text",
+            "goods": "text",
+            "service": "text",
+            "construction": "text",
+            "tender_start_date": "calendar_date",
+            "tender_close_date": "calendar_date",
+            "awarded_date": "calendar_date",
+            "awarded_amount": "number",
+            "vendor": "text",
+        })
         self.assertEqual(set(REQUIRED_TYPES), set(FIELDS))
         self.assertEqual(LICENSE_ID, "OGL_NOVA_SCOTIA")
         self.assertNotIn("tender_description", FIELDS)
