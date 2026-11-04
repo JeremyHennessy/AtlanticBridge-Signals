@@ -5,7 +5,9 @@ procurement activity, not an expansion mandate, investment intent, or site choic
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from decimal import Decimal, InvalidOperation
+import hashlib
 import json
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
@@ -128,7 +130,12 @@ def collect_awarded_tenders_context(
     if type(timeout_seconds) is not int or not 1 <= timeout_seconds <= MAX_TIMEOUT_SECONDS:
         raise ValueError(f"timeout_seconds must be between 1 and {MAX_TIMEOUT_SECONDS}")
     query_url = build_query_url(vendor_name, limit)
+    injected_fetcher = fetch_json is not _fetch_json
     rows, raw = fetch_json(query_url, timeout_seconds)
+    if not isinstance(raw, bytes):
+        raise ValueError("Nova Scotia API raw response is not bytes")
+    if not isinstance(rows, list):
+        raise ValueError("Nova Scotia API response is not a record list")
     if len(rows) > limit:
         raise ValueError("Nova Scotia API returned more rows than the requested bound")
 
@@ -137,19 +144,43 @@ def collect_awarded_tenders_context(
     for row in rows:
         if not isinstance(row, dict) or not set(FIELDS).issubset(row):
             raise ValueError("Nova Scotia awarded tender record schema changed")
+        for field in ("tender_id", "entity", "goods", "service", "construction", "vendor"):
+            value = row.get(field)
+            if value is not None and (not isinstance(value, str) or len(value) > 500):
+                raise ValueError(f"Nova Scotia {field} field has an unexpected type or size")
         returned_vendor = row.get("vendor")
         if not isinstance(returned_vendor, str) or _normalize(returned_vendor) != _normalize(vendor_name):
             excluded += 1
             continue
+        for field in ("tender_start_date", "tender_close_date", "awarded_date"):
+            value = row.get(field)
+            if value is None:
+                continue
+            if not isinstance(value, str) or len(value) > 64:
+                raise ValueError(f"Nova Scotia {field} has an unexpected type or size")
+            try:
+                if "T" in value or " " in value:
+                    datetime.fromisoformat(value.replace("Z", "+00:00"))
+                else:
+                    date.fromisoformat(value)
+            except ValueError:
+                raise ValueError(f"Nova Scotia {field} is not a valid ISO date") from None
         amount = row.get("awarded_amount")
-        # Live Socrata responses can serialize the metadata-number field as text.
-        # Preserve those source strings verbatim; do not parse currency or coerce.
-        if amount is not None and (
-            isinstance(amount, bool)
-            or not isinstance(amount, (int, float, str))
-            or (isinstance(amount, str) and len(amount) > 128)
-        ):
-            raise ValueError("Nova Scotia awarded tender amount has an unexpected JSON type or size")
+        # Socrata metadata declares number, while live JSON may serialize it as text.
+        # Validate numeric content but retain the exact source value.
+        if amount is not None:
+            if isinstance(amount, bool) or not isinstance(amount, (int, float, str)):
+                raise ValueError("Nova Scotia awarded tender amount has an unexpected JSON type")
+            if isinstance(amount, str):
+                if not amount or len(amount) > 128:
+                    raise ValueError("Nova Scotia awarded tender amount has an unexpected size")
+                numeric_text = amount.strip().replace("$", "").replace(",", "")
+                try:
+                    parsed_amount = Decimal(numeric_text)
+                except InvalidOperation:
+                    raise ValueError("Nova Scotia awarded tender amount is not numeric") from None
+                if not parsed_amount.is_finite():
+                    raise ValueError("Nova Scotia awarded tender amount is not finite")
         projected.append({field: row.get(field) for field in FIELDS})
 
     return {
@@ -163,6 +194,11 @@ def collect_awarded_tenders_context(
         "source_license_url": LICENSE_URL,
         "source_attribution": ATTRIBUTION,
         "retrieved_at": datetime.now(timezone.utc).isoformat(),
+        "collection_execution": (
+            "INJECTED_FETCHER_FIXTURE_OR_REPLAY" if injected_fetcher else "LIVE_HTTP_RESPONSE"
+        ),
+        "independent_review_status": "NOT_INDEPENDENTLY_VERIFIED",
+        "response_sha256": hashlib.sha256(raw).hexdigest(),
         "requested_vendor_legal_name": vendor_name,
         "requested_limit": limit,
         "records_returned_by_api": len(rows),
