@@ -78,15 +78,8 @@ class Client:
     def json(self, url, method='GET', body=None):
         code, raw = self.request(url, method, body)
         if code not in (200,201): raise ValueError(f'GitHub archive request failed: HTTP {code}')
-        try:
-            endpoint=urllib.parse.urlsplit(url).path
-            return parse_json(raw, f'GitHub API {method} {endpoint}')
-        except json.JSONDecodeError as exc:
-            # Keep diagnostics useful without logging response bodies, tokens, or
-            # signed redirect URLs. Endpoint paths and byte counts are sufficient
-            # to identify which GitHub API response needs investigation.
-            path = urllib.parse.urlsplit(url).path
-            raise ValueError(f'GitHub archive API returned invalid JSON for {path} (HTTP {code}, bytes {len(raw)}, parse position {exc.pos})') from None
+        endpoint=urllib.parse.urlsplit(url).path
+        return parse_json(raw, f'GitHub API {method} {endpoint}')
     def pages(self, path):
         rows=[]
         for page in range(1,21):
