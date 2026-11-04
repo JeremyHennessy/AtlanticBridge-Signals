@@ -41,6 +41,7 @@ jobs:
           assert result["requested_limit"] == 1
           assert result["records_returned_by_api"] == len(result["records"])
           assert result["records_matching_exact_recipient"] == len(result["records"])
+          assert result["records"][0]["recipient_type"] == "F"
           assert len(result["records"]) == 1, "official UI-listed recipient should produce a bounded exact-name match"
           assert len(result["records"]) <= 1
           print(json.dumps({
