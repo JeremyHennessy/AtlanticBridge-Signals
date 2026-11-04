@@ -69,6 +69,18 @@ def _date_or_unknown(value: object) -> str | None:
         return None
 
 
+def _timestamp_or_unknown(value: object) -> str | None:
+    if not isinstance(value, str) or len(value) > 64:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.year < 1900 or parsed.tzinfo is None or parsed.utcoffset() is None:
+        return None
+    return parsed.isoformat()
+
+
 def _execution_class(collection: dict) -> str:
     origin = collection.get("collection_execution")
     if origin == _LIVE_ORIGIN:
@@ -79,7 +91,7 @@ def _execution_class(collection: dict) -> str:
 
 
 def _record_view(source: str, config: dict, collection: dict, row: dict) -> dict:
-    retrieved_at = _date_or_unknown(collection.get("retrieved_at"))
+    retrieved_at = _timestamp_or_unknown(collection.get("retrieved_at"))
     source_url = None
     headline = ""
     entity = ""
@@ -195,7 +207,7 @@ def build_review_packet(collections: list[dict], *, generated_at: str | None = N
             "source": source,
             "evidence_class": _execution_class(collection),
             "independent_verification": "NOT_INDEPENDENTLY_VERIFIED",
-            "retrieved_at": _date_or_unknown(collection.get("retrieved_at")),
+            "retrieved_at": _timestamp_or_unknown(collection.get("retrieved_at")),
             "records_returned": len(rows),
             "coverage": collection.get("coverage") if isinstance(collection.get("coverage"), str) else "Unknown",
             "source_license": config["license"],
@@ -207,7 +219,7 @@ def build_review_packet(collections: list[dict], *, generated_at: str | None = N
                 raise ValueError("source record must be an object")
             findings.append(_record_view(source, config, collection, row))
     generated = generated_at or datetime.now(timezone.utc).isoformat()
-    if _date_or_unknown(generated) is None:
+    if _timestamp_or_unknown(generated) is None:
         raise ValueError("generated_at must be a valid timezone-aware timestamp")
     return {
         "packet_version": _PACKET_VERSION,
