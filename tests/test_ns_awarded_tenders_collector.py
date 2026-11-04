@@ -67,6 +67,9 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
         self.assertNotIn("tender_description", result["records"][0])
         self.assertIn("Open Government Licence", result["source_attribution"])
         self.assertEqual(result["source_license_id"], LICENSE_ID)
+        self.assertEqual(result["collection_execution"], "INJECTED_FETCHER_FIXTURE_OR_REPLAY")
+        self.assertEqual(result["independent_review_status"], "NOT_INDEPENDENTLY_VERIFIED")
+        self.assertEqual(result["response_sha256"], __import__("hashlib").sha256(b'[{"bounded":"fixture"}]').hexdigest())
         self.assertIn("NOT_AN_ABSENCE_PROOF", result["coverage"])
         self.assertEqual(result["page_may_be_truncated"], True)
 
@@ -80,11 +83,27 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
 
         def bad_amount(url, timeout):
             value = row()
-            value["awarded_amount"] = []
+            value["awarded_amount"] = "not-a-number"
             return [value], b"[]"
 
         with self.assertRaisesRegex(ValueError, "amount"):
             collect_awarded_tenders_context("Example Systems Ltd.", fetch_json=bad_amount)
+
+        def nested_entity(url, timeout):
+            value = row()
+            value["entity"] = {"private_note": "must not be retained"}
+            return [value], b"[]"
+
+        with self.assertRaisesRegex(ValueError, "entity"):
+            collect_awarded_tenders_context("Example Systems Ltd.", fetch_json=nested_entity)
+
+        def invalid_date(url, timeout):
+            value = row()
+            value["awarded_date"] = "not-a-date"
+            return [value], b"[]"
+
+        with self.assertRaisesRegex(ValueError, "ISO date"):
+            collect_awarded_tenders_context("Example Systems Ltd.", fetch_json=invalid_date)
 
     def test_rejects_invalid_bounds_and_overflow(self):
         with self.assertRaises(ValueError):
