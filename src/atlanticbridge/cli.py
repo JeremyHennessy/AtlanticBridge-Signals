@@ -211,6 +211,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     canadabuys_summary_parser.add_argument("--db", required=True)
 
+    bodacc = subparsers.add_parser(
+        "collect-bodacc-context",
+        help="Collect one bounded page of French BODACC corporate-context notices for a verified SIREN",
+    )
+    bodacc.add_argument("--siren", required=True, help="Verified nine-digit French SIREN")
+    bodacc.add_argument("--since", required=True, help="Earliest publication date (YYYY-MM-DD)")
+    bodacc.add_argument("--limit", type=int, default=50, help="Maximum one-page results (1-100)")
+    bodacc.add_argument("--timeout-seconds", type=int, default=20)
+    bodacc.add_argument("--output", required=True, help="Write the minimal provenance envelope to this JSON path")
+
     statcan = subparsers.add_parser(
         "ingest-statcan-trade",
         help=(
@@ -715,6 +725,37 @@ def main(argv: list[str] | None = None) -> int:
         conn = connect(args.db)
         print(json.dumps(canadabuys_summary(conn), indent=2, sort_keys=True))
         return 0
+
+    if args.command == "collect-bodacc-context":
+        try:
+            from .sources.bodacc import collect_siren_notices, write_collection
+
+            result = collect_siren_notices(
+                args.siren,
+                args.since,
+                limit=args.limit,
+                timeout=args.timeout_seconds,
+            )
+            write_collection(args.output, result)
+            print(
+                json.dumps(
+                    {
+                        "source": result.source,
+                        "retrieved_at": result.retrieved_at,
+                        "output": str(args.output),
+                        "records_returned_by_api": result.records_returned_by_api,
+                        "records_matching_exact_siren": result.records_matching_exact_siren,
+                        "api_query_has_more_results": result.api_query_has_more_results,
+                        "coverage": result.coverage,
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            return 0
+        except Exception as exc:
+            print(f"BODACC collection failed: {exc}", file=sys.stderr)
+            return 1
 
     if args.command == "ingest-statcan-trade":
         try:

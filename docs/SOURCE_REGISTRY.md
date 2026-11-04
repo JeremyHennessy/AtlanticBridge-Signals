@@ -18,6 +18,7 @@ Status values:
 | CanadaBuys award notices | Canada | Federal award, supplier, value, category and geography evidence | Current fiscal file updated daily | **IMPLEMENTED** |
 | Statistics Canada tables 12-10-0175-01 / 12-10-0173-01 | Canada | Nova Scotia/Canada EU trade context by market and NAPCS section | Monthly major markets + annual full EU | **IMPLEMENTED** |
 | Canadian Importers Database | Canada | Potential distributor/importer mapping by product/origin | Periodic | **LATER** |
+| BODACC commercial notices API | France | Dated French corporate-event context by SIREN | Published 5 days/week; API update lag/rate limit unverified | **VERIFY — bounded collector candidate; live API smoke pending** |
 | Nova Scotia procurement | Nova Scotia | Local buyer/award signals | Ongoing | **LATER** |
 | Provincial corporate registries | Provinces | Recover non-federal entry entities and registration timing | Varies | **ACCESS REVIEWED — authorization/licence required for broad production coverage** |
 | Invest Nova Scotia disclosures | Nova Scotia | Historical expansion/incentive validation | Event driven | **LATER** |
