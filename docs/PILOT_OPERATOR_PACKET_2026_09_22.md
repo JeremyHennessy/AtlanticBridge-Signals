@@ -32,6 +32,22 @@ For every candidate, capture counter-evidence and stale-data warnings beside sup
 
 A pilot set should deliberately include already-present firms, ambiguous identities, non-mandate activity, and cases that should be ruled out or deferred, alongside promising observations. Report usefulness, factual support, identity correctness, novelty, and manually timed active research separately. Missing source coverage is unknown, not a zero or a negative finding. This workflow supports an analyst-reviewed brief; it does not validate the Expansion Score or create a predictive lead product.
 
+## Source expansion gates
+
+The source candidates below are leads for review, not approval to ingest. Confirm current endpoint behavior, licence terms, reuse rights, update cadence, suppression/coverage rules, and provenance before adding a collector or showing derived facts in a paid workflow.
+
+| Candidate | Useful context | Gate before integration |
+| --- | --- | --- |
+| [Canada Business Registries FAQ](https://ised-isde.canada.ca/cbr-rec/faq) | Provincial and federal registry discovery | Its FAQ prohibits automated copying, searching, or scraping. Do not automate this federation or infer bulk provincial-registry rights. |
+| [Federal Grants and Contributions bulk data](https://search.open.canada.ca/grants/) | Public program awards and recipient context | Verify the bulk endpoint, applicable reuse terms, update frequency, recipient identity, and what award amounts mean before use. Awards are not evidence of a new expansion mandate. |
+| [Impact Assessment Agency inventory](https://iaac-aeic.gc.ca/050/evaluations) | Major project and assessment context | Verify accessible fields, source dates, geographic coverage, reuse terms, and whether project proponent identities can be resolved. An assessment is not proof of a site-selection mandate. |
+| [EU Funding & Tenders APIs](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/support/apis) | Published EU projects, organizations, and partner-search context | Confirm endpoint terms, fields and refresh behavior. Treat projects and partnerships as context, not company expansion intent. |
+| [Québec enterprise registry open data](https://www.donneesquebec.ca/recherche/dataset/registre-des-entreprises) | Québec entity and ownership research | Bulk data is described as CC BY-NC-SA. Do not assume compatibility with a commercial product; exclude it until rights are reviewed for the intended use. |
+| BC Registry API | British Columbia entity research | Access requires an account and API key, with possible fees. It is not a plug-and-play public feed; do not access or budget for it without explicit authorization. |
+| [Canadian Importers Database, 2024](https://ised-isde.canada.ca/site/canadian-importers-database/en) | Company/HS6/country/city trade-footprint context | Verify suppression rules, coverage, reuse terms, and publication vintage before integration. Trade footprint is not evidence of expansion intent or a current operating site. |
+
+For every accepted source, record the official endpoint and licence/terms URL, retrieval and publication clocks, update cadence, geography and population coverage, stable identifiers, suppressed/missing-value rules, retained evidence/hash, and failure/staleness behavior. Keep company-specific evidence separate from regional context. A candidate that cannot be accessed or reused under the intended terms remains out of the product, regardless of relevance.
+
 ## Private record contract
 
 Copy `reviews/pilot/participant-records-template.json` to private storage. A participant needs `reviewer`, `role`, `recorded_date` (YYYY-MM-DD), `consented`, `independent_user`, and a private `consent_record` reference. Append the existing browser feedback exports to `reviews`; the reviewer label must match the consented ID. Unknown or unconsented submissions are excluded from independent-user metrics, not silently enrolled.
