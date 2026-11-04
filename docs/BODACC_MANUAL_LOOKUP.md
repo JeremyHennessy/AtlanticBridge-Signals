@@ -1,6 +1,6 @@
 # BODACC manual lookup
 
-Status: manual official-site lookup plus an unverified, bounded CLI collector candidate. Live API request and browser acceptance are not verified. Reviewed 4 November 2026.
+Status: manual official-site lookup plus a bounded CLI collector candidate that passed one live API smoke query. Browser acceptance and production suitability are not verified. Reviewed 4 November 2026.
 
 ## User flow and provenance
 
@@ -27,6 +27,6 @@ Run `node --test tests/test_bodacc_search.cjs`. Browser acceptance remains to be
 
 A CLI collector is available in this branch as a testable candidate. It accepts one verified SIREN, a required publication-date lower bound, and a single page limited to 100 notices. It returns only the record ID, SIREN, publication date/type, notice family, official notice URL, publication-age label, retrieval time, query URL, and response hash; it does not retain free-text notice bodies, person fields, or the raw response. A query with no returned matching notice is explicitly not evidence of absence.
 
-The official API is documented as free and open under Etalab Open Licence 2.0, subject to the API's terms. The source catalogue warns that API availability and rate limits are not documented and that records can contain personal data. For this reason, the command is not scheduled, wired into production monitoring, or used by the UI. The current execution environment cannot resolve the API host, so the response shape/query behavior have not passed a live smoke test. Do not describe this collector as functional until a bounded live request and result validation pass and the API-specific terms/rate limits are reviewed.
+The official API is documented as free and open under Etalab Open Licence 2.0, subject to the API's terms. The source catalogue warns that API availability and rate limits are not documented and that records can contain personal data. For this reason, the command is not scheduled, wired into production monitoring, or used by the UI. One branch-only live smoke query passed on 4 November 2026: one record returned for the verified SIREN, one exact match, and the live `registre` field was a JSON list. This validates one request path only; source completeness, API-specific terms/rate limits, and production suitability remain unverified.
 
 Run the contract tests with `python -m unittest discover -s tests -p test_bodacc_collector.py -v` in a Python-enabled checkout. To attempt an on-demand smoke test after network access is restored: `python -m atlanticbridge collect-bodacc-context --siren <verified-nine-digit-SIREN> --since YYYY-MM-DD --limit 20 --output bodacc-context.json`. The collector writes a single JSON envelope and never updates production state.
