@@ -11,7 +11,8 @@ from atlanticbridge.sources.ns_awarded_tenders import (
 )
 
 
-def row(vendor="Bell Canada"):
+# Synthetic fixture only; these tender details are invented test values.
+def row(vendor="Example Systems Ltd."):
     return {
         "tender_id": "NS-123",
         "entity": "Department of Public Works",
@@ -59,7 +60,7 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
             return [row()], b'[{"bounded":"fixture"}]'
 
         result = collect_awarded_tenders_context(
-            "Bell Canada", limit=1, timeout_seconds=5, fetch_json=fetch
+            "Example Systems Ltd.", limit=1, timeout_seconds=5, fetch_json=fetch
         )
         self.assertEqual(result["records_matching_exact_vendor"], 1)
         self.assertEqual(result["records"][0]["awarded_amount"], "125000.00")
@@ -71,9 +72,9 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
 
     def test_local_identity_recheck_and_amount_type_are_fail_closed(self):
         def wrong_name(url, timeout):
-            return [row(vendor="Bell Canada Ltd.")], b"[]"
+            return [row(vendor="Example Systems Limited")], b"[]"
 
-        result = collect_awarded_tenders_context("Bell Canada", fetch_json=wrong_name)
+        result = collect_awarded_tenders_context("Example Systems Ltd.", fetch_json=wrong_name)
         self.assertEqual(result["records_matching_exact_vendor"], 0)
         self.assertEqual(result["records_excluded_by_exact_vendor_check"], 1)
 
@@ -83,7 +84,7 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
             return [value], b"[]"
 
         with self.assertRaisesRegex(ValueError, "amount"):
-            collect_awarded_tenders_context("Bell Canada", fetch_json=bad_amount)
+            collect_awarded_tenders_context("Example Systems Ltd.", fetch_json=bad_amount)
 
     def test_rejects_invalid_bounds_and_overflow(self):
         with self.assertRaises(ValueError):
@@ -93,7 +94,7 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
             return [row(), row()], b"[]"
 
         with self.assertRaisesRegex(ValueError, "requested bound"):
-            collect_awarded_tenders_context("Bell Canada", limit=1, fetch_json=too_many)
+            collect_awarded_tenders_context("Example Systems Ltd.", limit=1, fetch_json=too_many)
 
     def test_rejects_record_schema_drift(self):
         def missing_field(url, timeout):
@@ -102,7 +103,7 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
             return [value], b"[]"
 
         with self.assertRaisesRegex(ValueError, "schema changed"):
-            collect_awarded_tenders_context("Bell Canada", fetch_json=missing_field)
+            collect_awarded_tenders_context("Example Systems Ltd.", fetch_json=missing_field)
 
 
 if __name__ == "__main__":
