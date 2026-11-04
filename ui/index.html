@@ -58,6 +58,19 @@
         <section class="metrics" aria-label="Opportunity review coverage"><div class="metric-card"><span class="metric-label">Recent evidence · 90 days</span><strong class="metric-value" id="opportunity-current-count">—</strong><span class="metric-detail">Public documents, not automatically new leads</span></div><div class="metric-card"><span class="metric-label">Qualified for investigation</span><strong class="metric-value" id="opportunity-qualified-count">—</strong><span class="metric-detail">Every required review check supported</span></div><div class="metric-card"><span class="metric-label">Reviewed project histories</span><strong class="metric-value" id="opportunity-history-count">—</strong><span class="metric-detail">Context, not current expansion claims</span></div></section>
         <div class="research-banner"><strong>Evidence → review → next action.</strong><span id="opportunity-coverage">Loading independent evidence sources…</span></div>
         <section class="panel"><div class="panel-header"><div class="quick-views" role="group" aria-label="Opportunity evidence views"><button type="button" data-opportunity-view="current" aria-pressed="true">Recent evidence to review</button><button type="button" data-opportunity-view="qualified" aria-pressed="false">Qualified opportunities</button><button type="button" data-opportunity-view="history" aria-pressed="false">Historical context</button></div></div><div class="worklist-filters"><label>Search companies, locations or next actions<input id="opportunity-search" type="search" placeholder="Company, Canadian location or topic" autocomplete="off"></label><button class="button" id="opportunity-reset" type="button">Reset</button></div><div class="table-summary"><span id="opportunity-count" role="status" aria-live="polite">Loading evidence…</span><span class="muted">Newest public document first</span></div><div class="coverage-stack" id="opportunity-list" aria-live="polite"></div></section>
+        <details class="panel" id="bodacc-lookup-panel">
+          <summary>French company notices / BODACC context lookup</summary>
+          <div class="coverage-stack">
+            <p>Search the official French BODACC commercial notices for a company whose legal identity and nine-digit SIREN have already been verified. This is a manual, user-initiated lookup; AtlanticBridge does not fetch or retain the query or results.</p>
+            <p class="small"><strong>Interpretation limit:</strong> a French legal notice may provide company or transaction context. It does not establish Canadian activity, an expansion mandate, site-selection intent, or market fit. Record the notice date, publication date, source URL, and counter-evidence in the analyst case notes.</p>
+            <label for="bodacc-siren">Verified French SIREN (9 digits)
+              <input id="bodacc-siren" inputmode="numeric" autocomplete="off" pattern="[0-9]{9}" minlength="9" maxlength="9" aria-describedby="bodacc-lookup-status">
+            </label>
+            <p id="bodacc-lookup-status" role="status" aria-live="polite">Enter a verified nine-digit SIREN to build an official BODACC search link.</p>
+            <a class="button" id="bodacc-search-link" data-bodacc-link target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" hidden>Open official BODACC search ↗</a>
+            <p class="small muted">Source: BODACC official commercial notices, Etalab Open Licence 2.0. Results remain on bodacc.fr and are not ingested into this app.</p>
+          </div>
+        </details>
         <details class="panel" id="case-brief-panel"><summary>Focused case reviews / Reviewed assessment and next action</summary><div class="coverage-stack" id="case-brief-index">Loading focused assessments…</div></details>
         <details class="panel" id="monitor-review-panel"><summary>Monitored source changes / Needs review</summary><div class="coverage-stack"><p>Review metadata changes without mixing observation dates into the published-news queue. Source restrictions and unresolved identities remain explicit.</p><button class="button" id="monitor-review-load" type="button">Load monitored changes</button><p id="monitor-review-status" role="status">Not loaded. Collection and qualification are separate.</p><div id="monitor-review-list"></div></div></details>
         <details class="panel"><summary>Company review decisions and unresolved checks</summary><div class="coverage-stack" id="opportunity-review-register">Loading decisions…</div></details>
@@ -194,6 +207,7 @@
   <script src="opportunities.js" defer></script>
   <script src="monitor-review.js" defer></script>
   <script src="case-briefs.js" defer></script>
+  <script src="bodacc-search.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>
