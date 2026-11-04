@@ -94,14 +94,15 @@ class FederalGrantsCollectorTests(unittest.TestCase):
     def test_local_exact_identity_and_recipient_type_filter_fails_closed(self):
         rows = sample_payload()["result"]["records"]
         wrong_name = dict(rows[0], recipient_legal_name="Another Industrial Ltd.")
-        wrong_type = dict(rows[0], recipient_type="Individual or sole proprietorship")
+        wrong_type_label = dict(rows[0], recipient_type=RECIPIENT_TYPE_LABEL)
+        wrong_type_code = dict(rows[0], recipient_type="I")
 
         def fetch(url, timeout):
-            return sample_payload([rows[0], wrong_name, wrong_type], total=3), b"{}"
+            return sample_payload([rows[0], wrong_name, wrong_type_label, wrong_type_code], total=4), b"{}"
 
         result = collect_grants_context("Example Industrial Ltd.", fetch_json=fetch)
         self.assertEqual(result["records_matching_exact_recipient"], 1)
-        self.assertEqual(result["records_excluded_by_exact_recipient_check"], 2)
+        self.assertEqual(result["records_excluded_by_exact_recipient_check"], 3)
         self.assertEqual(len(result["records"]), 1)
 
     def test_more_results_never_claim_complete_coverage(self):
