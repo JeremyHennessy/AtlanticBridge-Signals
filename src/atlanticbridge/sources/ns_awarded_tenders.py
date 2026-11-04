@@ -143,7 +143,7 @@ def collect_awarded_tenders_context(
             continue
         amount = row.get("awarded_amount")
         if amount is not None and (isinstance(amount, bool) or not isinstance(amount, (int, float))):
-            raise ValueError("Nova Scotia awarded tender amount has an unexpected type")
+            raise ValueError("Nova Scotia awarded tender amount has unexpected JSON type " + type(amount).__name__)
         projected.append({field: row.get(field) for field in FIELDS})
 
     return {
