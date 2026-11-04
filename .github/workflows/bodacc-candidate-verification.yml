@@ -1,0 +1,59 @@
+name: BODACC candidate verification
+on:
+  push:
+    branches:
+      - fix/reliability-archive-pilot-20261104
+    paths:
+      - .github/workflows/bodacc-candidate-verification.yml
+      - src/atlanticbridge/cli.py
+      - src/atlanticbridge/sources/bodacc.py
+      - tests/test_bodacc_collector.py
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install project
+        run: python -m pip install -e .
+      - name: Run bounded collector contract tests
+        run: python -m unittest discover -s tests -p test_bodacc_collector.py -v
+      - name: Make one read-only BODACC smoke request
+        env:
+          OUTPUT_PATH: ${{ runner.temp }}/bodacc-smoke.json
+        run: |
+          python -m atlanticbridge collect-bodacc-context \
+            --siren 752461681 \
+            --since 2025-01-01 \
+            --limit 1 \
+            --output "$OUTPUT_PATH"
+          python - "$OUTPUT_PATH" <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          result = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          assert result["source"] == "bodacc_commercial_notices"
+          assert result["requested_siren"] == "752461681"
+          assert result["requested_since"] == "2025-01-01"
+          assert result["requested_limit"] == 1
+          assert result["records_returned_by_api"] <= 1
+          assert result["records_matching_exact_siren"] == len(result["records"])
+          assert len(result["response_sha256"]) == 64
+          assert result["api_url"].startswith(
+              "https://bodacc-datadila.opendatasoft.com/api/explore/v2.0/"
+          )
+          assert result["coverage"].endswith("NOT_AN_ABSENCE_PROOF")
+          print(json.dumps({
+              "status": "LIVE_BOUNDED_QUERY_OK",
+              "records_returned": result["records_returned_by_api"],
+              "exact_siren_matches": result["records_matching_exact_siren"],
+              "api_query_has_more_results": result["api_query_has_more_results"],
+          }, sort_keys=True))
+          PY
