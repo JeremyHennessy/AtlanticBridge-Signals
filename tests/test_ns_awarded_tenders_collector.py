@@ -21,7 +21,7 @@ def row(vendor="Bell Canada"):
         "tender_start_date": "2025-01-01T00:00:00.000",
         "tender_close_date": "2025-02-01T00:00:00.000",
         "awarded_date": "2025-02-10T00:00:00.000",
-        "awarded_amount": 125000.0,
+        "awarded_amount": "125000.00",
         "vendor": vendor,
         "tender_description": "Must not be requested or retained",
     }
@@ -62,7 +62,7 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
             "Bell Canada", limit=1, timeout_seconds=5, fetch_json=fetch
         )
         self.assertEqual(result["records_matching_exact_vendor"], 1)
-        self.assertEqual(result["records"][0]["awarded_amount"], 125000.0)
+        self.assertEqual(result["records"][0]["awarded_amount"], "125000.00")
         self.assertNotIn("tender_description", result["records"][0])
         self.assertIn("Open Government Licence", result["source_attribution"])
         self.assertEqual(result["source_license_id"], LICENSE_ID)
@@ -79,7 +79,7 @@ class NovaScotiaAwardedTendersTests(unittest.TestCase):
 
         def bad_amount(url, timeout):
             value = row()
-            value["awarded_amount"] = "125000"
+            value["awarded_amount"] = []
             return [value], b"[]"
 
         with self.assertRaisesRegex(ValueError, "amount"):
