@@ -51,3 +51,10 @@ test("browser script initializes automatically and carries the SIREN into the of
   assert.equal(destination.origin, "https://www.bodacc.fr");
   assert.equal(destination.searchParams.get("q.registre"), "registre:987654321");
 });
+
+test("app markup loads the helper and exposes the expected lookup controls", () => {
+  const html = fs.readFileSync(path.join(__dirname, "../ui/index.html"), "utf8");
+  assert.match(html, /<script src="bodacc-search\.js" defer><\/script>/);
+  assert.match(html, /id="bodacc-siren"[^>]*pattern="\[0-9\]\{9\}"/);
+  assert.match(html, /id="bodacc-search-link"[^>]*target="_blank"[^>]*referrerpolicy="no-referrer"/);
+});
