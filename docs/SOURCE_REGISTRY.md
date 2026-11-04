@@ -20,10 +20,20 @@ Status values:
 | Canadian Importers Database | Canada | Potential distributor/importer mapping by product/origin | Periodic | **LATER** |
 | BODACC commercial notices API | France | Dated French corporate-event context by SIREN | Published 5 days/week; API update lag/rate limit unverified | **VERIFY — bounded collector passed one live smoke; terms/rate review pending** |
 | Federal Grants and Contributions dataset / CKAN Datastore API | Canada | Exact-recipient federal transfer-payment agreement context | Quarterly (published dataset cadence) | **VERIFY — official licence/schema and bounded exact-name API match confirmed; attribution/privacy and operational review remain before production** |
-| Nova Scotia procurement | Nova Scotia | Local buyer/award signals | Ongoing | **LATER** |
+| Nova Scotia Awarded Public Tenders | Nova Scotia | Local buyer, supplier-award and historical commercial activity context | Dataset refreshed as published; no fixed cadence stated | **VERIFY — official commercial-use licence, live schema, and one exact-company API result verified; privacy/attribution review and independent code review remain** |
 | Provincial corporate registries | Provinces | Recover non-federal entry entities and registration timing | Varies | **ACCESS REVIEWED — authorization/licence required for broad production coverage** |
 | Invest Nova Scotia disclosures | Nova Scotia | Historical expansion/incentive validation | Event driven | **LATER** |
 | Company careers/newsrooms | Company | Hiring/market-entry intent | Variable | **LATER** |
+
+## Nova Scotia awarded tenders context contract
+
+The official [Awarded Public Tenders](https://data.novascotia.ca/Procurement-and-Contracts/Awarded-Public-Tenders/m6ps-8j6u) Socrata resource is published under the Nova Scotia Open Government Licence. The licence permits commercial use with attribution but explicitly excludes personal information. Use the collector only for a previously verified business legal name, with manual review before reuse.
+
+The live metadata-only probe verified 11 columns: tender ID, buyer entity, goods/service/construction flags, tender start/close dates, awarded date, awarded amount, vendor, and tender description. The collector uses only the first ten fields and excludes tender description. A bounded exact-company request returned one Bell Canada match. The metadata types awarded amount as a number, while the live API serialized that value as text; the collector preserves the source representation without parsing or coercing it.
+
+Each output carries retrieval time, source/dataset links, the required attribution `Contains information licensed under the Open Government Licence – Nova Scotia`, exact-query and one-page coverage limits, and an explicit interpretation warning. A tender award is evidence of a prior procurement relationship, not investment intent, expansion, entry, or site selection. The source remains manual and non-production pending independent review.
+
+Source: [Nova Scotia Awarded Public Tenders](https://data.novascotia.ca/Procurement-and-Contracts/Awarded-Public-Tenders/m6ps-8j6u); [Nova Scotia Open Government Licence](https://novascotia.ca/opendata/licence.asp).
 
 ## Federal Grants and Contributions context contract
 
