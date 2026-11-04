@@ -55,6 +55,7 @@ FIELDS = (
     "owner_org_title",
 )
 REQUIRED_SCHEMA = frozenset(FIELDS)
+REQUIRED_SCHEMA_TYPES = {field: ("int" if field == "_id" else "text") for field in FIELDS}
 
 
 class OfficialHttpsRedirects(HTTPRedirectHandler):
@@ -168,13 +169,25 @@ def collect_grants_context(
         raise ValueError("Grants and Contributions response count is inconsistent")
     if not isinstance(schema, list):
         raise ValueError("Grants and Contributions response schema is missing")
-    field_names = {
-        item.get("id") for item in schema
-        if isinstance(item, dict) and isinstance(item.get("id"), str)
-    }
-    if not REQUIRED_SCHEMA.issubset(field_names):
-        missing = sorted(REQUIRED_SCHEMA - field_names)
-        raise ValueError("Grants and Contributions schema drift: missing " + ", ".join(missing))
+    field_types = {}
+    for item in schema:
+        if not isinstance(item, dict) or not isinstance(item.get("id"), str):
+            raise ValueError("Grants and Contributions field schema is malformed")
+        if item["id"] in field_types:
+            raise ValueError("Grants and Contributions field schema has duplicate columns")
+        field_types[item["id"]] = item.get("type")
+    missing = sorted(REQUIRED_SCHEMA - field_types.keys())
+    wrong_types = sorted(
+        name for name, expected in REQUIRED_SCHEMA_TYPES.items()
+        if name in field_types and field_types[name] != expected
+    )
+    if missing or wrong_types:
+        details = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if wrong_types:
+            details.append("unexpected types for " + ", ".join(wrong_types))
+        raise ValueError("Grants and Contributions schema drift: " + "; ".join(details))
 
     normalized_target = _normalize_legal_name(recipient_name)
     projected = []
