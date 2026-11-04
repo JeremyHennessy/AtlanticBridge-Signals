@@ -29,7 +29,7 @@ jobs:
         run: |
           python -m atlanticbridge collect-bodacc-context \
             --siren 752461681 \
-            --since 2025-01-01 \
+            --since 2020-01-01 \
             --limit 1 \
             --output "$OUTPUT_PATH"
           python - "$OUTPUT_PATH" <<'PY'
@@ -41,7 +41,7 @@ jobs:
           result = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
           assert result["source"] == "bodacc_commercial_notices"
           assert result["requested_siren"] == "752461681"
-          assert result["requested_since"] == "2025-01-01"
+          assert result["requested_since"] == "2020-01-01"
           assert result["requested_limit"] == 1
           assert result["records_returned_by_api"] <= 1
           assert result["records_matching_exact_siren"] == len(result["records"])
@@ -55,5 +55,6 @@ jobs:
               "records_returned": result["records_returned_by_api"],
               "exact_siren_matches": result["records_matching_exact_siren"],
               "api_query_has_more_results": result["api_query_has_more_results"],
+              "registry_source_types": result["registry_source_types"],
           }, sort_keys=True))
           PY

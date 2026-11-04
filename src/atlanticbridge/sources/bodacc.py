@@ -12,8 +12,8 @@ import json
 import re
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
-from urllib.parse import urlencode, urlsplit
-from urllib.request import Request, urlopen
+from urllib.parse import parse_qs, urlencode, urlsplit
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 API_BASE = "https://bodacc-datadila.opendatasoft.com/api/explore/v2.0"
 DATASET_ID = "annonces-commerciales"
@@ -44,6 +44,7 @@ USER_AGENT = (
 class BODACCNotice:
     record_id: str
     siren: str
+    registry_source_type: str
     publication_date: str
     bulletin_edition: str
     notice_type: str
@@ -93,6 +94,7 @@ class BODACCCollection:
             "records_matching_exact_siren": self.records_matching_exact_siren,
             "records_excluded_by_exact_siren_check": self.records_excluded_by_exact_siren_check,
             "api_query_has_more_results": self.api_query_has_more_results,
+            "registry_source_types": sorted({item.registry_source_type for item in self.records}),
             "coverage": self.coverage,
             "freshness_note": self.freshness_note,
             "response_sha256": self.response_sha256,
@@ -100,6 +102,7 @@ class BODACCCollection:
                 {
                     "record_id": item.record_id,
                     "siren": item.siren,
+                    "registry_source_type": item.registry_source_type,
                     "publication_date": item.publication_date,
                     "bulletin_edition": item.bulletin_edition,
                     "notice_type": item.notice_type,
@@ -119,9 +122,9 @@ class BODACCCollection:
 
 
 def _validate_inputs(siren: str, since: str, limit: int) -> date:
-    if not isinstance(siren, str) or not re.fullmatch(r"\d{9}", siren):
+    if not isinstance(siren, str) or not re.fullmatch(r"[0-9]{9}", siren):
         raise ValueError("siren must be exactly nine digits")
-    if not isinstance(since, str):
+    if not isinstance(since, str) or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", since):
         raise ValueError("since must be an ISO date (YYYY-MM-DD)")
     try:
         since_date = date.fromisoformat(since)
@@ -156,7 +159,7 @@ def _fetch_payload(url: str, timeout: int) -> tuple[dict, str]:
         url,
         headers={"Accept": "application/json", "User-Agent": USER_AGENT},
     )
-    with urlopen(request, timeout=timeout) as response:
+    with build_opener(_NoRedirect()).open(request, timeout=timeout) as response:
         raw = response.read(MAX_RESPONSE_BYTES + 1)
     if len(raw) > MAX_RESPONSE_BYTES:
         raise ValueError("BODACC response exceeded the 5 MB safety cap")
@@ -171,13 +174,33 @@ def _fetch_payload(url: str, timeout: int) -> tuple[dict, str]:
 
 
 def _registry_sirens(value: object) -> set[str]:
-    if not isinstance(value, str):
-        return set()
+    """Extract only documented plain or space-grouped ASCII SIRENs."""
+    if isinstance(value, bool) or value is None:
+        raise ValueError(f"BODACC registre field has an unsupported {type(value).__name__} type")
+    values = value if isinstance(value, list) else [value]
     found: set[str] = set()
-    for part in value.split(","):
-        digits = "".join(character for character in part if character.isdigit())
-        if re.fullmatch(r"\d{9}", digits):
-            found.add(digits)
+    for item in values:
+        if isinstance(item, bool) or not isinstance(item, (str, int)):
+            raise ValueError(f"BODACC registre list contains an unsupported {type(item).__name__} value")
+        text = str(item).strip()
+        if re.fullmatch(r"[0-9]{9}", text):
+            found.add(text)
+            continue
+        if re.fullmatch(r"[0-9]{3}(?:[ \t]+[0-9]{3}){2}", text):
+            found.add(re.sub(r"[ \t]", "", text))
+            continue
+        if isinstance(value, str) and "," in value and isinstance(item, str):
+            # A scalar may publish both the compact and space-grouped SIREN.
+            parts = [part.strip() for part in value.split(",")]
+            if all(
+                re.fullmatch(r"[0-9]{9}", part)
+                or re.fullmatch(r"[0-9]{3}(?:[ \t]+[0-9]{3}){2}", part)
+                for part in parts
+            ):
+                for part in parts:
+                    found.add(re.sub(r"[ \t]", "", part))
+                return found
+        raise ValueError("BODACC registre field has an unsupported identifier format")
     return found
 
 
@@ -190,11 +213,32 @@ def _nonempty_text(fields: dict, name: str) -> str:
     return str(value).strip()
 
 
-def _notice_url(value: str) -> str:
-    parsed = urlsplit(value)
-    if parsed.scheme != "https" or parsed.hostname != "www.bodacc.fr":
-        raise ValueError("BODACC notice URL is not on the official HTTPS domain")
+def _notice_url(value: str, record_id: str) -> str:
+    try:
+        parsed = urlsplit(value)
+        port = parsed.port
+    except ValueError as exc:
+        raise ValueError("BODACC notice URL has an invalid authority") from exc
+    query = parse_qs(parsed.query, keep_blank_values=True)
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname != "www.bodacc.fr"
+        or port not in (None, 443)
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.path != "/pages/annonces-commerciales-detail/"
+        or parsed.fragment
+        or query.get("q.id") != [f"id:{record_id}"]
+    ):
+        raise ValueError("BODACC notice URL is not a canonical official detail URL")
     return value
+
+
+class _NoRedirect(HTTPRedirectHandler):
+    """Reject redirects so a single collector request cannot follow another host."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 
 def _parse_records(
@@ -220,9 +264,10 @@ def _parse_records(
             raise ValueError("BODACC record is missing its fields object")
         record_id = _nonempty_text(fields, "id")
         publication_date_text = _nonempty_text(fields, "dateparution")
-        registry = _nonempty_text(fields, "registre")
+        registry_value = fields.get("registre")
+        registry_source_type = type(registry_value).__name__
         official_url = _nonempty_text(fields, "url_complete")
-        if not record_id or not registry or not publication_date_text or not official_url:
+        if not record_id or registry_value is None or not publication_date_text or not official_url:
             raise ValueError("BODACC record is missing a required provenance field")
         try:
             published = date.fromisoformat(publication_date_text)
@@ -232,7 +277,7 @@ def _parse_records(
             raise ValueError("BODACC dateparution is not an ISO date")
         if published < since_date:
             raise ValueError("BODACC returned a notice before the requested lower date bound")
-        if siren not in _registry_sirens(registry):
+        if siren not in _registry_sirens(registry_value):
             excluded += 1
             continue
         age_days = (retrieved_date - published).days
@@ -250,7 +295,8 @@ def _parse_records(
             notice_type=_nonempty_text(fields, "typeavis_lib"),
             notice_family_code=_nonempty_text(fields, "familleavis"),
             notice_family_label=_nonempty_text(fields, "familleavis_lib"),
-            official_notice_url=_notice_url(official_url),
+            official_notice_url=_notice_url(official_url, record_id),
+            registry_source_type=registry_source_type,
             publication_age_days=age_days,
             publication_freshness=freshness,
         )
@@ -288,6 +334,8 @@ def collect_siren_notices(
         raise ValueError("BODACC response is missing a valid total_count")
     if not isinstance(rows, list):
         raise ValueError("BODACC response is missing its records array")
+    if total_count < len(rows):
+        raise ValueError("BODACC total_count is smaller than the returned records array")
     notices, excluded = _parse_records(
         rows,
         siren=siren,

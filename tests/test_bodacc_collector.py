@@ -10,7 +10,7 @@ from urllib.parse import parse_qs, urlsplit
 from atlanticbridge.sources import bodacc
 
 
-def _api_row(record_id: str, siren: str, published: str = "2026-11-02") -> dict:
+def _api_row(record_id: str, siren: object, published: str = "2026-11-02") -> dict:
     return {
         "record": {
             "fields": {
@@ -51,7 +51,7 @@ class BODACCCollectorTests(unittest.TestCase):
         self.assertEqual(query["select"], [",".join(bodacc.API_FIELDS)])
 
     def test_rejects_invalid_siren_date_and_unbounded_limit(self):
-        for bad_siren in ("", "12345678", "1234567890", "12345abc9", "123456789&limit=100"):
+        for bad_siren in ("", "12345678", "1234567890", "12345abc9", "123456789&limit=100", "１２３４５６７８９"):
             with self.subTest(bad_siren=bad_siren), self.assertRaises(ValueError):
                 bodacc.build_query_url(bad_siren, "2026-01-01")
         for bad_date in ("2026-1-1", "yesterday", "2026-02-30"):
@@ -65,7 +65,7 @@ class BODACCCollectorTests(unittest.TestCase):
         payload = {
             "total_count": 3,
             "records": [
-                _api_row("A202600000001", "752461681,752 461 681"),
+                _api_row("A202600000001", ["752461681", "752 461 681"]),
                 _api_row("A202600000002", "111222333"),
             ],
         }
@@ -97,6 +97,7 @@ class BODACCCollectorTests(unittest.TestCase):
         self.assertNotIn("SHOULD NOT BE RETAINED", serialized)
         self.assertNotIn("listepersonnes", serialized)
         self.assertEqual(output["records"][0]["siren"], "752461681")
+        self.assertEqual(output["records"][0]["registry_source_type"], "list")
         self.assertEqual(
             output["interpretation_limit"],
             "French corporate notice context only; not evidence of Canadian activity, "
@@ -112,7 +113,20 @@ class BODACCCollectorTests(unittest.TestCase):
         self.assertEqual(result.records_matching_exact_siren, 0)
         self.assertIn("NOT_AN_ABSENCE_PROOF", result.coverage)
         with self.assertRaises(ValueError):
-            bodacc._parse_records([_api_row("x", "752461681")] * 2, siren="752461681", retrieved_date=date(2026, 11, 3), limit=1, since_date=date(2026, 10, 1))
+            bodacc._parse_records(
+                [_api_row("x", "752461681")] * 2,
+                siren="752461681",
+                retrieved_date=date(2026, 11, 3),
+                limit=1,
+                since_date=date(2026, 10, 1),
+            )
+        with patch.object(
+            bodacc,
+            "_fetch_payload",
+            return_value=({"total_count": 0, "records": [_api_row("x", "752461681")]}, "d" * 64),
+        ):
+            with self.assertRaisesRegex(ValueError, "total_count is smaller"):
+                bodacc.collect_siren_notices("752461681", "2026-10-01")
 
 
     def test_rejects_records_before_the_requested_date_bound(self):
@@ -129,6 +143,41 @@ class BODACCCollectorTests(unittest.TestCase):
                     retrieved_at=datetime(2026, 11, 3, tzinfo=timezone.utc),
                 )
 
+
+    def test_registry_identifiers_are_strictly_parsed(self):
+        self.assertEqual(
+            bodacc._registry_sirens(["752461681", "752 461 681"]),
+            {"752461681"},
+        )
+        self.assertEqual(
+            bodacc._registry_sirens("752461681,752 461 681"),
+            {"752461681"},
+        )
+        self.assertEqual(bodacc._registry_sirens(752461681), {"752461681"})
+        for bad in ("RCS 752461681", "１２３４５６７８９", ["prefix 752461681"], {"id": "752461681"}):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                bodacc._registry_sirens(bad)
+
+    def test_notice_urls_reject_credentials_ports_wrong_paths_and_id_mismatch(self):
+        record_id = "A202600000001"
+        invalid = [
+            f"https://user@www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:{record_id}",
+            f"https://www.bodacc.fr:444/pages/annonces-commerciales-detail/?q.id=id:{record_id}",
+            f"https://www.bodacc.fr/untrusted/?q.id=id:{record_id}",
+            "https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:other",
+        ]
+        for url in invalid:
+            with self.subTest(url=url), self.assertRaises(ValueError):
+                bodacc._notice_url(url, record_id)
+
+    def test_redirects_are_never_followed(self):
+        handler = bodacc._NoRedirect()
+        self.assertIsNone(
+            handler.redirect_request(
+                None, None, 302, "Found", {}, "https://example.org/redirect"
+            )
+        )
+
     def test_schema_drift_and_non_official_notice_urls_fail_closed(self):
         with patch.object(
             bodacc,
@@ -140,7 +189,7 @@ class BODACCCollectorTests(unittest.TestCase):
         bad = _api_row("x", "752461681")
         bad["record"]["fields"]["url_complete"] = "https://example.org/not-a-bodacc-record"
         with patch.object(bodacc, "_fetch_payload", return_value=({"total_count": 1, "records": [bad]}, "b" * 64)):
-            with self.assertRaisesRegex(ValueError, "official HTTPS domain"):
+            with self.assertRaisesRegex(ValueError, "canonical official detail URL"):
                 bodacc.collect_siren_notices("752461681", "2026-10-01")
 
 
