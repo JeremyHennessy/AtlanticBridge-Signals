@@ -251,11 +251,16 @@
       exported_at: new Date().toISOString(),
       lead_promotion_allowed: false,
       independent_verification: "NOT_INDEPENDENTLY_VERIFIED",
-      decisions: [...state.decisions.entries()].map(([finding_id, value]) => ({
-        finding_id,
-        disposition: value.disposition || "UNREVIEWED_CONTEXT_ONLY",
-        note: value.note || "",
-        lead_eligible: false
+      decisions: state.packet.findings.map((finding) => {
+        const value = state.decisions.get(finding.finding_id) || {};
+        return {
+          finding_id: finding.finding_id,
+          source: finding.source,
+          source_record_id: finding.source_record_id,
+          disposition: value.disposition || "UNREVIEWED_CONTEXT_ONLY",
+          note: value.note || "",
+          lead_eligible: false
+        };
       }))
     };
     const blob = new Blob([JSON.stringify(output, null, 2) + "\n"], {type: "application/json"});
