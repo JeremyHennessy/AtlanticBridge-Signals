@@ -1,0 +1,24 @@
+name: Archive JSON diagnostics
+on:
+  push:
+    branches:
+      - fix/reliability-archive-pilot-20261104
+    paths:
+      - scripts/archive_evidence.py
+      - tests/test_evidence_archive.py
+      - .github/workflows/archive-json-diagnostics.yml
+permissions:
+  contents: read
+jobs:
+  focused-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install project
+        run: python -m pip install -e .
+      - name: Run archive contract tests without contacting GitHub
+        run: python -m unittest discover -s tests -p test_evidence_archive.py -v
