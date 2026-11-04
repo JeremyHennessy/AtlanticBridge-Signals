@@ -105,28 +105,14 @@ class FederalGrantsCollectorTests(unittest.TestCase):
         self.assertEqual(result["records_excluded_by_exact_recipient_check"], 3)
         self.assertEqual(len(result["records"]), 1)
 
-    def test_observed_live_record_and_exact_ckan_types(self):
+    def test_observed_live_identity_fields_with_exact_ckan_schema(self):
+        # These four values are the only row facts retained from the bounded live
+        # API verification; all other projected columns are intentionally absent.
         live_row = {
             "_id": 31480972,
             "ref_number": "064-2024-2025-Q3-00085",
             "recipient_type": "F",
             "recipient_legal_name": "Mediphage Bioceuticals, Inc.",
-            "recipient_operating_name": "Mediphage Bioceuticals, Inc.",
-            "recipient_country": "Canada",
-            "recipient_province": "Ontario",
-            "recipient_city": "Toronto",
-            "agreement_type": "Contribution",
-            "amendment_number": "0",
-            "amendment_date": "2025-01-01",
-            "prog_name_en": "Industrial Research Assistance Program",
-            "agreement_number": "00085",
-            "agreement_value": "1000",
-            "foreign_currency_type": None,
-            "foreign_currency_value": None,
-            "agreement_start_date": "2025-01-01",
-            "agreement_end_date": "2025-12-31",
-            "naics_identifier": "54171",
-            "owner_org_title": "National Research Council Canada",
         }
 
         def fetch(url, timeout):
@@ -145,6 +131,8 @@ class FederalGrantsCollectorTests(unittest.TestCase):
         self.assertEqual(result["records"][0]["_id"], 31480972)
         self.assertEqual(result["records"][0]["ref_number"], "064-2024-2025-Q3-00085")
         self.assertEqual(result["records"][0]["recipient_type"], "F")
+        self.assertEqual(result["records"][0]["recipient_legal_name"], "Mediphage Bioceuticals, Inc.")
+        self.assertEqual(result["records"][0]["agreement_value"], None)
         self.assertEqual(result["requested_recipient_type_label"], RECIPIENT_TYPE_LABEL)
 
     def test_rejects_live_schema_type_drift_and_duplicate_columns(self):
