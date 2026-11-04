@@ -142,8 +142,14 @@ def collect_awarded_tenders_context(
             excluded += 1
             continue
         amount = row.get("awarded_amount")
-        if amount is not None and (isinstance(amount, bool) or not isinstance(amount, (int, float))):
-            raise ValueError("Nova Scotia awarded tender amount has unexpected JSON type " + type(amount).__name__)
+        # Live Socrata responses can serialize the metadata-number field as text.
+        # Preserve those source strings verbatim; do not parse currency or coerce.
+        if amount is not None and (
+            isinstance(amount, bool)
+            or not isinstance(amount, (int, float, str))
+            or (isinstance(amount, str) and len(amount) > 128)
+        ):
+            raise ValueError("Nova Scotia awarded tender amount has an unexpected JSON type or size")
         projected.append({field: row.get(field) for field in FIELDS})
 
     return {
