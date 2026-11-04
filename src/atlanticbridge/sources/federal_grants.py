@@ -23,7 +23,8 @@ API_BASE = "https://open.canada.ca/data/api/3/action/datastore_search"
 SOURCE_NAME = "canada_federal_grants_contributions"
 SOURCE_LICENSE = "Open Government Licence - Canada"
 SOURCE_LICENSE_ID = "ogl-canada"
-RECIPIENT_TYPE = "For-profit organization"
+RECIPIENT_TYPE_CODE = "F"
+RECIPIENT_TYPE_LABEL = "For-profit organization"
 MAX_PAGE_SIZE = 50
 MAX_RESPONSE_BYTES = 5_000_000
 MAX_TIMEOUT_SECONDS = 60
@@ -91,7 +92,7 @@ def build_query_url(recipient_name: str, limit: int = 20) -> str:
         raise ValueError(f"limit must be between 1 and {MAX_PAGE_SIZE}")
     filters = {
         "recipient_legal_name": recipient_name,
-        "recipient_type": RECIPIENT_TYPE,
+        "recipient_type": RECIPIENT_TYPE_CODE,
     }
     params = {
         "resource_id": RESOURCE_ID,
@@ -187,7 +188,7 @@ def collect_grants_context(
         if (
             not isinstance(legal_name, str)
             or _normalize_legal_name(legal_name) != normalized_target
-            or recipient_type != RECIPIENT_TYPE
+            or recipient_type != RECIPIENT_TYPE_CODE
         ):
             excluded += 1
             continue
@@ -208,7 +209,7 @@ def collect_grants_context(
         "source_update_frequency": "QUARTERLY",
         "retrieved_at": datetime.now(timezone.utc).isoformat(),
         "requested_recipient_legal_name": recipient_name,
-        "requested_recipient_type": RECIPIENT_TYPE,
+        "requested_recipient_type": RECIPIENT_TYPE_CODE,
         "requested_limit": limit,
         "total_count_for_exact_query": total,
         "records_returned_by_api": len(rows),
