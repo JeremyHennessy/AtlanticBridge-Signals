@@ -1,5 +1,6 @@
 """Regression fixtures are synthetic, never historical validation observations."""
 import copy
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -117,6 +118,21 @@ class ParserTests(unittest.TestCase):
         self.assertIsNone(rows[0]["source_publication_date"])
         with self.assertRaises(ValueError):
             parse_index(b"login required", source)
+
+    def test_accenture_job_search_fallback_is_not_a_job_observation(self):
+        manifest_path=(Path(__file__).resolve().parents[1] /
+                       "reviews/company_sources/pilot-2026-09-22.json")
+        manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+        source=next(s for s in manifest["sources"]
+                    if s["id"]=="accenture-stcatharines-current")
+        # Synthetic representation of the public generic search page reached
+        # after the reviewed job-detail URL stopped resolving.
+        fallback=(b"<html><h1>Search jobs at Accenture</h1>"
+                  b"<p>Find your next opportunity</p>"
+                  b"<p>There are currently no jobs available that match your search criteria.</p>"
+                  b"</html>")
+        with self.assertRaisesRegex(ValueError,"St. Catharines, Ontario"):
+            parse_article(fallback,source)
 
     def test_article_date_requires_literal_anchor(self):
         source = dict(SOURCE, kind="article", required_text=["opens in Canada"], reviewed_publication_date="2026-06-25", publication_date_text="June 25, 2026")
