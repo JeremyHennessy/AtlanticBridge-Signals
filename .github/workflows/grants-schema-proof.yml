@@ -1,0 +1,24 @@
+name: Grants dataset schema proof
+on:
+  push:
+    branches:
+      - fix/reliability-archive-pilot-20261104
+    paths:
+      - scripts/probe_grants_schema.py
+      - tests/test_grants_schema_probe.py
+      - .github/workflows/grants-schema-proof.yml
+permissions:
+  contents: read
+jobs:
+  schema-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run offline schema-probe tests
+        run: python -m unittest discover -s tests -p test_grants_schema_probe.py -v
+      - name: Check official CKAN dataset metadata and schema only
+        run: python scripts/probe_grants_schema.py
