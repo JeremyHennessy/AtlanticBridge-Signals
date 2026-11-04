@@ -93,6 +93,8 @@ class BODACCCollectorTests(unittest.TestCase):
             "NOTICE_PUBLISHED_WITHIN_90_DAYS",
         )
         output = result.as_dict()
+        self.assertEqual(output["collection_execution"], "INJECTED_FETCHER_FIXTURE_OR_REPLAY")
+        self.assertEqual(output["independent_review_status"], "NOT_INDEPENDENTLY_VERIFIED")
         serialized = json.dumps(output)
         self.assertNotIn("SHOULD NOT BE RETAINED", serialized)
         self.assertNotIn("listepersonnes", serialized)
