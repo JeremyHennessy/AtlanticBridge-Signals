@@ -38,6 +38,8 @@ jobs:
           path = Path(os.environ["RUNNER_TEMP"]) / "grants-smoke.json"
           result = json.loads(path.read_text(encoding="utf-8"))
           assert result["source"] == "canada_federal_grants_contributions"
+          assert result["collection_execution"] == "LIVE_HTTP_RESPONSE"
+          assert result["independent_review_status"] == "NOT_INDEPENDENTLY_VERIFIED"
           assert result["requested_limit"] == 1
           assert result["records_returned_by_api"] == len(result["records"])
           assert result["records_matching_exact_recipient"] == len(result["records"])
