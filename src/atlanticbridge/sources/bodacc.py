@@ -64,6 +64,8 @@ class BODACCCollection:
     source_license: str
     source_license_id: str
     retrieved_at: str
+    collection_execution: str
+    independent_review_status: str
     requested_siren: str
     requested_since: str
     requested_limit: int
@@ -86,6 +88,8 @@ class BODACCCollection:
             "source_license": self.source_license,
             "source_license_id": self.source_license_id,
             "retrieved_at": self.retrieved_at,
+            "collection_execution": self.collection_execution,
+            "independent_review_status": self.independent_review_status,
             "requested_siren": self.requested_siren,
             "requested_since": self.requested_since,
             "requested_limit": self.requested_limit,
@@ -171,6 +175,9 @@ def _fetch_payload(url: str, timeout: int) -> tuple[dict, str]:
     if not isinstance(payload, dict):
         raise ValueError("BODACC API response must be a JSON object")
     return payload, digest
+
+
+_ORIGINAL_FETCH_PAYLOAD = _fetch_payload
 
 
 def _registry_sirens(value: object) -> set[str]:
@@ -317,6 +324,7 @@ def collect_siren_notices(
     limit: int = 50,
     timeout: int = 20,
     retrieved_at: datetime | None = None,
+    fetch_payload=None,
 ) -> BODACCCollection:
     """Collect one bounded page for one verified SIREN; never paginates or retries."""
     since_date = _validate_inputs(siren, since, limit)
@@ -327,7 +335,9 @@ def collect_siren_notices(
         raise ValueError("retrieved_at must include a timezone")
     retrieved = retrieved.astimezone(timezone.utc)
     url = build_query_url(siren, since, limit)
-    payload, response_hash = _fetch_payload(url, timeout)
+    fetcher = fetch_payload or _fetch_payload
+    injected_fetcher = fetcher is not _ORIGINAL_FETCH_PAYLOAD
+    payload, response_hash = fetcher(url, timeout)
     rows = payload.get("records")
     total_count = payload.get("total_count")
     if isinstance(total_count, bool) or not isinstance(total_count, int) or total_count < 0:
@@ -351,6 +361,10 @@ def collect_siren_notices(
         source_license=SOURCE_LICENSE,
         source_license_id=SOURCE_LICENSE_ID,
         retrieved_at=retrieved.isoformat(),
+        collection_execution=(
+            "INJECTED_FETCHER_FIXTURE_OR_REPLAY" if injected_fetcher else "LIVE_HTTP_RESPONSE"
+        ),
+        independent_review_status="NOT_INDEPENDENTLY_VERIFIED",
         requested_siren=siren,
         requested_since=since_date.isoformat(),
         requested_limit=limit,
