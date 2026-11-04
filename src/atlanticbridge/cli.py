@@ -221,6 +221,15 @@ def build_parser() -> argparse.ArgumentParser:
     bodacc.add_argument("--timeout-seconds", type=int, default=20)
     bodacc.add_argument("--output", required=True, help="Write the minimal provenance envelope to this JSON path")
 
+    grants = subparsers.add_parser(
+        "collect-grants-context",
+        help="Collect one bounded page of official federal grant-agreement context for an exact legal recipient",
+    )
+    grants.add_argument("--recipient-name", required=True, help="Exact recipient legal name of a for-profit organization")
+    grants.add_argument("--limit", type=int, default=20, help="Maximum one-page results (1-50)")
+    grants.add_argument("--timeout-seconds", type=int, default=20)
+    grants.add_argument("--output", required=True, help="Write the minimal provenance envelope to this JSON path")
+
     statcan = subparsers.add_parser(
         "ingest-statcan-trade",
         help=(
@@ -755,6 +764,30 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         except Exception as exc:
             print(f"BODACC collection failed: {exc}", file=sys.stderr)
+            return 1
+
+    if args.command == "collect-grants-context":
+        try:
+            from .sources.federal_grants import collect_grants_context, write_collection
+
+            result = collect_grants_context(
+                args.recipient_name,
+                limit=args.limit,
+                timeout_seconds=args.timeout_seconds,
+            )
+            write_collection(args.output, result)
+            print(json.dumps({
+                "source": result["source"],
+                "retrieved_at": result["retrieved_at"],
+                "output": str(args.output),
+                "records_returned_by_api": result["records_returned_by_api"],
+                "records_matching_exact_recipient": result["records_matching_exact_recipient"],
+                "api_query_has_more_results": result["api_query_has_more_results"],
+                "coverage": result["coverage"],
+            }, indent=2, sort_keys=True))
+            return 0
+        except Exception as exc:
+            print(f"Grants and Contributions collection failed: {exc}", file=sys.stderr)
             return 1
 
     if args.command == "ingest-statcan-trade":
