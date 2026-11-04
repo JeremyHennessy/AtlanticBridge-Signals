@@ -1,6 +1,9 @@
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const vm = require("node:vm");
 const { buildSearchUrl, init } = require("../ui/bodacc-search.js");
 test("builds a fixed official BODACC SIREN search URL", () => {
   const url = new URL(buildSearchUrl("123456789"));
@@ -28,4 +31,23 @@ test("shows a search link only for an exact nine-digit identifier", () => {
   input.value = "12345abc9"; listeners.input();
   assert.equal(link.hidden, true);
   assert.equal(Object.hasOwn(link, "href"), false);
+});
+
+test("browser script initializes automatically and carries the SIREN into the official destination", () => {
+  const listeners = {};
+  const input = { value: "", addEventListener: (name, fn) => { listeners[name] = fn; } };
+  const link = { hidden: true, removeAttribute(name) { if (name === "href") delete this.href; } };
+  const status = { textContent: "" };
+  const elements = { "bodacc-siren": input, "bodacc-search-link": link, "bodacc-lookup-status": status };
+  const document = { getElementById: id => elements[id] };
+  const script = fs.readFileSync(path.join(__dirname, "../ui/bodacc-search.js"), "utf8");
+  vm.runInNewContext(script, { document, URLSearchParams });
+  assert.equal(typeof listeners.input, "function");
+  assert.equal(link.hidden, true);
+  input.value = "987654321";
+  listeners.input();
+  assert.equal(link.hidden, false);
+  const destination = new URL(link.href);
+  assert.equal(destination.origin, "https://www.bodacc.fr");
+  assert.equal(destination.searchParams.get("q.registre"), "registre:987654321");
 });

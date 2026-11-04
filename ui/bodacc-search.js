@@ -1,7 +1,11 @@
 (function (root, factory) {
   const api = factory();
-  if (typeof module === "object" && module.exports) module.exports = api;
-  else root.BodaccSearch = api;
+  if (typeof module === "object" && module.exports) {
+    module.exports = api;
+  } else {
+    root.BodaccSearch = api;
+    if (root.document) api.init(root.document);
+  }
 })(typeof globalThis === "object" ? globalThis : this, function () {
   "use strict";
   const SEARCH_URL = "https://www.bodacc.fr/pages/annonces-commerciales-recherche/";
