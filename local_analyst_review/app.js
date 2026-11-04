@@ -3,7 +3,7 @@
   "use strict";
   const $ = (id) => document.getElementById(id);
   const state = { packet: null, decisions: new Map() };
-  const allowedHosts = new Set(["www.bodacc.fr", "open.canada.ca", "data.novascotia.ca"]);
+  const allowedHosts = new Set(["www.bodacc.fr", "open.canada.ca", "data.novascotia.ca", "www.etalab.gouv.fr", "novascotia.ca"]);
 
   const DEMO_PACKET = {
     packet_version: 1,
@@ -54,9 +54,9 @@
   }
 
   function originLabel(value) {
-    if (value === "LIVE_QUERY_NOT_INDEPENDENTLY_VERIFIED") return "Live query · not independently verified";
-    if (value === "FIXTURE_DEMONSTRATION_NOT_LIVE") return "Fixture demonstration · not live";
-    return "Legacy origin unknown";
+    if (value === "LIVE_QUERY_NOT_INDEPENDENTLY_VERIFIED") return "Collector envelope reports live query · not independently verified";
+    if (value === "FIXTURE_DEMONSTRATION_NOT_LIVE") return "Collector envelope reports fixture · not live";
+    return "Collector envelope origin unknown";
   }
 
   function safeLink(value) {
@@ -120,7 +120,7 @@
       addField(dl, "Licence", collection.source_license || "Unknown");
       card.append(dl);
       card.append(element("p", "attribution", collection.attribution || "Attribution not supplied"));
-      card.append(element("p", "warning", "Independent review: not verified"));
+      card.append(element("p", "warning", "Independent review: not verified. Imported provenance labels are not authenticated."));
       summaries.append(card);
     }
 
