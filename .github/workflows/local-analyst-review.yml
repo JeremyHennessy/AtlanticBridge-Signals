@@ -1,0 +1,57 @@
+name: Local analyst review safety
+
+on:
+  push:
+    branches:
+      - fix/reliability-archive-pilot-20261104
+    paths:
+      - "local_analyst_review/**"
+      - "src/atlanticbridge/analyst_review.py"
+      - "src/atlanticbridge/sources/bodacc.py"
+      - "src/atlanticbridge/sources/federal_grants.py"
+      - "src/atlanticbridge/sources/ns_awarded_tenders.py"
+      - "scripts/build_analyst_review_packet.py"
+      - "tests/test_analyst_review.py"
+      - "tests/test_bodacc_collector.py"
+      - "tests/test_federal_grants_collector.py"
+      - "tests/test_ns_awarded_tenders_collector.py"
+      - ".github/workflows/local-analyst-review.yml"
+  pull_request:
+    paths:
+      - "local_analyst_review/**"
+      - "src/atlanticbridge/analyst_review.py"
+      - "src/atlanticbridge/sources/bodacc.py"
+      - "src/atlanticbridge/sources/federal_grants.py"
+      - "src/atlanticbridge/sources/ns_awarded_tenders.py"
+      - "scripts/build_analyst_review_packet.py"
+      - "tests/test_analyst_review.py"
+      - "tests/test_bodacc_collector.py"
+      - "tests/test_federal_grants_collector.py"
+      - "tests/test_ns_awarded_tenders_collector.py"
+      - ".github/workflows/local-analyst-review.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  review-packet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: python -m pip install .
+      - name: Test local analyst review and source collectors
+        run: >-
+          python -m unittest -v
+          tests.test_analyst_review
+          tests.test_bodacc_collector
+          tests.test_federal_grants_collector
+          tests.test_ns_awarded_tenders_collector
+      - name: Check standalone review UI JavaScript syntax
+        run: node --check local_analyst_review/app.js
