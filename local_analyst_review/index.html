@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>AtlanticBridge · Local Evidence Review</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <p class="eyebrow">Local analyst workspace · Not part of the public app</p>
+      <h1>Evidence context review</h1>
+      <p class="lede">Inspect source-backed context, check dates and licensing, and record a review disposition. This tool cannot qualify or promote an expansion lead.</p>
+    </header>
+
+    <section class="guard" aria-label="Safety boundary">
+      <strong>Context only</strong>
+      <span>Every finding is locked to <code>lead_eligible = false</code>. Live collection means a source query ran; it does not mean the result was independently verified.</span>
+    </section>
+
+    <section class="controls" aria-label="Load evidence packet">
+      <label class="button primary" for="packet-file">Open local review packet</label>
+      <input id="packet-file" type="file" accept=".json,application/json">
+      <button id="load-demo" type="button" class="button">Load synthetic demonstration</button>
+      <button id="export-review" type="button" class="button" disabled>Export review notes</button>
+      <span id="packet-status" role="status" aria-live="polite">No packet loaded. Files stay in this browser tab.</span>
+    </section>
+
+    <section class="explain">
+      <h2>How to read evidence origin</h2>
+      <div class="legend">
+        <p><b>Live query · not independently verified</b><br>A collector made an HTTP request. Validate the source record and identity yourself.</p>
+        <p><b>Fixture demonstration</b><br>Invented or replayed test data. Never treat it as a real company or event.</p>
+        <p><b>Legacy origin unknown</b><br>The envelope does not say whether it came from a live request or a fixture.</p>
+      </div>
+      <p class="small">An analyst disposition here is local note-taking only. It does not update AtlanticBridge’s public feed, company qualification, worklist, or model.</p>
+    </section>
+
+    <section id="collection-summary" class="collection-grid" aria-label="Source collection provenance"></section>
+    <section id="findings" class="findings" aria-live="polite">
+      <div class="empty"><h2>No findings loaded</h2><p>Use the packet builder on local collector output, or load the synthetic demonstration to inspect the review layout.</p></div>
+    </section>
+    <footer>
+      <p>Nothing is sent to a server. No account, network request, automatic storage, or lead promotion is used by this tool.</p>
+      <p>Source rights still apply. OGL licences do not grant rights to personal information. Follow each source’s attribution and reuse terms.</p>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
