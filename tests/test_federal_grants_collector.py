@@ -43,7 +43,7 @@ def sample_payload(rows=None, total=1, fields=FIELDS, resource_id=RESOURCE_ID):
                 "description_en": "Do not request this free text",
                 "postal_code": "B3H 0A1",
             }],
-            "fields": [{"id": field, "type": "text"} for field in fields],
+            "fields": [{"id": field, "type": "int" if field == "_id" else "text"} for field in fields],
         },
     }
 
@@ -104,6 +104,65 @@ class FederalGrantsCollectorTests(unittest.TestCase):
         self.assertEqual(result["records_matching_exact_recipient"], 1)
         self.assertEqual(result["records_excluded_by_exact_recipient_check"], 3)
         self.assertEqual(len(result["records"]), 1)
+
+    def test_observed_live_record_and_exact_ckan_types(self):
+        live_row = {
+            "_id": 31480972,
+            "ref_number": "064-2024-2025-Q3-00085",
+            "recipient_type": "F",
+            "recipient_legal_name": "Mediphage Bioceuticals, Inc.",
+            "recipient_operating_name": "Mediphage Bioceuticals, Inc.",
+            "recipient_country": "Canada",
+            "recipient_province": "Ontario",
+            "recipient_city": "Toronto",
+            "agreement_type": "Contribution",
+            "amendment_number": "0",
+            "amendment_date": "2025-01-01",
+            "prog_name_en": "Industrial Research Assistance Program",
+            "agreement_number": "00085",
+            "agreement_value": "1000",
+            "foreign_currency_type": None,
+            "foreign_currency_value": None,
+            "agreement_start_date": "2025-01-01",
+            "agreement_end_date": "2025-12-31",
+            "naics_identifier": "54171",
+            "owner_org_title": "National Research Council Canada",
+        }
+
+        def fetch(url, timeout):
+            params = parse_qs(urlsplit(url).query)
+            self.assertEqual(json.loads(params["filters"][0]), {
+                "recipient_legal_name": "Mediphage Bioceuticals, Inc.",
+                "recipient_type": "F",
+            })
+            return sample_payload([live_row], total=7), b'{"bounded":"observed-shape"}'
+
+        result = collect_grants_context(
+            "Mediphage Bioceuticals, Inc.", limit=1, fetch_json=fetch
+        )
+        self.assertEqual(result["records_matching_exact_recipient"], 1)
+        self.assertTrue(result["api_query_has_more_results"])
+        self.assertEqual(result["records"][0]["_id"], 31480972)
+        self.assertEqual(result["records"][0]["ref_number"], "064-2024-2025-Q3-00085")
+        self.assertEqual(result["records"][0]["recipient_type"], "F")
+        self.assertEqual(result["requested_recipient_type_label"], RECIPIENT_TYPE_LABEL)
+
+    def test_rejects_live_schema_type_drift_and_duplicate_columns(self):
+        def wrong_type(url, timeout):
+            payload = sample_payload()
+            payload["result"]["fields"][0]["type"] = "text"
+            return payload, b"{}"
+
+        with self.assertRaisesRegex(ValueError, "schema drift"):
+            collect_grants_context("Example Industrial Ltd.", fetch_json=wrong_type)
+
+        def duplicate_column(url, timeout):
+            payload = sample_payload()
+            payload["result"]["fields"].append({"id": "_id", "type": "int"})
+            return payload, b"{}"
+
+        with self.assertRaisesRegex(ValueError, "duplicate columns"):
+            collect_grants_context("Example Industrial Ltd.", fetch_json=duplicate_column)
 
     def test_more_results_never_claim_complete_coverage(self):
         row = sample_payload()["result"]["records"][0]
