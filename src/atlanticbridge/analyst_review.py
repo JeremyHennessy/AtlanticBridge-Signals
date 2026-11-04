@@ -212,6 +212,16 @@ def build_review_packet(collections: list[dict], *, generated_at: str | None = N
             "coverage": collection.get("coverage") if isinstance(collection.get("coverage"), str) else "Unknown",
             "source_license": config["license"],
             "attribution": config["attribution"],
+            "response_sha256": (
+                collection.get("response_sha256")
+                if isinstance(collection.get("response_sha256"), str)
+                and len(collection.get("response_sha256")) == 64
+                and all(
+                    char in "0123456789abcdef"
+                    for char in collection.get("response_sha256").lower()
+                )
+                else None
+            ),
         }
         collection_summaries.append(summary)
         for row in rows:
