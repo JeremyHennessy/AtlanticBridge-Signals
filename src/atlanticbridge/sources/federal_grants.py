@@ -154,6 +154,7 @@ def collect_grants_context(
     if type(timeout_seconds) is not int or not 1 <= timeout_seconds <= MAX_TIMEOUT_SECONDS:
         raise ValueError(f"timeout_seconds must be between 1 and {MAX_TIMEOUT_SECONDS}")
     query_url = build_query_url(recipient_name, limit)
+    injected_fetcher = fetch_json is not _fetch_json
     payload, raw = fetch_json(query_url, timeout_seconds)
     result = payload.get("result") if isinstance(payload, dict) else None
     if not isinstance(result, dict):
@@ -225,6 +226,10 @@ def collect_grants_context(
         "source_license_id": SOURCE_LICENSE_ID,
         "source_update_frequency": "QUARTERLY",
         "retrieved_at": datetime.now(timezone.utc).isoformat(),
+        "collection_execution": (
+            "INJECTED_FETCHER_FIXTURE_OR_REPLAY" if injected_fetcher else "LIVE_HTTP_RESPONSE"
+        ),
+        "independent_review_status": "NOT_INDEPENDENTLY_VERIFIED",
         "requested_recipient_legal_name": recipient_name,
         "requested_recipient_type_code": RECIPIENT_TYPE_CODE,
         "requested_recipient_type_label": RECIPIENT_TYPE_LABEL,
