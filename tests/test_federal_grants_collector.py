@@ -78,6 +78,8 @@ class FederalGrantsCollectorTests(unittest.TestCase):
         )
         self.assertEqual(result["source"], "canada_federal_grants_contributions")
         self.assertEqual(result["source_license_id"], "ogl-canada")
+        self.assertEqual(result["collection_execution"], "INJECTED_FETCHER_FIXTURE_OR_REPLAY")
+        self.assertEqual(result["independent_review_status"], "NOT_INDEPENDENTLY_VERIFIED")
         self.assertEqual(result["source_update_frequency"], "QUARTERLY")
         self.assertEqual(result["records_matching_exact_recipient"], 1)
         self.assertEqual(result["response_sha256"], __import__("hashlib").sha256(b'{"bounded":"fixture"}').hexdigest())
