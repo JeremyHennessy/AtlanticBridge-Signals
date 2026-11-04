@@ -19,11 +19,23 @@ Status values:
 | Statistics Canada tables 12-10-0175-01 / 12-10-0173-01 | Canada | Nova Scotia/Canada EU trade context by market and NAPCS section | Monthly major markets + annual full EU | **IMPLEMENTED** |
 | Canadian Importers Database | Canada | Potential distributor/importer mapping by product/origin | Periodic | **LATER** |
 | BODACC commercial notices API | France | Dated French corporate-event context by SIREN | Published 5 days/week; API update lag/rate limit unverified | **VERIFY — bounded collector passed one live smoke; terms/rate review pending** |
-| Federal Grants and Contributions dataset / CKAN Datastore API | Canada | Exact-recipient federal transfer-payment agreement context | Quarterly (published dataset cadence) | **VERIFY — Open Government Licence and schema reviewed; 6 offline tests pass; exact-name API smoke returned 0 despite an official search-page match; do not use until resolved** |
+| Federal Grants and Contributions dataset / CKAN Datastore API | Canada | Exact-recipient federal transfer-payment agreement context | Quarterly (published dataset cadence) | **VERIFY — official licence/schema and bounded exact-name API match confirmed; attribution/privacy and operational review remain before production** |
 | Nova Scotia procurement | Nova Scotia | Local buyer/award signals | Ongoing | **LATER** |
 | Provincial corporate registries | Provinces | Recover non-federal entry entities and registration timing | Varies | **ACCESS REVIEWED — authorization/licence required for broad production coverage** |
 | Invest Nova Scotia disclosures | Nova Scotia | Historical expansion/incentive validation | Event driven | **LATER** |
 | Company careers/newsrooms | Company | Hiring/market-entry intent | Variable | **LATER** |
+
+## Federal Grants and Contributions context contract
+
+The federal proactive-disclosure dataset is available under the Open Government Licence - Canada. The collector uses the documented CKAN GET API and the reviewed resource ID, with a maximum page size of 50 and a short timeout.
+
+Live validation confirmed that the API stores recipient type as code `F`; the official search UI renders that code as “For-profit organization.” Queries use the exact legal name plus code `F`, and the returned name and code are checked again locally.
+
+Only an allowlist of agreement metadata is requested. Descriptive `coverage` and other free-text fields, recipient business number, postal code and unrequested columns are excluded. Output includes retrieval timestamp, resource/dataset links, exact-query/page scope, response hash, source licence and explicit source attribution.
+
+This is transfer-payment agreement context. Agreement value is not necessarily cash disbursed, and a federal award does not establish expansion intent, site selection, commercial fit or current operating status. One exact-name page is not an absence proof. The collector is manual and non-production pending a separate privacy, attribution, and operational review.
+
+Source: [Proactive Disclosure - Grants and Contributions](https://open.canada.ca/data/en/dataset/432527ab-7aac-45b5-81d6-7597107a7013), under the [Open Government Licence - Canada](https://open.canada.ca/en/open-government-licence-canada).
 
 ## Investment Canada contract
 
