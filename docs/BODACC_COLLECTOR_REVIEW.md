@@ -1,32 +1,30 @@
 # BODACC bounded collector candidate
 
-Status: source and schema reviewed; candidate code and fixture tests added; **live API request not verified**, so do not treat this collector as operational. Reviewed 4 November 2026.
+Status: collector passed focused contract tests and one bounded live API smoke query; source-specific terms and production suitability remain under review. Reviewed 4 November 2026.
 
 ## Why this source
 
-The French government data service says its BODACC API is free, open access, and subject to Licence Ouverte 2.0 and the API's terms. The official API page links a BODACC dataset with about 51 million notices, supports query filtering and JSON, and documents the published fields used here. The dataset includes company creation, registration, modification, cessation, insolvency and filing notices. Some notices may contain personal data; the collector therefore requests a minimal field list and retains no free text or person/address fields.
+BODACC is France's official commercial-notice service. The French government data-service listing describes the API as free/open and the data under Etalab Open Licence 2.0, subject to the API's terms. Notices cover dated commercial events such as registrations, modifications, cessations and insolvency. Some notices contain personal data, so this collector requests a minimal field list and discards notice text and personal/address fields.
 
 Sources:
-- API access, license, scope and terms: https://www.data.gouv.fr/dataservices/api-bulletin-officiel-des-annonces-civiles-et-commerciales-bodacc
-- Dataset description and current schema fields: https://bodacc-datadila.opendatasoft.com/explore/dataset/annonces-commerciales/information/
-- API v2.0 records and ODSQL documentation: https://help.opendatasoft.com/apis/ods-explore-v2/explore_v2.0.html
+- API access, licence, scope and terms: https://www.data.gouv.fr/dataservices/api-bulletin-officiel-des-annonces-civiles-et-commerciales-bodacc
+- Dataset schema: https://bodacc-datadila.opendatasoft.com/explore/dataset/annonces-commerciales/information/
+- API v2 records and query documentation: https://help.opendatasoft.com/apis/ods-explore-v2/explore_v2.0.html
 
-The data.gouv.fr listing says API availability and call limits are not documented. That source-specific documentation and the API terms still need review before any recurring or production use.
+The catalogue says API availability and call limits are not documented. Review the endpoint-specific terms and reasonable request limits before recurring use.
 
 ## Bounded ingestion contract
 
-The branch adds `collect-bodacc-context`, a manual CLI candidate that accepts one verified nine-digit SIREN and a required lower bound for publication date. It makes one GET request, asks for no more than 100 rows, does not paginate or retry, caps the response at 5 MB, and never writes to the application database or production state.
+The branch adds a manual `collect-bodacc-context` CLI candidate. It requires one verified nine-digit SIREN and publication-date lower bound; requests a single page of at most 100 rows; does not paginate or retry; caps response size at 5 MB; blocks redirects; and never writes to the application database or production state.
 
-The collector keeps only record ID, SIREN, bulletin edition, publication date, notice type/family, official notice URL, publication-age label, collector retrieval time, exact query URL, and SHA-256 of the selected-field response. It rechecks SIREN equality and the lower publication-date bound locally and rejects non-official result URLs or response-shape drift. The envelope says whether more API query results exist; it does not claim the locally exact SIREN subset is complete. Output says explicitly that a bounded zero-result query is not proof of absence. Results are French corporate-event context; they do not establish Canadian operations, expansion intent, a site-selection mandate or market fit.
+It retains a small allowlist of notice metadata, official notice URL, retrieval time, query URL and response hash. It rechecks exact SIREN and date bounds locally, validates official URLs, and fails closed on schema inconsistencies. The output records registry field type(s) as metadata for diagnostics without retaining the raw value. It states when API results have further pages and that a bounded zero-result query is not evidence of absence.
 
-Freshness labels refer only to the notice's BODACC publication date relative to `retrieved_at`. They do not measure dataset processing lag or prove that the query covered every potentially relevant notice.
+The notices provide French corporate-event context. They do not establish Canadian operations, expansion intent, a site-selection mandate or market fit. Publication-age labels describe the notice's publication date only; they do not measure source processing lag or query completeness.
 
-## Verification boundary
+## Verification
 
-The branch-only workflow ran on 4 November 2026 and passed the nine BODACC contract tests plus one bounded live API request: SIREN `752461681`, publication date from `2020-01-01`, limit 1. The API returned one record, local exact-SIREN validation retained one record, `registre` was a JSON list, and the API reported further results beyond this page. No raw response or record body was retained in CI artifacts. See [the verification run](https://github.com/JeremyHennessy/AtlanticBridge-Signals/actions/runs/41926479745).
+The branch-only workflow passed all nine focused BODACC tests and one bounded live API query on 4 November 2026: SIREN `752461681`, since `2020-01-01`, limit 1. One record was returned and passed exact-SIREN validation. Its `registre` field was a JSON list. The API indicated further results beyond that page. No raw response or notice body was retained in CI artifacts. See [the workflow run](https://github.com/JeremyHennessy/AtlanticBridge-Signals/actions/runs/41926479745).
 
-This verifies a single bounded query shape, not broader completeness, latency, or source uptime. The collector remains one page only, and `api_query_has_more_results=true` must prompt additional analyst retrieval if more context is needed. Source-specific API terms and call limits still need review before recurring or production use; no production schedule or UI ingestion is enabled.
+This is one successful request shape, not evidence of completeness, uptime, broader schema coverage or source freshness. The full project suite and hosted browser acceptance were not run on this latest collector head. The local environment could not resolve the BODACC hostname and did not have a working Python interpreter; the branch workflow provided focused test and live-query verification.
 
-A one-row API request was attempted from the current execution environment and failed before reaching BODACC because the hostname could not be resolved (`HttpRequestException: No such host is known`). A bounded query from the branch runner reached the API and its six offline tests passed, but the collector rejected the live `registre` field because it was not a scalar. The exact live value is not retained; the runner smoke logs only the JSON type. This is a schema integration fix in progress; the collector is not operational until the updated parser and same bounded smoke check pass. The tests added in `tests/test_bodacc_collector.py` exercise query construction, bounding, exact-SIREN filtering, field minimization, provenance, freshness labels, and fail-closed behavior against fixtures. They do not establish live endpoint compatibility. This environment lacks an installed Python interpreter, so the new Python suite has not been executed here.
-
-The branch contains a push-only GitHub Actions check scoped to this exact working branch. It runs the focused unit tests and makes one one-row public API query without uploading or retaining the response artifact. This check is verification only, not a production schedule. Before calling the collector functional or activating automation, inspect the completed check, confirm the real response shape and exact SIREN match behavior, review the API terms and rate limits, and have an analyst review sample records. Until those steps pass, the registry status remains VERIFY.
+The collector remains a manual candidate, not scheduled or wired into production monitoring, the UI or the database. Source-specific API terms/call limits and analyst review of sample records remain open before any recurring or production use. Registry status remains VERIFY.
