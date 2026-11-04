@@ -35,6 +35,8 @@ jobs:
           from atlanticbridge.sources.ns_awarded_tenders import collect_awarded_tenders_context
 
           result = collect_awarded_tenders_context("Bell Canada", limit=1)
+          assert result["records_returned_by_api"] == 1, "expected a bounded public Bell Canada match"
+          assert result["records_matching_exact_vendor"] == 1
           assert result["records_returned_by_api"] <= 1
           assert result["records_matching_exact_vendor"] == len(result["records"])
           assert all(record["vendor"].casefold() == "bell canada" for record in result["records"])
