@@ -411,3 +411,8 @@ AtlanticBridge therefore classifies an exact name+locality GLEIF match as:
 - `CONFIRMED_CANADIAN_NAMED_INVESTOR_PARENT_UNRESOLVED` when the named investor resolves to a Canadian legal entity.
 
 Country of ultimate control remains separate evidence and is never substituted for the named investor's legal jurisdiction.
+
+
+## Local analyst review pilot
+
+`local_analyst_review/` and `scripts/build_analyst_review_packet.py` provide a local-only evidence-context worksheet for the three manual collectors above. The packet carries source licence, attribution, event-stage limits, source and retrieval dates, exact source identifiers, reported collection origin and a response hash when available. All findings remain ineligible for lead promotion. Imported origin is an unauthenticated envelope claim, so analysts must verify source records independently. This pilot does not add production collection or public app output. See [Local evidence-context review](LOCAL_ANALYST_REVIEW.md).
