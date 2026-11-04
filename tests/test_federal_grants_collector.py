@@ -4,7 +4,8 @@ import unittest
 
 from atlanticbridge.sources.federal_grants import (
     FIELDS,
-    RECIPIENT_TYPE,
+    RECIPIENT_TYPE_CODE,
+    RECIPIENT_TYPE_LABEL,
     RESOURCE_ID,
     build_query_url,
     collect_grants_context,
@@ -23,7 +24,7 @@ def sample_payload(rows=None, total=1, fields=FIELDS, resource_id=RESOURCE_ID):
                 "amendment_number": "0",
                 "amendment_date": "2026-06-30",
                 "agreement_type": "Contribution",
-                "recipient_type": RECIPIENT_TYPE,
+                "recipient_type": RECIPIENT_TYPE_CODE,
                 "recipient_legal_name": "Example Industrial Ltd.",
                 "recipient_operating_name": "Example Industrial",
                 "recipient_country": "Canada",
@@ -57,11 +58,12 @@ class FederalGrantsCollectorTests(unittest.TestCase):
         filters = json.loads(params["filters"][0])
         self.assertEqual(filters, {
             "recipient_legal_name": "Example Industrial Ltd.",
-            "recipient_type": RECIPIENT_TYPE,
+            "recipient_type": RECIPIENT_TYPE_CODE,
         })
         self.assertEqual(params["fields"][0].split(","), list(FIELDS))
         self.assertNotIn("description_en", FIELDS)
         self.assertNotIn("recipient_postal_code", FIELDS)
+        self.assertNotIn("coverage", FIELDS)
 
     def test_collect_preserves_provenance_and_only_allowlisted_fields(self):
         seen = {}
@@ -82,6 +84,11 @@ class FederalGrantsCollectorTests(unittest.TestCase):
         self.assertEqual(result["records"][0]["_id"], 17)
         self.assertNotIn("description_en", result["records"][0])
         self.assertNotIn("recipient_postal_code", result["records"][0])
+        self.assertNotIn("coverage", result["records"][0])
+        self.assertIn("source_attribution", result)
+        self.assertIn("Open Government Licence - Canada", result["source_attribution"])
+        self.assertEqual(result["requested_recipient_type_code"], RECIPIENT_TYPE_CODE)
+        self.assertEqual(result["requested_recipient_type_label"], RECIPIENT_TYPE_LABEL)
         self.assertEqual(seen["timeout"], 10)
 
     def test_local_exact_identity_and_recipient_type_filter_fails_closed(self):
