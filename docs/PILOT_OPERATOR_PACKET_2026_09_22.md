@@ -18,6 +18,20 @@ In the app, open Review queue, inspect a dossier and original sources, save a ne
 
 Ask willingness to pay only after the task. Keep a stated willingness distinct from a verified payment and retain any payment evidence privately. A small favorable pilot cannot establish a validated twelve-month forecast.
 
+## Brief status model and evidence contract
+
+Every reviewed company brief is a research record, not a qualified site-selection lead. Keep these stages distinct and preserve the source date and analyst decision behind every transition:
+
+1. **Observed:** record the dated source fact, the source publication date when known, the retrieval/check date, the exact source URL, and what the source actually says.
+2. **Canadian presence and identity:** verify the operating entity and ultimate ownership separately. State whether evidence indicates existing Canadian operations, a new operation, a partnership, procurement, or only general interest. Unknown identity stays unresolved.
+3. **Mandate status:** default to **unconfirmed**. Call a site-selection mandate confirmed only when a primary source or the responsible organization directly supports that statement. An announced investment with no site, a hiring page, or a supplier opportunity is not an uncommitted mandate.
+4. **Regional fit hypothesis:** show candidate regions and the reasons for each as hypotheses, with the relevant labor, infrastructure, supplier, logistics, market, and incentive sources. Keep missing information explicitly unknown.
+5. **Disposition and next action:** the analyst records a status, a concrete next action, an owner role or private pseudonymous operator ID, and a follow-up date. Include reasons to disqualify, defer, or revisit; a positive-only lead list is not a pilot result.
+
+For every candidate, capture counter-evidence and stale-data warnings beside supporting evidence. A source check is not the source's publication date, and an older announcement must be rechecked before being described as current. Ownership labels must distinguish headquarters, operating subsidiary, and ultimate parent. Never infer first Canadian entry from a new filing, hiring page, procurement relationship, or announcement without resolving earlier activity.
+
+A pilot set should deliberately include already-present firms, ambiguous identities, non-mandate activity, and cases that should be ruled out or deferred, alongside promising observations. Report usefulness, factual support, identity correctness, novelty, and manually timed active research separately. Missing source coverage is unknown, not a zero or a negative finding. This workflow supports an analyst-reviewed brief; it does not validate the Expansion Score or create a predictive lead product.
+
 ## Private record contract
 
 Copy `reviews/pilot/participant-records-template.json` to private storage. A participant needs `reviewer`, `role`, `recorded_date` (YYYY-MM-DD), `consented`, `independent_user`, and a private `consent_record` reference. Append the existing browser feedback exports to `reviews`; the reviewer label must match the consented ID. Unknown or unconsented submissions are excluded from independent-user metrics, not silently enrolled.

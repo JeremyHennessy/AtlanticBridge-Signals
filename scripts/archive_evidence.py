@@ -50,6 +50,7 @@ class Client:
     def __init__(self, token: str):
         if not token: raise ValueError('Authenticated archive token required')
         self.token = token
+        self.phase = 'startup'
         self.opener = urllib.request.build_opener(SafeRedirect())
     def request(self, url: str, method='GET', body=None, *, auth=True, binary=False, mime='application/json'):
         parsed = urllib.parse.urlsplit(url)
@@ -68,7 +69,14 @@ class Client:
     def json(self, url, method='GET', body=None):
         code, raw = self.request(url, method, body)
         if code not in (200,201): raise ValueError(f'GitHub archive request failed: HTTP {code}')
-        return json.loads(raw)
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError as exc:
+            # Keep diagnostics useful without logging response bodies, tokens, or
+            # signed redirect URLs. Endpoint paths and byte counts are sufficient
+            # to identify which GitHub API response needs investigation.
+            path = urllib.parse.urlsplit(url).path
+            raise ValueError(f'GitHub archive API returned invalid JSON for {path} (HTTP {code}, bytes {len(raw)}, parse position {exc.pos})') from None
     def pages(self, path):
         rows=[]
         for page in range(1,21):
@@ -210,19 +218,25 @@ def accepted_proof(client, artifact_id):
     raise ValueError('Accepted proof missing from both Actions and unpublished archives')
 
 def run(client):
-    now=datetime.now(timezone.utc).isoformat();release=draft_for(client,'evidence-v1-'+now[:7])
+    now=datetime.now(timezone.utc).isoformat()
+    client.phase='draft_release'
+    release=draft_for(client,'evidence-v1-'+now[:7])
     artifacts=[]
+    client.phase='pinned_proofs'
     for aid,expected in PINS.items():
         metadata,raw=accepted_proof(client,aid)
         artifacts.append(archive_one(client,metadata,expected,release,raw_override=raw))
+    client.phase='monitor_run_inventory'
     runs=client.json(API+'/actions/workflows/company-monitor.yml/runs?branch=main&per_page=20')['workflow_runs']
     found=0
     for run in runs:
+        client.phase='monitor_run_artifacts'
         if run['status']!='completed' or run['head_branch']!='main' or run['event'] not in {'push','schedule','workflow_dispatch'}:continue
         rows=client.json(API+f"/actions/runs/{run['id']}/artifacts?per_page=100")
         if rows['total_count']>100:raise ValueError('Monitor artifact pagination requires explicit handling')
         for artifact in rows['artifacts']:
             if not artifact['name'].startswith('company-monitor-'):continue
+            client.phase='monitor_artifact_'+str(artifact['id'])
             digest=artifact.get('digest','')
             if not digest.startswith('sha256:'):raise ValueError('Missing GitHub artifact digest')
             artifacts.append(archive_one(client,artifact,digest[7:],release,True));found+=1
@@ -232,9 +246,12 @@ def run(client):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--state-dir',required=True);ap.add_argument('--report-dir',required=True);args=ap.parse_args()
     state=Path(args.state_dir);out=Path(args.report_dir);out.mkdir(parents=True,exist_ok=True)
-    attempt={'schema_version':1,'run_id':os.environ.get('GITHUB_RUN_ID'),'attempt_at':datetime.now(timezone.utc).isoformat(),'status':'FAILED'}
+    attempt={'schema_version':1,'run_id':os.environ.get('GITHUB_RUN_ID'),'attempt_at':datetime.now(timezone.utc).isoformat(),'status':'FAILED','phase':'startup'}
+    client=None
     try:
-        result=run(Client(os.environ.get('GH_TOKEN','')))
+        client=Client(os.environ.get('GH_TOKEN',''))
+        result=run(client)
+        attempt['phase']='complete'
         attempt['status']='VERIFIED_DRAFT_COPY'
         state.mkdir(parents=True,exist_ok=True)
         (state/'archive-health.json').write_text(json.dumps(result,indent=2)+'\n')
@@ -242,6 +259,7 @@ def main():
         (manifests/(str(os.environ.get('GITHUB_RUN_ID','local'))+'.json')).write_text(json.dumps(result,indent=2)+'\n')
         (out/'report.json').write_text(json.dumps(result,indent=2)+'\n')
     except Exception as exc:
+        attempt['phase']=client.phase if client is not None else 'startup'
         attempt['error_type']=type(exc).__name__
         if type(exc) is ValueError:attempt['detail']=str(exc)
         # Exception text may contain signed HTTP URLs. Keep diagnostics credential-free.

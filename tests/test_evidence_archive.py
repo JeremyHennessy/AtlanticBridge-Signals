@@ -109,3 +109,15 @@ class ArchiveTests(unittest.TestCase):
             client.request(a.API+suffix,binary=True)
             req=client.opener.open.call_args.args[0]
             self.assertEqual(req.get_header('Accept'),expected)
+
+    def test_invalid_api_json_has_safe_endpoint_diagnostic(self):
+        client=a.Client('TEST')
+        client.request=lambda url,*args,**kwargs:(200,b'<html>not json</html>')
+        target=a.API+'/actions/workflows/company-monitor.yml/runs?token=do-not-log'
+        with self.assertRaises(ValueError) as caught:
+            client.json(target)
+        message=str(caught.exception)
+        self.assertIn('/actions/workflows/company-monitor.yml/runs',message)
+        self.assertIn('HTTP 200',message)
+        self.assertNotIn('token',message)
+        self.assertNotIn('do-not-log',message)
