@@ -99,7 +99,7 @@
         independent_verification: "NOT_INDEPENDENTLY_VERIFIED",
         lead_eligible: false,
         lead_promotion_allowed: false
-      }))
+      })
     };
   }
 
