@@ -62,7 +62,7 @@
   function safeLink(value) {
     try {
       const u = new URL(value);
-      if (u.protocol === "https:" && allowedHosts.has(u.hostname) && !u.username && !u.password) return u.href;
+      if (u.protocol === "https:" && allowedHosts.has(u.hostname) && !u.username && !u.password && (u.port === "" || u.port === "443")) return u.href;
     } catch (_) {}
     return null;
   }
