@@ -144,43 +144,42 @@ def collect_awarded_tenders_context(
     for row in rows:
         if not isinstance(row, dict) or not set(FIELDS).issubset(row):
             raise ValueError("Nova Scotia awarded tender record schema changed")
-        for field in ("tender_id", "entity", "goods", "service", "construction", "vendor"):
+        for field, expected_type in REQUIRED_TYPES.items():
             value = row.get(field)
-            if value is not None and (not isinstance(value, str) or len(value) > 500):
-                raise ValueError(f"Nova Scotia {field} field has an unexpected type or size")
+            if value is None:
+                continue
+            if expected_type == "text":
+                if not isinstance(value, str) or len(value) > 500:
+                    raise ValueError(f"Nova Scotia {field} must be bounded text")
+            elif expected_type == "calendar_date":
+                if not isinstance(value, str) or len(value) > 64:
+                    raise ValueError(f"Nova Scotia {field} has an unexpected type or size")
+                try:
+                    if "T" in value or " " in value:
+                        datetime.fromisoformat(value.replace("Z", "+00:00"))
+                    else:
+                        date.fromisoformat(value)
+                except ValueError:
+                    raise ValueError(f"Nova Scotia {field} is not a valid ISO date") from None
+            elif expected_type == "number":
+                if isinstance(value, bool) or not isinstance(value, (int, float, str)):
+                    raise ValueError("Nova Scotia awarded tender amount has an unexpected JSON type")
+                if isinstance(value, str):
+                    if not value or len(value) > 128:
+                        raise ValueError("Nova Scotia awarded tender amount has an unexpected size")
+                    numeric_text = value.strip().replace("$", "").replace(",", "")
+                    try:
+                        parsed_amount = Decimal(numeric_text)
+                    except InvalidOperation:
+                        raise ValueError("Nova Scotia awarded tender amount is not numeric") from None
+                    if not parsed_amount.is_finite():
+                        raise ValueError("Nova Scotia awarded tender amount is not finite")
+            else:
+                raise ValueError(f"Unsupported Nova Scotia schema type for {field}")
         returned_vendor = row.get("vendor")
         if not isinstance(returned_vendor, str) or _normalize(returned_vendor) != _normalize(vendor_name):
             excluded += 1
             continue
-        for field in ("tender_start_date", "tender_close_date", "awarded_date"):
-            value = row.get(field)
-            if value is None:
-                continue
-            if not isinstance(value, str) or len(value) > 64:
-                raise ValueError(f"Nova Scotia {field} has an unexpected type or size")
-            try:
-                if "T" in value or " " in value:
-                    datetime.fromisoformat(value.replace("Z", "+00:00"))
-                else:
-                    date.fromisoformat(value)
-            except ValueError:
-                raise ValueError(f"Nova Scotia {field} is not a valid ISO date") from None
-        amount = row.get("awarded_amount")
-        # Socrata metadata declares number, while live JSON may serialize it as text.
-        # Validate numeric content but retain the exact source value.
-        if amount is not None:
-            if isinstance(amount, bool) or not isinstance(amount, (int, float, str)):
-                raise ValueError("Nova Scotia awarded tender amount has an unexpected JSON type")
-            if isinstance(amount, str):
-                if not amount or len(amount) > 128:
-                    raise ValueError("Nova Scotia awarded tender amount has an unexpected size")
-                numeric_text = amount.strip().replace("$", "").replace(",", "")
-                try:
-                    parsed_amount = Decimal(numeric_text)
-                except InvalidOperation:
-                    raise ValueError("Nova Scotia awarded tender amount is not numeric") from None
-                if not parsed_amount.is_finite():
-                    raise ValueError("Nova Scotia awarded tender amount is not finite")
         projected.append({field: row.get(field) for field in FIELDS})
 
     return {
