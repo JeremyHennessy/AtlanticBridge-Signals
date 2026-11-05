@@ -150,6 +150,73 @@ class AnalystReviewPacketTests(unittest.TestCase):
                 {"vendor": "Example Inc."},
             )])
 
+    def test_packet_preserves_source_specific_coverage_and_freshness_signals(self):
+        bodacc = _collection(
+            "bodacc_commercial_notices",
+            {
+                "record_id": "SYNTHETIC-COVERAGE-BODACC",
+                "siren": "123456789",
+                "notice_family_label": "Synthetic notice",
+                "notice_type": "Synthetic type",
+                "publication_date": "2026-11-02",
+                "official_notice_url": (
+                    "https://www.bodacc.fr/pages/annonces-commerciales-detail/"
+                    "?q.id=id:SYNTHETIC-COVERAGE-BODACC"
+                ),
+            },
+            requested_limit=2,
+            total_count_for_query=4,
+            records_returned_by_api=2,
+            records_matching_exact_siren=1,
+            records_excluded_by_exact_siren_check=1,
+            api_query_has_more_results=True,
+            freshness_note="Synthetic publication-age note.",
+        )
+        federal = _collection(
+            "canada_federal_grants_contributions",
+            {"_id": 321, "ref_number": "SYNTHETIC-COVERAGE-GRANT"},
+            requested_limit=5,
+            total_count_for_exact_query=3,
+            records_returned_by_api=2,
+            records_matching_exact_recipient=1,
+            records_excluded_by_exact_recipient_check=1,
+            api_query_has_more_results=True,
+            source_update_frequency="QUARTERLY",
+        )
+        nova_scotia = _collection(
+            "nova_scotia_awarded_public_tenders",
+            {"tender_id": "SYNTHETIC-COVERAGE-NS", "vendor": "Example Inc."},
+            requested_limit=10,
+            records_returned_by_api=10,
+            records_matching_exact_vendor=9,
+            records_excluded_by_exact_vendor_check=1,
+            page_may_be_truncated=True,
+        )
+
+        summaries = build_review_packet([bodacc, federal, nova_scotia])["collections"]
+        b_coverage = summaries[0]["coverage_signals"]
+        self.assertEqual(b_coverage["requested_limit"], 2)
+        self.assertEqual(b_coverage["total_count_for_query"], 4)
+        self.assertEqual(b_coverage["records_returned_by_api"], 2)
+        self.assertEqual(b_coverage["records_matching_exact_query"], 1)
+        self.assertEqual(b_coverage["records_excluded_by_identity_check"], 1)
+        self.assertIs(b_coverage["api_query_has_more_results"], True)
+        self.assertIsNone(b_coverage["page_may_be_truncated"])
+        self.assertEqual(b_coverage["freshness_note"], "Synthetic publication-age note.")
+
+        f_coverage = summaries[1]["coverage_signals"]
+        self.assertEqual(f_coverage["total_count_for_query"], 3)
+        self.assertEqual(f_coverage["source_update_frequency"], "QUARTERLY")
+        self.assertIs(f_coverage["api_query_has_more_results"], True)
+
+        n_coverage = summaries[2]["coverage_signals"]
+        self.assertIsNone(n_coverage["total_count_for_query"])
+        self.assertEqual(n_coverage["records_returned_by_api"], 10)
+        self.assertEqual(n_coverage["records_matching_exact_query"], 9)
+        self.assertEqual(n_coverage["records_excluded_by_identity_check"], 1)
+        self.assertIsNone(n_coverage["api_query_has_more_results"])
+        self.assertIs(n_coverage["page_may_be_truncated"], True)
+
     def test_duplicate_rows_and_overlapping_collections_fail_before_packet_output(self):
         row = {
             "tender_id": "SYNTHETIC-DUPLICATE-1",
