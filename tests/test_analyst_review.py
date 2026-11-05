@@ -150,6 +150,21 @@ class AnalystReviewPacketTests(unittest.TestCase):
                 {"vendor": "Example Inc."},
             )])
 
+    def test_duplicate_rows_and_overlapping_collections_fail_before_packet_output(self):
+        row = {
+            "tender_id": "SYNTHETIC-DUPLICATE-1",
+            "vendor": "Example Systems Ltd. (invented)",
+            "awarded_date": "2026-09-20",
+        }
+        first = _collection("nova_scotia_awarded_public_tenders", row)
+        second = _collection("nova_scotia_awarded_public_tenders", dict(row))
+        with self.assertRaisesRegex(ValueError, "duplicate finding identifier"):
+            build_review_packet([first, second])
+
+        first["records"].append(dict(row))
+        with self.assertRaisesRegex(ValueError, "duplicate finding identifier"):
+            build_review_packet([first])
+
     def test_grant_amendment_rows_with_shared_reference_keep_distinct_identity(self):
         collection = _collection(
             "canada_federal_grants_contributions",
