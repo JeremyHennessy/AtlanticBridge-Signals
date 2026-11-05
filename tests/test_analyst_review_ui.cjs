@@ -317,6 +317,41 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     const briefLink = created.filter(node => node.tagName === "a").at(-1);
     assert.equal(briefLink.download, "atlanticbridge-analyst-evidence-review.md");
 
+
+    const oversizedOutputPacket = {
+      packet_version: 1,
+      workflow_mode: "LOCAL_ANALYST_REVIEW_ONLY",
+      collections: [{ source: "nova_scotia_awarded_public_tenders" }],
+      findings: [{
+        finding_id: "synthetic-utf8-size-bound",
+        source: "nova_scotia_awarded_public_tenders",
+        entity_label: "UTF-8 export bound fixture",
+        source_facts: {
+          "Ampersand field one": "&".repeat(104_000),
+          "Ampersand field two": "&".repeat(104_000),
+          "Ampersand field three": "&".repeat(104_000),
+          "Ampersand field four": "&".repeat(104_000)
+        }
+      }]
+    };
+    const oversizedOutputText = JSON.stringify(oversizedOutputPacket);
+    elements["packet-file"].files = [{
+      name: "utf8-export-bound-packet.json",
+      size: new TextEncoder().encode(oversizedOutputText).length,
+      text: async () => oversizedOutputText
+    }];
+    await elements["packet-file"].dispatch("change");
+    assert.match(elements["packet-status"].textContent, /Loaded 1 findings/);
+    const utf8BoundNote = created.filter(node => node.name === "analyst-note").at(-1);
+    utf8BoundNote.value = "Retain this review note when export is refused.";
+    await utf8BoundNote.dispatch("input");
+    await elements["export-brief"].dispatch("click");
+    assert.equal(exportedBlobs.length, 2);
+    assert.match(elements["packet-status"].textContent, /exceeds the 2 MB UTF-8 local export bound/i);
+    assert.equal(utf8BoundNote.value, "Retain this review note when export is refused.");
+    assert.match(elements.findings.textContent, /UTF-8 export bound fixture/);
+    assert.equal(elements["export-brief"].disabled, false);
+
     let releaseDelayedRead;
     const delayedRead = new Promise(resolve => { releaseDelayedRead = resolve; });
     elements["packet-file"].files = [{
