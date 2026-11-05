@@ -12,6 +12,7 @@ on:
       - "src/atlanticbridge/sources/ns_awarded_tenders.py"
       - "scripts/build_analyst_review_packet.py"
       - "tests/test_analyst_review.py"
+      - "tests/test_analyst_review_ui.cjs"
       - "tests/test_bodacc_collector.py"
       - "tests/test_federal_grants_collector.py"
       - "tests/test_ns_awarded_tenders_collector.py"
@@ -60,3 +61,5 @@ jobs:
         run: node --check local_analyst_review/app.js
       - name: Run BODACC search browser-integration tests
         run: node --test tests/test_bodacc_search.cjs
+      - name: Run local analyst review UI integration test
+        run: node --test tests/test_analyst_review_ui.cjs
