@@ -86,7 +86,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
           freshness_note: null
         },
         response_sha256: "a".repeat(64),
-        source_license: id === "1" ? "Open Government Licence - Nova Scotia" : "Etalab Open Licence 2.0",
+        source_license: "Open Government Licence - Nova Scotia",
         attribution: "Synthetic test envelope"
       }, {
         source: "bodacc_commercial_notices",
@@ -109,7 +109,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         headline: "Synthetic tender " + id,
         source_url: id === "1" ? "https://data.novascotia.ca/resource/m6ps-8j6u.json" : "https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:SYNTHETIC-BODACC-2",
         license_url: id === "1" ? "https://novascotia.ca/opendata/licence.asp" : "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
-        license: "Open Government Licence - Nova Scotia",
+        license: id === "1" ? "Open Government Licence - Nova Scotia" : "Etalab Open Licence 2.0",
         attribution: id === "1" ? "Synthetic test envelope" : "Synthetic BODACC test envelope",
         event_stage: id === "1" ? "Awarded tender context" : "French commercial notice context",
         interpretation_limit: id === "1" ? "Tender award is not expansion intent or site selection." : "A French notice does not establish Canadian activity, expansion mandate, or site-selection intent.",
