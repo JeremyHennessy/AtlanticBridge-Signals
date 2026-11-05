@@ -142,11 +142,14 @@
     for (const finding of packet.findings) {
       const decision = decisions.get(finding.finding_id) || {};
       lines.push("### " + markdownText(finding.entity_label || "Entity unresolved") + " — " + markdownText(finding.headline || "Untitled evidence"));
+      lines.push(markdownBullet("Finding origin", originLabel(finding.evidence_class)));
       lines.push(markdownBullet("Source", finding.source));
       lines.push(markdownBullet("Source record ID", finding.source_record_id));
       lines.push(markdownBullet("Expected identity filter", finding.expected_identity_filter));
       lines.push(markdownBullet("Requested identity criterion", finding.requested_identity_criterion));
-      lines.push(markdownBullet("Identity match validation", "Not validated by packet; check query and official source"));
+      lines.push(markdownBullet("Identity match validation", finding.identity_match_verification === "NOT_VALIDATED_BY_PACKET" ? "Not validated by packet" : "Unknown"));
+      lines.push(markdownBullet("Identity verification note", finding.identity_verification_note));
+      lines.push(markdownBullet("Identity resolution limit", finding.identity_resolution_limit));
       lines.push(markdownBullet("Published / award date", finding.published_date));
       lines.push(markdownBullet("Event date", finding.event_date));
       lines.push(markdownBullet("Retrieved at", finding.retrieved_at));
