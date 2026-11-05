@@ -87,6 +87,90 @@
     parent.append(wrapper);
   }
 
+  function markdownText(value) {
+    if (value === undefined || value === null || value === "") return "Unknown";
+    if (!["string", "number", "boolean"].includes(typeof value)) return "Unknown";
+    return String(value)
+      .replace(/\\/g, "\\\\")
+      .replace(/[\r\n]+/g, " ")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/([*_{}\[\]()#+.!|])/g, "\\$1")
+      .split(String.fromCharCode(96)).join("&#96;");
+  }
+
+  function markdownBullet(label, value) {
+    return "- **" + markdownText(label) + ":** " + markdownText(value);
+  }
+
+  function buildReviewBrief(packet, decisions) {
+    const lines = [
+      "# AtlanticBridge analyst evidence review",
+      "",
+      "> Context only — not a qualified lead, investment mandate, expansion prediction, or site-selection finding.",
+      "",
+      markdownBullet("Generated at", packet.generated_at),
+      markdownBullet("Findings in packet", packet.findings.length),
+      markdownBullet("Independent verification", "Not independently verified by this workflow"),
+      markdownBullet("Lead promotion", "Not allowed"),
+      "",
+      "## Source coverage and provenance",
+      ""
+    ];
+
+    for (const collection of packet.collections) {
+      lines.push("### " + markdownText(collection.source || "Unknown source"));
+      lines.push(markdownBullet("Collector origin", originLabel(collection.evidence_class)));
+      lines.push(markdownBullet("Retrieved at", collection.retrieved_at));
+      lines.push(markdownBullet("Coverage limit", collection.coverage));
+      const coverage = collection.coverage_signals && typeof collection.coverage_signals === "object"
+        ? collection.coverage_signals : {};
+      lines.push(markdownBullet("Rows returned by API", coverage.records_returned_by_api));
+      lines.push(markdownBullet("Exact identity matches reported by collector", coverage.records_matching_exact_query));
+      lines.push(markdownBullet("More results beyond page", yesNoUnknown(coverage.api_query_has_more_results)));
+      lines.push(markdownBullet("Page may be truncated", yesNoUnknown(coverage.page_may_be_truncated)));
+      lines.push(markdownBullet("Freshness note", coverage.freshness_note));
+      lines.push(markdownBullet("Licence", collection.source_license));
+      lines.push(markdownBullet("Attribution", collection.attribution));
+      lines.push(markdownBullet("Envelope response SHA-256 (reported, not authenticated)", collection.response_sha256));
+      lines.push("");
+    }
+
+    lines.push("## Findings and analyst review");
+    lines.push("");
+    for (const finding of packet.findings) {
+      const decision = decisions.get(finding.finding_id) || {};
+      lines.push("### " + markdownText(finding.entity_label || "Entity unresolved") + " — " + markdownText(finding.headline || "Untitled evidence"));
+      lines.push(markdownBullet("Source", finding.source));
+      lines.push(markdownBullet("Source record ID", finding.source_record_id));
+      lines.push(markdownBullet("Expected identity filter", finding.expected_identity_filter));
+      lines.push(markdownBullet("Requested identity criterion", finding.requested_identity_criterion));
+      lines.push(markdownBullet("Identity match validation", "Not validated by packet; check query and official source"));
+      lines.push(markdownBullet("Published / award date", finding.published_date));
+      lines.push(markdownBullet("Event date", finding.event_date));
+      lines.push(markdownBullet("Retrieved at", finding.retrieved_at));
+      lines.push(markdownBullet("Event stage", finding.event_stage));
+      lines.push(markdownBullet("Interpretation limit", finding.interpretation_limit));
+      lines.push(markdownBullet("Source URL (approved host only)", safeLink(finding.source_url) || "Not supplied or unsupported"));
+      lines.push(markdownBullet("Licence", finding.license));
+      lines.push(markdownBullet("Attribution", finding.attribution));
+      for (const [label, value] of Object.entries(finding.source_facts || {})) {
+        if (value !== null && ["string", "number", "boolean"].includes(typeof value)) {
+          lines.push(markdownBullet(label, value));
+        }
+      }
+      lines.push(markdownBullet("Analyst disposition", decision.disposition || "UNREVIEWED_CONTEXT_ONLY"));
+      lines.push(markdownBullet("Follow-up owner", decision.owner));
+      lines.push(markdownBullet("Follow-up date", decision.follow_up_date));
+      lines.push(markdownBullet("Counter-evidence / unresolved issue", decision.counter_evidence));
+      lines.push(markdownBullet("Analyst note / next verification step", decision.note));
+      lines.push(markdownBullet("Lead eligibility", "Not eligible; no automatic promotion"));
+      lines.push("");
+    }
+    return lines.join("\n") + "\n";
+  }
+
   function validatePacket(input) {
     if (!input || input.packet_version !== 1 || input.workflow_mode !== "LOCAL_ANALYST_REVIEW_ONLY") {
       throw new Error("Unsupported packet format. Build a local analyst review packet first.");
@@ -318,6 +402,7 @@
       state.packet = candidate;
       state.decisions = nextDecisions;
       $("export-review").disabled = false;
+      $("export-brief").disabled = false;
       setStatus(`Loaded ${candidate.findings.length} findings from local file “${file.name}”. Nothing was uploaded.`);
     } catch (error) {
       if (requestGeneration !== state.importGeneration) return;
@@ -336,6 +421,7 @@
     state.packet = candidate;
     state.decisions = nextDecisions;
     $("export-review").disabled = false;
+    $("export-brief").disabled = false;
     setStatus("Loaded a synthetic fixture demonstration. This does not describe a real company or event.");
   });
 
@@ -370,4 +456,19 @@
     URL.revokeObjectURL(url);
     setStatus("Exported local review notes. The export cannot create or qualify a lead.");
   });
+
+  $("export-brief").addEventListener("click", () => {
+    if (!state.packet) return;
+    const blob = new Blob([buildReviewBrief(state.packet, state.decisions)], {
+      type: "text/markdown;charset=utf-8"
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "atlanticbridge-analyst-evidence-review.md";
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus("Downloaded local evidence-backed review brief. It preserves source limits and cannot qualify a lead.");
+  });
+
 })();
