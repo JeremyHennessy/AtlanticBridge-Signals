@@ -34,7 +34,7 @@ class FakeElement {
   }
 }
 
-test("local analyst review imports context, keeps lead lock, and exports all notes offline", async () => {
+test("local analyst review imports context, keeps lead lock, and exports all notes offline", { timeout: 5000 }, async () => {
   const ids = ["packet-file", "load-demo", "export-review", "export-brief", "packet-status", "collection-summary", "findings"];
   const elements = Object.fromEntries(ids.map(id => [id, new FakeElement("div")]));
   elements["export-review"].disabled = true;
@@ -64,7 +64,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(elements.findings.textContent, /CONTEXT ONLY · NOT A LEAD/);
     assert.match(elements["packet-status"].textContent, /synthetic fixture demonstration/i);
 
-    const packet = {
+  const longTextWithoutEmail = "ordinary source text ".repeat(5000);\n    const packet = {
       packet_version: 1,
       workflow_mode: "LOCAL_ANALYST_REVIEW_ONLY",
       lead_promotion_allowed: true,
@@ -117,7 +117,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         independent_verification: "NOT_INDEPENDENTLY_VERIFIED",
         lead_eligible: true,
         lead_promotion_allowed: true,
-        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores", "Prefixed HTTPS autolink": "xhttps://attacker.invalid/path", "Underscore-prefixed HTTPS autolink": "_https://attacker.invalid/path", "Prefixed www autolink": "xwww.attacker.invalid/path", "Underscore-prefixed www autolink": "_www.attacker.invalid/path", "Underscore-prefixed email": "_analyst@attacker.invalid", "Letter-prefixed email": "xanalyst@attacker.invalid", "Strikethrough source text": "~~keep literal~~" }
+        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores", "Prefixed HTTPS autolink": "xhttps://attacker.invalid/path", "Underscore-prefixed HTTPS autolink": "_https://attacker.invalid/path", "Prefixed www autolink": "xwww.attacker.invalid/path", "Underscore-prefixed www autolink": "_www.attacker.invalid/path", "Underscore-prefixed email": "_analyst@attacker.invalid", "Letter-prefixed email": "xanalyst@attacker.invalid", "Single-character TLD email": "analyst@attacker.c", "Unicode TLD email": "analyst@attacker.рф", "Long text without email": id === "1" ? longTextWithoutEmail : "short", "Strikethrough source text": "~~keep literal~~" }
       }))
     };
     elements["packet-file"].files = [{
@@ -128,6 +128,25 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     await elements["packet-file"].dispatch("change");
 
     assert.equal(elements["export-review"].disabled, false);
+    assert.equal(elements["export-brief"].disabled, false);
+    const oversizedTextPacket = {
+      ...packet,
+      findings: packet.findings.map((finding, index) => index === 0
+        ? {...finding, source_facts: {...finding.source_facts, "Oversized fact": "x".repeat(128_001)}}
+        : finding)
+    };
+    const oversizedText = JSON.stringify(oversizedTextPacket);
+    elements["packet-file"].files = [{
+      name: "oversized-text-packet.json",
+      size: new TextEncoder().encode(oversizedText).length,
+      text: async () => oversizedText
+    }];
+    await elements["packet-file"].dispatch("change");
+    assert.match(elements["packet-status"].textContent, /oversized source fact value/i);
+    assert.match(elements.findings.textContent, /Invented Example 1/);
+    assert.equal(select.value, "FOLLOW_UP_SOURCE_CHECK");
+    assert.equal(ownerInput.value, "Analyst A");
+    assert.equal(noteInput.value, "Synthetic source recheck note.");
     assert.equal(elements["export-brief"].disabled, false);
     assert.match(elements.findings.textContent, /Collector envelope reports live query · not independently verified/);
     assert.match(elements.findings.textContent, /Invented Example 1/);
@@ -178,6 +197,25 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     }];
     await elements["packet-file"].dispatch("change");
     assert.match(elements["packet-status"].textContent, /invalid or oversized source url/i);
+    assert.match(elements.findings.textContent, /Invented Example 1/);
+    assert.equal(select.value, "FOLLOW_UP_SOURCE_CHECK");
+    assert.equal(ownerInput.value, "Analyst A");
+    assert.equal(noteInput.value, "Synthetic source recheck note.");
+    assert.equal(elements["export-brief"].disabled, false);
+    const oversizedTextPacket = {
+      ...packet,
+      findings: packet.findings.map((finding, index) => index === 0
+        ? {...finding, source_facts: {...finding.source_facts, "Oversized fact": "x".repeat(128_001)}}
+        : finding)
+    };
+    const oversizedText = JSON.stringify(oversizedTextPacket);
+    elements["packet-file"].files = [{
+      name: "oversized-text-packet.json",
+      size: new TextEncoder().encode(oversizedText).length,
+      text: async () => oversizedText
+    }];
+    await elements["packet-file"].dispatch("change");
+    assert.match(elements["packet-status"].textContent, /oversized source fact value/i);
     assert.match(elements.findings.textContent, /Invented Example 1/);
     assert.equal(select.value, "FOLLOW_UP_SOURCE_CHECK");
     assert.equal(ownerInput.value, "Analyst A");
@@ -255,6 +293,11 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.ok(!brief.includes("https://evil.example"));
     const renderedBrief = marked.parse(brief);
     assert.doesNotMatch(renderedBrief, /<a\b[^>]*href="[^"]*attacker\.invalid/i);
+    assert.doesNotMatch(renderedBrief, /<a\\b[^>]*href="mailto:/i);
+    assert.ok(brief.includes("analyst&#64;attacker.c"));
+    assert.ok(brief.includes("analyst&#64;attacker.рф"));
+    assert.ok(brief.includes(longTextWithoutEmail));
+    assert.ok(renderedBrief.includes(longTextWithoutEmail));
     assert.doesNotMatch(renderedBrief, /<del>/i);
     assert.ok(renderedBrief.includes("~~keep literal~~"));
     assert.ok(renderedBrief.includes("<code>https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record</code>"));
