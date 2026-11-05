@@ -72,7 +72,19 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         source: "nova_scotia_awarded_public_tenders",
         evidence_class: "LIVE_QUERY_NOT_INDEPENDENTLY_VERIFIED",
         records_returned: 2,
-        coverage: "SYNTHETIC_FIXTURE_ONLY",
+        coverage: "ONE_EXACT_VENDOR_ONE_PAGE",
+        coverage_signals: {
+          requested_limit: 2,
+          records_returned_by_api: 2,
+          records_matching_exact_query: 2,
+          records_excluded_by_identity_check: 0,
+          total_count_for_query: null,
+          api_query_has_more_results: null,
+          page_may_be_truncated: true,
+          source_update_frequency: null,
+          freshness_note: null
+        },
+        response_sha256: "a".repeat(64),
         source_license: "Open Government Licence - Nova Scotia",
         attribution: "Synthetic test envelope"
       }],
@@ -106,6 +118,9 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(elements.findings.textContent, /Collector envelope reports live query · not independently verified/);
     assert.match(elements.findings.textContent, /Invented Example 1/);
     assert.match(elements["collection-summary"].textContent, /Independent review: not verified/);
+    assert.match(elements["collection-summary"].textContent, /Page may be truncatedYes/);
+    assert.match(elements["collection-summary"].textContent, /Records returned by API2/);
+    assert.match(elements["collection-summary"].textContent, /Envelope response SHA-256 \(reported\)a{64}/);
     assert.match(elements.findings.textContent, /Zero amount0/);
     assert.match(elements.findings.textContent, /Goods flagfalse/);
 
