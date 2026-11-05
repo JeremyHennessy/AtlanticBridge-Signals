@@ -77,7 +77,7 @@
   function addField(parent, label, value) {
     const wrapper = element("div", "field");
     wrapper.append(element("dt", "", label));
-    wrapper.append(element("dd", "", value || "Unknown"));
+    wrapper.append(element("dd", "", value === undefined || value === null || value === "" ? "Unknown" : value));
     parent.append(wrapper);
   }
 
