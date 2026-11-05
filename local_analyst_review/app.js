@@ -188,6 +188,7 @@
 
       const dl = element("dl", "facts");
       addField(dl, "Expected collector identity filter", finding.expected_identity_filter);
+      addField(dl, "Requested identity criterion", finding.requested_identity_criterion);
       addField(dl, "Identity match validation", finding.identity_match_verification === "NOT_VALIDATED_BY_PACKET" ? "Not validated by packet" : "Unknown");
       addField(dl, "Identity verification note", finding.identity_verification_note);
       addField(dl, "Identity resolution limit", finding.identity_resolution_limit);
