@@ -187,6 +187,8 @@
       }
 
       const dl = element("dl", "facts");
+      addField(dl, "Identity match method", finding.identity_match_method);
+      addField(dl, "Identity resolution limit", finding.identity_resolution_limit);
       addField(dl, "Source publication / award date", finding.published_date);
       addField(dl, "Event date", finding.event_date);
       addField(dl, "Collector retrieval time", finding.retrieved_at);
