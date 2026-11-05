@@ -149,6 +149,23 @@ def _coverage_signals(source: str, collection: dict) -> dict:
     }
 
 
+def _identity_resolution(source: str) -> tuple[str, str]:
+    if source == "bodacc_commercial_notices":
+        return (
+            "Exact SIREN identifier check",
+            "Identifies the French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship.",
+        )
+    if source == "canada_federal_grants_contributions":
+        return (
+            "Exact recipient legal-name check",
+            "A name match does not establish ultimate ownership or affiliation with another similarly named entity.",
+        )
+    return (
+        "Normalized exact vendor-name check",
+        "A normalized name match does not establish the vendor's legal entity, ultimate owner, or corporate affiliation.",
+    )
+
+
 def _execution_class(collection: dict) -> str:
     origin = collection.get("collection_execution")
     if origin == _LIVE_ORIGIN:
@@ -231,7 +248,10 @@ def _record_view(source: str, config: dict, collection: dict, row: dict) -> dict
         source_url = source_ref_url
 
     stable_id = hashlib.sha256(f"{source}\0{record_id}".encode("utf-8")).hexdigest()
+    identity_method, identity_limit = _identity_resolution(source)
     return {
+        "identity_match_method": identity_method,
+        "identity_resolution_limit": identity_limit,
         "finding_id": stable_id,
         "source": source,
         "source_record_id": record_id,
