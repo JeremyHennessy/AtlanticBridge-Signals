@@ -187,7 +187,9 @@
       }
 
       const dl = element("dl", "facts");
-      addField(dl, "Identity match method", finding.identity_match_method);
+      addField(dl, "Expected collector identity filter", finding.expected_identity_filter);
+      addField(dl, "Identity match validation", finding.identity_match_verification === "NOT_VALIDATED_BY_PACKET" ? "Not validated by packet" : "Unknown");
+      addField(dl, "Identity verification note", finding.identity_verification_note);
       addField(dl, "Identity resolution limit", finding.identity_resolution_limit);
       addField(dl, "Source publication / award date", finding.published_date);
       addField(dl, "Event date", finding.event_date);
