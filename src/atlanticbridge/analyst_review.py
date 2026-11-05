@@ -166,6 +166,25 @@ def _identity_resolution(source: str) -> tuple[str, str]:
     )
 
 
+def _requested_identity_criterion(source: str, collection: dict) -> str | None:
+    if source == "bodacc_commercial_notices":
+        value = collection.get("requested_siren")
+        if isinstance(value, str) and len(value) == 9 and all("0" <= char <= "9" for char in value):
+            return f"SIREN: {value}"
+        return None
+    if source == "canada_federal_grants_contributions":
+        value = collection.get("requested_recipient_legal_name")
+        if isinstance(value, str) and value.strip() and len(value) <= 256:
+            recipient_type = collection.get("requested_recipient_type_code")
+            type_text = f" (recipient type {recipient_type})" if isinstance(recipient_type, str) and len(recipient_type) <= 32 else ""
+            return f"Recipient legal name{type_text}: {value.strip()}"
+        return None
+    value = collection.get("requested_vendor_legal_name")
+    if isinstance(value, str) and value.strip() and len(value) <= 256:
+        return f"Vendor name: {value.strip()}"
+    return None
+
+
 def _execution_class(collection: dict) -> str:
     origin = collection.get("collection_execution")
     if origin == _LIVE_ORIGIN:
@@ -251,6 +270,7 @@ def _record_view(source: str, config: dict, collection: dict, row: dict) -> dict
     identity_method, identity_limit = _identity_resolution(source)
     return {
         "expected_identity_filter": identity_method,
+        "requested_identity_criterion": _requested_identity_criterion(source, collection),
         "identity_match_verification": "NOT_VALIDATED_BY_PACKET",
         "identity_verification_note": (
             "This packet does not compare the collector's requested identifier or name "
