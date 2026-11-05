@@ -235,6 +235,11 @@
     };
     accountReviewText(input.generated_at, "packet generated at");
     for (const collection of input.collections) {
+      const recordsReturned = collection.records_returned;
+      if (recordsReturned !== undefined && recordsReturned !== null &&
+          (!Number.isSafeInteger(recordsReturned) || recordsReturned < 0 || recordsReturned > 500)) {
+        throw new Error("Packet contains an invalid collection records returned count.");
+      }
       for (const field of ["source", "retrieved_at", "coverage", "source_license", "attribution"]) {
         accountReviewText(collection[field], `collection ${field}`);
       }
