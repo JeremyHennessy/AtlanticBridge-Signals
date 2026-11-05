@@ -86,28 +86,35 @@ test("local analyst review imports context, keeps lead lock, and exports all not
           freshness_note: null
         },
         response_sha256: "a".repeat(64),
-        source_license: "Open Government Licence - Nova Scotia",
+        source_license: id === "1" ? "Open Government Licence - Nova Scotia" : "Etalab Open Licence 2.0",
         attribution: "Synthetic test envelope"
+      }, {
+        source: "bodacc_commercial_notices",
+        evidence_class: "FIXTURE_DEMONSTRATION_NOT_LIVE",
+        records_returned: 1,
+        coverage: "SYNTHETIC_FIXTURE_ONLY",
+        source_license: "Etalab Open Licence 2.0",
+        attribution: "Synthetic BODACC fixture envelope"
       }],
       findings: ["1", "2"].map(id => ({
         finding_id: "synthetic-" + id,
-        source: "nova_scotia_awarded_public_tenders",
-        source_record_id: "SYNTHETIC-" + id,
+        source: id === "1" ? "nova_scotia_awarded_public_tenders" : "bodacc_commercial_notices",
+        source_record_id: id === "1" ? "SYNTHETIC-1" : "SYNTHETIC-BODACC-2",
         entity_label: "Invented Example " + id,
-        expected_identity_filter: "Expected collector filter: normalized exact vendor name",
-        requested_identity_criterion: "Vendor name: Requested Company Ltd.",
+        expected_identity_filter: id === "1" ? "Expected collector filter: normalized exact vendor name" : "Expected collector filter: exact SIREN query",
+        requested_identity_criterion: id === "1" ? "Vendor name: Requested Company Ltd." : "SIREN: 123456789",
         identity_match_verification: "NOT_VALIDATED_BY_PACKET",
         identity_verification_note: "This packet does not compare the collector's requested identifier or name with this record.",
-        identity_resolution_limit: "A normalized name filter does not establish corporate affiliation.",
+        identity_resolution_limit: id === "1" ? "A normalized name filter does not establish corporate affiliation." : "Identifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship.",
         headline: "Synthetic tender " + id,
-        source_url: "https://data.novascotia.ca/resource/m6ps-8j6u.json",
-        license_url: "https://novascotia.ca/opendata/licence.asp",
+        source_url: id === "1" ? "https://data.novascotia.ca/resource/m6ps-8j6u.json" : "https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:SYNTHETIC-BODACC-2",
+        license_url: id === "1" ? "https://novascotia.ca/opendata/licence.asp" : "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
         license: "Open Government Licence - Nova Scotia",
-        attribution: "Synthetic test envelope",
-        event_stage: "Fixture only",
-        interpretation_limit: "No real source event",
-        evidence_class: "LIVE_QUERY_NOT_INDEPENDENTLY_VERIFIED",
-        independent_verification: "INDEPENDENTLY_VERIFIED",
+        attribution: id === "1" ? "Synthetic test envelope" : "Synthetic BODACC test envelope",
+        event_stage: id === "1" ? "Awarded tender context" : "French commercial notice context",
+        interpretation_limit: id === "1" ? "Tender award is not expansion intent or site selection." : "A French notice does not establish Canadian activity, expansion mandate, or site-selection intent.",
+        evidence_class: id === "1" ? "LIVE_QUERY_NOT_INDEPENDENTLY_VERIFIED" : "FIXTURE_DEMONSTRATION_NOT_LIVE",
+        independent_verification: "NOT_INDEPENDENTLY_VERIFIED",
         lead_eligible: true,
         lead_promotion_allowed: true,
         source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading" }
@@ -201,7 +208,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(exported.decisions[0].follow_up_date, "");
     assert.equal(exported.decisions[0].counter_evidence, "");
     assert.equal(exported.decisions[0].lead_eligible, false);
-    assert.equal(exported.decisions[1].source_record_id, "SYNTHETIC-2");
+    assert.equal(exported.decisions[1].source_record_id, "SYNTHETIC-BODACC-2");
     assert.equal(exported.decisions[1].disposition, "FOLLOW_UP_SOURCE_CHECK");
     assert.equal(exported.decisions[1].follow_up_owner, "Analyst A");
     assert.equal(exported.decisions[1].follow_up_date, "2026-12-01");
@@ -216,8 +223,12 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(brief, /AtlanticBridge analyst evidence review/);
     assert.match(brief, /Context only — not a qualified lead, investment mandate/);
     assert.match(brief, /Envelope response SHA-256 \(reported, not authenticated\)/);
+    assert.match(brief, /Finding origin.*Collector envelope reports live query · not independently verified/);
+    assert.match(brief, /Finding origin.*Collector envelope reports fixture · not live/);
     assert.match(brief, /Requested identity criterion/);
-    assert.match(brief, /Not validated by packet; check query and official source/);
+    assert.match(brief, /Identity verification noteThis packet does not compare the collector\'s requested identifier or name with this record\./);
+    assert.match(brief, /Identity resolution limitA normalized name filter does not establish corporate affiliation\./);
+    assert.match(brief, /Identity resolution limitIdentifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship\./);
     assert.match(brief, /Open Government Licence - Nova Scotia/);
     assert.match(brief, /No confirmed site-selection mandate found\./);
     assert.match(brief, /Synthetic source recheck note\./);
