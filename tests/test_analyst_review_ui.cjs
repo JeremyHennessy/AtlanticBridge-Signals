@@ -91,7 +91,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         evidence_class: "LIVE_QUERY_NOT_INDEPENDENTLY_VERIFIED",
         independent_verification: "INDEPENDENTLY_VERIFIED",
         lead_eligible: true,
-        lead_promotion_allowed: true
+        lead_promotion_allowed: true,
+        source_facts: { "Zero amount": 0, "Goods flag": false }
       }))
     };
     elements["packet-file"].files = [{
@@ -104,16 +105,33 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(elements["export-review"].disabled, false);
     assert.match(elements.findings.textContent, /Collector envelope reports live query · not independently verified/);
     assert.match(elements.findings.textContent, /Invented Example 1/);
-    assert.match(elements.findings.textContent, /Independent review: not verified/);
+    assert.match(elements["collection-summary"].textContent, /Independent review: not verified/);
+    assert.match(elements.findings.textContent, /Zero amount0/);
+    assert.match(elements.findings.textContent, /Goods flagfalse/);
 
-    const select = created.find(node => node.tagName === "select");
-    const textarea = created.find(node => node.tagName === "textarea");
+    const select = created.filter(node => node.tagName === "select").at(-1);
+    const textarea = created.filter(node => node.tagName === "textarea").at(-1);
     assert.ok(select);
     assert.ok(textarea);
     select.value = "FOLLOW_UP_SOURCE_CHECK";
     await select.dispatch("change");
     textarea.value = "Synthetic source recheck note.";
     await textarea.dispatch("input");
+
+    elements["packet-file"].files = [{
+      name: "malformed-packet.json",
+      size: 64,
+      text: async () => JSON.stringify({
+        packet_version: 1,
+        workflow_mode: "LOCAL_ANALYST_REVIEW_ONLY",
+        collections: [null],
+        findings: []
+      })
+    }];
+    await elements["packet-file"].dispatch("change");
+    assert.match(elements["packet-status"].textContent, /current review was not changed/i);
+    assert.match(elements.findings.textContent, /Invented Example 1/);
+    assert.equal(elements["export-review"].disabled, false);
 
     await elements["export-review"].dispatch("click");
     assert.ok(exportedBlob);
