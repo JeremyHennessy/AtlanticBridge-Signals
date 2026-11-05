@@ -88,6 +88,22 @@
     if (!Array.isArray(input.collections) || !Array.isArray(input.findings)) {
       throw new Error("Packet is missing collection or finding arrays.");
     }
+    if (!input.collections.every((item) => item !== null && typeof item === "object" && !Array.isArray(item))) {
+      throw new Error("Packet contains an invalid collection entry.");
+    }
+    const findingIds = new Set();
+    for (const finding of input.findings) {
+      if (finding === null || typeof finding !== "object" || Array.isArray(finding)) {
+        throw new Error("Packet contains an invalid finding entry.");
+      }
+      if (typeof finding.finding_id !== "string" || !finding.finding_id.trim() || finding.finding_id.length > 256 || findingIds.has(finding.finding_id)) {
+        throw new Error("Each finding must have a unique stable identifier.");
+      }
+      findingIds.add(finding.finding_id);
+      if (finding.source_facts !== undefined && (finding.source_facts === null || typeof finding.source_facts !== "object" || Array.isArray(finding.source_facts))) {
+        throw new Error("Packet contains invalid source facts.");
+      }
+    }
     return {
       ...input,
       lead_promotion_allowed: false,
@@ -230,7 +246,8 @@
       $("export-review").disabled = false;
       setStatus(`Loaded ${state.packet.findings.length} findings from local file “${file.name}”. Nothing was uploaded.`);
     } catch (error) {
-      setStatus(error.message || "Could not read this packet.", true);
+      const reason = error.message || "Could not read this packet.";
+      setStatus(`Could not load packet; current review was not changed. ${reason}`, true);
     } finally {
       event.target.value = "";
     }
