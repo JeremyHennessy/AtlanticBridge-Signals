@@ -222,7 +222,7 @@
     if (!input.collections.every((item) => typeof item.source === "string" && supportedSources.has(item.source))) {
       throw new Error("Packet contains an unsupported or invalid collection source.");
     }
-    accountReviewText(input.generated_at, "packet generated at");
+    let reviewTextLength = 0;
     const accountReviewText = (value, field, maximum = MAX_REVIEW_FIELD_LENGTH) => {
       if (typeof value !== "string") return;
       if (value.length > maximum) throw new Error(`Packet contains an oversized ${field}.`);
@@ -231,6 +231,7 @@
         throw new Error("Packet exceeds the local analyst text budget.");
       }
     };
+    accountReviewText(input.generated_at, "packet generated at");
     for (const collection of input.collections) {
       for (const field of ["source", "retrieved_at", "coverage", "source_license", "attribution"]) {
         accountReviewText(collection[field], `collection ${field}`);
