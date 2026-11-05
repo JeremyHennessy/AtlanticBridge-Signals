@@ -81,6 +81,74 @@ def _timestamp_or_unknown(value: object) -> str | None:
     return parsed.isoformat()
 
 
+def _nonnegative_int(value: object) -> int | None:
+    if type(value) is int and value >= 0:
+        return value
+    return None
+
+
+def _boolean(value: object) -> bool | None:
+    return value if type(value) is bool else None
+
+
+_COVERAGE_KEYS = {
+    "bodacc_commercial_notices": {
+        "total": "total_count_for_query",
+        "matched": "records_matching_exact_siren",
+        "excluded": "records_excluded_by_exact_siren_check",
+        "more": "api_query_has_more_results",
+        "truncated": None,
+    },
+    "canada_federal_grants_contributions": {
+        "total": "total_count_for_exact_query",
+        "matched": "records_matching_exact_recipient",
+        "excluded": "records_excluded_by_exact_recipient_check",
+        "more": "api_query_has_more_results",
+        "truncated": None,
+    },
+    "nova_scotia_awarded_public_tenders": {
+        "total": None,
+        "matched": "records_matching_exact_vendor",
+        "excluded": "records_excluded_by_exact_vendor_check",
+        "more": None,
+        "truncated": "page_may_be_truncated",
+    },
+}
+
+
+def _coverage_signals(source: str, collection: dict) -> dict:
+    keys = _COVERAGE_KEYS[source]
+    return {
+        "requested_limit": _nonnegative_int(collection.get("requested_limit")),
+        "records_returned_by_api": _nonnegative_int(collection.get("records_returned_by_api")),
+        "total_count_for_query": (
+            _nonnegative_int(collection.get(keys["total"])) if keys["total"] else None
+        ),
+        "records_matching_exact_query": (
+            _nonnegative_int(collection.get(keys["matched"])) if keys["matched"] else None
+        ),
+        "records_excluded_by_identity_check": (
+            _nonnegative_int(collection.get(keys["excluded"])) if keys["excluded"] else None
+        ),
+        "api_query_has_more_results": (
+            _boolean(collection.get(keys["more"])) if keys["more"] else None
+        ),
+        "page_may_be_truncated": (
+            _boolean(collection.get(keys["truncated"])) if keys["truncated"] else None
+        ),
+        "source_update_frequency": (
+            collection.get("source_update_frequency")
+            if isinstance(collection.get("source_update_frequency"), str)
+            else None
+        ),
+        "freshness_note": (
+            collection.get("freshness_note")
+            if isinstance(collection.get("freshness_note"), str)
+            else None
+        ),
+    }
+
+
 def _execution_class(collection: dict) -> str:
     origin = collection.get("collection_execution")
     if origin == _LIVE_ORIGIN:
@@ -212,6 +280,7 @@ def build_review_packet(collections: list[dict], *, generated_at: str | None = N
             "retrieved_at": _timestamp_or_unknown(collection.get("retrieved_at")),
             "records_returned": len(rows),
             "coverage": collection.get("coverage") if isinstance(collection.get("coverage"), str) else "Unknown",
+            "coverage_signals": _coverage_signals(source, collection),
             "source_license": config["license"],
             "attribution": config["attribution"],
             "response_sha256": (
