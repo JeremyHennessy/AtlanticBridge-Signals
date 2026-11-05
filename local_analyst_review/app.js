@@ -253,26 +253,34 @@
   $("packet-file").addEventListener("change", async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    const requestGeneration = ++state.importGeneration;
     try {
       if (file.size > 10_000_000) throw new Error("Packet exceeds the 10 MB local import bound.");
-      const parsed = JSON.parse(await file.text());
-      state.packet = validatePacket(parsed);
-      state.decisions.clear();
-      render(state.packet);
+      const contents = await file.text();
+      if (requestGeneration !== state.importGeneration) return;
+      const candidate = validatePacket(JSON.parse(contents));
+      const nextDecisions = new Map();
+      render(candidate, nextDecisions);
+      state.packet = candidate;
+      state.decisions = nextDecisions;
       $("export-review").disabled = false;
-      setStatus(`Loaded ${state.packet.findings.length} findings from local file “${file.name}”. Nothing was uploaded.`);
+      setStatus(`Loaded ${candidate.findings.length} findings from local file “${file.name}”. Nothing was uploaded.`);
     } catch (error) {
+      if (requestGeneration !== state.importGeneration) return;
       const reason = error.message || "Could not read this packet.";
       setStatus(`Could not load packet; current review was not changed. ${reason}`, true);
     } finally {
-      event.target.value = "";
+      if (requestGeneration === state.importGeneration) event.target.value = "";
     }
   });
 
   $("load-demo").addEventListener("click", () => {
-    state.packet = validatePacket(DEMO_PACKET);
-    state.decisions.clear();
-    render(state.packet);
+    state.importGeneration += 1;
+    const candidate = validatePacket(DEMO_PACKET);
+    const nextDecisions = new Map();
+    render(candidate, nextDecisions);
+    state.packet = candidate;
+    state.decisions = nextDecisions;
     $("export-review").disabled = false;
     setStatus("Loaded a synthetic fixture demonstration. This does not describe a real company or event.");
   });
