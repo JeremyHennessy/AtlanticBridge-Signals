@@ -59,6 +59,10 @@
     return "Collector envelope origin unknown";
   }
 
+  function yesNoUnknown(value) {
+    return typeof value === "boolean" ? (value ? "Yes" : "No") : "Unknown";
+  }
+
   function safeLink(value) {
     try {
       const u = new URL(value);
@@ -143,9 +147,20 @@
       card.append(element("span", "origin", originLabel(collection.evidence_class)));
       card.append(element("h2", "", collection.source || "Unknown source"));
       const dl = element("dl", "compact");
+      const coverage = collection.coverage_signals && typeof collection.coverage_signals === "object"
+        ? collection.coverage_signals : {};
       addField(dl, "Retrieved", collection.retrieved_at || "Unknown");
-      addField(dl, "Rows returned", collection.records_returned ?? "Unknown");
-      addField(dl, "Coverage", collection.coverage || "Unknown");
+      addField(dl, "Rows in packet", collection.records_returned ?? "Unknown");
+      addField(dl, "Records returned by API", coverage.records_returned_by_api);
+      addField(dl, "Exact identity matches", coverage.records_matching_exact_query);
+      addField(dl, "Excluded by identity check", coverage.records_excluded_by_identity_check);
+      addField(dl, "Total results for query", coverage.total_count_for_query);
+      addField(dl, "More results beyond page", yesNoUnknown(coverage.api_query_has_more_results));
+      addField(dl, "Page may be truncated", yesNoUnknown(coverage.page_may_be_truncated));
+      addField(dl, "Source update frequency", coverage.source_update_frequency);
+      addField(dl, "Freshness note", coverage.freshness_note);
+      addField(dl, "Coverage limit", collection.coverage || "Unknown");
+      addField(dl, "Envelope response SHA-256 (reported)", collection.response_sha256);
       addField(dl, "Licence", collection.source_license || "Unknown");
       card.append(dl);
       card.append(element("p", "attribution", collection.attribution || "Attribution not supplied"));
