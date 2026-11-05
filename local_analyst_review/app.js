@@ -6,7 +6,7 @@
   const MAX_REVIEW_URL_LENGTH = 2048;
   const MAX_REVIEW_FIELD_LENGTH = 128_000;
   const MAX_REVIEW_PACKET_TEXT_LENGTH = 500_000;
-  const MAX_REVIEW_BRIEF_LENGTH = 2_000_000;
+  const MAX_REVIEW_BRIEF_BYTES = 2_000_000;
   const allowedHosts = new Set(["www.bodacc.fr", "open.canada.ca", "data.novascotia.ca", "www.etalab.gouv.fr", "novascotia.ca"]);
 
   const DEMO_PACKET = {
@@ -196,7 +196,9 @@
       lines.push("");
     }
     const brief = lines.join("\n") + "\n";
-    if (brief.length > MAX_REVIEW_BRIEF_LENGTH) throw new Error("Review brief exceeds the 2 MB local export bound.");
+    if (new TextEncoder().encode(brief).byteLength > MAX_REVIEW_BRIEF_BYTES) {
+      throw new Error("Review brief exceeds the 2 MB UTF-8 local export bound.");
+    }
     return brief;
   }
 
