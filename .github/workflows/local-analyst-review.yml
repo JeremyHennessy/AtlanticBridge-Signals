@@ -61,5 +61,7 @@ jobs:
         run: node --check local_analyst_review/app.js
       - name: Run BODACC search browser-integration tests
         run: node --test tests/test_bodacc_search.cjs
+      - name: Install pinned Markdown renderer for export safety test
+        run: npm install --no-save --no-package-lock marked@17.0.5
       - name: Run local analyst review UI integration test
         run: node --test tests/test_analyst_review_ui.cjs
