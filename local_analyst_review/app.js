@@ -132,11 +132,11 @@
     };
   }
 
-  function render(packet) {
+  function render(packet, decisions = state.decisions) {
     const summaries = $("collection-summary");
     const findings = $("findings");
-    summaries.replaceChildren();
-    findings.replaceChildren();
+    const summaryCards = [];
+    const findingCards = [];
 
     for (const collection of packet.collections) {
       const card = element("article", "collection-card");
@@ -150,12 +150,11 @@
       card.append(dl);
       card.append(element("p", "attribution", collection.attribution || "Attribution not supplied"));
       card.append(element("p", "warning", "Independent review: not verified. Imported provenance labels are not authenticated."));
-      summaries.append(card);
+      summaryCards.push(card);
     }
 
     if (!packet.findings.length) {
-      findings.append(element("div", "empty", "No source records were returned in this packet."));
-      return;
+      findingCards.push(element("div", "empty", "No source records were returned in this packet."));
     }
 
     for (const finding of packet.findings) {
@@ -221,10 +220,10 @@
         option.value = value;
         select.append(option);
       }
-      select.value = state.decisions.get(finding.finding_id)?.disposition || "UNREVIEWED_CONTEXT_ONLY";
+      select.value = decisions.get(finding.finding_id)?.disposition || "UNREVIEWED_CONTEXT_ONLY";
       select.addEventListener("change", () => {
-        const previous = state.decisions.get(finding.finding_id) || {};
-        state.decisions.set(finding.finding_id, {...previous, disposition: select.value});
+        const previous = decisions.get(finding.finding_id) || {};
+        decisions.set(finding.finding_id, {...previous, disposition: select.value});
       });
       disposition.append(select);
       review.append(disposition);
@@ -233,18 +232,22 @@
       const textarea = element("textarea");
       textarea.rows = 3;
       textarea.maxLength = 2000;
-      textarea.value = state.decisions.get(finding.finding_id)?.note || "";
+      textarea.value = decisions.get(finding.finding_id)?.note || "";
       textarea.placeholder = "Record source checks, counter-evidence, owner and follow-up date.";
       textarea.addEventListener("input", () => {
-        const previous = state.decisions.get(finding.finding_id) || {};
-        state.decisions.set(finding.finding_id, {...previous, note: textarea.value});
+        const previous = decisions.get(finding.finding_id) || {};
+        decisions.set(finding.finding_id, {...previous, note: textarea.value});
       });
       notes.append(textarea);
       review.append(notes);
       review.append(element("p", "lock-note", "This local disposition cannot qualify, score, save, or publish an expansion lead."));
       card.append(review);
-      findings.append(card);
+      findingCards.push(card);
     }
+
+    // Build off-screen first; malformed input must not erase the currently loaded review.
+    summaries.replaceChildren(...summaryCards);
+    findings.replaceChildren(...findingCards);
   }
 
   $("packet-file").addEventListener("change", async (event) => {
