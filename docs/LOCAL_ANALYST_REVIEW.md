@@ -17,7 +17,7 @@ python scripts/build_analyst_review_packet.py `
 
 Open `local_analyst_review/index.html` in a browser and select the packet. Or use “Load synthetic demonstration” to inspect the interface; its company and tender are invented and are not observations.
 
-The packet builder reads local JSON and writes a local packet. It does not collect source data. Collectors must be run separately and manually under their existing bounds and source conditions. The browser UI does not automatically fetch, upload, or persist packet contents. Opening an official source or licence link performs normal browser navigation. Analyst notes can be exported to a local JSON file; the export is not a lead and does not update any app or database.
+The packet builder reads local JSON and writes a local packet. It does not collect source data. Collectors must be run separately and manually under their existing bounds and source conditions. The browser UI does not automatically fetch, upload, or persist packet contents. Opening an official source or licence link performs normal browser navigation. Record a disposition, local follow-up owner/date, counter-evidence, and next-step note per finding. Exported notes remain keyed to stable finding IDs; the export is not a lead and does not update any app or database.
 
 ## Evidence handling
 
