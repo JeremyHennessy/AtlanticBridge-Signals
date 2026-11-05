@@ -97,8 +97,8 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/([*_{}\[\]!#])/g, "\\$1")
-      .replace(/\b(https?|ftp):\/\//gi, (match) => match.replace(":", "&#58;"))
-      .replace(/\bwww\./gi, "www&#46;")
+      .replace(/(https?|ftp):\/\//gi, (match) => match.replace(":", "&#58;"))
+      .replace(/www\./gi, "www&#46;")
       .replace(/\b([A-Z0-9._%+-]+)@([A-Z0-9.-]+\.[A-Z]{2,})\b/gi, "$1&#64;$2")
       .split(String.fromCharCode(96)).join("&#96;");
   }
