@@ -2,7 +2,7 @@
 (() => {
   "use strict";
   const $ = (id) => document.getElementById(id);
-  const state = { packet: null, decisions: new Map() };
+  const state = { packet: null, decisions: new Map(), importGeneration: 0 };
   const allowedHosts = new Set(["www.bodacc.fr", "open.canada.ca", "data.novascotia.ca", "www.etalab.gouv.fr", "novascotia.ca"]);
 
   const DEMO_PACKET = {
@@ -70,7 +70,9 @@
   function element(tag, className, value) {
     const node = document.createElement(tag);
     if (className) node.className = className;
-    if (value !== undefined && value !== null) node.textContent = String(value);
+    if (value !== undefined && value !== null) {
+      node.textContent = ["string", "number", "boolean"].includes(typeof value) ? String(value) : "Unknown";
+    }
     return node;
   }
 
@@ -91,6 +93,14 @@
     if (!input.collections.every((item) => item !== null && typeof item === "object" && !Array.isArray(item))) {
       throw new Error("Packet contains an invalid collection entry.");
     }
+    const supportedSources = new Set([
+      "bodacc_commercial_notices",
+      "canada_federal_grants_contributions",
+      "nova_scotia_awarded_public_tenders"
+    ]);
+    if (!input.collections.every((item) => typeof item.source === "string" && supportedSources.has(item.source))) {
+      throw new Error("Packet contains an unsupported or invalid collection source.");
+    }
     const findingIds = new Set();
     for (const finding of input.findings) {
       if (finding === null || typeof finding !== "object" || Array.isArray(finding)) {
@@ -100,6 +110,9 @@
         throw new Error("Each finding must have a unique stable identifier.");
       }
       findingIds.add(finding.finding_id);
+      if (typeof finding.source !== "string" || !supportedSources.has(finding.source)) {
+        throw new Error("Each finding must identify an approved source.");
+      }
       if (finding.source_facts !== undefined && (finding.source_facts === null || typeof finding.source_facts !== "object" || Array.isArray(finding.source_facts))) {
         throw new Error("Packet contains invalid source facts.");
       }
