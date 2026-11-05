@@ -377,6 +377,8 @@ class AnalystReviewPacketTests(unittest.TestCase):
         self.assertIn("LOCAL_ANALYST_REVIEW_ONLY", app)
         self.assertNotIn("local_analyst_review", public_page)
         self.assertIn("Open local review packet", page)
+        self.assertIn("Download evidence-backed brief", page)
+        self.assertIn("Review it before sharing; nothing is uploaded.", page)
         self.assertIn("Opening an official source link performs normal browser navigation", page)
 
     def test_naive_date_values_are_allowed_only_for_source_event_dates(self):
