@@ -236,8 +236,40 @@
       for (const field of ["source", "retrieved_at", "coverage", "source_license", "attribution"]) {
         accountReviewText(collection[field], `collection ${field}`);
       }
-      if (collection.coverage_signals && typeof collection.coverage_signals === "object" && !Array.isArray(collection.coverage_signals)) {
-        accountReviewText(collection.coverage_signals.freshness_note, "collection freshness note");
+      if (collection.response_sha256 !== undefined && collection.response_sha256 !== null) {
+        const digest = collection.response_sha256;
+        if (typeof digest !== "string" || digest.length !== 64 || !/^[0-9a-f]{64}$/i.test(digest)) {
+          throw new Error("Packet contains an invalid collection response SHA-256.");
+        }
+        accountReviewText(digest, "collection response SHA-256", 64);
+      }
+      const coverage = collection.coverage_signals;
+      if (coverage !== undefined && coverage !== null) {
+        if (typeof coverage !== "object" || Array.isArray(coverage)) {
+          throw new Error("Packet contains invalid collection coverage signals.");
+        }
+        for (const field of [
+          "requested_limit", "records_returned_by_api", "total_count_for_query",
+          "records_matching_exact_query", "records_excluded_by_identity_check"
+        ]) {
+          const value = coverage[field];
+          if (value !== undefined && value !== null && (!Number.isSafeInteger(value) || value < 0)) {
+            throw new Error(`Packet contains an invalid collection ${field.replaceAll("_", " ")} count.`);
+          }
+        }
+        for (const field of ["api_query_has_more_results", "page_may_be_truncated"]) {
+          const value = coverage[field];
+          if (value !== undefined && value !== null && typeof value !== "boolean") {
+            throw new Error(`Packet contains an invalid collection ${field.replaceAll("_", " ")} flag.`);
+          }
+        }
+        for (const field of ["source_update_frequency", "freshness_note"]) {
+          const value = coverage[field];
+          if (value !== undefined && value !== null && typeof value !== "string") {
+            throw new Error(`Packet contains an invalid collection ${field.replaceAll("_", " ")}.`);
+          }
+          accountReviewText(value, `collection ${field}`);
+        }
       }
     }
     const findingIds = new Set();
