@@ -84,14 +84,18 @@ class AnalystReviewPacketTests(unittest.TestCase):
         self.assertEqual(len(packet["findings"]), 3)
         self.assertEqual(len(packet["collections"]), 3)
         self.assertEqual(
-            [finding["identity_match_method"] for finding in packet["findings"]],
+            [finding["expected_identity_filter"] for finding in packet["findings"]],
             [
-                "Exact SIREN identifier check",
-                "Exact recipient legal-name check",
-                "Normalized exact vendor-name check",
+                "Expected collector filter: exact SIREN query",
+                "Expected collector filter: exact recipient legal name",
+                "Expected collector filter: normalized exact vendor name",
             ],
         )
         self.assertIn("does not establish", packet["findings"][0]["identity_resolution_limit"])
+        self.assertTrue(all(
+            finding["identity_match_verification"] == "NOT_VALIDATED_BY_PACKET"
+            for finding in packet["findings"]
+        ))
         for finding in packet["findings"]:
             self.assertFalse(finding["lead_eligible"])
             self.assertFalse(finding["lead_promotion_allowed"])
@@ -158,6 +162,46 @@ class AnalystReviewPacketTests(unittest.TestCase):
                 "nova_scotia_awarded_public_tenders",
                 {"vendor": "Example Inc."},
             )])
+
+    def test_identity_claims_remain_unverified_for_contradictory_or_legacy_records(self):
+        contradictory = _collection(
+            "nova_scotia_awarded_public_tenders",
+            {
+                "tender_id": "SYNTHETIC-MISMATCH-1",
+                "vendor": "Returned Vendor Ltd.",
+            },
+            requested_vendor="Requested Company Ltd.",
+        )
+        mismatch_finding = build_review_packet([contradictory])["findings"][0]
+        self.assertEqual(
+            mismatch_finding["expected_identity_filter"],
+            "Expected collector filter: normalized exact vendor name",
+        )
+        self.assertEqual(
+            mismatch_finding["identity_match_verification"],
+            "NOT_VALIDATED_BY_PACKET",
+        )
+        self.assertIn("does not compare", mismatch_finding["identity_verification_note"])
+
+        legacy_bodacc = _collection(
+            "bodacc_commercial_notices",
+            {
+                "record_id": "SYNTHETIC-LEGACY-NO-SIREN",
+                "notice_family_label": "Synthetic notice",
+                "notice_type": "Synthetic type",
+            },
+            requested_siren="123456789",
+        )
+        legacy_finding = build_review_packet([legacy_bodacc])["findings"][0]
+        self.assertEqual(legacy_finding["entity_label"], "Unresolved French entity")
+        self.assertEqual(
+            legacy_finding["expected_identity_filter"],
+            "Expected collector filter: exact SIREN query",
+        )
+        self.assertEqual(
+            legacy_finding["identity_match_verification"],
+            "NOT_VALIDATED_BY_PACKET",
+        )
 
     def test_packet_preserves_source_specific_coverage_and_freshness_signals(self):
         bodacc = _collection(
