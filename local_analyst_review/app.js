@@ -240,8 +240,15 @@
           (!Number.isSafeInteger(recordsReturned) || recordsReturned < 0 || recordsReturned > 500)) {
         throw new Error("Packet contains an invalid collection records returned count.");
       }
-      for (const field of ["source", "retrieved_at", "coverage", "source_license", "attribution"]) {
-        accountReviewText(collection[field], `collection ${field}`);
+      for (const [field, maximum] of [
+        ["source", 64], ["retrieved_at", 64], ["coverage", 4096],
+        ["source_license", 1024], ["attribution", 2048]
+      ]) {
+        const value = collection[field];
+        if (value !== undefined && value !== null && typeof value !== "string") {
+          throw new Error(`Packet contains an invalid collection ${field.replaceAll("_", " ")}.`);
+        }
+        accountReviewText(value, `collection ${field}`, maximum);
       }
       if (collection.response_sha256 !== undefined && collection.response_sha256 !== null) {
         const digest = collection.response_sha256;
@@ -260,7 +267,9 @@
           "records_matching_exact_query", "records_excluded_by_identity_check"
         ]) {
           const value = coverage[field];
-          if (value !== undefined && value !== null && (!Number.isSafeInteger(value) || value < 0)) {
+          const maximum = field === "total_count_for_query" ? Number.MAX_SAFE_INTEGER : 500;
+          if (value !== undefined && value !== null &&
+              (!Number.isSafeInteger(value) || value < 0 || value > maximum)) {
             throw new Error(`Packet contains an invalid collection ${field.replaceAll("_", " ")} count.`);
           }
         }
@@ -275,7 +284,7 @@
           if (value !== undefined && value !== null && typeof value !== "string") {
             throw new Error(`Packet contains an invalid collection ${field.replaceAll("_", " ")}.`);
           }
-          accountReviewText(value, `collection ${field}`);
+          accountReviewText(value, `collection ${field}`, field === "freshness_note" ? 4096 : 256);
         }
       }
     }
