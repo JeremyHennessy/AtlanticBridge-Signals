@@ -193,6 +193,7 @@ def build_review_packet(collections: list[dict], *, generated_at: str | None = N
     if not isinstance(collections, list):
         raise ValueError("collections must be a list")
     findings = []
+    finding_ids: set[str] = set()
     collection_summaries = []
     for collection in collections:
         if not isinstance(collection, dict):
@@ -228,7 +229,14 @@ def build_review_packet(collections: list[dict], *, generated_at: str | None = N
         for row in rows:
             if not isinstance(row, dict):
                 raise ValueError("source record must be an object")
-            findings.append(_record_view(source, config, collection, row))
+            finding = _record_view(source, config, collection, row)
+            if finding["finding_id"] in finding_ids:
+                raise ValueError(
+                    "duplicate finding identifier across overlapping collector inputs; "
+                    "remove duplicate rows or separate the source runs before building a packet"
+                )
+            finding_ids.add(finding["finding_id"])
+            findings.append(finding)
     generated = generated_at or datetime.now(timezone.utc).isoformat()
     if _timestamp_or_unknown(generated) is None:
         raise ValueError("generated_at must be a valid timezone-aware timestamp")
