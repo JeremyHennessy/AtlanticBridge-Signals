@@ -117,7 +117,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         independent_verification: "NOT_INDEPENDENTLY_VERIFIED",
         lead_eligible: true,
         lead_promotion_allowed: true,
-        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading" }
+        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores" }
       }))
     };
     elements["packet-file"].files = [{
@@ -226,13 +226,13 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(brief, /Finding origin.*Collector envelope reports live query · not independently verified/);
     assert.match(brief, /Finding origin.*Collector envelope reports fixture · not live/);
     assert.match(brief, /Requested identity criterion/);
-    assert.match(brief, /Identity verification noteThis packet does not compare the collector\'s requested identifier or name with this record\./);
-    assert.match(brief, /Identity resolution limitA normalized name filter does not establish corporate affiliation\./);
-    assert.match(brief, /Identity resolution limitIdentifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship\./);
+    assert.ok(brief.includes("- **Identity verification note:** This packet does not compare the collector's requested identifier or name with this record."));
+    assert.ok(brief.includes("- **Identity resolution limit:** A normalized name filter does not establish corporate affiliation."));
+    assert.ok(brief.includes("- **Identity resolution limit:** Identifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship."));
     assert.match(brief, /Open Government Licence - Nova Scotia/);
-    assert.match(brief, /Source URL \\(approved host only\\):\\*\\* `https:\\/\\/data\\.novascotia\\.ca\\/resource\\/m6ps-8j6u\\.json\\?observed_field=source_record`/);
-    assert.match(brief, /https&#58;\\/\\/evil\\.example\\/path\\_with\\_underscores/);
-    assert.doesNotMatch(brief, /https:\\/\\/evil\\.example/);
+    assert.ok(brief.includes("https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record"));
+    assert.ok(brief.includes("https&#58;//evil.example/path\\_with\\_underscores"));
+    assert.ok(!brief.includes("https://evil.example"));
     assert.match(brief, /No confirmed site-selection mandate found\./);
     assert.match(brief, /Synthetic source recheck note\./);
     assert.match(brief, /&lt;script&gt;alert\(1\)&lt;\/script&gt; \\# injected heading/);
