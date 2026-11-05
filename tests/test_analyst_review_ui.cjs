@@ -94,6 +94,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         source_record_id: "SYNTHETIC-" + id,
         entity_label: "Invented Example " + id,
         expected_identity_filter: "Expected collector filter: normalized exact vendor name",
+        requested_identity_criterion: "Vendor name: Requested Company Ltd.",
         identity_match_verification: "NOT_VALIDATED_BY_PACKET",
         identity_verification_note: "This packet does not compare the collector's requested identifier or name with this record.",
         identity_resolution_limit: "A normalized name filter does not establish corporate affiliation.",
@@ -122,6 +123,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(elements.findings.textContent, /Collector envelope reports live query · not independently verified/);
     assert.match(elements.findings.textContent, /Invented Example 1/);
     assert.match(elements.findings.textContent, /Expected collector identity filterExpected collector filter: normalized exact vendor name/);
+    assert.match(elements.findings.textContent, /Requested identity criterionVendor name: Requested Company Ltd\./);
     assert.match(elements.findings.textContent, /Identity match validationNot validated by packet/);
     assert.match(elements.findings.textContent, /Identity verification noteThis packet does not compare the collector's requested identifier or name with this record\./);
     assert.match(elements.findings.textContent, /Identity resolution limitA normalized name filter does not establish corporate affiliation\./);
