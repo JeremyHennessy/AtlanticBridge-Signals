@@ -5,6 +5,15 @@ from datetime import datetime, timezone
 import hashlib
 from urllib.parse import urlsplit
 
+from .sources.bodacc import (
+    SOURCE_ATTRIBUTION as BODACC_ATTRIBUTION,
+    SOURCE_LICENSE_URL as BODACC_LICENSE_URL,
+)
+from .sources.federal_grants import (
+    SOURCE_ATTRIBUTION as FEDERAL_GRANTS_ATTRIBUTION,
+    SOURCE_LICENSE_URL as FEDERAL_GRANTS_LICENSE_URL,
+)
+
 _PACKET_VERSION = 1
 _LIVE_ORIGIN = "LIVE_HTTP_RESPONSE"
 _FIXTURE_ORIGIN = "INJECTED_FETCHER_FIXTURE_OR_REPLAY"
@@ -12,16 +21,18 @@ _FIXTURE_ORIGIN = "INJECTED_FETCHER_FIXTURE_OR_REPLAY"
 SOURCES = {
     "bodacc_commercial_notices": {
         "license": "Etalab Open Licence 2.0",
-        "license_url": "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
-        "attribution": "Source: BODACC, annonces-commerciales dataset; Etalab Open Licence 2.0.",
+        "license_url": BODACC_LICENSE_URL,
+        "attribution": BODACC_ATTRIBUTION,
         "stage": "French company legal notice context",
         "limit": "Does not establish Canadian activity, an expansion mandate, or site-selection intent.",
         "host": "www.bodacc.fr",
+        "api_host": "bodacc-datadila.opendatasoft.com",
+        "api_path": "/api/explore/v2.0/catalog/datasets/annonces-commerciales/records",
     },
     "canada_federal_grants_contributions": {
         "license": "Open Government Licence - Canada",
-        "license_url": "https://open.canada.ca/en/open-government-licence-canada",
-        "attribution": "Source: Government of Canada, Proactive Disclosure - Grants and Contributions.",
+        "license_url": FEDERAL_GRANTS_LICENSE_URL,
+        "attribution": FEDERAL_GRANTS_ATTRIBUTION,
         "stage": "Federal transfer-payment agreement context",
         "limit": "Agreement value is not necessarily cash disbursed; an award is not expansion intent or site selection.",
         "host": "open.canada.ca",
@@ -67,6 +78,13 @@ def _date_or_unknown(value: object) -> str | None:
         return parsed_date.isoformat()
     except ValueError:
         return None
+
+
+def _api_query_url(config: dict, collection: dict) -> str | None:
+    value = _safe_official_url(collection.get("api_url"), config.get("api_host", config["host"]))
+    if value is not None and config.get("api_path") and urlsplit(value).path != config["api_path"]:
+        return None
+    return value
 
 
 def _timestamp_or_unknown(value: object) -> str | None:
@@ -261,8 +279,7 @@ def _record_view(source: str, config: dict, collection: dict, row: dict) -> dict
     }
     if not record_id:
         raise ValueError(f"{source} record has no stable source identifier")
-    source_ref = row.get("official_notice_url") if source == "bodacc_commercial_notices" else collection.get("api_url")
-    source_ref_url = _safe_official_url(source_ref, config["host"])
+    source_ref_url = _api_query_url(config, collection)
     if source_url is None:
         source_url = source_ref_url
 
@@ -327,6 +344,8 @@ def build_review_packet(collections: list[dict], *, generated_at: str | None = N
             "coverage": collection.get("coverage") if isinstance(collection.get("coverage"), str) else "Unknown",
             "coverage_signals": _coverage_signals(source, collection),
             "source_license": config["license"],
+            "source_license_url": config["license_url"],
+            "api_query_url": _api_query_url(config, collection),
             "attribution": config["attribution"],
             "response_sha256": (
                 collection.get("response_sha256")

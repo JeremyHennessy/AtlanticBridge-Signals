@@ -95,6 +95,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         records_returned: 1,
         coverage: "SYNTHETIC_FIXTURE_ONLY",
         source_license: "Etalab Open Licence 2.0",
+        source_license_url: "https://www.data.gouv.fr/pages/legal/licences/etalab-2-0",
+        api_query_url: "https://bodacc-datadila.opendatasoft.com/api/explore/v2.0/catalog/datasets/annonces-commerciales/records?where=search%28registre%2C%22123456789%22%29&limit=1",
         attribution: "Synthetic BODACC fixture envelope"
       }],
       findings: ["1", "2"].map(id => ({
@@ -109,8 +111,9 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         identity_resolution_limit: id === "1" ? "A normalized name filter does not establish corporate affiliation." : "Identifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship.",
         headline: "Synthetic tender " + id,
         source_url: id === "1" ? "https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record" : "https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:SYNTHETIC-BODACC-2",
-        license_url: id === "1" ? "https://novascotia.ca/opendata/licence.asp" : "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
+        license_url: id === "1" ? "https://novascotia.ca/opendata/licence.asp" : "https://www.data.gouv.fr/pages/legal/licences/etalab-2-0",
         license: id === "1" ? "Open Government Licence - Nova Scotia" : "Etalab Open Licence 2.0",
+        api_query_url: id === "1" ? null : "https://bodacc-datadila.opendatasoft.com/api/explore/v2.0/catalog/datasets/annonces-commerciales/records?where=search%28registre%2C%22123456789%22%29&limit=1",
         attribution: id === "1" ? "Synthetic test envelope" : "Synthetic BODACC test envelope",
         event_stage: id === "1" ? "Awarded tender context" : "French commercial notice context",
         interpretation_limit: id === "1" ? "Tender award is not expansion intent or site selection." : "A French notice does not establish Canadian activity, expansion mandate, or site-selection intent.",
@@ -130,6 +133,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
 
     assert.equal(elements["export-review"].disabled, false);
     assert.equal(elements["export-brief"].disabled, false);
+    assert.ok(created.some(node => node.tagName === "a" && node.href === "https://www.data.gouv.fr/pages/legal/licences/etalab-2-0"));
     const select = created.filter(node => node.tagName === "select").at(-1);
     const ownerInput = created.filter(node => node.name === "follow-up-owner").at(-1);
     const dateInput = created.filter(node => node.name === "follow-up-date").at(-1);
@@ -375,6 +379,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.ok(brief.includes("- **Identity resolution limit:** A normalized name filter does not establish corporate affiliation."));
     assert.ok(brief.includes("- **Identity resolution limit:** Identifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship."));
     assert.match(brief, /Open Government Licence - Nova Scotia/);
+    assert.ok(brief.includes("https://www.data.gouv.fr/pages/legal/licences/etalab-2-0"));
+    assert.ok(brief.includes("https://bodacc-datadila.opendatasoft.com/api/explore/v2.0/catalog/datasets/annonces-commerciales/records?where=search%28registre%2C%22123456789%22%29&limit=1"));
     assert.ok(brief.includes("https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record"));
     assert.ok(brief.includes("https&#58;//evil.example/path\\_with\\_underscores"));
     assert.ok(!brief.includes("https://evil.example"));
@@ -453,5 +459,71 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     delete global.document;
     URL.createObjectURL = originalCreate;
     URL.revokeObjectURL = originalRevoke;
+  }
+});
+
+test("current Etalab licence is allowed without admitting arbitrary or disguised destinations", async () => {
+  const ids = ["packet-file", "load-demo", "export-review", "export-brief", "packet-status", "collection-summary", "findings"];
+  const elements = Object.fromEntries(ids.map(id => [id, new FakeElement("div")]));
+  const created = [];
+  const modulePath = path.join(__dirname, "../local_analyst_review/app.js");
+  global.document = {
+    getElementById: id => elements[id],
+    createElement: tag => {
+      const node = new FakeElement(tag);
+      created.push(node);
+      return node;
+    }
+  };
+  const official = "https://www.data.gouv.fr/pages/legal/licences/etalab-2-0";
+  const api = "https://bodacc-datadila.opendatasoft.com/api/explore/v2.0/catalog/datasets/annonces-commerciales/records?limit=1";
+  const candidates = [
+    [official, true],
+    ["https://www.etalab.gouv.fr/licence-ouverte-open-licence/", true],
+    ["https://www.data.gouv.fr/unrelated", false],
+    [official + "?redirect=https://evil.example", false],
+    [official + "#unverified-fragment", false],
+    [official.replace("https:", "http:"), false],
+    [official.replace("www.data.gouv.fr", "www.data.gouv.fr.evil.example"), false],
+    [official.replace("www.data.gouv.fr", "user@www.data.gouv.fr"), false],
+    [official.replace("www.data.gouv.fr", "www.data.gouv.fr:444"), false],
+    ["javascript:alert(1)", false],
+    [api, true],
+    [api.replace("/records?", "/exports?"), false],
+    [api.replace("https:", "http:"), false],
+    [api.replace("bodacc-datadila.opendatasoft.com", "user@bodacc-datadila.opendatasoft.com"), false],
+    [api.replace("bodacc-datadila.opendatasoft.com", "bodacc-datadila.opendatasoft.com:444"), false],
+    [api.replace("bodacc-datadila.opendatasoft.com", "bodacc-datadila.opendatasoft.com.evil.example"), false],
+    [api + "#unverified", false]
+  ];
+  try {
+    delete require.cache[require.resolve(modulePath)];
+    require(modulePath);
+    for (const [licenseUrl, expected] of candidates) {
+      created.length = 0;
+      const packet = {
+        packet_version: 1,
+        workflow_mode: "LOCAL_ANALYST_REVIEW_ONLY",
+        collections: [{ source: "bodacc_commercial_notices" }],
+        findings: [{
+          finding_id: "synthetic-licence-safety",
+          source: "bodacc_commercial_notices",
+          license_url: licenseUrl,
+          attribution: "Source: bodacc.fr / DILA. Source-file name: unknown; source-file date: unknown."
+        }]
+      };
+      const encoded = JSON.stringify(packet);
+      elements["packet-file"].files = [{ name: "licence-safety.json", size: encoded.length, text: async () => encoded }];
+      await elements["packet-file"].dispatch("change");
+      assert.match(elements["packet-status"].textContent, /Loaded 1 findings/);
+      const links = created.filter(node => node.tagName === "a");
+      assert.equal(links.length, expected ? 1 : 0, licenseUrl);
+      if (expected) assert.equal(links[0].href, licenseUrl);
+      assert.match(elements.findings.textContent, /Source-file name: unknown; source-file date: unknown/);
+      assert.match(elements.findings.textContent, /CONTEXT ONLY · NOT A LEAD/);
+    }
+  } finally {
+    delete global.document;
+    delete require.cache[require.resolve(modulePath)];
   }
 });

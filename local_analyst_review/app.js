@@ -8,6 +8,8 @@
   const MAX_REVIEW_PACKET_TEXT_LENGTH = 500_000;
   const MAX_REVIEW_BRIEF_BYTES = 2_000_000;
   const allowedHosts = new Set(["www.bodacc.fr", "open.canada.ca", "data.novascotia.ca", "www.etalab.gouv.fr", "novascotia.ca"]);
+  // Permit the current licence page without opening unrelated data.gouv.fr paths.
+  const allowedLicenseUrls = new Set(["https://www.data.gouv.fr/pages/legal/licences/etalab-2-0"]);
 
   const DEMO_PACKET = {
     packet_version: 1,
@@ -71,7 +73,9 @@
     if (typeof value !== "string" || value.length > MAX_REVIEW_URL_LENGTH) return null;
     try {
       const u = new URL(value);
-      if (u.protocol === "https:" && allowedHosts.has(u.hostname) && !u.username && !u.password && (u.port === "" || u.port === "443")) return u.href;
+      const isBodaccQuery = u.hostname === "bodacc-datadila.opendatasoft.com"
+        && u.pathname === "/api/explore/v2.0/catalog/datasets/annonces-commerciales/records" && !u.hash;
+      if (u.protocol === "https:" && (allowedHosts.has(u.hostname) || allowedLicenseUrls.has(u.href) || isBodaccQuery) && !u.username && !u.password && (u.port === "" || u.port === "443")) return u.href;
     } catch (_) {}
     return null;
   }
@@ -156,6 +160,8 @@
       lines.push(markdownBullet("Page may be truncated", yesNoUnknown(coverage.page_may_be_truncated)));
       lines.push(markdownBullet("Freshness note", coverage.freshness_note));
       lines.push(markdownBullet("Licence", collection.source_license));
+      lines.push(markdownCodeBullet("Licence URL (approved destination only)", safeLink(collection.source_license_url) || "Not supplied or unsupported"));
+      lines.push(markdownCodeBullet("API query URL (approved destination only)", safeLink(collection.api_query_url) || "Not supplied or unsupported"));
       lines.push(markdownBullet("Attribution", collection.attribution));
       lines.push(markdownBullet("Envelope response SHA-256 (reported, not authenticated)", collection.response_sha256));
       lines.push("");
@@ -180,7 +186,9 @@
       lines.push(markdownBullet("Event stage", finding.event_stage));
       lines.push(markdownBullet("Interpretation limit", finding.interpretation_limit));
       lines.push(markdownCodeBullet("Source URL (approved host only)", safeLink(finding.source_url) || "Not supplied or unsupported"));
+      lines.push(markdownCodeBullet("API query URL (approved destination only)", safeLink(finding.api_query_url) || "Not supplied or unsupported"));
       lines.push(markdownBullet("Licence", finding.license));
+      lines.push(markdownCodeBullet("Licence URL (approved destination only)", safeLink(finding.license_url) || "Not supplied or unsupported"));
       lines.push(markdownBullet("Attribution", finding.attribution));
       for (const [label, value] of Object.entries(finding.source_facts || {})) {
         if (value !== null && ["string", "number", "boolean"].includes(typeof value)) {
@@ -242,7 +250,8 @@
       }
       for (const [field, maximum] of [
         ["source", 64], ["retrieved_at", 64], ["coverage", 4096],
-        ["source_license", 1024], ["attribution", 2048]
+        ["source_license", 1024], ["attribution", 2048],
+        ["source_license_url", MAX_REVIEW_URL_LENGTH], ["api_query_url", MAX_REVIEW_URL_LENGTH]
       ]) {
         const value = collection[field];
         if (value !== undefined && value !== null && typeof value !== "string") {
@@ -321,7 +330,7 @@
           }
         }
       }
-      for (const field of ["source_url", "license_url"]) {
+      for (const field of ["source_url", "license_url", "api_query_url"]) {
         const value = finding[field];
         if (value !== undefined && value !== null && (typeof value !== "string" || value.length > MAX_REVIEW_URL_LENGTH)) {
           throw new Error(`Packet contains an invalid or oversized ${field.replace("_", " ")}.`);
@@ -369,6 +378,8 @@
       addField(dl, "Coverage limit", collection.coverage || "Unknown");
       addField(dl, "Envelope response SHA-256 (reported)", collection.response_sha256);
       addField(dl, "Licence", collection.source_license || "Unknown");
+      addField(dl, "Licence URL", safeLink(collection.source_license_url));
+      addField(dl, "API query URL", safeLink(collection.api_query_url));
       card.append(dl);
       card.append(element("p", "attribution", collection.attribution || "Attribution not supplied"));
       card.append(element("p", "warning", "Independent review: not verified. Imported provenance labels are not authenticated."));
@@ -407,6 +418,7 @@
       addField(dl, "Interpretation limit", finding.interpretation_limit);
       addField(dl, "Licence", finding.license);
       addField(dl, "Attribution", finding.attribution);
+      addField(dl, "API query URL", safeLink(finding.api_query_url));
       for (const [label, value] of Object.entries(finding.source_facts || {})) {
         if (value !== null && ["string", "number", "boolean"].includes(typeof value)) addField(dl, label, value);
       }

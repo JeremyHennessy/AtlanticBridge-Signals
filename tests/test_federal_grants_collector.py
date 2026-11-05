@@ -88,7 +88,14 @@ class FederalGrantsCollectorTests(unittest.TestCase):
         self.assertNotIn("recipient_postal_code", result["records"][0])
         self.assertNotIn("coverage", result["records"][0])
         self.assertIn("source_attribution", result)
-        self.assertIn("Open Government Licence - Canada", result["source_attribution"])
+        self.assertIn(
+            "Contains information licensed under the Open Government Licence – Canada.",
+            result["source_attribution"],
+        )
+        self.assertEqual(
+            result["source_license_url"],
+            "https://open.canada.ca/en/open-government-licence-canada",
+        )
         self.assertEqual(result["requested_recipient_type_code"], RECIPIENT_TYPE_CODE)
         self.assertEqual(result["requested_recipient_type_label"], RECIPIENT_TYPE_LABEL)
         self.assertEqual(seen["timeout"], 10)

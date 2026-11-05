@@ -23,6 +23,12 @@ API_BASE = "https://open.canada.ca/data/api/3/action/datastore_search"
 SOURCE_NAME = "canada_federal_grants_contributions"
 SOURCE_LICENSE = "Open Government Licence - Canada"
 SOURCE_LICENSE_ID = "ogl-canada"
+SOURCE_LICENSE_URL = "https://open.canada.ca/en/open-government-licence-canada"
+SOURCE_ATTRIBUTION = (
+    "Contains information licensed under the Open Government Licence – Canada. "
+    "Source: Government of Canada, Proactive Disclosure - Grants and Contributions, "
+    f"{DATASET_URL}; {SOURCE_LICENSE_URL}."
+)
 RECIPIENT_TYPE_CODE = "F"
 RECIPIENT_TYPE_LABEL = "For-profit organization"
 MAX_PAGE_SIZE = 50
@@ -215,15 +221,12 @@ def collect_grants_context(
         "source": SOURCE_NAME,
         "dataset_id": DATASET_ID,
         "dataset_url": DATASET_URL,
-        "source_attribution": (
-            "Source: Government of Canada, Proactive Disclosure - Grants and Contributions, "
-            f"{DATASET_URL}; used under the Open Government Licence - Canada "
-            "(https://open.canada.ca/en/open-government-licence-canada)."
-        ),
+        "source_attribution": SOURCE_ATTRIBUTION,
         "resource_id": RESOURCE_ID,
         "api_url": query_url,
         "source_license": SOURCE_LICENSE,
         "source_license_id": SOURCE_LICENSE_ID,
+        "source_license_url": SOURCE_LICENSE_URL,
         "source_update_frequency": "QUARTERLY",
         "retrieved_at": datetime.now(timezone.utc).isoformat(),
         "collection_execution": (

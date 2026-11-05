@@ -26,7 +26,10 @@ def _collection(source: str, record: dict, **extra) -> dict:
             ),
         }[source],
         "api_url": {
-            "bodacc_commercial_notices": "https://bodacc-datadila.opendatasoft.com/api/query",
+            "bodacc_commercial_notices": (
+                "https://bodacc-datadila.opendatasoft.com/api/explore/v2.0/catalog/datasets/"
+                "annonces-commerciales/records?where=search%28registre%2C%22123456789%22%29&limit=1"
+            ),
             "canada_federal_grants_contributions": "https://open.canada.ca/data/api/3/action/datastore_search",
             "nova_scotia_awarded_public_tenders": "https://data.novascotia.ca/resource/m6ps-8j6u.json",
         }[source],
@@ -111,6 +114,74 @@ class AnalystReviewPacketTests(unittest.TestCase):
         self.assertNotIn("do_not_copy", serialized)
         self.assertIn("does not establish", serialized.lower())
         self.assertIn("not expansion", serialized)
+
+    def test_attribution_uses_source_terms_without_inventing_file_provenance(self):
+        collections = [
+            _collection("bodacc_commercial_notices", {
+                "record_id": "SYNTHETIC-ATTRIBUTION",
+                "siren": "123456789",
+                "publication_date": "2026-11-02",
+                "official_notice_url": "https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:SYNTHETIC-ATTRIBUTION",
+            }, source_file_name="unverified.xml", source_file_date="2026-11-01",
+                source_attribution="Unverified attribution override"),
+            _collection("canada_federal_grants_contributions", {
+                "_id": 1, "recipient_legal_name": "Synthetic Example Inc.",
+            }, source_attribution="Unverified attribution override"),
+        ]
+        packet = build_review_packet(collections)
+        bodacc_finding, federal_finding = packet["findings"]
+        self.assertEqual(
+            bodacc_finding["license_url"],
+            "https://www.data.gouv.fr/pages/legal/licences/etalab-2-0",
+        )
+        self.assertIn("bodacc.fr / Direction de l’information légale et administrative (DILA)", bodacc_finding["attribution"])
+        self.assertIn("Source-file name: unknown; source-file date: unknown", bodacc_finding["attribution"])
+        self.assertIn(
+            "Contains information licensed under the Open Government Licence – Canada.",
+            federal_finding["attribution"],
+        )
+        for summary, finding in zip(packet["collections"], packet["findings"]):
+            self.assertEqual(summary["attribution"], finding["attribution"])
+            self.assertEqual(summary["source_license_url"], finding["license_url"])
+            self.assertEqual(summary["api_query_url"], finding["api_query_url"])
+            self.assertEqual(finding["identity_match_verification"], "NOT_VALIDATED_BY_PACKET")
+            self.assertFalse(finding["lead_eligible"])
+            self.assertFalse(finding["lead_promotion_allowed"])
+        self.assertNotIn("Unverified attribution override", json.dumps(packet))
+        self.assertNotIn("unverified.xml", json.dumps(packet))
+        self.assertNotIn("2026-11-01", bodacc_finding["attribution"])
+        self.assertNotIn("2026-11-02", bodacc_finding["attribution"])
+        self.assertNotIn(RETRIEVED, bodacc_finding["attribution"])
+        self.assertEqual(bodacc_finding["api_query_url"], collections[0]["api_url"])
+        self.assertEqual(bodacc_finding["source_url"], collections[0]["records"][0]["official_notice_url"])
+
+    def test_empty_bodacc_collection_keeps_attribution_license_and_query(self):
+        collection = _collection("bodacc_commercial_notices", {})
+        collection["records"] = []
+        packet = build_review_packet([collection])
+        self.assertEqual(packet["findings"], [])
+        summary = packet["collections"][0]
+        self.assertEqual(summary["api_query_url"], collection["api_url"])
+        self.assertEqual(summary["source_license_url"], "https://www.data.gouv.fr/pages/legal/licences/etalab-2-0")
+        self.assertIn("DILA", summary["attribution"])
+        self.assertIn("Source-file name: unknown; source-file date: unknown", summary["attribution"])
+
+    def test_bodacc_query_provenance_rejects_other_paths_and_unsafe_urls(self):
+        collection = _collection("bodacc_commercial_notices", {"record_id": "SYNTHETIC-URL"})
+        official = collection["api_url"]
+        for unsafe in (
+            official.replace("/records?", "/exports?"),
+            official.replace("https:", "http:"),
+            official.replace("bodacc-datadila.opendatasoft.com", "bodacc-datadila.opendatasoft.com.evil.example"),
+            official.replace("bodacc-datadila.opendatasoft.com", "user@bodacc-datadila.opendatasoft.com"),
+            official.replace("bodacc-datadila.opendatasoft.com", "bodacc-datadila.opendatasoft.com:444"),
+            official + "#unverified",
+        ):
+            with self.subTest(url=unsafe):
+                collection["api_url"] = unsafe
+                packet = build_review_packet([collection])
+                self.assertIsNone(packet["collections"][0]["api_query_url"])
+                self.assertIsNone(packet["findings"][0]["api_query_url"])
 
     def test_live_collection_origin_is_not_misrepresented_as_independent_review(self):
         collection = _collection(

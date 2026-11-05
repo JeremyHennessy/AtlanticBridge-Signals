@@ -21,6 +21,13 @@ DATASET_URL = "https://www.data.gouv.fr/datasets/bodacc"
 SOURCE_NAME = "bodacc_commercial_notices"
 SOURCE_LICENSE = "Etalab Open Licence 2.0"
 SOURCE_LICENSE_ID = "etalab-2.0"
+SOURCE_LICENSE_URL = "https://www.data.gouv.fr/pages/legal/licences/etalab-2-0"
+SOURCE_ATTRIBUTION = (
+    "Source: bodacc.fr / Direction de l’information légale et administrative (DILA), "
+    "annonces-commerciales dataset; Etalab Open Licence 2.0. "
+    "Source-file name: unknown; source-file date: unknown "
+    "(not supplied by the bounded API response)."
+)
 MAX_PAGE_SIZE = 100
 MAX_RESPONSE_BYTES = 5_000_000
 API_FIELDS = (
@@ -87,6 +94,11 @@ class BODACCCollection:
             "api_url": self.api_url,
             "source_license": self.source_license,
             "source_license_id": self.source_license_id,
+            "source_license_url": SOURCE_LICENSE_URL,
+            "source_attribution": SOURCE_ATTRIBUTION,
+            # Neither notice publication nor retrieval time proves a source-file date.
+            "source_file_name": None,
+            "source_file_date": None,
             "retrieved_at": self.retrieved_at,
             "collection_execution": self.collection_execution,
             "independent_review_status": self.independent_review_status,

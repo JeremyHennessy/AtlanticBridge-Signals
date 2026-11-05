@@ -95,6 +95,16 @@ class BODACCCollectorTests(unittest.TestCase):
         output = result.as_dict()
         self.assertEqual(output["collection_execution"], "INJECTED_FETCHER_FIXTURE_OR_REPLAY")
         self.assertEqual(output["independent_review_status"], "NOT_INDEPENDENTLY_VERIFIED")
+        self.assertEqual(
+            output["source_license_url"],
+            "https://www.data.gouv.fr/pages/legal/licences/etalab-2-0",
+        )
+        self.assertIn("bodacc.fr / Direction de l’information légale et administrative (DILA)", output["source_attribution"])
+        self.assertIn("Source-file name: unknown; source-file date: unknown", output["source_attribution"])
+        self.assertIsNone(output["source_file_name"])
+        self.assertIsNone(output["source_file_date"])
+        self.assertNotIn(fetched_at.date().isoformat(), output["source_attribution"])
+        self.assertNotIn(result.records[0].publication_date, output["source_attribution"])
         serialized = json.dumps(output)
         self.assertNotIn("SHOULD NOT BE RETAINED", serialized)
         self.assertNotIn("listepersonnes", serialized)

@@ -29,4 +29,11 @@ The packet builder reads local JSON and writes a local packet. It does not colle
 - A grant agreement is not necessarily a disbursement. An awarded tender is prior procurement activity. A French BODACC notice does not establish Canadian activity or expansion intent.
 - Apply each source's licence and privacy terms. Open Government Licences exclude personal information; do not reuse personal information on the assumption that it is licensed.
 
+## Source attribution
+
+- Federal grants collections, packet summaries and findings use the default attribution from the [Open Government Licence – Canada](https://open.canada.ca/en/open-government-licence-canada/): “Contains information licensed under the Open Government Licence – Canada.” Dataset and provider details accompany it.
+- BODACC attribution names bodacc.fr and the Direction de l’information légale et administrative (DILA), with the current [Etalab Open Licence 2.0](https://www.data.gouv.fr/pages/legal/licences/etalab-2-0) link. Existing exact-SIREN filters and identity-verification limits remain unchanged. A SIREN match alone does not verify corporate status or a Canadian relationship.
+- [DILA’s API reuse guidance](https://dila.gouv.fr/services/api/api-bodacc-bulletin-officiel-des-annonces-civiles-et-commerciales-124/api-bodacc-bulletin-officiel-des-annonces-civiles-et-commerciales/api-bodacc-bulletin-officiel-des-annonces-civiles-et-commerciales) also calls for the download URL, source filename and source-file date. The collector retains its actual API URL. Its bounded response does not establish a source filename or source-file date, so both remain unknown. Neither a local output filename, retrieval timestamp, notice publication date nor the catalogue’s update date fills that gap. Verify missing source provenance before any reuse requiring it; the attribution correction is not a claim of complete publication clearance.
+- The review brief preserves attribution and the approved licence URL. The UI permits the current Etalab licence page without allowing arbitrary data.gouv.fr destinations.
+
 This workflow is a local pilot aid only. It has not received independent browser acceptance or independent review of imported live findings. It does not change public output or activate any source in production.
