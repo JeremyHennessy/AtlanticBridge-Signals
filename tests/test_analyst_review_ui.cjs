@@ -235,8 +235,9 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.ok(brief.includes("https&#58;//evil.example/path\\_with\\_underscores"));
     assert.ok(!brief.includes("https://evil.example"));
     const renderedBrief = marked.parse(brief);
-    assert.doesNotMatch(renderedBrief, /<a\\b[^>]*href="[^"]*attacker\\.invalid/i);
-    assert.match(renderedBrief, /<code>https:\\/\\/data\\.novascotia\\.ca\\/resource\\/m6ps-8j6u\\.json\\?observed_field=source_record<\\/code>/);
+    assert.ok(!renderedBrief.includes('href="https://attacker.invalid/'));
+    assert.ok(!renderedBrief.includes('href="http://www.attacker.invalid/'));
+    assert.ok(renderedBrief.includes("<code>https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record</code>"));
     assert.match(brief, /No confirmed site-selection mandate found\./);
     assert.match(brief, /Synthetic source recheck note\./);
     assert.match(brief, /&lt;script&gt;alert\(1\)&lt;\/script&gt; \\# injected heading/);
