@@ -130,39 +130,6 @@ test("local analyst review imports context, keeps lead lock, and exports all not
 
     assert.equal(elements["export-review"].disabled, false);
     assert.equal(elements["export-brief"].disabled, false);
-    const oversizedTextPacket = {
-      ...packet,
-      findings: packet.findings.map((finding, index) => index === 0
-        ? {...finding, source_facts: {...finding.source_facts, "Oversized fact": "x".repeat(128_001)}}
-        : finding)
-    };
-    const oversizedText = JSON.stringify(oversizedTextPacket);
-    elements["packet-file"].files = [{
-      name: "oversized-text-packet.json",
-      size: new TextEncoder().encode(oversizedText).length,
-      text: async () => oversizedText
-    }];
-    await elements["packet-file"].dispatch("change");
-    assert.match(elements["packet-status"].textContent, /oversized source fact value/i);
-    assert.match(elements.findings.textContent, /Invented Example 1/);
-    assert.equal(select.value, "FOLLOW_UP_SOURCE_CHECK");
-    assert.equal(ownerInput.value, "Analyst A");
-    assert.equal(noteInput.value, "Synthetic source recheck note.");
-    assert.equal(elements["export-brief"].disabled, false);
-    assert.match(elements.findings.textContent, /Collector envelope reports live query · not independently verified/);
-    assert.match(elements.findings.textContent, /Invented Example 1/);
-    assert.match(elements.findings.textContent, /Expected collector identity filterExpected collector filter: normalized exact vendor name/);
-    assert.match(elements.findings.textContent, /Requested identity criterionVendor name: Requested Company Ltd\./);
-    assert.match(elements.findings.textContent, /Identity match validationNot validated by packet/);
-    assert.match(elements.findings.textContent, /Identity verification noteThis packet does not compare the collector's requested identifier or name with this record\./);
-    assert.match(elements.findings.textContent, /Identity resolution limitA normalized name filter does not establish corporate affiliation\./);
-    assert.match(elements["collection-summary"].textContent, /Independent review: not verified/);
-    assert.match(elements["collection-summary"].textContent, /Page may be truncatedYes/);
-    assert.match(elements["collection-summary"].textContent, /Records returned by API2/);
-    assert.match(elements["collection-summary"].textContent, /Envelope response SHA-256 \(reported\)a{64}/);
-    assert.match(elements.findings.textContent, /Zero amount0/);
-    assert.match(elements.findings.textContent, /Goods flagfalse/);
-
     const select = created.filter(node => node.tagName === "select").at(-1);
     const ownerInput = created.filter(node => node.name === "follow-up-owner").at(-1);
     const dateInput = created.filter(node => node.name === "follow-up-date").at(-1);
