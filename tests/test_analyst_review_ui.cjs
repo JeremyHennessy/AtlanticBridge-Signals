@@ -110,13 +110,25 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(elements.findings.textContent, /Goods flagfalse/);
 
     const select = created.filter(node => node.tagName === "select").at(-1);
-    const textarea = created.filter(node => node.tagName === "textarea").at(-1);
+    const ownerInput = created.filter(node => node.name === "follow-up-owner").at(-1);
+    const dateInput = created.filter(node => node.name === "follow-up-date").at(-1);
+    const counterInput = created.filter(node => node.name === "counter-evidence").at(-1);
+    const noteInput = created.filter(node => node.name === "analyst-note").at(-1);
     assert.ok(select);
-    assert.ok(textarea);
+    assert.ok(ownerInput);
+    assert.ok(dateInput);
+    assert.ok(counterInput);
+    assert.ok(noteInput);
     select.value = "FOLLOW_UP_SOURCE_CHECK";
     await select.dispatch("change");
-    textarea.value = "Synthetic source recheck note.";
-    await textarea.dispatch("input");
+    ownerInput.value = "Analyst A";
+    await ownerInput.dispatch("input");
+    dateInput.value = "2026-12-01";
+    await dateInput.dispatch("change");
+    counterInput.value = "No confirmed site-selection mandate found.";
+    await counterInput.dispatch("input");
+    noteInput.value = "Synthetic source recheck note.";
+    await noteInput.dispatch("input");
 
     elements["packet-file"].files = [{
       name: "malformed-packet.json",
@@ -158,9 +170,15 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(exported.decisions[0].source_record_id, "SYNTHETIC-1");
     assert.equal(exported.decisions[0].disposition, "UNREVIEWED_CONTEXT_ONLY");
     assert.equal(exported.decisions[0].note, "");
+    assert.equal(exported.decisions[0].follow_up_owner, "");
+    assert.equal(exported.decisions[0].follow_up_date, "");
+    assert.equal(exported.decisions[0].counter_evidence, "");
     assert.equal(exported.decisions[0].lead_eligible, false);
     assert.equal(exported.decisions[1].source_record_id, "SYNTHETIC-2");
     assert.equal(exported.decisions[1].disposition, "FOLLOW_UP_SOURCE_CHECK");
+    assert.equal(exported.decisions[1].follow_up_owner, "Analyst A");
+    assert.equal(exported.decisions[1].follow_up_date, "2026-12-01");
+    assert.equal(exported.decisions[1].counter_evidence, "No confirmed site-selection mandate found.");
     assert.equal(exported.decisions[1].note, "Synthetic source recheck note.");
     assert.equal(exported.decisions[1].lead_eligible, false);
     assert.equal(elements["packet-status"].textContent, "Exported local review notes. The export cannot create or qualify a lead.");
