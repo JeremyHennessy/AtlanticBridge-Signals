@@ -115,7 +115,8 @@ def _record_view(source: str, config: dict, collection: dict, row: dict) -> dict
             "bulletin edition": row.get("bulletin_edition"),
         }
     elif source == "canada_federal_grants_contributions":
-        record_id = str(row.get("ref_number") or row.get("_id") or "")
+        # CKAN _id identifies the amendment row; ref_number can repeat across amendments.
+        record_id = str(row.get("_id") or row.get("ref_number") or "")
         legal_name = row.get("recipient_legal_name")
         entity = legal_name if isinstance(legal_name, str) else "Unresolved legal recipient"
         headline = row.get("agreement_type") if isinstance(row.get("agreement_type"), str) else "Federal transfer payment"
