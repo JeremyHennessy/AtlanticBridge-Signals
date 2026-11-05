@@ -150,6 +150,27 @@ class AnalystReviewPacketTests(unittest.TestCase):
                 {"vendor": "Example Inc."},
             )])
 
+    def test_grant_amendment_rows_with_shared_reference_keep_distinct_identity(self):
+        collection = _collection(
+            "canada_federal_grants_contributions",
+            {
+                "_id": 31480972,
+                "ref_number": "SHARED-AGREEMENT-REF",
+                "recipient_legal_name": "Example Inc.",
+            },
+        )
+        collection["records"].append({
+            "_id": 31480973,
+            "ref_number": "SHARED-AGREEMENT-REF",
+            "recipient_legal_name": "Example Inc.",
+        })
+        findings = build_review_packet([collection])["findings"]
+        self.assertEqual(
+            [finding["source_record_id"] for finding in findings],
+            ["31480972", "31480973"],
+        )
+        self.assertNotEqual(findings[0]["finding_id"], findings[1]["finding_id"])
+
     def test_packet_carries_response_hash_only_when_well_formed(self):
         collection = _collection(
             "nova_scotia_awarded_public_tenders",
