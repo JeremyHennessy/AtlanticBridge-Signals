@@ -163,6 +163,38 @@ class AnalystReviewPacketTests(unittest.TestCase):
                 {"vendor": "Example Inc."},
             )])
 
+    def test_requested_identity_criteria_are_carried_for_manual_comparison(self):
+        collections = [
+            _collection(
+                "bodacc_commercial_notices",
+                {
+                    "record_id": "SYNTHETIC-QUERY-BODACC",
+                    "siren": "123456789",
+                },
+                requested_siren="123456789",
+            ),
+            _collection(
+                "canada_federal_grants_contributions",
+                {"_id": 91, "recipient_legal_name": "Example Recipient Inc."},
+                requested_recipient_legal_name="Example Recipient Inc.",
+                requested_recipient_type_code="F",
+            ),
+            _collection(
+                "nova_scotia_awarded_public_tenders",
+                {"tender_id": "SYNTHETIC-QUERY-NS", "vendor": "Example Vendor Inc."},
+                requested_vendor_legal_name="Example Vendor Inc.",
+            ),
+        ]
+        findings = build_review_packet(collections)["findings"]
+        self.assertEqual(
+            [finding["requested_identity_criterion"] for finding in findings],
+            [
+                "SIREN: 123456789",
+                "Recipient legal name (recipient type F): Example Recipient Inc.",
+                "Vendor name: Example Vendor Inc.",
+            ],
+        )
+
     def test_identity_claims_remain_unverified_for_contradictory_or_legacy_records(self):
         contradictory = _collection(
             "nova_scotia_awarded_public_tenders",
@@ -170,7 +202,7 @@ class AnalystReviewPacketTests(unittest.TestCase):
                 "tender_id": "SYNTHETIC-MISMATCH-1",
                 "vendor": "Returned Vendor Ltd.",
             },
-            requested_vendor="Requested Company Ltd.",
+            requested_vendor_legal_name="Requested Company Ltd.",
         )
         mismatch_finding = build_review_packet([contradictory])["findings"][0]
         self.assertEqual(
@@ -182,6 +214,10 @@ class AnalystReviewPacketTests(unittest.TestCase):
             "NOT_VALIDATED_BY_PACKET",
         )
         self.assertIn("does not compare", mismatch_finding["identity_verification_note"])
+        self.assertEqual(
+            mismatch_finding["requested_identity_criterion"],
+            "Vendor name: Requested Company Ltd.",
+        )
 
         legacy_bodacc = _collection(
             "bodacc_commercial_notices",
@@ -202,6 +238,7 @@ class AnalystReviewPacketTests(unittest.TestCase):
             legacy_finding["identity_match_verification"],
             "NOT_VALIDATED_BY_PACKET",
         )
+        self.assertIsNone(legacy_finding["requested_identity_criterion"])
 
     def test_packet_preserves_source_specific_coverage_and_freshness_signals(self):
         bodacc = _collection(
