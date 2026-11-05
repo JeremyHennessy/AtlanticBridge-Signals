@@ -529,7 +529,14 @@
 
   $("export-brief").addEventListener("click", () => {
     if (!state.packet) return;
-    const blob = new Blob([buildReviewBrief(state.packet, state.decisions)], {
+    let reviewBrief;
+    try {
+      reviewBrief = buildReviewBrief(state.packet, state.decisions);
+    } catch (error) {
+      setStatus(`Could not export local review brief. ${error.message || "The brief exceeded a local safety bound."}`, true);
+      return;
+    }
+    const blob = new Blob([reviewBrief], {
       type: "text/markdown;charset=utf-8"
     });
     const url = URL.createObjectURL(blob);
