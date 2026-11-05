@@ -117,7 +117,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         independent_verification: "NOT_INDEPENDENTLY_VERIFIED",
         lead_eligible: true,
         lead_promotion_allowed: true,
-        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores" }
+        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores" }
       }))
     };
     elements["packet-file"].files = [{
