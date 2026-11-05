@@ -210,7 +210,7 @@
     if (input.collections.length > 50 || input.findings.length > 500) {
       throw new Error("Packet exceeds the local collection or finding count bound.");
     }
-    let reviewTextLength = 0;
+
     if (!input.collections.every((item) => item !== null && typeof item === "object" && !Array.isArray(item))) {
       throw new Error("Packet contains an invalid collection entry.");
     }
