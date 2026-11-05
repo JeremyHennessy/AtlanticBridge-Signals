@@ -97,11 +97,30 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/([*_{}\[\]!#])/g, "\\$1")
+      .replace(/\b(https?|ftp):\/\//gi, (match) => match.replace(":", "&#58;"))
+      .replace(/\bwww\./gi, "www&#46;")
+      .replace(/\b([A-Z0-9._%+-]+)@([A-Z0-9.-]+\.[A-Z]{2,})\b/gi, "$1&#64;$2")
       .split(String.fromCharCode(96)).join("&#96;");
   }
 
   function markdownBullet(label, value) {
     return "- **" + markdownText(label) + ":** " + markdownText(value);
+  }
+
+  function markdownCode(value) {
+    if (value === undefined || value === null || value === "") return "Unknown";
+    if (!["string", "number", "boolean"].includes(typeof value)) return "Unknown";
+    const text = String(value).replace(/[\r\n]+/g, " ");
+    const tick = String.fromCharCode(96);
+    const tickRuns = text.match(new RegExp(tick + "+", "g")) || [];
+    const delimiterLength = Math.max(1, ...tickRuns.map(run => run.length + 1));
+    const delimiter = tick.repeat(delimiterLength);
+    const padding = text.startsWith(tick) || text.endsWith(tick) ? " " : "";
+    return delimiter + padding + text + padding + delimiter;
+  }
+
+  function markdownCodeBullet(label, value) {
+    return "- **" + markdownText(label) + ":** " + markdownCode(value);
   }
 
   function buildReviewBrief(packet, decisions) {
@@ -155,7 +174,7 @@
       lines.push(markdownBullet("Retrieved at", finding.retrieved_at));
       lines.push(markdownBullet("Event stage", finding.event_stage));
       lines.push(markdownBullet("Interpretation limit", finding.interpretation_limit));
-      lines.push(markdownBullet("Source URL (approved host only)", safeLink(finding.source_url) || "Not supplied or unsupported"));
+      lines.push(markdownCodeBullet("Source URL (approved host only)", safeLink(finding.source_url) || "Not supplied or unsupported"));
       lines.push(markdownBullet("Licence", finding.license));
       lines.push(markdownBullet("Attribution", finding.attribution));
       for (const [label, value] of Object.entries(finding.source_facts || {})) {
