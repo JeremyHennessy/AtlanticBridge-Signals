@@ -117,7 +117,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         independent_verification: "NOT_INDEPENDENTLY_VERIFIED",
         lead_eligible: true,
         lead_promotion_allowed: true,
-        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores" }
+        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores", "Prefixed HTTPS autolink": "xhttps://attacker.invalid/path", "Prefixed www autolink": "xwww.attacker.invalid/path" }
       }))
     };
     elements["packet-file"].files = [{
@@ -220,6 +220,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     await elements["export-brief"].dispatch("click");
     assert.equal(exportedBlobs.length, 2);
     const brief = await exportedBlobs[1].text();
+    const { marked } = await import("marked");
     assert.match(brief, /AtlanticBridge analyst evidence review/);
     assert.match(brief, /Context only — not a qualified lead, investment mandate/);
     assert.match(brief, /Envelope response SHA-256 \(reported, not authenticated\)/);
@@ -233,6 +234,9 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.ok(brief.includes("https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record"));
     assert.ok(brief.includes("https&#58;//evil.example/path\\_with\\_underscores"));
     assert.ok(!brief.includes("https://evil.example"));
+    const renderedBrief = marked.parse(brief);
+    assert.doesNotMatch(renderedBrief, /<a\\b[^>]*href="[^"]*attacker\\.invalid/i);
+    assert.match(renderedBrief, /<code>https:\\/\\/data\\.novascotia\\.ca\\/resource\\/m6ps-8j6u\\.json\\?observed_field=source_record<\\/code>/);
     assert.match(brief, /No confirmed site-selection mandate found\./);
     assert.match(brief, /Synthetic source recheck note\./);
     assert.match(brief, /&lt;script&gt;alert\(1\)&lt;\/script&gt; \\# injected heading/);
