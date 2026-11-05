@@ -4,6 +4,9 @@
   const $ = (id) => document.getElementById(id);
   const state = { packet: null, decisions: new Map(), importGeneration: 0 };
   const MAX_REVIEW_URL_LENGTH = 2048;
+  const MAX_REVIEW_FIELD_LENGTH = 128_000;
+  const MAX_REVIEW_PACKET_TEXT_LENGTH = 500_000;
+  const MAX_REVIEW_BRIEF_LENGTH = 2_000_000;
   const allowedHosts = new Set(["www.bodacc.fr", "open.canada.ca", "data.novascotia.ca", "www.etalab.gouv.fr", "novascotia.ca"]);
 
   const DEMO_PACKET = {
@@ -101,7 +104,7 @@
       .replace(/([*_{}\[\]!#~])/g, "\\$1")
       .replace(/(https?|ftp):\/\//gi, (match) => match.replace(":", "&#58;"))
       .replace(/www\./gi, "www&#46;")
-      .replace(/([A-Z0-9._%+-]+)@([A-Z0-9.-]+\.[A-Z]{2,})/gi, "$1&#64;$2")
+      .replace(/@/g, "&#64;")
       .split(String.fromCharCode(96)).join("&#96;");
   }
 
@@ -192,7 +195,9 @@
       lines.push(markdownBullet("Lead eligibility", "Not eligible; no automatic promotion"));
       lines.push("");
     }
-    return lines.join("\n") + "\n";
+    const brief = lines.join("\n") + "\n";
+    if (brief.length > MAX_REVIEW_BRIEF_LENGTH) throw new Error("Review brief exceeds the 2 MB local export bound.");
+    return brief;
   }
 
   function validatePacket(input) {
@@ -213,6 +218,23 @@
     if (!input.collections.every((item) => typeof item.source === "string" && supportedSources.has(item.source))) {
       throw new Error("Packet contains an unsupported or invalid collection source.");
     }
+    let reviewTextLength = 0;
+    const accountReviewText = (value, field, maximum = MAX_REVIEW_FIELD_LENGTH) => {
+      if (typeof value !== "string") return;
+      if (value.length > maximum) throw new Error(`Packet contains an oversized ${field}.`);
+      reviewTextLength += value.length;
+      if (reviewTextLength > MAX_REVIEW_PACKET_TEXT_LENGTH) {
+        throw new Error("Packet exceeds the local analyst text budget.");
+      }
+    };
+    for (const collection of input.collections) {
+      for (const field of ["source", "retrieved_at", "coverage", "source_license", "attribution"]) {
+        accountReviewText(collection[field], `collection ${field}`);
+      }
+      if (collection.coverage_signals && typeof collection.coverage_signals === "object" && !Array.isArray(collection.coverage_signals)) {
+        accountReviewText(collection.coverage_signals.freshness_note, "collection freshness note");
+      }
+    }
     const findingIds = new Set();
     for (const finding of input.findings) {
       if (finding === null || typeof finding !== "object" || Array.isArray(finding)) {
@@ -227,6 +249,24 @@
       }
       if (finding.source_facts !== undefined && (finding.source_facts === null || typeof finding.source_facts !== "object" || Array.isArray(finding.source_facts))) {
         throw new Error("Packet contains invalid source facts.");
+      }
+      for (const field of [
+        "source_record_id", "entity_label", "headline", "expected_identity_filter",
+        "requested_identity_criterion", "identity_match_verification", "identity_verification_note",
+        "identity_resolution_limit", "published_date", "event_date", "retrieved_at",
+        "event_stage", "interpretation_limit", "license", "attribution"
+      ]) {
+        accountReviewText(finding[field], `finding ${field}`);
+      }
+      if (finding.source_facts && typeof finding.source_facts === "object" && !Array.isArray(finding.source_facts)) {
+        const facts = Object.entries(finding.source_facts);
+        if (facts.length > 100) throw new Error("Packet contains too many source facts for one finding.");
+        for (const [label, value] of facts) {
+          accountReviewText(label, "source fact label", 512);
+          if (value !== null && ["string", "number", "boolean"].includes(typeof value)) {
+            accountReviewText(String(value), "source fact value");
+          }
+        }
       }
       for (const field of ["source_url", "license_url"]) {
         const value = finding[field];
