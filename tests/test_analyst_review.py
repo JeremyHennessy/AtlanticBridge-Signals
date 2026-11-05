@@ -83,6 +83,15 @@ class AnalystReviewPacketTests(unittest.TestCase):
         self.assertFalse(packet["lead_promotion_allowed"])
         self.assertEqual(len(packet["findings"]), 3)
         self.assertEqual(len(packet["collections"]), 3)
+        self.assertEqual(
+            [finding["identity_match_method"] for finding in packet["findings"]],
+            [
+                "Exact SIREN identifier check",
+                "Exact recipient legal-name check",
+                "Normalized exact vendor-name check",
+            ],
+        )
+        self.assertIn("does not establish", packet["findings"][0]["identity_resolution_limit"])
         for finding in packet["findings"]:
             self.assertFalse(finding["lead_eligible"])
             self.assertFalse(finding["lead_promotion_allowed"])
