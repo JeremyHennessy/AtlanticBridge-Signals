@@ -170,6 +170,86 @@ test("local analyst review imports context, keeps lead lock, and exports all not
             : collection)
         },
         /invalid collection records returned by api count/i
+      ],
+      [
+        "oversized packet row count",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, records_returned: "6".repeat(600_000)}
+            : collection)
+        },
+        /invalid collection records returned count/i
+      ],
+      [
+        "oversized coverage description",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, coverage: "c".repeat(4_097)}
+            : collection)
+        },
+        /oversized collection coverage/i
+      ],
+      [
+        "oversized source licence",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, source_license: "l".repeat(1_025)}
+            : collection)
+        },
+        /oversized collection source_license/i
+      ],
+      [
+        "oversized attribution",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, attribution: "a".repeat(2_049)}
+            : collection)
+        },
+        /oversized collection attribution/i
+      ],
+      [
+        "oversized retrieval timestamp",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, retrieved_at: "t".repeat(65)}
+            : collection)
+        },
+        /oversized collection retrieved_at/i
+      ],
+      [
+        "oversized freshness note",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, coverage_signals: {...collection.coverage_signals, freshness_note: "n".repeat(4_097)}}
+            : collection)
+        },
+        /oversized collection freshness_note/i
+      ],
+      [
+        "oversized update frequency",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, coverage_signals: {...collection.coverage_signals, source_update_frequency: "d".repeat(257)}}
+            : collection)
+        },
+        /oversized collection source_update_frequency/i
+      ],
+      [
+        "invalid collection coverage signals",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, coverage_signals: []}
+            : collection)
+        },
+        /invalid collection coverage signals/i
       ]
     ];
     for (const [name, rejectedPacket, expectedError] of rejectedImportCases) {
