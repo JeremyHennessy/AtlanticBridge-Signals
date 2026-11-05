@@ -64,7 +64,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(elements.findings.textContent, /CONTEXT ONLY · NOT A LEAD/);
     assert.match(elements["packet-status"].textContent, /synthetic fixture demonstration/i);
 
-  const longTextWithoutEmail = "ordinary source text ".repeat(5000);\n    const packet = {
+    const longTextWithoutEmail = "ordinary source text ".repeat(5000);
+    const packet = {
       packet_version: 1,
       workflow_mode: "LOCAL_ANALYST_REVIEW_ONLY",
       lead_promotion_allowed: true,
@@ -186,7 +187,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     const oversizedUrlPacket = {
       ...packet,
       findings: packet.findings.map((finding, index) => index === 0
-        ? {...finding, source_url: "https://data.novascotia.ca/" + "\`".repeat(260_000)}
+        ? {...finding, source_url: "https://data.novascotia.ca/" + String.fromCharCode(96).repeat(260_000)}
         : finding)
     };
     const oversizedUrlText = JSON.stringify(oversizedUrlPacket);
