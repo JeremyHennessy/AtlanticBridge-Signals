@@ -93,6 +93,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         source: "nova_scotia_awarded_public_tenders",
         source_record_id: "SYNTHETIC-" + id,
         entity_label: "Invented Example " + id,
+        identity_match_method: "Normalized exact vendor-name check",
+        identity_resolution_limit: "A normalized name match does not establish corporate affiliation.",
         headline: "Synthetic tender " + id,
         source_url: "https://data.novascotia.ca/resource/m6ps-8j6u.json",
         license_url: "https://novascotia.ca/opendata/licence.asp",
@@ -117,6 +119,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(elements["export-review"].disabled, false);
     assert.match(elements.findings.textContent, /Collector envelope reports live query · not independently verified/);
     assert.match(elements.findings.textContent, /Invented Example 1/);
+    assert.match(elements.findings.textContent, /Identity match methodNormalized exact vendor-name check/);
+    assert.match(elements.findings.textContent, /Identity resolution limitA normalized name match does not establish corporate affiliation\./);
     assert.match(elements["collection-summary"].textContent, /Independent review: not verified/);
     assert.match(elements["collection-summary"].textContent, /Page may be truncatedYes/);
     assert.match(elements["collection-summary"].textContent, /Records returned by API2/);
