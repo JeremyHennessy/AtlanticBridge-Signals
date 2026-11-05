@@ -228,16 +228,50 @@
       disposition.append(select);
       review.append(disposition);
 
+      const updateDecision = (key, value) => {
+        const previous = decisions.get(finding.finding_id) || {};
+        decisions.set(finding.finding_id, {...previous, [key]: value});
+      };
+
+      const ownerField = element("label", "", "Follow-up owner (local)");
+      const ownerInput = element("input");
+      ownerInput.type = "text";
+      ownerInput.name = "follow-up-owner";
+      ownerInput.maxLength = 120;
+      ownerInput.autocomplete = "off";
+      ownerInput.value = decisions.get(finding.finding_id)?.owner || "";
+      ownerInput.addEventListener("input", () => updateDecision("owner", ownerInput.value));
+      ownerField.append(ownerInput);
+      review.append(ownerField);
+
+      const dateField = element("label", "", "Follow-up date");
+      const dateInput = element("input");
+      dateInput.type = "date";
+      dateInput.name = "follow-up-date";
+      dateInput.value = decisions.get(finding.finding_id)?.follow_up_date || "";
+      dateInput.addEventListener("change", () => updateDecision("follow_up_date", dateInput.value));
+      dateField.append(dateInput);
+      review.append(dateField);
+
+      const counterField = element("label", "", "Counter-evidence / unresolved issue");
+      const counterInput = element("textarea");
+      counterInput.name = "counter-evidence";
+      counterInput.rows = 2;
+      counterInput.maxLength = 2000;
+      counterInput.value = decisions.get(finding.finding_id)?.counter_evidence || "";
+      counterInput.placeholder = "Record contrary evidence or what remains unverified.";
+      counterInput.addEventListener("input", () => updateDecision("counter_evidence", counterInput.value));
+      counterField.append(counterInput);
+      review.append(counterField);
+
       const notes = element("label", "", "Analyst note / next verification step");
       const textarea = element("textarea");
+      textarea.name = "analyst-note";
       textarea.rows = 3;
       textarea.maxLength = 2000;
       textarea.value = decisions.get(finding.finding_id)?.note || "";
-      textarea.placeholder = "Record source checks, counter-evidence, owner and follow-up date.";
-      textarea.addEventListener("input", () => {
-        const previous = decisions.get(finding.finding_id) || {};
-        decisions.set(finding.finding_id, {...previous, note: textarea.value});
-      });
+      textarea.placeholder = "Record source checks and the next concrete step.";
+      textarea.addEventListener("input", () => updateDecision("note", textarea.value));
       notes.append(textarea);
       review.append(notes);
       review.append(element("p", "lock-note", "This local disposition cannot qualify, score, save, or publish an expansion lead."));
@@ -299,6 +333,9 @@
           source: finding.source,
           source_record_id: finding.source_record_id,
           disposition: value.disposition || "UNREVIEWED_CONTEXT_ONLY",
+          follow_up_owner: value.owner || "",
+          follow_up_date: value.follow_up_date || "",
+          counter_evidence: value.counter_evidence || "",
           note: value.note || "",
           lead_eligible: false
         };
