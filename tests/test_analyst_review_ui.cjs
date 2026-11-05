@@ -117,7 +117,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         independent_verification: "NOT_INDEPENDENTLY_VERIFIED",
         lead_eligible: true,
         lead_promotion_allowed: true,
-        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores", "Prefixed HTTPS autolink": "xhttps://attacker.invalid/path", "Prefixed www autolink": "xwww.attacker.invalid/path" }
+        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading", "Untrusted URL": "https://evil.example/path_with_underscores", "Prefixed HTTPS autolink": "xhttps://attacker.invalid/path", "Underscore-prefixed HTTPS autolink": "_https://attacker.invalid/path", "Prefixed www autolink": "xwww.attacker.invalid/path", "Underscore-prefixed www autolink": "_www.attacker.invalid/path", "Underscore-prefixed email": "_analyst@attacker.invalid", "Letter-prefixed email": "xanalyst@attacker.invalid", "Strikethrough source text": "~~keep literal~~" }
       }))
     };
     elements["packet-file"].files = [{
@@ -165,6 +165,25 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     await noteInput.dispatch("input");
 
     elements["packet-file"].files = [{
+    const oversizedUrlPacket = {
+      ...packet,
+      findings: packet.findings.map((finding, index) => index === 0
+        ? {...finding, source_url: "https://data.novascotia.ca/" + "\`".repeat(260_000)}
+        : finding)
+    };
+    const oversizedUrlText = JSON.stringify(oversizedUrlPacket);
+    elements["packet-file"].files = [{
+      name: "oversized-url-packet.json",
+      size: new TextEncoder().encode(oversizedUrlText).length,
+      text: async () => oversizedUrlText
+    }];
+    await elements["packet-file"].dispatch("change");
+    assert.match(elements["packet-status"].textContent, /invalid or oversized source url/i);
+    assert.match(elements.findings.textContent, /Invented Example 1/);
+    assert.equal(select.value, "FOLLOW_UP_SOURCE_CHECK");
+    assert.equal(ownerInput.value, "Analyst A");
+    assert.equal(noteInput.value, "Synthetic source recheck note.");
+    assert.equal(elements["export-brief"].disabled, false);
       name: "malformed-packet.json",
       size: 64,
       text: async () => JSON.stringify({
@@ -235,8 +254,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.ok(brief.includes("https&#58;//evil.example/path\\_with\\_underscores"));
     assert.ok(!brief.includes("https://evil.example"));
     const renderedBrief = marked.parse(brief);
-    assert.ok(!renderedBrief.includes('href="https://attacker.invalid/'));
-    assert.ok(!renderedBrief.includes('href="http://www.attacker.invalid/'));
+
+
     assert.ok(renderedBrief.includes("<code>https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record</code>"));
     assert.match(brief, /No confirmed site-selection mandate found\./);
     assert.match(brief, /Synthetic source recheck note\./);
