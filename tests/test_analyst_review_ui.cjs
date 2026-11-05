@@ -133,6 +133,21 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(elements.findings.textContent, /Invented Example 1/);
     assert.equal(elements["export-review"].disabled, false);
 
+    elements["packet-file"].files = [{
+      name: "malicious-source-value.json",
+      size: 128,
+      text: async () => JSON.stringify({
+        packet_version: 1,
+        workflow_mode: "LOCAL_ANALYST_REVIEW_ONLY",
+        collections: [{ source: { toString: null, valueOf: null } }],
+        findings: []
+      })
+    }];
+    await elements["packet-file"].dispatch("change");
+    assert.match(elements["packet-status"].textContent, /unsupported or invalid collection source/i);
+    assert.match(elements.findings.textContent, /Invented Example 1/);
+    assert.equal(elements["export-review"].disabled, false);
+
     await elements["export-review"].dispatch("click");
     assert.ok(exportedBlob);
     const exported = JSON.parse(await exportedBlob.text());
@@ -149,6 +164,24 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(exported.decisions[1].note, "Synthetic source recheck note.");
     assert.equal(exported.decisions[1].lead_eligible, false);
     assert.equal(elements["packet-status"].textContent, "Exported local review notes. The export cannot create or qualify a lead.");
+
+    let releaseDelayedRead;
+    const delayedRead = new Promise(resolve => { releaseDelayedRead = resolve; });
+    elements["packet-file"].files = [{
+      name: "slow-older-packet.json",
+      size: 128,
+      text: () => delayedRead
+    }];
+    const olderImport = elements["packet-file"].dispatch("change");
+    await elements["load-demo"].dispatch("click");
+    releaseDelayedRead(JSON.stringify({
+      ...packet,
+      findings: packet.findings.map(finding => ({...finding, entity_label: "Stale older packet"}))
+    }));
+    await olderImport;
+    assert.match(elements.findings.textContent, /Example Systems Ltd\. \(invented\)/);
+    assert.doesNotMatch(elements.findings.textContent, /Stale older packet/);
+    assert.match(elements["packet-status"].textContent, /synthetic fixture demonstration/i);
   } finally {
     delete global.document;
     URL.createObjectURL = originalCreate;
