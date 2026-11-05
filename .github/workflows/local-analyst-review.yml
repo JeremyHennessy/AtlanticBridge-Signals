@@ -15,6 +15,8 @@ on:
       - "tests/test_bodacc_collector.py"
       - "tests/test_federal_grants_collector.py"
       - "tests/test_ns_awarded_tenders_collector.py"
+      - "tests/test_bodacc_search.cjs"
+      - ".github/workflows/ci.yml"
       - ".github/workflows/local-analyst-review.yml"
   pull_request:
     paths:
@@ -28,6 +30,8 @@ on:
       - "tests/test_bodacc_collector.py"
       - "tests/test_federal_grants_collector.py"
       - "tests/test_ns_awarded_tenders_collector.py"
+      - "tests/test_bodacc_search.cjs"
+      - ".github/workflows/ci.yml"
       - ".github/workflows/local-analyst-review.yml"
 
 permissions:
@@ -54,3 +58,5 @@ jobs:
           python -m unittest discover -s tests -p 'test_ns_awarded_tenders_collector.py' -v
       - name: Check standalone review UI JavaScript syntax
         run: node --check local_analyst_review/app.js
+      - name: Run BODACC search browser-integration tests
+        run: node --test tests/test_bodacc_search.cjs
