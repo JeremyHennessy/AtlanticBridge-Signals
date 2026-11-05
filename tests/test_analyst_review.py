@@ -238,7 +238,17 @@ class AnalystReviewPacketTests(unittest.TestCase):
             legacy_finding["identity_match_verification"],
             "NOT_VALIDATED_BY_PACKET",
         )
-        self.assertIsNone(legacy_finding["requested_identity_criterion"])
+        self.assertEqual(
+            legacy_finding["requested_identity_criterion"],
+            "SIREN: 123456789",
+        )
+        legacy_bodacc.pop("requested_siren")
+        missing_query_finding = build_review_packet([legacy_bodacc])["findings"][0]
+        self.assertEqual(
+            missing_query_finding["identity_match_verification"],
+            "NOT_VALIDATED_BY_PACKET",
+        )
+        self.assertIsNone(missing_query_finding["requested_identity_criterion"])
 
     def test_packet_preserves_source_specific_coverage_and_freshness_signals(self):
         bodacc = _collection(
