@@ -152,17 +152,17 @@ def _coverage_signals(source: str, collection: dict) -> dict:
 def _identity_resolution(source: str) -> tuple[str, str]:
     if source == "bodacc_commercial_notices":
         return (
-            "Exact SIREN identifier check",
-            "Identifies the French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship.",
+            "Expected collector filter: exact SIREN query",
+            "A SIREN identifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship.",
         )
     if source == "canada_federal_grants_contributions":
         return (
-            "Exact recipient legal-name check",
-            "A name match does not establish ultimate ownership or affiliation with another similarly named entity.",
+            "Expected collector filter: exact recipient legal name",
+            "A name filter does not establish ultimate ownership or affiliation with another similarly named entity.",
         )
     return (
-        "Normalized exact vendor-name check",
-        "A normalized name match does not establish the vendor's legal entity, ultimate owner, or corporate affiliation.",
+        "Expected collector filter: normalized exact vendor name",
+        "A normalized name filter does not establish the vendor's legal entity, ultimate owner, or corporate affiliation.",
     )
 
 
@@ -250,7 +250,12 @@ def _record_view(source: str, config: dict, collection: dict, row: dict) -> dict
     stable_id = hashlib.sha256(f"{source}\0{record_id}".encode("utf-8")).hexdigest()
     identity_method, identity_limit = _identity_resolution(source)
     return {
-        "identity_match_method": identity_method,
+        "expected_identity_filter": identity_method,
+        "identity_match_verification": "NOT_VALIDATED_BY_PACKET",
+        "identity_verification_note": (
+            "This packet does not compare the collector's requested identifier or name "
+            "with this record. Check the original query and official source before relying on the match."
+        ),
         "identity_resolution_limit": identity_limit,
         "finding_id": stable_id,
         "source": source,
