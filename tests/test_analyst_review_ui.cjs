@@ -107,7 +107,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         identity_verification_note: "This packet does not compare the collector's requested identifier or name with this record.",
         identity_resolution_limit: id === "1" ? "A normalized name filter does not establish corporate affiliation." : "Identifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship.",
         headline: "Synthetic tender " + id,
-        source_url: id === "1" ? "https://data.novascotia.ca/resource/m6ps-8j6u.json" : "https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:SYNTHETIC-BODACC-2",
+        source_url: id === "1" ? "https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record" : "https://www.bodacc.fr/pages/annonces-commerciales-detail/?q.id=id:SYNTHETIC-BODACC-2",
         license_url: id === "1" ? "https://novascotia.ca/opendata/licence.asp" : "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
         license: id === "1" ? "Open Government Licence - Nova Scotia" : "Etalab Open Licence 2.0",
         attribution: id === "1" ? "Synthetic test envelope" : "Synthetic BODACC test envelope",
@@ -230,6 +230,9 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.match(brief, /Identity resolution limitA normalized name filter does not establish corporate affiliation\./);
     assert.match(brief, /Identity resolution limitIdentifies a French registered entity only; it does not establish a parent, affiliate, or Canadian-entity relationship\./);
     assert.match(brief, /Open Government Licence - Nova Scotia/);
+    assert.match(brief, /Source URL \\(approved host only\\):\\*\\* `https:\\/\\/data\\.novascotia\\.ca\\/resource\\/m6ps-8j6u\\.json\\?observed_field=source_record`/);
+    assert.match(brief, /https&#58;\\/\\/evil\\.example\\/path\\_with\\_underscores/);
+    assert.doesNotMatch(brief, /https:\\/\\/evil\\.example/);
     assert.match(brief, /No confirmed site-selection mandate found\./);
     assert.match(brief, /Synthetic source recheck note\./);
     assert.match(brief, /&lt;script&gt;alert\(1\)&lt;\/script&gt; \\# injected heading/);
