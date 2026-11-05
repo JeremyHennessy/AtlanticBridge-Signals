@@ -3,6 +3,7 @@
   "use strict";
   const $ = (id) => document.getElementById(id);
   const state = { packet: null, decisions: new Map(), importGeneration: 0 };
+  const MAX_REVIEW_URL_LENGTH = 2048;
   const allowedHosts = new Set(["www.bodacc.fr", "open.canada.ca", "data.novascotia.ca", "www.etalab.gouv.fr", "novascotia.ca"]);
 
   const DEMO_PACKET = {
@@ -64,6 +65,7 @@
   }
 
   function safeLink(value) {
+    if (typeof value !== "string" || value.length > MAX_REVIEW_URL_LENGTH) return null;
     try {
       const u = new URL(value);
       if (u.protocol === "https:" && allowedHosts.has(u.hostname) && !u.username && !u.password && (u.port === "" || u.port === "443")) return u.href;
@@ -96,10 +98,10 @@
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/([*_{}\[\]!#])/g, "\\$1")
+      .replace(/([*_{}\[\]!#~])/g, "\\$1")
       .replace(/(https?|ftp):\/\//gi, (match) => match.replace(":", "&#58;"))
       .replace(/www\./gi, "www&#46;")
-      .replace(/\b([A-Z0-9._%+-]+)@([A-Z0-9.-]+\.[A-Z]{2,})\b/gi, "$1&#64;$2")
+      .replace(/([A-Z0-9._%+-]+)@([A-Z0-9.-]+\.[A-Z]{2,})/gi, "$1&#64;$2")
       .split(String.fromCharCode(96)).join("&#96;");
   }
 
@@ -225,6 +227,12 @@
       }
       if (finding.source_facts !== undefined && (finding.source_facts === null || typeof finding.source_facts !== "object" || Array.isArray(finding.source_facts))) {
         throw new Error("Packet contains invalid source facts.");
+      }
+      for (const field of ["source_url", "license_url"]) {
+        const value = finding[field];
+        if (value !== undefined && value !== null && (typeof value !== "string" || value.length > MAX_REVIEW_URL_LENGTH)) {
+          throw new Error(`Packet contains an invalid or oversized ${field.replace("_", " ")}.`);
+        }
       }
     }
     return {
