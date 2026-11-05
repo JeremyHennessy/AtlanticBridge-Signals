@@ -207,6 +207,10 @@
     if (!Array.isArray(input.collections) || !Array.isArray(input.findings)) {
       throw new Error("Packet is missing collection or finding arrays.");
     }
+    if (input.collections.length > 50 || input.findings.length > 500) {
+      throw new Error("Packet exceeds the local collection or finding count bound.");
+    }
+    let reviewTextLength = 0;
     if (!input.collections.every((item) => item !== null && typeof item === "object" && !Array.isArray(item))) {
       throw new Error("Packet contains an invalid collection entry.");
     }
@@ -218,7 +222,7 @@
     if (!input.collections.every((item) => typeof item.source === "string" && supportedSources.has(item.source))) {
       throw new Error("Packet contains an unsupported or invalid collection source.");
     }
-    let reviewTextLength = 0;
+    accountReviewText(input.generated_at, "packet generated at");
     const accountReviewText = (value, field, maximum = MAX_REVIEW_FIELD_LENGTH) => {
       if (typeof value !== "string") return;
       if (value.length > maximum) throw new Error(`Packet contains an oversized ${field}.`);
