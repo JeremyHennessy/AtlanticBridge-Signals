@@ -150,6 +150,45 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     await counterInput.dispatch("input");
     noteInput.value = "Synthetic source recheck note.";
     await noteInput.dispatch("input");
+    const rejectedImportCases = [
+      [
+        "oversized response hash",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, response_sha256: "f".repeat(600_000)}
+            : collection)
+        },
+        /invalid collection response SHA-256/i
+      ],
+      [
+        "oversized API count",
+        {
+          ...packet,
+          collections: packet.collections.map((collection, index) => index === 0
+            ? {...collection, coverage_signals: {...collection.coverage_signals, records_returned_by_api: "9".repeat(600_000)}}
+            : collection)
+        },
+        /invalid collection records returned by api count/i
+      ]
+    ];
+    for (const [name, rejectedPacket, expectedError] of rejectedImportCases) {
+      const serialized = JSON.stringify(rejectedPacket);
+      elements["packet-file"].files = [{
+        name: name.replaceAll(" ", "-") + ".json",
+        size: new TextEncoder().encode(serialized).length,
+        text: async () => serialized
+      }];
+      await elements["packet-file"].dispatch("change");
+      assert.match(elements["packet-status"].textContent, expectedError);
+      assert.match(elements.findings.textContent, /Invented Example 1/);
+      assert.match(elements["collection-summary"].textContent, /Records returned by API2/);
+      assert.equal(select.value, "FOLLOW_UP_SOURCE_CHECK");
+      assert.equal(ownerInput.value, "Analyst A");
+      assert.equal(noteInput.value, "Synthetic source recheck note.");
+      assert.equal(elements["export-brief"].disabled, false);
+    }
+
 
     const oversizedUrlPacket = {
       ...packet,
