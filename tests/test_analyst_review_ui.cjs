@@ -164,7 +164,6 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     noteInput.value = "Synthetic source recheck note.";
     await noteInput.dispatch("input");
 
-    elements["packet-file"].files = [{
     const oversizedUrlPacket = {
       ...packet,
       findings: packet.findings.map((finding, index) => index === 0
@@ -184,6 +183,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(ownerInput.value, "Analyst A");
     assert.equal(noteInput.value, "Synthetic source recheck note.");
     assert.equal(elements["export-brief"].disabled, false);
+    elements["packet-file"].files = [{
       name: "malformed-packet.json",
       size: 64,
       text: async () => JSON.stringify({
@@ -254,6 +254,10 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.ok(brief.includes("https&#58;//evil.example/path\\_with\\_underscores"));
     assert.ok(!brief.includes("https://evil.example"));
     const renderedBrief = marked.parse(brief);
+    assert.doesNotMatch(renderedBrief, /<a\b[^>]*href="[^"]*attacker\.invalid/i);
+    assert.doesNotMatch(renderedBrief, /<del>/i);
+    assert.ok(renderedBrief.includes("~~keep literal~~"));
+    assert.ok(renderedBrief.includes("<code>https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record</code>"));
 
 
     assert.ok(renderedBrief.includes("<code>https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record</code>"));
