@@ -141,10 +141,12 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(exported.independent_verification, "NOT_INDEPENDENTLY_VERIFIED");
     assert.equal(exported.decisions.length, 2);
     assert.equal(exported.decisions[0].source_record_id, "SYNTHETIC-1");
-    assert.equal(exported.decisions[0].disposition, "FOLLOW_UP_SOURCE_CHECK");
-    assert.equal(exported.decisions[0].note, "Synthetic source recheck note.");
+    assert.equal(exported.decisions[0].disposition, "UNREVIEWED_CONTEXT_ONLY");
+    assert.equal(exported.decisions[0].note, "");
     assert.equal(exported.decisions[0].lead_eligible, false);
-    assert.equal(exported.decisions[1].disposition, "UNREVIEWED_CONTEXT_ONLY");
+    assert.equal(exported.decisions[1].source_record_id, "SYNTHETIC-2");
+    assert.equal(exported.decisions[1].disposition, "FOLLOW_UP_SOURCE_CHECK");
+    assert.equal(exported.decisions[1].note, "Synthetic source recheck note.");
     assert.equal(exported.decisions[1].lead_eligible, false);
     assert.equal(elements["packet-status"].textContent, "Exported local review notes. The export cannot create or qualify a lead.");
   } finally {
