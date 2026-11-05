@@ -35,9 +35,10 @@ class FakeElement {
 }
 
 test("local analyst review imports context, keeps lead lock, and exports all notes offline", async () => {
-  const ids = ["packet-file", "load-demo", "export-review", "packet-status", "collection-summary", "findings"];
+  const ids = ["packet-file", "load-demo", "export-review", "export-brief", "packet-status", "collection-summary", "findings"];
   const elements = Object.fromEntries(ids.map(id => [id, new FakeElement("div")]));
   elements["export-review"].disabled = true;
+  elements["export-brief"].disabled = true;
   const created = [];
   global.document = {
     getElementById: id => elements[id],
@@ -50,8 +51,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
 
   const originalCreate = URL.createObjectURL;
   const originalRevoke = URL.revokeObjectURL;
-  let exportedBlob;
-  URL.createObjectURL = blob => { exportedBlob = blob; return "blob:local-review-test"; };
+  const exportedBlobs = [];
+  URL.createObjectURL = blob => { exportedBlobs.push(blob); return "blob:local-review-test"; };
   URL.revokeObjectURL = () => {};
 
   try {
@@ -109,7 +110,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
         independent_verification: "INDEPENDENTLY_VERIFIED",
         lead_eligible: true,
         lead_promotion_allowed: true,
-        source_facts: { "Zero amount": 0, "Goods flag": false }
+        source_facts: { "Zero amount": 0, "Goods flag": false, "Untrusted source text": "<script>alert(1)</script>\n# injected heading" }
       }))
     };
     elements["packet-file"].files = [{
@@ -120,6 +121,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     await elements["packet-file"].dispatch("change");
 
     assert.equal(elements["export-review"].disabled, false);
+    assert.equal(elements["export-brief"].disabled, false);
     assert.match(elements.findings.textContent, /Collector envelope reports live query · not independently verified/);
     assert.match(elements.findings.textContent, /Invented Example 1/);
     assert.match(elements.findings.textContent, /Expected collector identity filterExpected collector filter: normalized exact vendor name/);
@@ -186,8 +188,8 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(elements["export-review"].disabled, false);
 
     await elements["export-review"].dispatch("click");
-    assert.ok(exportedBlob);
-    const exported = JSON.parse(await exportedBlob.text());
+    assert.ok(exportedBlobs[0]);
+    const exported = JSON.parse(await exportedBlobs[0].text());
     assert.equal(exported.export_type, "LOCAL_ANALYST_REVIEW_NOT_A_LEAD");
     assert.equal(exported.lead_promotion_allowed, false);
     assert.equal(exported.independent_verification, "NOT_INDEPENDENTLY_VERIFIED");
@@ -207,6 +209,22 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.equal(exported.decisions[1].note, "Synthetic source recheck note.");
     assert.equal(exported.decisions[1].lead_eligible, false);
     assert.equal(elements["packet-status"].textContent, "Exported local review notes. The export cannot create or qualify a lead.");
+
+    await elements["export-brief"].dispatch("click");
+    assert.equal(exportedBlobs.length, 2);
+    const brief = await exportedBlobs[1].text();
+    assert.match(brief, /AtlanticBridge analyst evidence review/);
+    assert.match(brief, /Context only — not a qualified lead, investment mandate/);
+    assert.match(brief, /Envelope response SHA-256 \(reported, not authenticated\)/);
+    assert.match(brief, /Requested identity criterion/);
+    assert.match(brief, /Not validated by packet; check query and official source/);
+    assert.match(brief, /Open Government Licence - Nova Scotia/);
+    assert.match(brief, /No confirmed site-selection mandate found\./);
+    assert.match(brief, /Synthetic source recheck note\./);
+    assert.match(brief, /&lt;script&gt;alert\(1\)&lt;\/script&gt; \\# injected heading/);
+    assert.equal(elements["packet-status"].textContent, "Downloaded local evidence-backed review brief. It preserves source limits and cannot qualify a lead.");
+    const briefLink = created.filter(node => node.tagName === "a").at(-1);
+    assert.equal(briefLink.download, "atlanticbridge-analyst-evidence-review.md");
 
     let releaseDelayedRead;
     const delayedRead = new Promise(resolve => { releaseDelayedRead = resolve; });
