@@ -123,7 +123,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     };
     elements["packet-file"].files = [{
       name: "synthetic-packet.json",
-      size: 1024,
+      size: new TextEncoder().encode(JSON.stringify(packet)).length,
       text: async () => JSON.stringify(packet)
     }];
     await elements["packet-file"].dispatch("change");
@@ -294,7 +294,7 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.ok(!brief.includes("https://evil.example"));
     const renderedBrief = marked.parse(brief);
     assert.doesNotMatch(renderedBrief, /<a\b[^>]*href="[^"]*attacker\.invalid/i);
-    assert.doesNotMatch(renderedBrief, /<a\\b[^>]*href="mailto:/i);
+    assert.doesNotMatch(renderedBrief, /<a\b[^>]*href="mailto:/i);
     assert.ok(brief.includes("analyst&#64;attacker.c"));
     assert.ok(brief.includes("analyst&#64;attacker.рф"));
     assert.ok(brief.includes(longTextWithoutEmail));
@@ -304,7 +304,6 @@ test("local analyst review imports context, keeps lead lock, and exports all not
     assert.ok(renderedBrief.includes("<code>https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record</code>"));
 
 
-    assert.ok(renderedBrief.includes("<code>https://data.novascotia.ca/resource/m6ps-8j6u.json?observed_field=source_record</code>"));
     assert.match(brief, /No confirmed site-selection mandate found\./);
     assert.match(brief, /Synthetic source recheck note\./);
     assert.match(brief, /&lt;script&gt;alert\(1\)&lt;\/script&gt; \\# injected heading/);
