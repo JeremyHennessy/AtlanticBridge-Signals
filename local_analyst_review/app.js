@@ -261,7 +261,7 @@
           note: value.note || "",
           lead_eligible: false
         };
-      }))
+      })
     };
     const blob = new Blob([JSON.stringify(output, null, 2) + "\n"], {type: "application/json"});
     const url = URL.createObjectURL(blob);
