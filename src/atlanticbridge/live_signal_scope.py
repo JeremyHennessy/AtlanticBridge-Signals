@@ -14,6 +14,9 @@ from .canadabuys_quality import amount_policy, notice_quality, AMOUNT_WARNING
 
 def _normal(value: object) -> str:
     text = unicodedata.normalize('NFKD', str(value or '')).casefold()
+    # Decomposed accents belong to the preceding letter, not a word boundary.
+    # Keep reviewed names such as Montréal and Québec equivalent to ASCII.
+    text = ''.join(char for char in text if not unicodedata.combining(char))
     return ' '.join(re.sub(r'[^a-z0-9]+', ' ', text).split())
 
 

@@ -36,6 +36,51 @@ class LiveScopeTests(unittest.TestCase):
         self.assertEqual(classify_signal({'regions_of_delivery': '*Europe *Remote Offsite'})['state'], 'REVIEW_REQUIRED')
         self.assertEqual(classify_signal({'title': 'CBRN analysis', 'regions_of_delivery': '*Canada'})['state'], 'REVIEW_REQUIRED')
 
+    def test_accented_reviewed_canadian_regions_are_not_unknown(self):
+        for region in ('Montréal', 'Montre\u0301al', 'MONTRÉAL', 'Québec', 'Québec (except NCR)'):
+            with self.subTest(region=region):
+                self.assertEqual(classify_signal({'regions_of_delivery': '*' + region})['state'],
+                                 'INCLUDED_CANADIAN_DELIVERY')
+
+    def test_accent_normalization_keeps_exact_reviewed_region_boundary(self):
+        for region in ('Montréal-Nord', 'Québec Street', 'Montréal;Remote Offsite'):
+            with self.subTest(region=region):
+                expected = ('INCLUDED_CANADIAN_DELIVERY' if ';' in region
+                            else 'INCLUDED_BUYER_ONLY')
+                self.assertEqual(classify_signal({'regions_of_delivery': '*' + region})['state'],
+                                 expected)
+        self.assertEqual(classify_signal({'regions_of_delivery': '*Europe *Montréal-Nord'})['state'],
+                         'REVIEW_REQUIRED')
+        self.assertEqual(classify_signal({'regions_of_delivery': '*Europe *Montréal'})['state'],
+                         'INCLUDED_CANADIAN_DELIVERY')
+
+    def test_accented_canadian_region_does_not_override_scope_exclusions(self):
+        for title, expected in (('DND equipment', 'EXCLUDED_MILITARY'),
+                                ('CBRN analysis', 'REVIEW_REQUIRED')):
+            with self.subTest(title=title):
+                self.assertEqual(classify_signal({'title': title, 'regions_of_delivery': '*Montréal'})['state'],
+                                 expected)
+
+    def test_accented_region_preserves_published_source_values(self):
+        conn = connect(':memory:')
+        self.addCleanup(conn.close)
+        ingest_awards(conn, [award(reference='accented', supplier='Example', country='France',
+                                  publication='2026-09-20')], source_sha256='proof',
+                      source_url='https://example.test/source.csv', source_bytes=1)
+        payload = build_canadabuys_live_signals(conn, as_of_date=date(2026, 9, 22))
+        payload['signals'][0]['regions_of_delivery'] = '*Montréal'
+        original = deepcopy(payload)
+        result = apply_commercial_scope(payload, conn)
+        self.assertEqual(payload, original)
+        self.assertEqual(result['source'], original['source'])
+        self.assertEqual(result['summary'], original['summary'])
+        signal = result['signals'][0]
+        self.assertEqual(signal['scope_review']['state'], 'INCLUDED_CANADIAN_DELIVERY')
+        for key in ('regions_of_delivery', 'publicly_available_date', 'event_date',
+                    'first_observed_at', 'last_observed_at', 'source_url', 'record_id', 'id'):
+            self.assertEqual(signal[key], original['signals'][0][key])
+        self.assertIn('does not establish a Canadian office or first entry', signal['why_surfaced'])
+
     def test_unavailable_stays_unavailable(self):
         p = {'status': 'UNAVAILABLE', 'reason': 'source failed', 'signals': []}
         self.assertEqual(apply_commercial_scope(p), p)
