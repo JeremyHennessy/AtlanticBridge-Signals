@@ -4,8 +4,7 @@ import unittest
 from atlanticbridge.live_signal_scope import apply_commercial_scope, classify_signal
 from atlanticbridge.live_signals import build_canadabuys_live_signals
 from atlanticbridge.canadabuys_store import ingest_awards
-from atlanticbridge.db import connect
-from tests.test_live_signals import award
+from tests.test_live_signals import award, connect
 from datetime import date
 
 
@@ -53,7 +52,7 @@ class LiveScopeTests(unittest.TestCase):
         self.assertEqual(p, original)
         self.assertEqual(out['summary']['signal_count'], 1)
         self.assertEqual(out['summary']['company_count'], 1)
-        self.assertEqual(out['summary']['cad_contract_amount'], '1000')
+        self.assertIsNone(out['summary']['cad_contract_amount'])
         self.assertEqual(out['scope_audit']['input_signal_count'], 3)
         self.assertEqual(len(out['scope_audit']['excluded_signals']), 2)
         self.assertEqual(out['source'], p['source'])

@@ -37,6 +37,17 @@ PINS = {
 def sha(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
+def parse_json(raw: bytes | str, context: str):
+    """Decode JSON while retaining only safe source context, never response bodies."""
+    try:
+        return json.loads(raw)
+    except UnicodeDecodeError:
+        raise ValueError(f'{context} was not valid JSON (invalid text encoding)') from None
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f'{context} was not valid JSON (line {exc.lineno}, column {exc.colno})'
+        ) from None
+
 class SafeRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         if urllib.parse.urlsplit(newurl).scheme != 'https':
@@ -50,6 +61,7 @@ class Client:
     def __init__(self, token: str):
         if not token: raise ValueError('Authenticated archive token required')
         self.token = token
+        self.phase = 'startup'
         self.opener = urllib.request.build_opener(SafeRedirect())
     def request(self, url: str, method='GET', body=None, *, auth=True, binary=False, mime='application/json'):
         parsed = urllib.parse.urlsplit(url)
@@ -68,7 +80,8 @@ class Client:
     def json(self, url, method='GET', body=None):
         code, raw = self.request(url, method, body)
         if code not in (200,201): raise ValueError(f'GitHub archive request failed: HTTP {code}')
-        return json.loads(raw)
+        endpoint=urllib.parse.urlsplit(url).path
+        return parse_json(raw, f'GitHub API {method} {endpoint} (HTTP {code}, bytes {len(raw)})')
     def pages(self, path):
         rows=[]
         for page in range(1,21):
@@ -97,7 +110,7 @@ def inspect_zip(raw: bytes, expected: str):
 LEGACY_ADDITIVE_HEALTH_FIELDS = {'operational_source_count', 'reliability_scope'}
 
 def inspect_checkpoint(raw: bytes, observed_health: dict):
-    value=validate(json.loads(raw))
+    value=validate(parse_json(raw,'retained checkpoint.json'))
     expected_health=health(value)
     if not isinstance(observed_health,dict):
         raise ValueError('Checkpoint does not match captured monitoring health')
@@ -140,7 +153,7 @@ def store_asset(client, release, name, raw):
         url='https://uploads.github.com/repos/'+REPO+f"/releases/{release['id']}/assets?name="+urllib.parse.quote(name,safe='')
         code,data=client.request(url,'POST',raw,mime='application/octet-stream')
         if code!=201:raise ValueError(f'Archive upload failed: HTTP {code}')
-        asset=json.loads(data)
+        asset=parse_json(data,'GitHub release asset upload response')
     endpoint=API+f"/releases/assets/{asset['id']}"
     code, restored=client.request(endpoint,binary=True)
     if code!=200 or restored!=raw:raise ValueError('Existing/uploaded archive asset differs; never overwrite it')
@@ -168,7 +181,7 @@ def archive_one(client, artifact, expected, release, monitoring=False, raw_overr
     if monitoring:
         data_sha=z.read('data-commit.txt').decode().strip()
         if not re.fullmatch('[0-9a-f]{40}',data_sha):raise ValueError('Missing exact data-state revision')
-        observed=json.loads(z.read('health.json'))
+        observed=parse_json(z.read('health.json'),'retained health.json')
         run_id=str(artifact['workflow_run']['id'])+'-'+str(observed['run_id'].split('-')[-1])
         if observed['run_id']!=run_id:raise ValueError('Captured health belongs to a different run')
         state=client.json(API+'/contents/checkpoint.json?ref='+data_sha)
@@ -189,7 +202,7 @@ def accepted_proof(client, artifact_id):
     expected=PINS[artifact_id]
     code,metadata=client.request(API+f'/actions/artifacts/{artifact_id}')
     if code==200:
-        info=json.loads(metadata)
+        info=parse_json(metadata,'GitHub Actions artifact metadata')
         if info.get('expired') is not True:
             status,raw=client.request(API+f'/actions/artifacts/{artifact_id}/zip',binary=True)
             if status==200:
@@ -210,19 +223,25 @@ def accepted_proof(client, artifact_id):
     raise ValueError('Accepted proof missing from both Actions and unpublished archives')
 
 def run(client):
-    now=datetime.now(timezone.utc).isoformat();release=draft_for(client,'evidence-v1-'+now[:7])
+    now=datetime.now(timezone.utc).isoformat()
+    client.phase='draft_release'
+    release=draft_for(client,'evidence-v1-'+now[:7])
     artifacts=[]
+    client.phase='pinned_proofs'
     for aid,expected in PINS.items():
         metadata,raw=accepted_proof(client,aid)
         artifacts.append(archive_one(client,metadata,expected,release,raw_override=raw))
+    client.phase='monitor_run_inventory'
     runs=client.json(API+'/actions/workflows/company-monitor.yml/runs?branch=main&per_page=20')['workflow_runs']
     found=0
     for run in runs:
+        client.phase='monitor_run_artifacts'
         if run['status']!='completed' or run['head_branch']!='main' or run['event'] not in {'push','schedule','workflow_dispatch'}:continue
         rows=client.json(API+f"/actions/runs/{run['id']}/artifacts?per_page=100")
         if rows['total_count']>100:raise ValueError('Monitor artifact pagination requires explicit handling')
         for artifact in rows['artifacts']:
             if not artifact['name'].startswith('company-monitor-'):continue
+            client.phase='monitor_artifact_'+str(artifact['id'])
             digest=artifact.get('digest','')
             if not digest.startswith('sha256:'):raise ValueError('Missing GitHub artifact digest')
             artifacts.append(archive_one(client,artifact,digest[7:],release,True));found+=1
@@ -232,9 +251,12 @@ def run(client):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--state-dir',required=True);ap.add_argument('--report-dir',required=True);args=ap.parse_args()
     state=Path(args.state_dir);out=Path(args.report_dir);out.mkdir(parents=True,exist_ok=True)
-    attempt={'schema_version':1,'run_id':os.environ.get('GITHUB_RUN_ID'),'attempt_at':datetime.now(timezone.utc).isoformat(),'status':'FAILED'}
+    attempt={'schema_version':1,'run_id':os.environ.get('GITHUB_RUN_ID'),'attempt_at':datetime.now(timezone.utc).isoformat(),'status':'FAILED','phase':'startup'}
+    client=None
     try:
-        result=run(Client(os.environ.get('GH_TOKEN','')))
+        client=Client(os.environ.get('GH_TOKEN',''))
+        result=run(client)
+        attempt['phase']='complete'
         attempt['status']='VERIFIED_DRAFT_COPY'
         state.mkdir(parents=True,exist_ok=True)
         (state/'archive-health.json').write_text(json.dumps(result,indent=2)+'\n')
@@ -242,6 +264,7 @@ def main():
         (manifests/(str(os.environ.get('GITHUB_RUN_ID','local'))+'.json')).write_text(json.dumps(result,indent=2)+'\n')
         (out/'report.json').write_text(json.dumps(result,indent=2)+'\n')
     except Exception as exc:
+        attempt['phase']=client.phase if client is not None else 'startup'
         attempt['error_type']=type(exc).__name__
         if type(exc) is ValueError:attempt['detail']=str(exc)
         # Exception text may contain signed HTTP URLs. Keep diagnostics credential-free.

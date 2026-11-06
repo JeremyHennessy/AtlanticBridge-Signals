@@ -14,6 +14,30 @@ from atlanticbridge.company_sources import Ledger
 from atlanticbridge.monitoring_checkpoint import checkpoint,health
 
 class ArchiveTests(unittest.TestCase):
+    def test_invalid_api_json_reports_endpoint_without_exposing_body(self):
+        from unittest.mock import MagicMock
+        client=a.Client('TEST-SECRET-TOKEN')
+        response=MagicMock()
+        response.__enter__.return_value=response
+        response.status=200
+        response.read.return_value=b'<html>PRIVATE-RESPONSE-BODY</html>'
+        client.opener.open=MagicMock(return_value=response)
+
+        with self.assertRaises(ValueError) as caught:
+            client.json(a.API+'/actions/artifacts/123')
+
+        message=str(caught.exception)
+        self.assertIn('GitHub API GET /repos/JeremyHennessy/AtlanticBridge-Signals/actions/artifacts/123',message)
+        self.assertIn('line 1, column',message)
+        self.assertNotIn('PRIVATE-RESPONSE-BODY',message)
+        self.assertNotIn('TEST-SECRET-TOKEN',message)
+
+    def test_invalid_encoding_json_reports_safe_context(self):
+        with self.assertRaises(ValueError) as caught:
+            a.parse_json(b'\xffPRIVATE-RESPONSE-BODY', 'retained checkpoint.json')
+        self.assertEqual(str(caught.exception), 'retained checkpoint.json was not valid JSON (invalid text encoding)')
+        self.assertIsNone(caught.exception.__cause__)
+
     def raw_zip(self,content=b'evidence',name=None):
         out=io.BytesIO()
         with zipfile.ZipFile(out,'w') as z:z.writestr(name or 'raw/'+a.sha(content)+'.bin',content)
@@ -109,3 +133,15 @@ class ArchiveTests(unittest.TestCase):
             client.request(a.API+suffix,binary=True)
             req=client.opener.open.call_args.args[0]
             self.assertEqual(req.get_header('Accept'),expected)
+
+    def test_invalid_api_json_has_safe_endpoint_diagnostic(self):
+        client=a.Client('TEST')
+        client.request=lambda url,*args,**kwargs:(200,b'<html>not json</html>')
+        target=a.API+'/actions/workflows/company-monitor.yml/runs?token=do-not-log'
+        with self.assertRaises(ValueError) as caught:
+            client.json(target)
+        message=str(caught.exception)
+        self.assertIn('/actions/workflows/company-monitor.yml/runs',message)
+        self.assertIn('HTTP 200',message)
+        self.assertNotIn('token',message)
+        self.assertNotIn('do-not-log',message)

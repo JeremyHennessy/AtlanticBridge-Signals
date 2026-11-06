@@ -3,14 +3,13 @@ from __future__ import annotations
 
 from collections import Counter
 from copy import deepcopy
-from decimal import Decimal
 import json
 import re
 import sqlite3
 import unicodedata
 
 from .constants import EU27
-from .live_signals import _decimal
+from .canadabuys_quality import amount_policy, notice_quality, AMOUNT_WARNING
 
 
 def _normal(value: object) -> str:
@@ -68,11 +67,14 @@ def apply_commercial_scope(payload: dict, conn: sqlite3.Connection | None = None
     """Retain excluded/review rows in an audit ledger, not as negative signals."""
     result = deepcopy(payload)
     if result.get('status') != 'ACTIVE':
+        if isinstance(result.get('summary'), dict):
+            result['summary'].update({'cad_contract_amount': None, **amount_policy()})
         return result
     included, excluded, review = [], [], []
     decisions = Counter()
     for original in result['signals']:
         signal = deepcopy(original)
+        signal.update(notice_quality())
         raw = {}
         if conn is not None:
             row = conn.execute('SELECT raw_json FROM canadabuys_awards WHERE record_id = ?',
@@ -100,19 +102,18 @@ def apply_commercial_scope(payload: dict, conn: sqlite3.Connection | None = None
         signal['why_surfaced'] = (
             f'CanadaBuys names {company} as supplier to {buyer}. '
             f'Supplier address country: {signal["country"]}; ultimate control is not established by this field. '
-            f'{location_note} No expansion probability or regional fit is inferred.'
+            f'{location_note} No expansion probability or regional fit is inferred. '
+            + AMOUNT_WARNING
         )
         included.append(signal)
     result['signals'] = included
     public_dates = [s['publicly_available_date'] for s in included]
-    amount = sum((_decimal(s['contract_amount']) or Decimal('0')
-                  for s in included if s.get('contract_currency') == 'CAD'), Decimal('0'))
     result['summary'].update({
         'signal_count': len(included), 'company_count': len({s['company_id'] for s in included}),
         'country_count': len({s['country'] for s in included}),
         'latest_public_date': max(public_dates) if public_dates else None,
         'earliest_public_date': min(public_dates) if public_dates else None,
-        'cad_contract_amount': format(amount, 'f'),
+        'cad_contract_amount': None, **amount_policy(),
     })
     result['scope_audit'] = {
         'schema_version': 1, 'input_signal_count': sum(decisions.values()),
@@ -123,6 +124,6 @@ def apply_commercial_scope(payload: dict, conn: sqlite3.Connection | None = None
     result['interpretation'] = (
         'Current non-military Canadian-buyer evidence after scope review. Foreign-only delivery is withheld; '
         'unknown delivery remains buyer-only evidence. Supplier address country is not ultimate control. '
-        'No first-entry, prediction or market-fit inference.'
+        'No first-entry, prediction or market-fit inference. ' + AMOUNT_WARNING
     )
     return result
