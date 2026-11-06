@@ -58,9 +58,9 @@
       const a=age(s.publicly_available_date,now);if(a===null||a<0||a>90)continue;
       if(!HEX.test(s.id)||!HEX.test(s.company_id)||!https(s.source_url))continue;
       current.push({id:'notice:'+s.id,company_id:s.company_id,company_name:s.company_name,title:s.title||s.award_description||'Canadian federal award notice',day:s.publicly_available_date,
-        location:s.regions_of_delivery||'Delivery location unverified',kind:'Procurement evidence',what:s.signal_kind==='FEDERAL_AWARD_AMENDED'?'A federal award notice was amended.':'A federal award notice was published.',
+        location:s.regions_of_delivery||'Delivery location unverified',kind:'Commercial/research signal',what:s.signal_kind==='FEDERAL_AWARD_AMENDED'?'A federal award notice was amended. This may be administrative or restate a value; it does not establish new spending.':'A federal award notice was published. Its value does not establish incremental spending or payments.',
         why:s.why_surfaced||'A named supplier has a Canadian-buyer relationship. This does not establish a Canadian office or a new market entry.',
-        next_action:s.scope_review?.state==='INCLUDED_CANADIAN_DELIVERY'?'Check the supplier identity, award amendments and whether the Canadian delivery creates a relevant follow-on opportunity.':'Confirm Canadian delivery or activity before treating the buyer relationship as a Canadian expansion opportunity.',
+        next_action:'Reconcile the contract and revisions before using notice amounts. An award is not an open procurement opportunity. '+(s.scope_review?.state==='INCLUDED_CANADIAN_DELIVERY'?'Check the supplier identity, award amendments and whether the Canadian delivery creates a relevant follow-on opportunity.':'Confirm Canadian delivery or activity before treating the buyer relationship as a Canadian expansion opportunity.'),
         source_url:s.source_url,observed_at:live.source?.observed_at||null,raw_sha256:s.source_sha256||live.source?.source_sha256||null,qualified:false,decision:null});
     }
     if(catalog)for(const p of catalog.projects||[]){

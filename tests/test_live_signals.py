@@ -1,12 +1,20 @@
 from __future__ import annotations
 
 from datetime import date
+import sqlite3
 import unittest
 
 from atlanticbridge.canadabuys_store import ingest_awards
-from atlanticbridge.db import connect
 from atlanticbridge.live_signals import build_canadabuys_live_signals
 from atlanticbridge.sources.canadabuys import CanadaBuysAwardRecord
+
+
+def connect(path):
+    # These notice unit tests exercise the real CanadaBuys schema/ingest functions.
+    # Avoid initializing unrelated investment parsers via the full application DB.
+    conn = sqlite3.connect(path)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 def award(
@@ -116,7 +124,7 @@ class LiveSignalsTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["signal_count"], 1)
         self.assertEqual(payload["summary"]["company_count"], 1)
         self.assertEqual(payload["summary"]["country_count"], 1)
-        self.assertEqual(payload["summary"]["cad_contract_amount"], "125000.50")
+        self.assertIsNone(payload["summary"]["cad_contract_amount"])
         signal = payload["signals"][0]
         self.assertEqual(signal["company_name"], "Example France SAS")
         self.assertEqual(signal["country"], "France")

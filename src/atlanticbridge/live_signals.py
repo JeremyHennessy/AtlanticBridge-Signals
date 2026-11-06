@@ -9,6 +9,7 @@ import re
 import sqlite3
 
 from .canadabuys_store import ensure_canadabuys_schema
+from .canadabuys_quality import amount_policy, notice_quality, AMOUNT_WARNING
 
 SCHEMA_VERSION = 1
 SOURCE_FAMILY = "CANADABUYS_AWARD"
@@ -80,7 +81,8 @@ def unavailable_payload(*, reason: str, generated_at: str | None = None) -> dict
             "country_count": 0,
             "latest_public_date": None,
             "earliest_public_date": None,
-            "cad_contract_amount": "0",
+            "cad_contract_amount": None,
+            **amount_policy(),
             "lookback_days": None,
         },
         "reason": reason,
@@ -130,7 +132,6 @@ def build_canadabuys_live_signals(
     ).fetchall()
 
     signals: list[dict[str, object]] = []
-    cad_total = Decimal("0")
     for row in rows:
         public_date = _effective_public_date(row)
         if public_date is None or public_date < start_date or public_date > as_of_date:
@@ -144,9 +145,6 @@ def build_canadabuys_live_signals(
         event_date = _date_value(row["contract_award_date"]) or public_date
         amount = str(row["contract_amount"] or "").strip()
         currency = str(row["contract_currency"] or "").strip()
-        parsed_amount = _decimal(amount)
-        if currency == "CAD" and parsed_amount is not None:
-            cad_total += parsed_amount
 
         amendment_number = str(row["amendment_number"] or "").strip()
         amendment_date = _date_value(row["amendment_date"])
@@ -165,12 +163,14 @@ def build_canadabuys_live_signals(
         why = (
             f"Official CanadaBuys data names {company_name} ({country}) as a supplier"
             + (f" to {contracting_entity}" if contracting_entity else "")
-            + f"; the record became publicly available on {public_date.isoformat()}."
-            + " This is direct Canadian federal commercial activity, not proof of first market entry."
+            + f"; the source lists a publication/amendment date of {public_date.isoformat()}."
+            + " This is direct Canadian federal commercial activity, not proof of first market entry. "
+            + AMOUNT_WARNING
         )
 
         signals.append(
             {
+                **notice_quality(),
                 "id": _signal_id(str(row["record_id"])),
                 "record_id": str(row["record_id"]),
                 "company_id": _company_id(company_name, country),
@@ -240,12 +240,14 @@ def build_canadabuys_live_signals(
             "country_count": len(countries),
             "latest_public_date": max(public_dates) if public_dates else None,
             "earliest_public_date": min(public_dates) if public_dates else None,
-            "cad_contract_amount": format(cad_total, "f"),
+            "cad_contract_amount": None,
+            **amount_policy(),
             "lookback_days": lookback_days,
         },
         "interpretation": (
             "Current source-backed Canada-directed commercial activity. "
-            "Signals are not expansion probabilities and do not establish first Canadian entry."
+            "Signals are not expansion probabilities and do not establish first Canadian entry. "
+            + AMOUNT_WARNING
         ),
         "signals": signals,
     }

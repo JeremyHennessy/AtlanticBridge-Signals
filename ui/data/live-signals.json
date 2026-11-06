@@ -13,12 +13,14 @@
   },
   "status": "UNAVAILABLE",
   "summary": {
-    "cad_contract_amount": "0",
+    "cad_contract_amount": null,
     "company_count": 0,
     "country_count": 0,
     "earliest_public_date": null,
     "latest_public_date": null,
     "lookback_days": null,
-    "signal_count": 0
+    "signal_count": 0,
+    "amount_aggregation_status": "WITHHELD_UNRECONCILED_NOTICE_AMOUNTS",
+    "amount_aggregation_reason": "No reconciled additive amount or payment semantics established. Do not sum raw notice or history rows."
   }
 }

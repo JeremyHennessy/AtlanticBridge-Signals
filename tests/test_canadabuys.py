@@ -110,7 +110,7 @@ class CanadaBuysTests(unittest.TestCase):
         self.assertEqual(summary["current_records"], 2)
         self.assertEqual(summary["current_eu27_supplier_records"], 1)
         self.assertEqual(summary["eu27_by_country"][0]["country"], "Ireland")
-        self.assertEqual(summary["eu27_suppliers"][0]["contract_amount_cad"], "100000.00")
+        self.assertIsNone(summary["eu27_suppliers"][0]["contract_amount_cad"])
 
 
 if __name__ == "__main__":

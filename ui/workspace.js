@@ -5,6 +5,7 @@
   else root.ABWorkspace = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
+  const CANADABUYS_AMOUNT_WARNING = "Published notice values are not automatically new spending or payments. An amendment may restate a contract value or be administrative. Do not sum raw notice or history rows; reconcile contracts and revisions first.";
   const KEY = "atlanticbridge.analyst-workspace.v1";
   const LEGACY_KEY = "atlanticbridge.watched-companies.v1";
   const STATUSES = {new:"To review",researching:"Researching",contacted:"Contacted",follow_up:"Follow up",closed:"Closed"};
@@ -137,5 +138,5 @@
     const keys=["company_name","country","status","due_date","next_action","notes","latest_public_date","snapshot_observed_at","source_url","source_sha256","id","updated_at"];
     return [keys,...entries.map(e=>keys.map(k=>e[k]))].map(row=>row.map(csvCell).join(",")).join("\r\n")+"\r\n";
   }
-  return {KEY,LEGACY_KEY,STATUSES,MAX_BYTES,Store,blankEntry,validateEntry,validateBackup,worklistCSV,csvCell,utcToday,dateValid,signalAge,feedHealth,money,groupCompanies};
+  return {CANADABUYS_AMOUNT_WARNING,KEY,LEGACY_KEY,STATUSES,MAX_BYTES,Store,blankEntry,validateEntry,validateBackup,worklistCSV,csvCell,utcToday,dateValid,signalAge,feedHealth,money,groupCompanies};
 });
