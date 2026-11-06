@@ -78,6 +78,24 @@ async function exactAssets(page, label) {
     check(`${label}: checked and served live source family agree`,checkedLive.source?.family===live.source?.family);
   }
 }
+async function verifyEntryRoutes(page, label) {
+  // Use the resolved app directory for both a ui/ preview and a Pages subpath.
+  const canonical = new URL("./", page.url());
+  const suffix = `?legacy-entry=acceptance%20check#companies?case=${encodeURIComponent(dashboard.cases[0].id)}`;
+  for (const [name, entry] of [["canonical", canonical], ["legacy", new URL("ui/", canonical)], ["legacy index", new URL("ui/index.html", canonical)]]) {
+    const response = await page.goto(entry.href + suffix, {waitUntil:"networkidle",timeout:30000});
+    check(`${label}: ${name} entry HTTP success`, response?.ok());
+    await ready(page);
+    await page.locator("#case-drawer.open").waitFor();
+    check(`${label}: ${name} preserves query and case deep link`, page.url() === canonical.href + suffix, page.url());
+    check(`${label}: ${name} opens requested case`, await page.locator("#drawer-title").innerText() === dashboard.cases[0].canadian_business_name);
+    await page.reload({waitUntil:"networkidle"});
+    await ready(page);
+    check(`${label}: ${name} reload stays canonical without looping`, page.url() === canonical.href + suffix, page.url());
+  }
+  await page.goto(canonical.href, {waitUntil:"networkidle"});
+  await ready(page);
+}
 async function allCases(page,label) {
   await go(page,"#companies");
   check(`${label}: all cases rendered`,await page.locator("tr.case-row").count()===dashboard.cases.length);
@@ -177,6 +195,7 @@ async function run(label,type,options) {
     page.on("pageerror",e=>errors.push(String(e)));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
     const response=await page.goto(base,{waitUntil:"networkidle",timeout:30000});
     check(`${label}: page HTTP success`,response?.ok());await ready(page);await exactAssets(page,label);
+    await verifyEntryRoutes(page,label);
     for(const route of ["overview","signals","companies","research","markets","coverage","guide"]) {
       await go(page,`#${route}`);await page.locator(`#${route}-view`).waitFor();await overflow(page,`${label}/${route}`);
       await captureRoute(page,label,route);
