@@ -13,3 +13,6 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+atlanticbridge = ["sources/nl_assessment_fixture_records.json", "sources/halifax_permit_pinned_records.json"]

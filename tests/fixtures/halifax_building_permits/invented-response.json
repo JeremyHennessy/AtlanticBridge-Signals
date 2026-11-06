@@ -1,0 +1,56 @@
+{
+  "fields": [
+    {
+      "name": "Permit_Number",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "name": "Permit_Name",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "name": "Permit_Status",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "name": "Type_of_Structure",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "name": "Date_of_Submission",
+      "type": "esriFieldTypeDate"
+    },
+    {
+      "name": "Date_of_Permit_Issuance",
+      "type": "esriFieldTypeDate"
+    },
+    {
+      "name": "Completed_Date",
+      "type": "esriFieldTypeDate"
+    },
+    {
+      "name": "Expiration_Date",
+      "type": "esriFieldTypeDate"
+    },
+    {
+      "name": "Estimated_Project_Value",
+      "type": "esriFieldTypeDouble"
+    }
+  ],
+  "features": [
+    {
+      "attributes": {
+        "Permit_Number": "BPCOM-2099-00001",
+        "Permit_Name": "Mixed Use & Commercial Building Permit",
+        "Permit_Status": "Issued",
+        "Type_of_Structure": "Commercial",
+        "Date_of_Submission": null,
+        "Date_of_Permit_Issuance": 4073587200000,
+        "Completed_Date": null,
+        "Expiration_Date": null,
+        "Estimated_Project_Value": 100
+      }
+    }
+  ],
+  "exceededTransferLimit": false
+}
