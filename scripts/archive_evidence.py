@@ -5,7 +5,6 @@ No collector, source ledger or existing checkpoint contract is changed.
 """
 from __future__ import annotations
 import argparse
-import base64
 from datetime import datetime, timezone
 import hashlib
 import io
@@ -24,6 +23,7 @@ from atlanticbridge.monitoring_checkpoint import validate, restore, checkpoint, 
 REPO = 'JeremyHennessy/AtlanticBridge-Signals'
 API = 'https://api.github.com/repos/' + REPO
 MAX_BYTES = 128 * 1024 * 1024
+MAX_CHECKPOINT_BYTES = 16 * 1024 * 1024
 PINS = {
     10718724645: '46f6e0853b6848cc10d5982e54bebeac2bf810e6e3ede19062b470e6c39a75a6',
     10724109813: '6f5f5b169681f0bbc0b01d116f97cb3ee0a254385619f094cd101d8c98c415cc',
@@ -67,7 +67,12 @@ class Client:
         parsed = urllib.parse.urlsplit(url)
         if parsed.scheme != 'https' or parsed.hostname not in {'api.github.com', 'uploads.github.com', 'github.com'} or parsed.username or parsed.password:
             raise ValueError('Unapproved GitHub endpoint')
-        headers = {'User-Agent':'AtlanticBridge-evidence-retention', 'Accept':'application/octet-stream' if binary and '/releases/assets/' in parsed.path else 'application/vnd.github+json', 'X-GitHub-Api-Version':'2026-03-10', 'Content-Type':mime}
+        accept = 'application/vnd.github+json'
+        if binary and parsed.path.startswith('/repos/'+REPO+'/contents/'):
+            accept = 'application/vnd.github.raw+json'
+        elif binary and '/releases/assets/' in parsed.path:
+            accept = 'application/octet-stream'
+        headers = {'User-Agent':'AtlanticBridge-evidence-retention', 'Accept':accept, 'X-GitHub-Api-Version':'2026-03-10', 'Content-Type':mime}
         if auth: headers['Authorization'] = 'Bearer ' + self.token
         if isinstance(body, dict): body = json.dumps(body).encode()
         try:
@@ -184,8 +189,12 @@ def archive_one(client, artifact, expected, release, monitoring=False, raw_overr
         observed=parse_json(z.read('health.json'),'retained health.json')
         run_id=str(artifact['workflow_run']['id'])+'-'+str(observed['run_id'].split('-')[-1])
         if observed['run_id']!=run_id:raise ValueError('Captured health belongs to a different run')
-        state=client.json(API+'/contents/checkpoint.json?ref='+data_sha)
-        extra=base64.b64decode(state['content']);restore_result=inspect_checkpoint(extra,observed)
+        # Inline Contents API base64 is omitted above 1 MB. Request the original
+        # raw bytes at the artifact's immutable state commit, never a moving ref.
+        status,extra=client.request(API+'/contents/checkpoint.json?ref='+data_sha,binary=True)
+        if status!=200:raise ValueError(f'Pinned checkpoint download failed: HTTP {status}')
+        if not 0<len(extra)<=MAX_CHECKPOINT_BYTES:raise ValueError('Pinned checkpoint is empty or exceeds the size limit')
+        restore_result=inspect_checkpoint(extra,observed)
         restore_result['data_commit']=data_sha
     asset,back=store_asset(client,release,f'artifact-{artifact_id}-{expected[:16]}.zip',raw)
     inspect_zip(back,expected)

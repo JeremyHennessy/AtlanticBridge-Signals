@@ -20,3 +20,9 @@ Interpretation:
 Source observations remain separate from local verification, so a verified local copy can coexist with historical source expiry. Every unverified item requires manual review before any backfill. Inventory observations have no freshness guarantee. The planner never makes requests, downloads, uploads, creates releases, regenerates source evidence, dispatches workflows or executes backfill. It emits deterministic JSON to stdout and a generic, redacted error with exit status 2 for invalid inventory/CLI inputs. An item needing review is a successful diagnostic report, not a CLI failure.
 
 To proceed later, an operator must independently establish current access, locate original exact bytes, verify the pinned hashes and follow the existing archive and privacy checks. This diagnostic authorizes none of those actions and makes no claim that historical proof was recovered. No dependency or workflow changes are needed.
+
+## Production checkpoint reader
+
+The production archiver now requests raw checkpoint bytes from GitHub at the immutable data commit recorded in each monitoring artifact. This supports checkpoints above the Contents API's 1 MB inline-content limit. It rejects failed, empty or over-16-MiB downloads before storing that artifact, then validates the checkpoint checksum, captured health and exact SQLite restoration. The saved checkpoint is the original byte sequence, not a reserialized substitute.
+
+This repair does not extend the existing 20-run production scan or recover the historical gap. Merging the reliability release triggers the existing Pages deployment and production archive attempt. Their outcomes must be checked separately; successful PR retention verification does not prove that production archival ran.

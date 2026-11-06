@@ -1,4 +1,3 @@
-import base64
 import io
 import json
 from pathlib import Path
@@ -129,7 +128,7 @@ class ArchiveTests(unittest.TestCase):
         response=MagicMock();response.__enter__.return_value=response
         response.status=200;response.read.return_value=b'bytes'
         client.opener.open=MagicMock(return_value=response)
-        for suffix,expected in [('/actions/artifacts/1/zip','application/vnd.github+json'),('/releases/assets/1','application/octet-stream'),('/releases/1','application/vnd.github+json')]:
+        for suffix,expected in [('/actions/artifacts/1/zip','application/vnd.github+json'),('/releases/assets/1','application/octet-stream'),('/releases/1','application/vnd.github+json'),('/contents/checkpoint.json?ref='+'a'*40,'application/vnd.github.raw+json')]:
             client.request(a.API+suffix,binary=True)
             req=client.opener.open.call_args.args[0]
             self.assertEqual(req.get_header('Accept'),expected)
@@ -145,3 +144,70 @@ class ArchiveTests(unittest.TestCase):
         self.assertIn('HTTP 200',message)
         self.assertNotIn('token',message)
         self.assertNotIn('do-not-log',message)
+
+    def monitoring_archive_fixture(self):
+        ledger=Ledger(':memory:')
+        value=checkpoint(ledger,runs=[{'id':'42-1','finished_at':'2026-11-06T12:00:00+00:00','sources':[]}])
+        ledger.db.close()
+        observed=health(value)
+        out=io.BytesIO()
+        with zipfile.ZipFile(out,'w') as z:
+            z.writestr('raw/'+a.sha(b'evidence')+'.bin',b'evidence')
+            z.writestr('data-commit.txt','a'*40)
+            z.writestr('health.json',json.dumps(observed))
+        raw=out.getvalue()
+        artifact={'id':17,'workflow_run':{'id':42},'digest':'sha256:'+a.sha(raw)}
+        return artifact,raw,value,observed
+
+    def test_monitor_archive_retains_exact_large_raw_checkpoint(self):
+        from unittest.mock import Mock
+        artifact,raw,value,observed=self.monitoring_archive_fixture()
+        original=json.dumps(value).encode()+b' '*(1024*1024+1)
+        client=Mock()
+        client.request.return_value=(200,original)
+        client.json.side_effect=AssertionError('Must not request inline base64 contents')
+        with patch.object(a,'store_asset',side_effect=lambda c,r,n,b:({'name':n},b)) as store:
+            result=a.archive_one(client,artifact,a.sha(raw),{'id':1},monitoring=True,raw_override=raw)
+        client.request.assert_called_once_with(a.API+'/contents/checkpoint.json?ref='+'a'*40,binary=True)
+        self.assertEqual(store.call_count,2)
+        self.assertEqual(store.call_args_list[0].args[3],raw)
+        self.assertEqual(store.call_args_list[1].args[3],original)
+        self.assertIn(a.sha(original)[:16],store.call_args_list[1].args[2])
+        self.assertTrue(result['restore']['exact_state_restore'])
+        self.assertEqual(result['restore']['data_commit'],'a'*40)
+        self.assertEqual(result['restore']['checkpoint_checksum'],value['checksum'])
+
+    def test_monitor_archive_rejects_download_errors_before_any_write(self):
+        from unittest.mock import Mock
+        artifact,raw,value,observed=self.monitoring_archive_fixture()
+        for status,body in [(403,b'private response'),(404,b''),(500,b'private response'),(200,b''),(200,b'not json'),(200,b'\xffprivate response')]:
+            with self.subTest(status=status,body_length=len(body)):
+                client=Mock();client.request.return_value=(status,body)
+                with patch.object(a,'store_asset') as store:
+                    with self.assertRaises(ValueError) as caught:
+                        a.archive_one(client,artifact,a.sha(raw),{'id':1},monitoring=True,raw_override=raw)
+                    store.assert_not_called()
+                self.assertNotIn('private response',str(caught.exception))
+                client.request.assert_called_once()
+
+    def test_monitor_archive_rejects_oversized_checkpoint_before_any_write(self):
+        from unittest.mock import Mock
+        artifact,raw,value,observed=self.monitoring_archive_fixture()
+        client=Mock();client.request.return_value=(200,b'X'*11)
+        with patch.object(a,'MAX_CHECKPOINT_BYTES',10),patch.object(a,'store_asset') as store:
+            with self.assertRaisesRegex(ValueError,'size limit'):
+                a.archive_one(client,artifact,a.sha(raw),{'id':1},monitoring=True,raw_override=raw)
+            store.assert_not_called()
+
+    def test_monitor_archive_rejects_corrupt_or_wrong_health_before_any_write(self):
+        from unittest.mock import Mock
+        artifact,raw,value,observed=self.monitoring_archive_fixture()
+        corrupt=dict(value,checksum='bad')
+        ledger=Ledger(':memory:');different=checkpoint(ledger);ledger.db.close()
+        for data in [corrupt,different]:
+            with self.subTest(checksum=data['checksum']):
+                client=Mock();client.request.return_value=(200,json.dumps(data).encode())
+                with patch.object(a,'store_asset') as store:
+                    with self.assertRaises(ValueError):
+                        a.archive_one(client,artifact,a.sha(raw),{'id':1},monitoring=True,raw_override=raw)
+                    store.assert_not_called()
