@@ -24,10 +24,12 @@ notes, next actions and declared metadata are preserved on import.
 
 ## Safe local preparation
 
-This is storage/migration preparation, not a deployed backend. No HTTP routes,
-public write API, remote service, accounts, credentials, CORS policy, automatic
-browser extraction, or background process are added. The current public UI still
-uses its original browser store. No actual user backup was imported during
+The storage/migration module has no HTTP routes. A separately launched
+[private company worklist](PRIVATE_COMPANY_WORKBENCH.md) now supplies a same-origin
+loopback read/edit API over an existing company database, tested in process only.
+It has no import/export routes, remote service, accounts, credentials, CORS
+allowance, automatic browser extraction or background schedule. The public UI
+still uses its original browser store. No actual user backup was imported during
 development; all tests use clearly invented data exported by that unchanged UI.
 
 Use a trusted operator-private directory, outside the public site/repository.
@@ -96,8 +98,8 @@ UI integration and its acceptance checks have been completed.
 
 ## Path to an actually persistent UI
 
-The next integration must use the **company** storage contract rather than the
-source-record workbench. Keep read-only public evidence separate from private
+The local worklist integration uses the **company** storage contract rather than
+source-record workbench identities. Keep read-only public evidence separate from private
 analyst data. For a local single-operator app, serve the UI and a narrowly scoped
 company API from the same loopback origin, retaining the existing exact-host,
 origin, request-size and revision controls. Do not make the public Pages app call

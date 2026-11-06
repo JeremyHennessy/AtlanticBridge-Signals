@@ -208,3 +208,5 @@ An explicitly invoked local coordinator now joins existing READY plan-scoped fil
 ### Preserve the existing company worklist
 
 The public app's company IDs and five analyst statuses are not the evidence foundation's source-record IDs/statuses. A separate private company store now supports explicit, lossless browser-backup imports, audited revision-checked analyst edits, and compatible exports without identity mapping or evidence promotion. The public UI is not rewired and no backend is activated. See [migration, architecture and release gates](docs/COMPANY_WORKSPACE_PERSISTENCE.md).
+
+A [private company worklist](docs/PRIVATE_COMPANY_WORKBENCH.md) now connects that existing store to a same-origin local read/edit API, preserving notes, next actions, statuses and due dates with conflict/uncertain-save handling. It is limited to one trusted local operator and has no remote authentication or source/delivery controls. In-process API and mocked UI checks do not establish real server/browser acceptance; nothing is launched or deployed by this change.

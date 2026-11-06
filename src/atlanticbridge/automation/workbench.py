@@ -41,6 +41,48 @@ class RequestError(Exception):
         self.status, self.message = status, message
 
 
+def local_request(e, host):
+    """Shared loopback transport gate, before static or private API routing."""
+    try:
+        loopback = ipaddress.ip_address(e.get('REMOTE_ADDR', '')).is_loopback
+    except ValueError:
+        loopback = False
+    if not loopback or e.get('HTTP_HOST') != host or e.get('wsgi.url_scheme') != 'http':
+        raise RequestError(403, 'Loopback origin required.')
+    if e.get('HTTP_TRANSFER_ENCODING') is not None or e.get('HTTP_CONTENT_ENCODING') is not None:
+        raise RequestError(400, 'Encoded requests are not supported.')
+    method, path, query = e.get('REQUEST_METHOD'), e.get('PATH_INFO', ''), e.get('QUERY_STRING', '')
+    if method not in {'GET', 'POST'}:
+        raise RequestError(405, 'Method not allowed.')
+    return method, path, query
+
+
+def same_origin(e, origin, *, write=False):
+    if e.get('HTTP_SEC_FETCH_SITE') != 'same-origin' or e.get('HTTP_ORIGIN', origin) != origin:
+        raise RequestError(403, 'Same-origin browser request required.')
+    if write and e.get('HTTP_ORIGIN') != origin:
+        raise RequestError(403, 'Exact origin required.')
+
+
+def read_json_body(e):
+    if e.get('CONTENT_TYPE') != 'application/json':
+        raise RequestError(415, 'JSON required.')
+    length = e.get('CONTENT_LENGTH', '')
+    if not re.fullmatch(r'[0-9]{1,6}', length):
+        raise RequestError(400, 'Bounded content length required.')
+    length = int(length)
+    if length > MAX_BODY:
+        raise RequestError(413, 'Request too large.')
+    try:
+        raw = e['wsgi.input'].read(length)
+        if len(raw) != length:
+            raise ValueError('Truncated input')
+        return json.loads(raw.decode('utf-8'), object_pairs_hook=json_object,
+                          parse_constant=lambda _: (_ for _ in ()).throw(ValueError('Nonfinite JSON')))
+    except (ValueError, TypeError, UnicodeError, RecursionError):
+        raise RequestError(400, 'Invalid analyst fields or JSON.') from None
+
+
 def valid_raw_headers(headers):
     """Called before WSGI normalization; separate pure function for offline QA."""
     seen = set()
@@ -151,45 +193,20 @@ class Workbench:
         return [body]
 
     def dispatch(self, e):
-        try:
-            loopback = ipaddress.ip_address(e.get('REMOTE_ADDR', '')).is_loopback
-        except ValueError:
-            loopback = False
-        if not loopback or e.get('HTTP_HOST') != self.host or e.get('wsgi.url_scheme') != 'http':
-            raise RequestError(403, 'Loopback origin required.')
-        if e.get('HTTP_TRANSFER_ENCODING') is not None or e.get('HTTP_CONTENT_ENCODING') is not None:
-            raise RequestError(400, 'Encoded requests are not supported.')
-        method, path = e.get('REQUEST_METHOD'), e.get('PATH_INFO', '')
-        query = e.get('QUERY_STRING', '')
-        if method not in {'GET', 'POST'}:
-            raise RequestError(405, 'Method not allowed.')
+        method, path, query = local_request(e, self.host)
         if path in ASSETS and method == 'GET' and not query:
             name, kind = ASSETS[path]
             return 200, kind, files('atlanticbridge.automation').joinpath('workbench_assets', name).read_bytes()
         if not path.startswith('/api/'):
             raise RequestError(404, 'Route not found.')
-        if e.get('HTTP_SEC_FETCH_SITE') != 'same-origin' or e.get('HTTP_ORIGIN', self.origin) != self.origin:
-            raise RequestError(403, 'Same-origin browser request required.')
+        same_origin(e, self.origin)
         match = re.fullmatch(r'/api/items/([0-9a-f]{64})', path)
         if method == 'POST':
             if not match or query:
                 raise RequestError(404, 'Route not found.')
-            if e.get('HTTP_ORIGIN') != self.origin:
-                raise RequestError(403, 'Exact origin required.')
-            if e.get('CONTENT_TYPE') != 'application/json':
-                raise RequestError(415, 'JSON required.')
-            length = e.get('CONTENT_LENGTH', '')
-            if not re.fullmatch(r'[0-9]{1,6}', length):
-                raise RequestError(400, 'Bounded content length required.')
-            length = int(length)
-            if length > MAX_BODY:
-                raise RequestError(413, 'Request too large.')
+            same_origin(e, self.origin, write=True)
             try:
-                raw = e['wsgi.input'].read(length)
-                if len(raw) != length:
-                    raise ValueError('Truncated input')
-                data = save_fields(json.loads(raw.decode('utf-8'), object_pairs_hook=json_object,
-                                              parse_constant=lambda _: (_ for _ in ()).throw(ValueError('Nonfinite JSON'))))
+                data = save_fields(read_json_body(e))
             except (ValueError, TypeError, UnicodeError, RecursionError):
                 raise RequestError(400, 'Invalid analyst fields or JSON.') from None
             # Verified backup snapshot before save; locked live verification inside

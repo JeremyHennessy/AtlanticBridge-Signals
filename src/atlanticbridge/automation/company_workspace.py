@@ -315,11 +315,22 @@ def entries(path):
                 for row in db.execute('SELECT * FROM company_entries ORDER BY company_id')]
 
 
-def save(path, company_id, *, expected_revision, fields, actor, at):
-    """Future UI storage boundary: analyst fields only, exact company namespace."""
-    _id(company_id); integer(expected_revision, 'revision', 1, 2147483646); _actor(actor)
+def validate_fields(fields):
     if type(fields) is not dict or set(fields) != EDIT_FIELDS:
         raise ValueError('Only exact analyst edit fields may be saved')
+    if type(fields['status']) is not str or fields['status'] not in STATUSES:
+        raise ValueError('Invalid company workspace status')
+    for key in ('notes', 'next_action', 'due_date'):
+        _text(fields[key], LIMITS[key])
+    if fields['due_date']:
+        day(fields['due_date'])
+    return dict(fields)
+
+
+def save(path, company_id, *, expected_revision, fields, actor, at):
+    """Analyst fields only, exact company namespace and expected revision."""
+    _id(company_id); integer(expected_revision, 'revision', 1, 2147483646); _actor(actor)
+    fields = validate_fields(fields)
     at = timestamp(at)
     with _write(path) as db:
         row = db.execute('SELECT * FROM company_entries WHERE company_id=?', (company_id,)).fetchone()
