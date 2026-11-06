@@ -1,7 +1,9 @@
 {
   "schema_version": 1,
-  "run_id": "42086902008",
-  "attempt_at": "2026-11-05T18:43:31.271045+00:00",
+  "run_id": "42248291635",
+  "attempt_at": "2026-11-06T16:00:48.376651+00:00",
   "status": "FAILED",
-  "error_type": "JSONDecodeError"
+  "phase": "monitor_artifact_12101413034",
+  "error_type": "ValueError",
+  "detail": "Draft privacy check failed or inconclusive: HTTP 403"
 }
