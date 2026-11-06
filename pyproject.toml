@@ -15,4 +15,4 @@ dependencies = [
 where = ["src"]
 
 [tool.setuptools.package-data]
-atlanticbridge = ["sources/nl_assessment_fixture_records.json", "sources/halifax_permit_pinned_records.json"]
+atlanticbridge = ["sources/nl_assessment_fixture_records.json", "sources/halifax_permit_pinned_records.json", "automation/workbench_assets/*.html", "automation/workbench_assets/*.css", "automation/workbench_assets/*.js"]

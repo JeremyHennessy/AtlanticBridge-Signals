@@ -55,6 +55,20 @@ def _prepare_private_database(path):
     _check_private_family(path)
 
 
+def _reserve_private_destination(path):
+    """Reserve a fresh private database family without touching orphan sidecars."""
+    path = str(path)
+    for suffix in ('', '-wal', '-shm', '-journal'):
+        if os.path.lexists(path + suffix):
+            raise FileExistsError('Destination database family already exists')
+    fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_RDWR | getattr(os, 'O_NOFOLLOW', 0), 0o600)
+    os.close(fd)
+    for suffix in ('-wal', '-shm', '-journal'):
+        if os.path.lexists(path + suffix):
+            raise FileExistsError('Destination sidecar appeared during reservation')
+    _check_private_family(path)
+
+
 class Store:
     def __init__(self, path):
         self.path = str(path)
@@ -317,13 +331,13 @@ class Store:
     def backup(self, destination):
         """Use SQLite's snapshot API, not a copy of a live WAL database. Never overwrite."""
         destination = Path(destination)
-        fd = os.open(destination, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-        os.close(fd)
+        _reserve_private_destination(destination)
         target = sqlite3.connect(destination)
         try:
             self.db.backup(target)
             target.close()
             report = verify_database(destination)
+            _check_private_family(str(destination))
             with destination.open("rb") as handle:
                 os.fsync(handle.fileno())
             return report
@@ -335,53 +349,62 @@ class Store:
 
 def verify_database(path):
     """Read-only integrity and content-hash check. Does not promote or overwrite anything."""
-    db = sqlite3.connect(Path(path).resolve().as_uri() + "?mode=ro", uri=True)
+    try:
+        _check_private_family(str(path))
+    except FileNotFoundError as error:
+        raise sqlite3.OperationalError("Unable to open missing private foundation database") from error
+    db = sqlite3.connect(Path(path).absolute().as_uri() + "?mode=ro", uri=True)
     db.row_factory = sqlite3.Row
     try:
-        if db.execute("PRAGMA integrity_check").fetchone()[0] != "ok" or db.execute("PRAGMA foreign_key_check").fetchall():
-            raise ValueError("Backup SQLite integrity failed")
-        version = db.execute("SELECT value FROM foundation_meta WHERE key='schema_version'").fetchone()
-        if not version or version[0] != str(schema.VERSION):
-            raise ValueError("Unsupported backup schema")
-        for sha, body, count in db.execute("SELECT sha256,body,byte_count FROM evidence_blobs"):
-            if len(body) != count or hashlib.sha256(body).hexdigest() != sha:
-                raise ValueError("Backup evidence hash mismatch")
-        for version_id, source, record_id, contract_id, sha, content in db.execute("SELECT version_id,source_id,record_id,contract_id,content_sha256,content_json FROM record_versions"):
-            if digest(json.loads(content)) != sha or digest([source, record_id, contract_id, sha]) != version_id:
-                raise ValueError("Backup record hash mismatch")
-        for contract_id, source, content in db.execute("SELECT contract_id,source_id,contract_json FROM contracts"):
-            contract = SourceContract.from_dict(json.loads(content))
-            if contract.contract_id != contract_id or contract.source_id != source:
-                raise ValueError("Backup source contract mismatch")
-        bindings = db.execute("""SELECT v.source_id,v.record_id,v.content_json,v.origin,
-            c.contract_json,b.body,o.source_observed_at,r.source_id
-            FROM observations o JOIN record_versions v USING(version_id)
-            JOIN contracts c ON c.contract_id=v.contract_id
-            JOIN evidence_blobs b ON b.sha256=o.input_sha256
-            JOIN runs r USING(run_id)""")
-        decoded = {}
-        for source, record_id, content, origin, contract_json, raw, observed, run_source in bindings:
-            contract = SourceContract.from_dict(json.loads(contract_json))
-            key = (contract.contract_id, hashlib.sha256(raw).hexdigest())
-            if key not in decoded:
-                if len(decoded) >= 2:
-                    decoded.clear()  # Bound validation memory regardless of database history size.
-                decoded[key] = {r.record_id: r for r in decode_batch(raw, contract).records}
-            record = decoded[key].get(record_id)
-            if (source != contract.source_id or run_source != source or origin != contract.origin
-                    or record is None or canonical(record.content()) != content
-                    or (timestamp(record.source_observed_at) if record.source_observed_at else None) != observed):
-                raise ValueError("Backup observation-to-evidence binding failed")
-        for table, pointer in (("records", "current_version_id"), ("work_items", "latest_version_id")):
-            mismatch = db.execute(f"""SELECT 1 FROM {table} x JOIN record_versions v ON v.version_id=x.{pointer}
-                WHERE x.source_id<>v.source_id OR x.record_id<>v.record_id LIMIT 1""").fetchone()
-            if mismatch:
-                raise ValueError("Backup current-version identity mismatch")
-        from .integrity import validate_semantics
-        validate_semantics(db)
-        return {"integrity": "ok", "schema_version": schema.VERSION,
-                "evidence_blobs": db.execute("SELECT COUNT(*) FROM evidence_blobs").fetchone()[0],
-                "work_items": db.execute("SELECT COUNT(*) FROM work_items").fetchone()[0],
-                "mode": "LOCAL_ONLY_NO_DELIVERY"}
+        return verify_connection(db)
     finally:
         db.close()
+
+
+def verify_connection(db):
+    """Verify the caller-owned snapshot; never open a second, different history."""
+    if db.execute("PRAGMA integrity_check").fetchone()[0] != "ok" or db.execute("PRAGMA foreign_key_check").fetchall():
+        raise ValueError("Backup SQLite integrity failed")
+    version = db.execute("SELECT value FROM foundation_meta WHERE key='schema_version'").fetchone()
+    if not version or version[0] != str(schema.VERSION):
+        raise ValueError("Unsupported backup schema")
+    for sha, body, count in db.execute("SELECT sha256,body,byte_count FROM evidence_blobs"):
+        if len(body) != count or hashlib.sha256(body).hexdigest() != sha:
+            raise ValueError("Backup evidence hash mismatch")
+    for version_id, source, record_id, contract_id, sha, content in db.execute("SELECT version_id,source_id,record_id,contract_id,content_sha256,content_json FROM record_versions"):
+        if digest(json.loads(content)) != sha or digest([source, record_id, contract_id, sha]) != version_id:
+            raise ValueError("Backup record hash mismatch")
+    for contract_id, source, content in db.execute("SELECT contract_id,source_id,contract_json FROM contracts"):
+        contract = SourceContract.from_dict(json.loads(content))
+        if contract.contract_id != contract_id or contract.source_id != source:
+            raise ValueError("Backup source contract mismatch")
+    bindings = db.execute("""SELECT v.source_id,v.record_id,v.content_json,v.origin,
+        c.contract_json,b.body,o.source_observed_at,r.source_id
+        FROM observations o JOIN record_versions v USING(version_id)
+        JOIN contracts c ON c.contract_id=v.contract_id
+        JOIN evidence_blobs b ON b.sha256=o.input_sha256
+        JOIN runs r USING(run_id)""")
+    decoded = {}
+    for source, record_id, content, origin, contract_json, raw, observed, run_source in bindings:
+        contract = SourceContract.from_dict(json.loads(contract_json))
+        key = (contract.contract_id, hashlib.sha256(raw).hexdigest())
+        if key not in decoded:
+            if len(decoded) >= 2:
+                decoded.clear()  # Bound validation memory regardless of database history size.
+            decoded[key] = {r.record_id: r for r in decode_batch(raw, contract).records}
+        record = decoded[key].get(record_id)
+        if (source != contract.source_id or run_source != source or origin != contract.origin
+                or record is None or canonical(record.content()) != content
+                or (timestamp(record.source_observed_at) if record.source_observed_at else None) != observed):
+            raise ValueError("Backup observation-to-evidence binding failed")
+    for table, pointer in (("records", "current_version_id"), ("work_items", "latest_version_id")):
+        mismatch = db.execute(f"""SELECT 1 FROM {table} x JOIN record_versions v ON v.version_id=x.{pointer}
+            WHERE x.source_id<>v.source_id OR x.record_id<>v.record_id LIMIT 1""").fetchone()
+        if mismatch:
+            raise ValueError("Backup current-version identity mismatch")
+    from .integrity import validate_semantics
+    validate_semantics(db)
+    return {"integrity": "ok", "schema_version": schema.VERSION,
+            "evidence_blobs": db.execute("SELECT COUNT(*) FROM evidence_blobs").fetchone()[0],
+            "work_items": db.execute("SELECT COUNT(*) FROM work_items").fetchone()[0],
+            "mode": "LOCAL_ONLY_NO_DELIVERY"}

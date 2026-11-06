@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import os
 import stat
 
-from .models import decode_batch, integer, timestamp
+from .models import decode_batch, integer, timestamp, source_id
 from .store import Conflict
 
 
@@ -76,10 +76,20 @@ class OfflineScheduler:
         except Exception:
             return self._fail(run_id, "UNEXPECTED_ERROR")
 
-    def run_due(self, *, max_jobs=100):
+    def run_due(self, *, max_jobs=100, source_ids=None):
         integer(max_jobs, "maximum jobs", 1, 1000)
+        scope, args = '', []
+        if source_ids is not None:
+            if not isinstance(source_ids, (list, tuple)) or not 1 <= len(source_ids) <= 100:
+                raise ValueError('Explicit bounded source scope required')
+            for value in source_ids:
+                source_id(value)
+            if len(set(source_ids)) != len(source_ids):
+                raise ValueError('Duplicate source scope')
+            scope = ' AND source_id IN (' + ','.join('?' for _ in source_ids) + ')'
+            args = list(source_ids)
         at = timestamp(self.clock())
         sources = [row[0] for row in self.store.db.execute(
-            "SELECT source_id FROM sources WHERE state='READY' AND ((lease_token IS NULL AND next_due_at<=?) OR lease_until<=?) ORDER BY next_due_at,source_id LIMIT ?",
-            (at, at, max_jobs))]
+            "SELECT source_id FROM sources WHERE state='READY' AND ((lease_token IS NULL AND next_due_at<=?) OR lease_until<=?)" + scope + " ORDER BY next_due_at,source_id LIMIT ?",
+            (at, at, *args, max_jobs))]
         return [self.run_one(source) for source in sources]
