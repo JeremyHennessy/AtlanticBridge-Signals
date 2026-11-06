@@ -204,3 +204,7 @@ A separate local-only browser workbench can review an existing private automatio
 ### Bounded local import/review cycle
 
 An explicitly invoked local coordinator now joins existing READY plan-scoped file imports, append-only review staging, and validated durable readback. It never initializes/registers/resumes sources or creates a schedule, and has no live collection or delivery. See [bounded cycle operation and partial-outcome recovery](docs/bounded-local-cycle.md). Existing local workbench loads show persisted changes; no server/browser launch is part of the cycle.
+
+### Preserve the existing company worklist
+
+The public app's company IDs and five analyst statuses are not the evidence foundation's source-record IDs/statuses. A separate private company store now supports explicit, lossless browser-backup imports, audited revision-checked analyst edits, and compatible exports without identity mapping or evidence promotion. The public UI is not rewired and no backend is activated. See [migration, architecture and release gates](docs/COMPANY_WORKSPACE_PERSISTENCE.md).

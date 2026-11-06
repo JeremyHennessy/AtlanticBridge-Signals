@@ -1,0 +1,77 @@
+{
+  "format": "atlanticbridge-analyst-workspace",
+  "schema_version": 1,
+  "exported_at": "2026-11-06T12:01:00.000Z",
+  "entries": [
+    {
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "new",
+      "company_name": "Invented same-name company",
+      "country": "France",
+      "notes": "Private invented note 🦞 <script>not executable</script>\n=1+1",
+      "next_action": "Review, do not contact",
+      "due_date": "2026-11-30",
+      "updated_at": "2026-11-06T12:00:00.000Z",
+      "source_url": "https://example.org/invented-source",
+      "source_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "snapshot_observed_at": "2026-11-05T12:00:00.000Z",
+      "latest_public_date": "2023-08-04"
+    },
+    {
+      "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "status": "researching",
+      "company_name": "Invented same-name company",
+      "country": "France",
+      "notes": "Invented note 1",
+      "next_action": "Review, do not contact",
+      "due_date": "2026-11-30",
+      "updated_at": "2026-11-06T12:00:00.000Z",
+      "source_url": "https://example.org/invented-source",
+      "source_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "snapshot_observed_at": "2026-11-05T12:00:00.000Z",
+      "latest_public_date": "2023-08-04"
+    },
+    {
+      "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "status": "contacted",
+      "company_name": "Invented same-name company",
+      "country": "France",
+      "notes": "Invented note 2",
+      "next_action": "Review, do not contact",
+      "due_date": "2026-11-30",
+      "updated_at": "2026-11-06T12:00:00.000Z",
+      "source_url": "https://example.org/invented-source",
+      "source_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "snapshot_observed_at": "2026-11-05T12:00:00.000Z",
+      "latest_public_date": "2023-08-04"
+    },
+    {
+      "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "status": "follow_up",
+      "company_name": "Invented same-name company",
+      "country": "France",
+      "notes": "Invented note 3",
+      "next_action": "Review, do not contact",
+      "due_date": "2026-11-30",
+      "updated_at": "2026-11-06T12:00:00.000Z",
+      "source_url": "https://example.org/invented-source",
+      "source_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "snapshot_observed_at": "2026-11-05T12:00:00.000Z",
+      "latest_public_date": "2023-08-04"
+    },
+    {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "status": "closed",
+      "company_name": "Invented same-name company",
+      "country": "France",
+      "notes": "Invented note 4",
+      "next_action": "Review, do not contact",
+      "due_date": "2026-11-30",
+      "updated_at": "2026-11-06T12:00:00.000Z",
+      "source_url": "https://example.org/invented-source",
+      "source_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "snapshot_observed_at": "2026-11-05T12:00:00.000Z",
+      "latest_public_date": "2023-08-04"
+    }
+  ]
+}
