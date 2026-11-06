@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "status": "VERIFIED_DRAFT_COPY",
-  "verified_at": "2026-11-06T16:55:45.761004+00:00",
-  "archive_run_id": "42256839291",
+  "verified_at": "2026-11-06T17:56:58.566775+00:00",
+  "archive_run_id": "42266197151",
   "code_commit": "1408cb351872c19db6ed5b8febe58fa039e0b4d0",
   "release_id": 430699777,
   "release_tag": "evidence-v1-2026-11",
