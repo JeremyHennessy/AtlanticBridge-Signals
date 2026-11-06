@@ -32,7 +32,7 @@ The separate local analyst workspace receives only this role glossary. It does n
 
 ## Verification scope
 
-Initial focused checks were followed by complete offline integration tests. The minimal release was reconstructed from exact main commit ab8515afbc41ef24e2a509c71b2ced9aa5f9cba5 and passed 488 Python and 103 Node tests, deterministic dashboard generation, the strict publication gate and workflow syntax checks. No test was skipped and the offline guards recorded no network/process attempts.
+Initial focused checks were followed by complete offline integration tests. The minimal release was reconstructed from exact main commit ab8515afbc41ef24e2a509c71b2ced9aa5f9cba5 and passed 490 Python and 103 Node tests, deterministic dashboard generation, the strict publication gate and workflow syntax checks. No test was skipped and the offline guards recorded no network/process attempts.
 
 This verifies source logic and mocked UI behavior, not actual browser acceptance or current source freshness. Expected PR checks retain the existing ISED Investment Canada and CanadaBuys source proofs. The changes do not add a collector, qualify opportunities or accept an amount aggregate.
 
