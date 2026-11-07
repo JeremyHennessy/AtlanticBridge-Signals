@@ -15,6 +15,12 @@ SCHEMA_VERSION = 1
 SOURCE_FAMILY = "CANADABUYS_AWARD"
 SOURCE_LABEL = "CanadaBuys federal award notice"
 SIGNAL_STAGE = "ACTIVE_CANADIAN_COMMERCIAL_EVIDENCE"
+OBSERVATION_HISTORY_SCOPE = "INPUT_DATABASE_ONLY"
+OBSERVATION_HISTORY_WARNING = (
+    "First and last observed timestamps cover only the history retained in the input database. "
+    "Rebuilding an empty database resets these clocks. They do not establish first-ever discovery, "
+    "source publication, a new award or a change in company activity."
+)
 _DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})")
 
 
@@ -74,6 +80,8 @@ def unavailable_payload(*, reason: str, generated_at: str | None = None) -> dict
             "label": SOURCE_LABEL,
             "observed_at": None,
             "source_url": None,
+            "observation_history_scope": OBSERVATION_HISTORY_SCOPE,
+            "observation_history_warning": OBSERVATION_HISTORY_WARNING,
         },
         "summary": {
             "signal_count": 0,
@@ -185,6 +193,7 @@ def build_canadabuys_live_signals(
                 "publicly_available_date": public_date.isoformat(),
                 "first_observed_at": str(row["first_observed_at"] or ""),
                 "last_observed_at": str(row["last_observed_at"] or ""),
+                "observation_history_scope": OBSERVATION_HISTORY_SCOPE,
                 "recency_days": (as_of_date - public_date).days,
                 "title": title,
                 "reference_number": reference_number,
@@ -233,6 +242,8 @@ def build_canadabuys_live_signals(
             "source_bytes": latest["source_bytes"],
             "source_record_count": latest["record_count"],
             "source_eu27_record_count": latest["eu27_record_count"],
+            "observation_history_scope": OBSERVATION_HISTORY_SCOPE,
+            "observation_history_warning": OBSERVATION_HISTORY_WARNING,
         },
         "summary": {
             "signal_count": len(signals),
