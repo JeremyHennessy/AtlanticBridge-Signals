@@ -1,0 +1,711 @@
+{
+  "schema_version": 1,
+  "status": "VERIFIED_DRAFT_COPY",
+  "verified_at": "2026-11-07T15:53:47.389940+00:00",
+  "archive_run_id": "42388545978",
+  "code_commit": "1408cb351872c19db6ed5b8febe58fa039e0b4d0",
+  "release_id": 430699777,
+  "release_tag": "evidence-v1-2026-11",
+  "draft": true,
+  "items": [
+    {
+      "artifact_id": 10718724645,
+      "original_workflow_run": 35784630687,
+      "raw_response_count": 30,
+      "archive_asset": {
+        "asset_id": 698830128,
+        "name": "artifact-10718724645-46f6e0853b6848cc.zip",
+        "sha256": "46f6e0853b6848cc10d5982e54bebeac2bf810e6e3ede19062b470e6c39a75a6",
+        "size": 933803,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10724109813,
+      "original_workflow_run": 35799557407,
+      "raw_response_count": 2,
+      "archive_asset": {
+        "asset_id": 698830389,
+        "name": "artifact-10724109813-6f5f5b169681f0bb.zip",
+        "sha256": "6f5f5b169681f0bbc0b01d116f97cb3ee0a254385619f094cd101d8c98c415cc",
+        "size": 20521981,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10717489758,
+      "original_workflow_run": 35780391451,
+      "raw_response_count": 17,
+      "archive_asset": {
+        "asset_id": 698830583,
+        "name": "artifact-10717489758-003c42f027050660.zip",
+        "sha256": "003c42f02705066074a87bc5cac33ac0c72833d1c4a03bed3b01a1c5b660874a",
+        "size": 2410979,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10720884358,
+      "original_workflow_run": 35789513264,
+      "raw_response_count": 34,
+      "archive_asset": {
+        "asset_id": 698830792,
+        "name": "artifact-10720884358-db6e1b2055d27d3b.zip",
+        "sha256": "db6e1b2055d27d3bf945a2c2ce228321b3425d1dea4c6baaf4d9d78f7713e802",
+        "size": 3040348,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10724340100,
+      "original_workflow_run": 35796287072,
+      "raw_response_count": 44,
+      "archive_asset": {
+        "asset_id": 698830916,
+        "name": "artifact-10724340100-eb1a6546cf430611.zip",
+        "sha256": "eb1a6546cf4306118d0dc77cbb7e665468230a169cefed7ed5dc56ef52acaf0a",
+        "size": 1248797,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10729310481,
+      "original_workflow_run": 35809114154,
+      "raw_response_count": 20,
+      "archive_asset": {
+        "asset_id": 698831060,
+        "name": "artifact-10729310481-478167783afbd109.zip",
+        "sha256": "478167783afbd109deccc8a4576252fef895a67c9585ce8c61c45ae937336365",
+        "size": 1610601,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 10729682735,
+      "original_workflow_run": 35810701584,
+      "raw_response_count": 26,
+      "archive_asset": {
+        "asset_id": 698831206,
+        "name": "artifact-10729682735-39892597bcdf03f6.zip",
+        "sha256": "39892597bcdf03f6ba7e093ece34c7618f0dff8450d8c77c30951745b1ff2064",
+        "size": 947404,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      }
+    },
+    {
+      "artifact_id": 13580491520,
+      "original_workflow_run": 42388484768,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 721151170,
+        "name": "artifact-13580491520-4f96ca90f41fd948.zip",
+        "sha256": "4f96ca90f41fd948f05f3025387113156ff53c2169d2f9670ec5652b2dcd8b6e",
+        "size": 1878022,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 721151260,
+        "name": "checkpoint-679a83f862cca457016c3d63e9ce7f48202dcd50-01a5e6920f8991c2.json",
+        "sha256": "01a5e6920f8991c2b4f51e2e62500ea55d9f8db9e9e1470162eae787f9643dbe",
+        "size": 1446467,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "e401067a3cfa12748a7cae360522f5cbca7be1df65fc2a3782fbe80278902392",
+        "run_id": "42388484768-1",
+        "observations": 545,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "679a83f862cca457016c3d63e9ce7f48202dcd50"
+      }
+    },
+    {
+      "artifact_id": 13522363382,
+      "original_workflow_run": 42256699092,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717855938,
+        "name": "artifact-13522363382-f8e2268183073a1f.zip",
+        "sha256": "f8e2268183073a1f6fe01e400125fb11adbbbaceb2b3ea71b6db739cc95185d7",
+        "size": 1882946,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717856033,
+        "name": "checkpoint-a47f03004ec974fb45a80a94325dc2a6439d0080-2d2af7e24627928b.json",
+        "sha256": "2d2af7e24627928b1324c2ee8f5e5211c7e310ca184cb1eebae950ef94c9c689",
+        "size": 1427390,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "9643a9590ca2784629f88152a43902c1ca61f2fa4062ffae692bccf74ca1e947",
+        "run_id": "42256699092-1",
+        "observations": 542,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "a47f03004ec974fb45a80a94325dc2a6439d0080"
+      }
+    },
+    {
+      "artifact_id": 13518653988,
+      "original_workflow_run": 42248799161,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717856175,
+        "name": "artifact-13518653988-98a9873295704f1f.zip",
+        "sha256": "98a9873295704f1fcdd929998e0446a2944cd35fa27f55920ffd06f5fbea5891",
+        "size": 1749439,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717856245,
+        "name": "checkpoint-438438a879f3abd4fc7daa3385bc2ba523631376-f6206f92d9748581.json",
+        "sha256": "f6206f92d9748581a1bf3b00e92ae817bc461c041e73c911fb363a245e3f986e",
+        "size": 1422482,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "09ed498921985881eac5f4f504e6c13f297694df07a37c4007f0cc6579cf2393",
+        "run_id": "42248799161-1",
+        "observations": 542,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "438438a879f3abd4fc7daa3385bc2ba523631376"
+      }
+    },
+    {
+      "artifact_id": 13439306020,
+      "original_workflow_run": 42076304879,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717694515,
+        "name": "artifact-13439306020-9b8b5c1c92b36afc.zip",
+        "sha256": "9b8b5c1c92b36afcc9fcde9a64eb6e9ccc7d76731f355e8e1692e7c54f137206",
+        "size": 1751684,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717694647,
+        "name": "checkpoint-d23cb11688d956a281545a57a06f776a3839fbee-4e15081b03979162.json",
+        "sha256": "4e15081b0397916288f668d7d92a6f22f2f3863cda7f3450f452e1614b69c25d",
+        "size": 1390376,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "44df967fba26396e387eb065282922e191fb3f5da0da8151cce98d5d17724704",
+        "run_id": "42076304879-1",
+        "observations": 538,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "d23cb11688d956a281545a57a06f776a3839fbee"
+      }
+    },
+    {
+      "artifact_id": 13348140413,
+      "original_workflow_run": 41877737219,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717694871,
+        "name": "artifact-13348140413-dd9d68e814655936.zip",
+        "sha256": "dd9d68e814655936a2e6efaecdc7704e31b1ffe86303937df68ff28643980b60",
+        "size": 1743884,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717694990,
+        "name": "checkpoint-77bed88c455cf8275de06ec0a4ca6b6d55a4db3a-4dfa792a52fc9170.json",
+        "sha256": "4dfa792a52fc9170563e0fe50456c9508ce1040968554fc3bab5ab391191ba5c",
+        "size": 1365356,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "5585b59c1ea61e8180dc95a7baae1eeb530f1260ef34c0f21c0f19034396ca44",
+        "run_id": "41877737219-1",
+        "observations": 533,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "77bed88c455cf8275de06ec0a4ca6b6d55a4db3a"
+      }
+    },
+    {
+      "artifact_id": 13252619587,
+      "original_workflow_run": 41682711618,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717695200,
+        "name": "artifact-13252619587-756c9522fa20a167.zip",
+        "sha256": "756c9522fa20a1677e5434b130beeaf1cb4c2fb1a1e61f584da7d4595ab188e9",
+        "size": 1741654,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717695308,
+        "name": "checkpoint-d0adaaa722d448cc30d173faa99c6576468dcde9-aff91df2b222425b.json",
+        "sha256": "aff91df2b222425bee71627df2f275b603cd9865c755957dcab6e3828670a409",
+        "size": 1341335,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "9e647a6d615da7c178fd61ee52405ef19c485cca5bd62bab9a1db259d9f0c9c7",
+        "run_id": "41682711618-1",
+        "observations": 528,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "d0adaaa722d448cc30d173faa99c6576468dcde9"
+      }
+    },
+    {
+      "artifact_id": 13173776630,
+      "original_workflow_run": 41512628702,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717695493,
+        "name": "artifact-13173776630-8f95f3e37fdae135.zip",
+        "sha256": "8f95f3e37fdae13580dbfecafbd6aa4f32300bf2964fe0d3cc0266169128cc1a",
+        "size": 1730827,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717695604,
+        "name": "checkpoint-02b553ba9899e23dbaea47b51bd4d563c95547a9-1205f29ec1455a8d.json",
+        "sha256": "1205f29ec1455a8dc638b892a9b7e2fbf1597fabd84f4a1a92bcfd8c05674fa4",
+        "size": 1323787,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "ebdaf85527d541100fc05a0e94d3df2685b3d80fe173663c1aa7744e56957c3a",
+        "run_id": "41512628702-1",
+        "observations": 526,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "02b553ba9899e23dbaea47b51bd4d563c95547a9"
+      }
+    },
+    {
+      "artifact_id": 13091285922,
+      "original_workflow_run": 41325518224,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717695803,
+        "name": "artifact-13091285922-f0ef18a45a131025.zip",
+        "sha256": "f0ef18a45a1310251b4bf9b1db1dda96f3c7042a0970ede2ea50e41974f41d68",
+        "size": 1724723,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717695991,
+        "name": "checkpoint-780a54a2940578220fb30d4bb783c40fff09e929-6bd0ceb89211b2a8.json",
+        "sha256": "6bd0ceb89211b2a85ca53e6d093dcf6fb2f036004af98eda7cca3f1ca79a8049",
+        "size": 1301049,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "785d41e76e1147ee31c77c5486d2ac7f4fe5131b6eb6520b101a61d5b4962696",
+        "run_id": "41325518224-1",
+        "observations": 522,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "780a54a2940578220fb30d4bb783c40fff09e929"
+      }
+    },
+    {
+      "artifact_id": 13047499350,
+      "original_workflow_run": 41215027359,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717696237,
+        "name": "artifact-13047499350-c1d14a91229ae0be.zip",
+        "sha256": "c1d14a91229ae0bec20788ce538c2d3826ac2bddbc5236c9ee1ce09398826b4d",
+        "size": 1724747,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717696398,
+        "name": "checkpoint-668e668b00d50b1f213d87082be8663f527d3157-86819502ab7a2793.json",
+        "sha256": "86819502ab7a2793dde5cb3f773780447c219112ec5c010356bc9dcae195017f",
+        "size": 1296141,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "c630a8ef8711e6e746291426b76102bca927da27af97d1fa802eaad1f8aede5c",
+        "run_id": "41215027359-1",
+        "observations": 522,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "668e668b00d50b1f213d87082be8663f527d3157"
+      }
+    },
+    {
+      "artifact_id": 12992870894,
+      "original_workflow_run": 41087538791,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717696714,
+        "name": "artifact-12992870894-d31dfe0b45114ae3.zip",
+        "sha256": "d31dfe0b45114ae3606b0e414b53289e2c84aa06c3d355e8ef6ce74a1bcbf159",
+        "size": 1725112,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717696894,
+        "name": "checkpoint-d7e7045c458b166aae88d69ba2b657df682c758b-7a7185066e5d6d3d.json",
+        "sha256": "7a7185066e5d6d3d84fa5d08460026e92c85810bca19d95cb1852d2fc57f962b",
+        "size": 1288715,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "045fdc4502dccc9008d800c9a691ccb03820ca7b0178fcb9db592801996562f2",
+        "run_id": "41087538791-1",
+        "observations": 521,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "d7e7045c458b166aae88d69ba2b657df682c758b"
+      }
+    },
+    {
+      "artifact_id": 12914425858,
+      "original_workflow_run": 40911034354,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717697139,
+        "name": "artifact-12914425858-57c3e029b41c834f.zip",
+        "sha256": "57c3e029b41c834fb6ee75d2af66769e4c94f3b56b8c5162106414059943d8e3",
+        "size": 1724858,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717697262,
+        "name": "checkpoint-36dc46a856a141e800af8fe918f05b2323a440e7-d9d7ba46360113ed.json",
+        "sha256": "d9d7ba46360113ed005f35f93942f791360e12edf2dd7ea4451c5a12903f0f2a",
+        "size": 1272366,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "4ca2619496714e54ec03918bf8e66f5fff2bc4453e197ee30eb080c631f9c3fc",
+        "run_id": "40911034354-1",
+        "observations": 519,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "36dc46a856a141e800af8fe918f05b2323a440e7"
+      }
+    },
+    {
+      "artifact_id": 12832051510,
+      "original_workflow_run": 40724012697,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717697526,
+        "name": "artifact-12832051510-1711081ce18c1377.zip",
+        "sha256": "1711081ce18c137709139a51fd3b4d25aa8e30891f968d207cb1a9cca1e26a6d",
+        "size": 1713065,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717697655,
+        "name": "checkpoint-610076502002cc12360720da89b28ed4fd985cdd-f9b7702a78082453.json",
+        "sha256": "f9b7702a78082453912a3f382e610f58d83f8c862c261f97809dad6552134700",
+        "size": 1241010,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "d6bba468ee3fdc9615e089d30656d65103e0c3fd0f0d7e2125df89e06beaf29d",
+        "run_id": "40724012697-1",
+        "observations": 513,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "610076502002cc12360720da89b28ed4fd985cdd"
+      }
+    },
+    {
+      "artifact_id": 12747111675,
+      "original_workflow_run": 40531697996,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717697881,
+        "name": "artifact-12747111675-ee90837da5182d8c.zip",
+        "sha256": "ee90837da5182d8cfef48c2299cca90b4fcec29479b23e8d2a27258280f2e8b1",
+        "size": 1694653,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717698021,
+        "name": "checkpoint-271dbaa5d777f9a6bedb2c828985a8e6a407d7ad-73520e934226b3b8.json",
+        "sha256": "73520e934226b3b8ecdded7dde07de55cec0452f1bb84ca88aa998bb5d01d09a",
+        "size": 1208556,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "a2c6e3e2bccbede821a438d090db32d250ab302cbf8fb5ce7c6fd164f141b303",
+        "run_id": "40531697996-1",
+        "observations": 505,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "271dbaa5d777f9a6bedb2c828985a8e6a407d7ad"
+      }
+    },
+    {
+      "artifact_id": 12667591151,
+      "original_workflow_run": 40357624248,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717698350,
+        "name": "artifact-12667591151-3379ac1067d4eb50.zip",
+        "sha256": "3379ac1067d4eb504ba560c1ac640fa55471a1a119a38c7b4a31bc29f842727b",
+        "size": 1689952,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717698480,
+        "name": "checkpoint-898ef9f29b358c74d19df3297c4bc8992fe66234-6b6dc5d0219c912a.json",
+        "sha256": "6b6dc5d0219c912a5f68e7fcec54ab1d268b05c37ad8bb431759f1dc296924eb",
+        "size": 1188248,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "1947c2d6ca6f5e49d95a59bcadddfbeb1e9eec86687d775a140ff4005380e8f4",
+        "run_id": "40357624248-1",
+        "observations": 502,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "898ef9f29b358c74d19df3297c4bc8992fe66234"
+      }
+    },
+    {
+      "artifact_id": 12601826560,
+      "original_workflow_run": 40199666381,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717698763,
+        "name": "artifact-12601826560-7551a894a0d29e8f.zip",
+        "sha256": "7551a894a0d29e8f0b3d03047a6a7b3e3a3a3f6a7bf77e0c0f511dfa1d522ffc",
+        "size": 1698218,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717698921,
+        "name": "checkpoint-784da91bc85517b82524ef8d57b354aaf13f99b7-3c844c6b69ea1d25.json",
+        "sha256": "3c844c6b69ea1d257f6f6f70901793651ef783291a13cdcce66fe903286ee381",
+        "size": 1174451,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "7f8630ee215e71e807207e05c0c3b197c58cfd48b5c4a5a8280ac6af4115b41c",
+        "run_id": "40199666381-1",
+        "observations": 500,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "784da91bc85517b82524ef8d57b354aaf13f99b7"
+      }
+    },
+    {
+      "artifact_id": 12561462896,
+      "original_workflow_run": 40098642681,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717699134,
+        "name": "artifact-12561462896-5453c116e3b88dde.zip",
+        "sha256": "5453c116e3b88dde1539914b2765f295960f3f4f7409baca0274596134f8122c",
+        "size": 1697755,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717699242,
+        "name": "checkpoint-158038c79003af375dd39d773b1ad19b71e6e2ff-f60a27b5f1377ba3.json",
+        "sha256": "f60a27b5f1377ba3cfc951f0ae97eecf5910d5d8e1252cbefe47ee720144621c",
+        "size": 1168224,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "5af549a29ee1eb0d54f2e09c72e69828b4451b8e35e72e6cbe5bd1a23b060b80",
+        "run_id": "40098642681-1",
+        "observations": 500,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "158038c79003af375dd39d773b1ad19b71e6e2ff"
+      }
+    },
+    {
+      "artifact_id": 12508710885,
+      "original_workflow_run": 39969097533,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717699509,
+        "name": "artifact-12508710885-005d6347c88575ee.zip",
+        "sha256": "005d6347c88575eee797d7e321cb07e9173d2c8324ef13f466641684750f1bb8",
+        "size": 1693802,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717699615,
+        "name": "checkpoint-66b6e031992559bdbaa3f1c46e5b43fa90abf164-652899fdc21d3005.json",
+        "sha256": "652899fdc21d30057c7cfc5b6ee27d0fee9848de282a497c8f7e56c856cab419",
+        "size": 1156961,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "24441371ed68be2afef42503aa92e5ae48d00a9851624855ac03d635bfdb01d6",
+        "run_id": "39969097533-1",
+        "observations": 498,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "66b6e031992559bdbaa3f1c46e5b43fa90abf164"
+      }
+    },
+    {
+      "artifact_id": 12432719721,
+      "original_workflow_run": 39797289365,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717699854,
+        "name": "artifact-12432719721-9f5a96cf0c508315.zip",
+        "sha256": "9f5a96cf0c5083150810479d8cda23fc8aa6e50444e852bed99f0d27754a973a",
+        "size": 1688350,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717699956,
+        "name": "checkpoint-307595a4a10e033782cacc15171101365e6f96db-2874b8fd5a262a38.json",
+        "sha256": "2874b8fd5a262a3845ebd0d230952ee2c23175aa2558bce3e8409950a3575f45",
+        "size": 1130500,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "aaf18390b7074d3036e50769c02d59891bfec6c2c19df728eb61e95483553b88",
+        "run_id": "39797289365-1",
+        "observations": 492,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "307595a4a10e033782cacc15171101365e6f96db"
+      }
+    },
+    {
+      "artifact_id": 12354435392,
+      "original_workflow_run": 39618440638,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717700197,
+        "name": "artifact-12354435392-826891e361e48b80.zip",
+        "sha256": "826891e361e48b8077c9ae8f0ef35707acf464223b00aa981da44fd74270eccc",
+        "size": 1660672,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717700301,
+        "name": "checkpoint-9f9ccfc65e25e2ab6900c5f1bcfb6d538f4cc93f-8a65ff11071032a7.json",
+        "sha256": "8a65ff11071032a750ee2c7d6d8f4e5656c3a62248250c834cd4e2007c2ea241",
+        "size": 1100474,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "6cbbc3e46763cee032b14bb6f7dfc10a4bba8558b4ddd0a1ba01c06b70de6cda",
+        "run_id": "39618440638-1",
+        "observations": 483,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "9f9ccfc65e25e2ab6900c5f1bcfb6d538f4cc93f"
+      }
+    },
+    {
+      "artifact_id": 12272993982,
+      "original_workflow_run": 39439398286,
+      "raw_response_count": 27,
+      "archive_asset": {
+        "asset_id": 717700543,
+        "name": "artifact-12272993982-6a9ed327884134d0.zip",
+        "sha256": "6a9ed327884134d0d36b0dd35af0050388fa770276835ba4f5ef4b30deecb325",
+        "size": 1647645,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "checkpoint_asset": {
+        "asset_id": 717700649,
+        "name": "checkpoint-1e8695896999176f785155f2ca9fe89bb3bdf25d-aa4f8d96bf42006d.json",
+        "sha256": "aa4f8d96bf42006d7ced306b4e503b3decc3f9bd6a46526daf3f853dd7b866e6",
+        "size": 1059350,
+        "byte_restore_verified": true,
+        "anonymous_access_status": 404
+      },
+      "restore": {
+        "checkpoint_checksum": "59ca8777204e26fd415ca8199f4f714c41b26d0d10f349b195cee8adbeedb3c7",
+        "run_id": "39439398286-1",
+        "observations": 472,
+        "sqlite_integrity": "ok",
+        "exact_state_restore": true,
+        "successful_days": 5,
+        "data_commit": "1e8695896999176f785155f2ca9fe89bb3bdf25d"
+      }
+    }
+  ],
+  "production_monitor_artifacts_archived": 20,
+  "monitor_run_scan_window": 20,
+  "retention_policy": "Retain while referenced, at least 18 months from capture; no automatic deletion. GitHub draft assets have no Actions artifact expiration clock.",
+  "limitations": [
+    "Same-provider mutable/deletable backup, not immutable storage or an off-site copy.",
+    "An access-controlled copy does not grant commercial redistribution rights.",
+    "Does not establish elapsed operational reliability, completed company qualification or predictive validity."
+  ]
+}
