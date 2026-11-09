@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'; img-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>CORDIS research review · Atlantic Signal</title>
+  <link rel="stylesheet" href="cordis-research.css">
+  <script defer src="cordis-research.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Atlantic Signal · local research review</p>
+      <h1>European research projects with Canadian participants</h1>
+      <p>Review a sanitized CORDIS snapshot on this device. Nothing is uploaded or automatically downloaded. This standalone page is not a live feed.</p>
+    </header>
+
+    <aside class="notice" aria-labelledby="boundary-heading">
+      <h2 id="boundary-heading">Research only. No qualified leads.</h2>
+      <p>Consortium co-participation does not establish a direct bilateral partnership, Canadian expansion, first entry, current hiring or an open commercial requirement.</p>
+      <p>EU-27 participant location is not ultimate ownership. PRC is a source activity code, not a verified corporate identity. Civilian scope remains unverified after conservative text screening.</p>
+      <p>Project dates, content updates and snapshot clocks are not first-publication or first-discovery dates. No records are eligible for scoring.</p>
+    </aside>
+
+    <section class="loader" aria-labelledby="file-heading">
+      <h2 id="file-heading">Open a sanitized research file</h2>
+      <p id="file-help">Choose the schema-v1 JSON produced by the CORDIS research builder, not the source ZIP. Contacts, addresses, VAT identifiers, geolocation and project objectives are not accepted. Maximum 32 MiB. Validation checks structure and consistency, not source authenticity.</p>
+      <label for="research-file">Local research JSON</label>
+      <input id="research-file" type="file" accept=".json,application/json" aria-describedby="file-help">
+      <button id="clear-file" type="button" disabled>Clear file</button>
+      <p id="load-status" role="status" aria-live="polite">No file loaded. Counts are unavailable, not zero.</p>
+      <noscript><p>Enable JavaScript to validate and review a local file. No source data is shown without validation.</p></noscript>
+    </section>
+
+    <section id="review" hidden aria-label="Validated local snapshot">
+      <div id="partial-warning" class="notice warning" hidden role="note"></div>
+      <h2>Snapshot coverage</h2>
+      <div id="summary" class="metrics"></div>
+      <p id="coverage"></p>
+      <p class="muted">Participation rows can repeat an organisation across projects. Distinct source identifiers are not a verified company count. All counts describe the loaded derivative, not all European or Canadian research.</p>
+
+      <details class="provenance" open>
+        <summary>Source, acquisition and file clocks</summary>
+        <dl id="clocks"></dl>
+        <p id="attribution" class="muted"></p>
+      </details>
+
+      <section aria-labelledby="projects-heading">
+        <h2 id="projects-heading">Included projects</h2>
+        <div class="filters">
+          <div><label for="search">Search project or participant</label><input id="search" type="search" maxlength="250" placeholder="Name, acronym or project ID"></div>
+          <div><label for="country">EU-27 participant location</label><select id="country"><option value="">All included EU-27 locations</option></select></div>
+        </div>
+        <p id="results-status" role="status" aria-live="polite"></p>
+        <div id="projects"></div>
+        <nav class="pagination" aria-label="Project pages">
+          <button id="previous-page" type="button">Previous</button>
+          <span id="page-status"></span>
+          <button id="next-page" type="button">Next</button>
+        </nav>
+      </section>
+    </section>
+    <footer>Local review artifact only. No live integration, outreach, model qualification or publication is performed by this page.</footer>
+  </main>
+</body>
+</html>

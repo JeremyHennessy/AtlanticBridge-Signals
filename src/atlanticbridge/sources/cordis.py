@@ -327,16 +327,19 @@ def _iter_archive_rows(
             handle = io.TextIOWrapper(
                 raw,
                 encoding="utf-8-sig",
-                errors="replace",
+                errors="strict",
                 newline="",
             )
-            reader = csv.DictReader(handle, delimiter=";")
+            reader = csv.DictReader(handle, delimiter=";", strict=True)
             if reader.fieldnames != expected_header:
                 raise ValueError(
                     f"CORDIS {member} schema changed. "
                     f"Expected {expected_header!r}, received {reader.fieldnames!r}"
                 )
-            yield from reader
+            for row in reader:
+                if None in row or any(value is None for value in row.values()):
+                    raise ValueError(f"CORDIS {member} malformed CSV row width at line {reader.line_num}")
+                yield row
 
 
 def iter_projects(
