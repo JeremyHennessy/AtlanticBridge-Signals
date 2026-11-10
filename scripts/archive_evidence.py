@@ -61,6 +61,45 @@ class SafeRedirect(urllib.request.HTTPRedirectHandler):
             redirected.remove_header('Authorization')
         return redirected
 
+
+class ActionsOnlyRedirect(SafeRedirect):
+    """Allow ZIP transport only to documented Actions artifact blob storage.
+
+    Metadata must be returned directly. Never follow a redirect to a GitHub
+    release/API/browser route, and never send the origin token to blob storage.
+    Unknown storage domains fail closed rather than widening this boundary.
+    Domain reference: https://docs.github.com/en/actions/reference/runners/github-hosted-runners
+    """
+    def __init__(self, *, binary):
+        super().__init__()
+        self.binary = binary
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        try:
+            target = urllib.parse.urlsplit(newurl)
+            storage = (target.hostname == 'results-receiver.actions.githubusercontent.com'
+                       or re.fullmatch(r'[a-z0-9]{3,24}\.blob\.core\.windows\.net', target.hostname or ''))
+            if (not self.binary or target.scheme != 'https' or not storage
+                    or target.fragment or target.port not in (None, 443)
+                    or target.username or target.password):
+                raise ValueError('Refused')
+            redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+        except ValueError:
+            # Parser exceptions can include credentials or signed URL components.
+            raise ValueError('Actions-only proof redirect refused') from None
+        if redirected:
+            redirected.remove_header('Authorization')
+        return redirected
+
+    def http_error_302(self, req, fp, code, msg, headers):
+        try:
+            return super().http_error_302(req, fp, code, msg, headers)
+        except ValueError:
+            # urllib parses Location before calling redirect_request as well.
+            raise ValueError('Actions-only proof redirect refused') from None
+
+    http_error_301 = http_error_303 = http_error_307 = http_error_308 = http_error_302
+
 class PrivacyResponseProcessor(urllib.request.HTTPErrorProcessor):
     """Inspect the original response, without redirect/error URL rewriting."""
     def http_response(self, request, response):
@@ -153,10 +192,18 @@ class Client:
         if diagnostic.get('outcome') != 'direct_404':
             raise PrivacyCheckError(diagnostic) from None
         self.direct_privacy_verified.add(url)
-    def request(self, url: str, method='GET', body=None, *, auth=True, binary=False, mime='application/json'):
+    def request(self, url: str, method='GET', body=None, *, auth=True, binary=False, mime='application/json', actions_only=False):
         parsed = urllib.parse.urlsplit(url)
         if parsed.scheme != 'https' or parsed.hostname not in {'api.github.com', 'uploads.github.com', 'github.com'} or parsed.username or parsed.password:
             raise ValueError('Unapproved GitHub endpoint')
+        if actions_only:
+            path = '/repos/' + REPO + '/actions/artifacts/'
+            suffix = '/zip' if binary else ''
+            if (parsed.scheme != 'https' or parsed.netloc != 'api.github.com'
+                    or not re.fullmatch(re.escape(path) + r'[1-9][0-9]*' + suffix, parsed.path)
+                    or parsed.query or parsed.fragment or method != 'GET'
+                    or body is not None or not auth):
+                raise ValueError('Actions-only proof endpoint refused')
         accept = 'application/vnd.github+json'
         if binary and parsed.path.startswith('/repos/'+REPO+'/contents/'):
             accept = 'application/vnd.github.raw+json'
@@ -165,8 +212,10 @@ class Client:
         headers = {'User-Agent':'AtlanticBridge-evidence-retention', 'Accept':accept, 'X-GitHub-Api-Version':'2026-03-10', 'Content-Type':mime}
         if auth: headers['Authorization'] = 'Bearer ' + self.token
         if isinstance(body, dict): body = json.dumps(body).encode()
+        opener = (urllib.request.build_opener(ActionsOnlyRedirect(binary=binary))
+                  if actions_only else self.opener)
         try:
-            with self.opener.open(urllib.request.Request(url, data=body, method=method, headers=headers), timeout=60) as response:
+            with opener.open(urllib.request.Request(url, data=body, method=method, headers=headers), timeout=60) as response:
                 raw=response.read(MAX_BYTES+1)
                 if len(raw)>MAX_BYTES: raise ValueError('Download exceeds bounded archive size')
                 return response.status, raw
@@ -291,19 +340,29 @@ def archive_one(client, artifact, expected, release, monitoring=False, raw_overr
         result.update(checkpoint_asset=cp,restore=restore_result)
     return result
 
-def accepted_proof(client, artifact_id):
-    """Prefer the accepted exact artifact, then the verified unpublished archive copy."""
+def accepted_proof(client, artifact_id, *, actions_only=False):
+    """Read exact pinned proof; Actions-only callers never consult retained releases."""
     if artifact_id not in PINS:raise ValueError('Unapproved source-proof artifact')
     expected=PINS[artifact_id]
-    code,metadata=client.request(API+f'/actions/artifacts/{artifact_id}')
+    transport={'actions_only':True} if actions_only else {}
+    code,metadata=client.request(API+f'/actions/artifacts/{artifact_id}',**transport)
     if code==200:
         info=parse_json(metadata,'GitHub Actions artifact metadata')
+        if actions_only:
+            if (not isinstance(info,dict) or type(info.get('id')) is not int
+                    or info['id'] != artifact_id or info.get('expired') is not False
+                    or not isinstance(info.get('workflow_run'),dict)
+                    or type(info['workflow_run'].get('id')) is not int
+                    or info['workflow_run']['id'] <= 0):
+                raise ValueError('Actions-only proof requires exact, unexpired artifact metadata and original run provenance')
         if info.get('expired') is not True:
-            status,raw=client.request(API+f'/actions/artifacts/{artifact_id}/zip',binary=True)
+            status,raw=client.request(API+f'/actions/artifacts/{artifact_id}/zip',binary=True,**transport)
             if status==200:
                 inspect_zip(raw,expected);return info,raw
             if status not in (404,410):raise ValueError(f'Proof download failed: HTTP {status}')
     elif code not in (404,410):raise ValueError(f'Proof metadata failed: HTTP {code}')
+    if actions_only:
+        raise ValueError('Actions-only proof unavailable; retained release fallback is disabled')
     name=f'artifact-{artifact_id}-{expected[:16]}.zip'
     for release in client.pages('/releases'):
         if not release.get('tag_name','').startswith('evidence-v1-'):continue

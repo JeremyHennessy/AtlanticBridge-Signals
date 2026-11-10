@@ -17,6 +17,7 @@ on:
       - 'src/atlanticbridge/pilot_measurement.py'
       - 'reviews/pilot/**'
       - 'tests/test_pilot*'
+      - 'tests/test_actions_only_proof.py'
       - '.github/workflows/pilot-release-proof.yml'
 permissions:
   contents: read
@@ -39,12 +40,12 @@ jobs:
         run: |
           python -m pip install -e .
           command -v pdftotext >/dev/null || { sudo apt-get update && sudo apt-get install -y poppler-utils; }
-          python scripts/fetch_accepted_proof.py --artifact-id 10724340100 --output "$RUNNER_TEMP/documentary.zip"
-          python scripts/fetch_accepted_proof.py --artifact-id 10720884358 --output "$RUNNER_TEMP/monitor.zip"
-          python scripts/fetch_accepted_proof.py --artifact-id 10729310481 --output "$RUNNER_TEMP/qualification.zip"
-          python scripts/fetch_accepted_proof.py --artifact-id 10729682735 --output "$RUNNER_TEMP/qualification2.zip"
-          python scripts/fetch_accepted_proof.py --artifact-id 10718724645 --output "$RUNNER_TEMP/original-six.zip"
-          python scripts/fetch_accepted_proof.py --artifact-id 10724109813 --output "$RUNNER_TEMP/nature-pdf.zip"
+          python scripts/fetch_accepted_proof.py --actions-only --artifact-id 10724340100 --output "$RUNNER_TEMP/documentary.zip"
+          python scripts/fetch_accepted_proof.py --actions-only --artifact-id 10720884358 --output "$RUNNER_TEMP/monitor.zip"
+          python scripts/fetch_accepted_proof.py --actions-only --artifact-id 10729310481 --output "$RUNNER_TEMP/qualification.zip"
+          python scripts/fetch_accepted_proof.py --actions-only --artifact-id 10729682735 --output "$RUNNER_TEMP/qualification2.zip"
+          python scripts/fetch_accepted_proof.py --actions-only --artifact-id 10718724645 --output "$RUNNER_TEMP/original-six.zip"
+          python scripts/fetch_accepted_proof.py --actions-only --artifact-id 10724109813 --output "$RUNNER_TEMP/nature-pdf.zip"
           python scripts/build_pilot_release.py --documentary-proof "$RUNNER_TEMP/documentary.zip" --monitor-proof "$RUNNER_TEMP/monitor.zip" --qualification-proof "$RUNNER_TEMP/qualification.zip" --qualification2-proof "$RUNNER_TEMP/qualification2.zip" --original-six-proof "$RUNNER_TEMP/original-six.zip" --nature-pdf-proof "$RUNNER_TEMP/nature-pdf.zip" --check
           python -m unittest discover -s tests -v
           node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs tests/test_monitor_review.cjs tests/test_case_briefs.cjs
