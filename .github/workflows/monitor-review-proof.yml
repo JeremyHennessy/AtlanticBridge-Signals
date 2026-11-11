@@ -34,13 +34,15 @@ jobs:
           mkdir -p artifacts/metadata-review
           gh api repos/JeremyHennessy/AtlanticBridge-Signals/branches/monitoring-state --jq '.commit.sha' > artifacts/metadata-review/state-commit.txt
           STATE="$(cat artifacts/metadata-review/state-commit.txt)"
-          gh api "repos/JeremyHennessy/AtlanticBridge-Signals/contents/checkpoint.json?ref=$STATE" --jq '.content' | base64 -d > artifacts/metadata-review/checkpoint.json
+          # The Contents API omits inline base64 content above 1 MB.
+          # Raw media reads the same immutable commit without changing the checkpoint.
+          gh api -H "Accept: application/vnd.github.raw+json" "repos/JeremyHennessy/AtlanticBridge-Signals/contents/checkpoint.json?ref=$STATE" > artifacts/metadata-review/checkpoint.json
           python - <<'PY'
           import json
           from pathlib import Path
           from atlanticbridge.monitoring_checkpoint import validate
           p=Path('artifacts/metadata-review/checkpoint.json')
-          assert p.stat().st_size <= 16*1024*1024
+          assert 0 < p.stat().st_size <= 16*1024*1024, "Checkpoint download is empty or exceeds the size limit"
           c=validate(json.loads(p.read_text()))
           print('Original Python checkpoint validation:',c['checksum'])
           PY

@@ -1,0 +1,40 @@
+{
+  "ui_observed": [
+    {
+      "permit_number": "BPCOM-2021-14795",
+      "permit_label": "Mixed Use & Commercial Building Permit",
+      "status_as_observed": "Issued",
+      "submission_date": "2021-10-08",
+      "issuance_date": "2023-08-03",
+      "completion_date": null,
+      "expiration_date": "2027-08-12",
+      "estimated_project_value": 9331109,
+      "currency": null,
+      "company_name": null,
+      "company_match_status": "unresolved",
+      "ownership_status": "unresolved",
+      "date_interpretation": "UI_DISPLAYED_CIVIL_DATES_TIMEZONE_UNVERIFIED",
+      "observed_on": "2026-11-06",
+      "is_new_signal_on_retrieval": false
+    }
+  ],
+  "invented": [
+    {
+      "permit_number": "BPCOM-2099-00001",
+      "permit_label": "Mixed Use & Commercial Building Permit",
+      "status_as_observed": "Issued",
+      "submission_date": "2099-01-01",
+      "issuance_date": "2099-02-01",
+      "completion_date": null,
+      "expiration_date": null,
+      "estimated_project_value": 100,
+      "currency": null,
+      "company_name": null,
+      "company_match_status": "unresolved",
+      "ownership_status": "unresolved",
+      "date_interpretation": "INVENTED_CIVIL_DATES_NOT_SOURCE_ENCODING",
+      "observed_on": null,
+      "is_new_signal_on_retrieval": false
+    }
+  ]
+}

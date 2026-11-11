@@ -189,3 +189,24 @@ The console currently provides:
 See [docs/DATA_PROOF.md](docs/DATA_PROOF.md) and [docs/SOURCE_REGISTRY.md](docs/SOURCE_REGISTRY.md).
 
 The outcome audit and confirmation-gate changes are documented in [docs/OUTCOME_TIMING_AUDIT.md](docs/OUTCOME_TIMING_AUDIT.md). Publication-cutoff semantics are documented in [docs/OUTCOME_PUBLICATION_GATE.md](docs/OUTCOME_PUBLICATION_GATE.md). Risk-set control semantics and identity qualification are documented in [docs/RISK_SET_CONTROLS.md](docs/RISK_SET_CONTROLS.md).
+
+## Offline local review staging
+
+A separate private SQLite review journal can explicitly stage historical foundation
+observations for local inspection. It does not send notifications, schedule work,
+create leads or enable production. See [local staging semantics and integration
+gates](docs/LOCAL_REVIEW_NOTIFICATIONS.md).
+
+### Private persistent workbench
+
+A separate local-only browser workbench can review an existing private automation foundation and save analyst notes/status with revision checks. It does not replace or migrate the public browser-local worklist, ingest sources, or deliver alerts. See [operator instructions and security limitations](docs/persistent-local-workbench.md). Validation is offline/in-process only; real server and browser integration remain unverified.
+
+### Bounded local import/review cycle
+
+An explicitly invoked local coordinator now joins existing READY plan-scoped file imports, append-only review staging, and validated durable readback. It never initializes/registers/resumes sources or creates a schedule, and has no live collection or delivery. See [bounded cycle operation and partial-outcome recovery](docs/bounded-local-cycle.md). Existing local workbench loads show persisted changes; no server/browser launch is part of the cycle.
+
+### Preserve the existing company worklist
+
+The public app's company IDs and five analyst statuses are not the evidence foundation's source-record IDs/statuses. A separate private company store now supports explicit, lossless browser-backup imports, audited revision-checked analyst edits, and compatible exports without identity mapping or evidence promotion. The public UI is not rewired and no backend is activated. See [migration, architecture and release gates](docs/COMPANY_WORKSPACE_PERSISTENCE.md).
+
+A [private company worklist](docs/PRIVATE_COMPANY_WORKBENCH.md) now connects that existing store to a same-origin local read/edit API, preserving notes, next actions, statuses and due dates with conflict/uncertain-save handling. It is limited to one trusted local operator and has no remote authentication or source/delivery controls. In-process API and mocked UI checks do not establish real server/browser acceptance; nothing is launched or deployed by this change.

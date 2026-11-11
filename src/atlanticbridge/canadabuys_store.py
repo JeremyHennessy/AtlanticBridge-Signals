@@ -3,9 +3,9 @@ from __future__ import annotations
 import sqlite3
 from collections.abc import Iterable
 from datetime import datetime, timezone
-from decimal import Decimal, InvalidOperation
 
 from .sources.canadabuys import CanadaBuysAwardRecord
+from .canadabuys_quality import amount_policy
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS canadabuys_awards (
@@ -293,17 +293,6 @@ def ingest_awards(
     }
 
 
-def _decimal_sum(values: list[str]) -> str:
-    total = Decimal("0")
-    for value in values:
-        if not value:
-            continue
-        try:
-            total += Decimal(value)
-        except InvalidOperation:
-            continue
-    return format(total, "f")
-
 
 def canadabuys_summary(conn: sqlite3.Connection) -> dict[str, object]:
     ensure_canadabuys_schema(conn)
@@ -318,6 +307,7 @@ def canadabuys_summary(conn: sqlite3.Connection) -> dict[str, object]:
 
     if latest is None:
         return {
+            **amount_policy(),
             "snapshots": 0,
             "current_records": 0,
             "current_eu27_supplier_records": 0,
@@ -346,22 +336,20 @@ def canadabuys_summary(conn: sqlite3.Connection) -> dict[str, object]:
 
     country_counts: dict[str, int] = {}
     supplier_counts: dict[tuple[str, str], int] = {}
-    cad_amounts: dict[tuple[str, str], list[str]] = {}
     for row in rows:
         country = row["supplier_country"]
         supplier = row["supplier_legal_name"]
         key = (supplier, country)
         country_counts[country] = country_counts.get(country, 0) + 1
         supplier_counts[key] = supplier_counts.get(key, 0) + 1
-        if row["contract_currency"] == "CAD":
-            cad_amounts.setdefault(key, []).append(row["contract_amount"])
 
     suppliers = [
         {
             "supplier": supplier,
             "country": country,
             "award_records": count,
-            "contract_amount_cad": _decimal_sum(cad_amounts.get((supplier, country), [])),
+            "contract_amount_cad": None,
+            **amount_policy(),
         }
         for (supplier, country), count in supplier_counts.items()
     ]
@@ -378,6 +366,7 @@ def canadabuys_summary(conn: sqlite3.Connection) -> dict[str, object]:
     ).fetchone()[0]
 
     return {
+        **amount_policy(),
         "snapshots": snapshots,
         "latest_source_sha256": sha,
         "latest_observed_at": latest["observed_at"],

@@ -135,7 +135,10 @@ jobs:
 
   hosted-acceptance:
     needs: deploy
-    runs-on: ubuntu-latest
+    # Playwright 1.55 does not support ubuntu-latest once it advances to 26.04.
+    # Keep browser acceptance on its documented 24.04 image until the pinned
+    # Playwright release supports the newer runner.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - name: Checkout exact deployed revision

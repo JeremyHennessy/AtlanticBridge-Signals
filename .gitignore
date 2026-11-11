@@ -9,3 +9,12 @@ data/raw/
 dist/
 build/
 *.egg-info/
+
+# Private durable-work databases, snapshots, journals and operator files.
+.atlantic-private/
+*.sqlite
+*.sqlite3
+*.db
+*.sqlite-*
+*.sqlite3-*
+*.db-*

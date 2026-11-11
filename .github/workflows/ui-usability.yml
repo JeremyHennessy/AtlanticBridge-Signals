@@ -14,6 +14,7 @@ on:
       - "tests/test_opportunities.cjs"
       - "tests/test_reviewed.cjs"
       - "tests/test_workspace.cjs"
+      - "tests/test_legacy_route.cjs"
       - ".github/workflows/ui-usability.yml"
   push:
     branches: [main]
@@ -28,6 +29,7 @@ on:
       - "tests/test_opportunities.cjs"
       - "tests/test_reviewed.cjs"
       - "tests/test_workspace.cjs"
+      - "tests/test_legacy_route.cjs"
       - ".github/workflows/ui-usability.yml"
 
 permissions:
@@ -35,7 +37,8 @@ permissions:
 
 jobs:
   browser-acceptance:
-    runs-on: ubuntu-latest
+    # Playwright 1.55 browser packages target the supported Ubuntu 24.04 image.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -61,7 +64,7 @@ jobs:
         with:
           node-version: "22"
       - name: Test workspace persistence and evidence semantics
-        run: node --test tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs
+        run: node --test tests/test_legacy_route.cjs tests/test_workspace.cjs tests/test_reviewed.cjs tests/test_opportunities.cjs tests/test_canadabuys_quality.cjs
       - name: Install browser test dependencies
         run: |
           npm install --no-save playwright@1.55.0

@@ -350,7 +350,7 @@ function formatTimestamp(value) {
 }
 
 function unavailableLivePayload(reason="Current signal feed unavailable.") {
-  return {schema_version:1,status:"UNAVAILABLE",generated_at:null,reason,source:{family:"CANADABUYS_AWARD",label:"CanadaBuys federal award notice",observed_at:null,source_url:null},summary:{signal_count:0,company_count:0,country_count:0,latest_public_date:null,earliest_public_date:null,cad_contract_amount:"0",lookback_days:null},signals:[]};
+  return {schema_version:1,status:"UNAVAILABLE",generated_at:null,reason,source:{family:"CANADABUYS_AWARD",label:"CanadaBuys federal award notice",observed_at:null,source_url:null},summary:{signal_count:0,company_count:0,country_count:0,latest_public_date:null,earliest_public_date:null,cad_contract_amount:null,amount_aggregation_status:"WITHHELD_UNRECONCILED_NOTICE_AMOUNTS",amount_aggregation_reason:ABWorkspace.CANADABUYS_AMOUNT_WARNING,lookback_days:null},signals:[]};
 }
 
 function activeLiveSignals() {
@@ -441,16 +441,16 @@ function renderSignals() {
   root.innerHTML=rows.map(signal=>{
     const watched=state.watched.has(signal.company_id);
     const source=safeUrl(signal.source_url);
-    const kind=signal.signal_kind==="FEDERAL_AWARD_AMENDED"?"Award amended":"Award published";
+    const kind=signal.signal_kind==="FEDERAL_AWARD_AMENDED"?"Award notice amended":"Award notice published";
     const amount=formatMoney(signal.contract_amount,signal.contract_currency);
     return `<article class="live-signal-item" data-live-signal-id="${escapeHtml(signal.id)}" data-company-id="${escapeHtml(signal.company_id)}">
       <div class="live-signal-main">
         <div class="live-signal-date"><span class="eyebrow">${escapeHtml(kind)}</span><strong>${escapeHtml(formatDate(signal.publicly_available_date))}</strong><span>${ABWorkspace.signalAge(signal)===null || ABWorkspace.signalAge(signal)<0 ? "Public date unverified" : escapeHtml(ABWorkspace.signalAge(signal))+"d ago"}</span></div>
         <div class="live-signal-company"><div class="live-signal-company-line"><h3><a class="company-dossier-link" href="${companyHash(signal.company_id)}">${escapeHtml(signal.company_name)}</a></h3><span class="status-chip status-existing">${escapeHtml(signal.country)}</span></div><p>${escapeHtml(signal.title || signal.award_description || "Federal award notice")}</p><span class="live-signal-buyer">${escapeHtml(signal.contracting_entity || "Canadian federal contracting entity not stated")}</span></div>
-        <div class="live-signal-value"><strong>${escapeHtml(amount)}</strong><span>${escapeHtml(signal.reference_number || "No reference")}</span></div>
+        <div class="live-signal-value"><span>Published notice value</span><strong>${escapeHtml(amount)}</strong><span>${escapeHtml(signal.reference_number || "No reference")}</span></div>
         <button class="save-button signal-watch" type="button" data-watch-company="${escapeHtml(signal.company_id)}" aria-pressed="${watched}" aria-label="${watched?"Unwatch":"Watch"} ${escapeHtml(signal.company_name)}" title="${watched?"Remove company from watchlist":"Watch company in this browser"}">${watched?"★":"☆"}</button>
       </div>
-      <div class="live-signal-context"><p><strong>Why surfaced:</strong> ${escapeHtml(signal.why_surfaced)}</p><div class="live-signal-meta"><span>Stage · ${escapeHtml(String(signal.signal_stage||"").replaceAll("_"," ").toLowerCase())}</span><span>Identity · ${escapeHtml(String(signal.identity_scope||"").replaceAll("_"," ").toLowerCase())}</span>${signal.regions_of_delivery?`<span>Delivery · ${escapeHtml(signal.regions_of_delivery)}</span>`:""}</div>${source?`<a class="source-link" href="${escapeHtml(source)}" target="_blank" rel="noopener noreferrer">Official CanadaBuys source ↗</a>`:""}</div>
+      <div class="live-signal-context"><p><strong>Commercial/research signal:</strong> ${escapeHtml(ABWorkspace.CANADABUYS_AMOUNT_WARNING)}</p><p><strong>Why surfaced:</strong> ${escapeHtml(signal.why_surfaced)}</p><div class="live-signal-meta"><span>Stage · ${escapeHtml(String(signal.signal_stage||"").replaceAll("_"," ").toLowerCase())}</span><span>Identity · ${escapeHtml(String(signal.identity_scope||"").replaceAll("_"," ").toLowerCase())}</span>${signal.regions_of_delivery?`<span>Delivery · ${escapeHtml(signal.regions_of_delivery)}</span>`:""}</div>${source?`<a class="source-link" href="${escapeHtml(source)}" target="_blank" rel="noopener noreferrer">Official CanadaBuys source ↗</a>`:""}</div>
     </article>`;
   }).join("");
 }

@@ -8,8 +8,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--artifact-id',type=int,required=True)
     parser.add_argument('--output',required=True)
+    parser.add_argument('--actions-only',action='store_true',
+                        help='Require the original Actions artifact; never read retained release assets')
     args=parser.parse_args();path=Path(args.output)
     if path.exists():raise ValueError('Refusing to overwrite an existing proof file')
-    _,raw=accepted_proof(Client(os.environ.get('GH_TOKEN','')),args.artifact_id)
+    _,raw=accepted_proof(Client(os.environ.get('GH_TOKEN','')),args.artifact_id,actions_only=args.actions_only)
     with path.open('xb') as output:output.write(raw)
 if __name__=='__main__':main()

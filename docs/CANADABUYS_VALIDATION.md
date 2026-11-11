@@ -1,6 +1,8 @@
 # CanadaBuys Award Validation
 
-Validation date: **2026-09-18**
+Validation date: **2026-09-18** (historical acceptance, not a new source check).
+
+**6 November 2026 interpretation update:** Notice counts are not distinct contracts. Published amounts and amendments must not be added as new spending or payments. Aggregate CAD amounts are now withheld pending reconciliation. See [CanadaBuys amount safety](CANADABUYS_AMOUNT_SAFETY.md) for the contract-history correction, dataset distinction and nullable output fields. No new production acceptance or source request was performed for this update.
 
 ## Purpose
 

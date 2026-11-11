@@ -9,11 +9,18 @@ import re
 import sqlite3
 
 from .canadabuys_store import ensure_canadabuys_schema
+from .canadabuys_quality import amount_policy, notice_quality, AMOUNT_WARNING
 
 SCHEMA_VERSION = 1
 SOURCE_FAMILY = "CANADABUYS_AWARD"
 SOURCE_LABEL = "CanadaBuys federal award notice"
 SIGNAL_STAGE = "ACTIVE_CANADIAN_COMMERCIAL_EVIDENCE"
+OBSERVATION_HISTORY_SCOPE = "INPUT_DATABASE_ONLY"
+OBSERVATION_HISTORY_WARNING = (
+    "First and last observed timestamps cover only the history retained in the input database. "
+    "Rebuilding an empty database resets these clocks. They do not establish first-ever discovery, "
+    "source publication, a new award or a change in company activity."
+)
 _DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})")
 
 
@@ -73,6 +80,8 @@ def unavailable_payload(*, reason: str, generated_at: str | None = None) -> dict
             "label": SOURCE_LABEL,
             "observed_at": None,
             "source_url": None,
+            "observation_history_scope": OBSERVATION_HISTORY_SCOPE,
+            "observation_history_warning": OBSERVATION_HISTORY_WARNING,
         },
         "summary": {
             "signal_count": 0,
@@ -80,7 +89,8 @@ def unavailable_payload(*, reason: str, generated_at: str | None = None) -> dict
             "country_count": 0,
             "latest_public_date": None,
             "earliest_public_date": None,
-            "cad_contract_amount": "0",
+            "cad_contract_amount": None,
+            **amount_policy(),
             "lookback_days": None,
         },
         "reason": reason,
@@ -130,7 +140,6 @@ def build_canadabuys_live_signals(
     ).fetchall()
 
     signals: list[dict[str, object]] = []
-    cad_total = Decimal("0")
     for row in rows:
         public_date = _effective_public_date(row)
         if public_date is None or public_date < start_date or public_date > as_of_date:
@@ -144,9 +153,6 @@ def build_canadabuys_live_signals(
         event_date = _date_value(row["contract_award_date"]) or public_date
         amount = str(row["contract_amount"] or "").strip()
         currency = str(row["contract_currency"] or "").strip()
-        parsed_amount = _decimal(amount)
-        if currency == "CAD" and parsed_amount is not None:
-            cad_total += parsed_amount
 
         amendment_number = str(row["amendment_number"] or "").strip()
         amendment_date = _date_value(row["amendment_date"])
@@ -165,12 +171,14 @@ def build_canadabuys_live_signals(
         why = (
             f"Official CanadaBuys data names {company_name} ({country}) as a supplier"
             + (f" to {contracting_entity}" if contracting_entity else "")
-            + f"; the record became publicly available on {public_date.isoformat()}."
-            + " This is direct Canadian federal commercial activity, not proof of first market entry."
+            + f"; the source lists a publication/amendment date of {public_date.isoformat()}."
+            + " This is direct Canadian federal commercial activity, not proof of first market entry. "
+            + AMOUNT_WARNING
         )
 
         signals.append(
             {
+                **notice_quality(),
                 "id": _signal_id(str(row["record_id"])),
                 "record_id": str(row["record_id"]),
                 "company_id": _company_id(company_name, country),
@@ -185,6 +193,7 @@ def build_canadabuys_live_signals(
                 "publicly_available_date": public_date.isoformat(),
                 "first_observed_at": str(row["first_observed_at"] or ""),
                 "last_observed_at": str(row["last_observed_at"] or ""),
+                "observation_history_scope": OBSERVATION_HISTORY_SCOPE,
                 "recency_days": (as_of_date - public_date).days,
                 "title": title,
                 "reference_number": reference_number,
@@ -233,6 +242,8 @@ def build_canadabuys_live_signals(
             "source_bytes": latest["source_bytes"],
             "source_record_count": latest["record_count"],
             "source_eu27_record_count": latest["eu27_record_count"],
+            "observation_history_scope": OBSERVATION_HISTORY_SCOPE,
+            "observation_history_warning": OBSERVATION_HISTORY_WARNING,
         },
         "summary": {
             "signal_count": len(signals),
@@ -240,12 +251,14 @@ def build_canadabuys_live_signals(
             "country_count": len(countries),
             "latest_public_date": max(public_dates) if public_dates else None,
             "earliest_public_date": min(public_dates) if public_dates else None,
-            "cad_contract_amount": format(cad_total, "f"),
+            "cad_contract_amount": None,
+            **amount_policy(),
             "lookback_days": lookback_days,
         },
         "interpretation": (
             "Current source-backed Canada-directed commercial activity. "
-            "Signals are not expansion probabilities and do not establish first Canadian entry."
+            "Signals are not expansion probabilities and do not establish first Canadian entry. "
+            + AMOUNT_WARNING
         ),
         "signals": signals,
     }

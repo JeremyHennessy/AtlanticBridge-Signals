@@ -1,12 +1,20 @@
 from __future__ import annotations
 
 from datetime import date
+import sqlite3
 import unittest
 
 from atlanticbridge.canadabuys_store import ingest_awards
-from atlanticbridge.db import connect
 from atlanticbridge.live_signals import build_canadabuys_live_signals
 from atlanticbridge.sources.canadabuys import CanadaBuysAwardRecord
+
+
+def connect(path):
+    # These notice unit tests exercise the real CanadaBuys schema/ingest functions.
+    # Avoid initializing unrelated investment parsers via the full application DB.
+    conn = sqlite3.connect(path)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 def award(
@@ -74,6 +82,49 @@ class LiveSignalsTests(unittest.TestCase):
         )
         self.assertEqual(payload["status"], "UNAVAILABLE")
         self.assertIn("No CanadaBuys snapshot", payload["reason"])
+        self.assertEqual(payload["source"]["observation_history_scope"], "INPUT_DATABASE_ONLY")
+
+    def test_fresh_database_observation_clocks_are_explicitly_scoped(self):
+        payloads = []
+        for observed_at in ("2026-09-22T10:00:00+00:00", "2026-09-22T12:00:00+00:00"):
+            with self.subTest(observed_at=observed_at):
+                conn = connect(":memory:")
+                self.addCleanup(conn.close)
+                ingest_awards(conn, [award(reference="SAME", supplier="Example France SAS",
+                                          country="France", publication="2026-09-20")],
+                              source_sha256="same-source", source_url="https://example.test/source.csv",
+                              source_bytes=123, observed_at=observed_at)
+                payload = build_canadabuys_live_signals(conn, as_of_date=date(2026, 9, 22))
+                payloads.append(payload)
+                signal = payload["signals"][0]
+                self.assertEqual(signal["first_observed_at"], observed_at)
+                self.assertEqual(signal["last_observed_at"], observed_at)
+                self.assertEqual(signal["observation_history_scope"], "INPUT_DATABASE_ONLY")
+                self.assertEqual(payload["source"]["observation_history_scope"], "INPUT_DATABASE_ONLY")
+                self.assertIn("Rebuilding an empty database resets", payload["source"]["observation_history_warning"])
+                self.assertIn("do not establish first-ever discovery", payload["source"]["observation_history_warning"])
+                self.assertEqual(signal["publicly_available_date"], "2026-09-20")
+                self.assertEqual(signal["event_date"], "2026-09-20")
+                self.assertEqual(signal["recency_days"], 2)
+        self.assertEqual(payloads[0]["signals"][0]["id"], payloads[1]["signals"][0]["id"])
+        self.assertEqual(payloads[0]["summary"], payloads[1]["summary"])
+        self.assertEqual(payloads[0]["source"]["source_sha256"], payloads[1]["source"]["source_sha256"])
+
+    def test_retained_database_preserves_first_observation(self):
+        conn = connect(":memory:")
+        self.addCleanup(conn.close)
+        record = award(reference="RETAINED", supplier="Example France SAS", country="France",
+                       publication="2026-09-20")
+        for observed_at in ("2026-09-22T10:00:00+00:00", "2026-09-22T12:00:00+00:00"):
+            ingest_awards(conn, [record], source_sha256="same-source",
+                          source_url="https://example.test/source.csv", source_bytes=123,
+                          observed_at=observed_at)
+        payload = build_canadabuys_live_signals(conn, as_of_date=date(2026, 9, 22))
+        signal = payload["signals"][0]
+        self.assertEqual(signal["first_observed_at"], "2026-09-22T10:00:00+00:00")
+        self.assertEqual(signal["last_observed_at"], "2026-09-22T12:00:00+00:00")
+        self.assertEqual(signal["observation_history_scope"], "INPUT_DATABASE_ONLY")
+        self.assertEqual(payload["source"]["observed_at"], "2026-09-22T12:00:00+00:00")
 
     def test_current_eu_awards_become_source_confirmed_signals(self):
         conn = connect(":memory:")
@@ -116,7 +167,7 @@ class LiveSignalsTests(unittest.TestCase):
         self.assertEqual(payload["summary"]["signal_count"], 1)
         self.assertEqual(payload["summary"]["company_count"], 1)
         self.assertEqual(payload["summary"]["country_count"], 1)
-        self.assertEqual(payload["summary"]["cad_contract_amount"], "125000.50")
+        self.assertIsNone(payload["summary"]["cad_contract_amount"])
         signal = payload["signals"][0]
         self.assertEqual(signal["company_name"], "Example France SAS")
         self.assertEqual(signal["country"], "France")
