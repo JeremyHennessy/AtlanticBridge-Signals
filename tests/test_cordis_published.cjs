@@ -193,3 +193,47 @@ test('primary navigation wraps before the mobile breakpoint without hiding any d
   const nav = index.match(/<nav class="primary-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
   assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map(match => match[1]), ['#overview', '#opportunities', '#signals', '#companies', '#research', 'cordis-research.html', '#markets', '#coverage', '#guide', '#companies?view=saved']);
 });
+
+
+test('WebKit omits only the optional screenshot artifact and explains it without weakening checks', async () => {
+  const helper = fs.readFileSync(path.join(__dirname, 'cordis_acceptance.mjs'), 'utf8');
+  assert.match(helper, /if \(browser\.browserType\(\)\.name\(\) === 'webkit'\) \{/);
+  const start = helper.indexOf("if (browser.browserType().name() === 'webkit') {");
+  const end = helper.indexOf('    for (let i = 0; i < 6;', start);
+  const branch = helper.slice(start, end);
+  const webkit = branch.slice(0, branch.indexOf('    } else {'));
+  const chromium = branch.slice(branch.indexOf('    } else {'));
+  assert.match(webkit, /screenshot NOT CAPTURED/);
+  assert.match(webkit, /fs\.writeFileSync/);
+  assert.match(webkit, /console\.log\(note\.trim\(\)\)/);
+  assert.match(webkit, /cordis-screenshot-not-captured\.txt/);
+  assert.doesNotMatch(webkit, /page\.screenshot|check\(|errors\./);
+  assert.match(chromium, /await page\.screenshot\(\{ path: path\.join\(out,/);
+  assert.equal((helper.match(/await page\.screenshot/g) || []).length, 1);
+  assert.match(helper, /page\.on\('pageerror', error => errors\.push/);
+  assert.match(helper, /if \(message\.type\(\) === 'error'\) errors\.push\(message\.text\(\)\)/);
+  assert.match(helper, /no normal page or console errors`, errors\.length === 0/);
+  assert.match(helper, /exact deployed asset/);
+  assert.match(helper, /no horizontal overflow with details/);
+  assert.match(helper, /return preserves unrelated app counts/);
+  assert.doesNotMatch(helper, /bypassCSP|unsafe-inline|errors\.filter|errors\.splice|errors\.length\s*=(?!=)/);
+  assert.match(html, /style-src 'self';/);
+  assert.doesNotMatch(html, /<style| style=|unsafe-inline/);
+  for (const engine of ['webkit', 'chromium']) {
+    const writes = [], logs = [], captures = [];
+    await vm.runInNewContext('(async () => {' + branch + '})()', {
+      browser: { browserType: () => ({ name: () => engine }) },
+      page: { screenshot: async options => captures.push(options) },
+      fs: { writeFileSync: (file, note) => writes.push({ file, note }) },
+      path, out: '/test-artifacts', label: engine, console: { log: message => logs.push(message) }
+    });
+    assert.equal(captures.length, engine === 'webkit' ? 0 : 1);
+    assert.equal(writes.length, engine === 'webkit' ? 1 : 0);
+    assert.equal(logs.length, engine === 'webkit' ? 1 : 0);
+    if (engine === 'webkit') {
+      assert.match(writes[0].file, /webkit-cordis-screenshot-not-captured\.txt$/);
+      assert.match(writes[0].note, /All functional, CSP, layout, exact-asset and no-console-error assertions remain enabled/);
+      assert.equal(logs[0], writes[0].note.trim());
+    } else assert.match(captures[0].path, /chromium-cordis-research\.png$/);
+  }
+});

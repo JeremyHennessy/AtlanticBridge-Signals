@@ -38,7 +38,17 @@ export async function verifyCordis(browser, options, base, label, out, check) {
     check(`${label}/CORDIS: safe official project links without opening sources`, links.length === 40 && links.every(link => /^https:\/\/cordis\.europa\.eu\/project\/id\/\d+$/.test(link.href) && link.target === '_blank' && link.rel.includes('noopener') && link.rel.includes('noreferrer')));
     const overflow = await page.evaluate(() => ({ viewport: innerWidth, width: document.documentElement.scrollWidth }));
     check(`${label}/CORDIS: no horizontal overflow with details`, overflow.width <= overflow.viewport + 2, JSON.stringify(overflow));
-    await page.screenshot({ path: path.join(out, `${label}-cordis-research.png`) });
+    // Playwright 1.55.0 always inserts an inline `body {}` stylesheet before
+    // WebKit screenshots, independently of caret/animation options. Preserve
+    // the application's CSP and every assertion; omit only this optional image.
+    // https://github.com/microsoft/playwright/blob/v1.55.0/packages/playwright-core/src/server/screenshotter.ts#L51-L63
+    if (browser.browserType().name() === 'webkit') {
+      const note = `${label}: CORDIS screenshot NOT CAPTURED. Playwright 1.55.0 injects an inline stylesheet during WebKit screenshot preparation, which this page's CSP forbids. All functional, CSP, layout, exact-asset and no-console-error assertions remain enabled. Chromium captures are unaffected.\n`;
+      fs.writeFileSync(path.join(out, `${label}-cordis-screenshot-not-captured.txt`), note);
+      console.log(note.trim());
+    } else {
+      await page.screenshot({ path: path.join(out, `${label}-cordis-research.png`) });
+    }
     for (let i = 0; i < 6; i++) await page.locator('#next-page').click();
     check(`${label}/CORDIS: final page and disabled next`, await page.locator('#projects .project').count() === 4 && await page.locator('#next-page').isDisabled());
     await page.locator('#country').selectOption('GR');
