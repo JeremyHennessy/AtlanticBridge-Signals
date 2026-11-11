@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AtlanticBridge · Private company worklist</title><link rel="stylesheet" href="/style.css"><script type="module" src="/app.js"></script></head>
+<body><a class="skip" href="#main">Skip to company worklist</a>
+<header><div class="brand">AB</div><div><strong>AtlanticBridge Signals</strong><p>Private company worklist</p></div><span class="badge">Local only</span></header>
+<main id="main"><p class="eyebrow">Your company research</p><h1>Your work, kept together.</h1>
+<p class="intro">Review the companies explicitly imported from your browser backup. Notes, next actions and status are saved to the existing private company database, separate from source evidence.</p>
+<aside class="notice">Imported names, countries and source metadata are not independent identity or evidence verification. Status “Contacted” is an analyst label: this app sends nothing. The public website’s browser worklist is not automatically synchronized.</aside>
+<div class="workspace"><section class="panel" aria-label="Company worklist"><h2>Companies</h2>
+<div class="filters"><label>Status<select id="status"><option value="">All statuses</option><option value="new">To review</option><option value="researching">Researching</option><option value="contacted">Contacted</option><option value="follow_up">Follow up</option><option value="closed">Closed</option></select></label><button id="refresh">Refresh list</button></div>
+<p id="list-message" role="status"></p><div id="companies"></div><div class="pager"><button id="previous">Previous</button><span id="page"></span><button id="next">Next</button></div></section>
+<section class="panel detail" aria-label="Selected company"><div class="detail-head"><h2 id="detail-title" tabindex="-1">Select a company</h2><button id="close" hidden>Close</button></div><p id="detail-message" role="status" aria-live="polite"></p><div id="facts"></div>
+<form id="editor" hidden><fieldset id="fields"><legend>Analyst work</legend>
+<label>Status<select id="edit-status"><option value="new">To review</option><option value="researching">Researching</option><option value="contacted">Contacted</option><option value="follow_up">Follow up</option><option value="closed">Closed</option></select></label>
+<label>Due date<input id="due" type="date"></label><label>Next action<textarea id="next-action" maxlength="500" rows="3"></textarea></label><label>Notes<textarea id="notes" maxlength="4000" rows="8"></textarea></label><small id="count"></small></fieldset>
+<div class="actions"><button id="save" type="submit" class="primary">Save company</button><button id="reload" type="button">Reload / discard draft</button></div><p class="muted">Only status, notes, next action and due date are editable. Company identity and imported source metadata remain unchanged. Save before closing; unsaved drafts are not backed up in the browser.</p></form>
+<div id="decision" class="notice" hidden><p id="decision-text">Discard this draft and continue?</p><button id="keep">Keep editing</button><button id="discard">Discard draft and continue</button></div></section></div>
+<aside class="notice">One trusted local OS operator on a trusted machine. No login or multi-user authentication. Do not proxy, tunnel, embed or publicly host this app. Other local processes can forge browser headers and are not isolated by these protections.</aside></main>
+<footer>Same-origin local API · No external assets, source requests, imports or delivery controls</footer></body></html>
