@@ -98,9 +98,11 @@ class ArchiveTests(unittest.TestCase):
         class Client:
             def json(self,url,*args):return {'draft':True,'published_at':None}
             def pages(self,path):return [{'id':7,'name':'x','browser_download_url':'https://github.com/a/x'}]
-            def request(self,url,*args,**kw):return (200,b'evidence') if kw.get('auth',True) else (404,b'')
+            def request(self,url,*args,**kw):return 200,b'evidence'
+            def verify_private(self,url):pass
         meta,raw=a.store_asset(Client(),{'id':1},'x',b'evidence')
         self.assertTrue(meta['byte_restore_verified']);self.assertEqual(raw,b'evidence')
+        self.assertEqual(meta['privacy_verification_method'],a.PRIVACY_METHOD)
     def test_existing_asset_never_overwritten(self):
         class Client:
             def json(self,url,*args):return {'draft':True,'published_at':None}
@@ -111,7 +113,8 @@ class ArchiveTests(unittest.TestCase):
         class Client:
             def json(self,url,*args):return {'draft':True,'published_at':None}
             def pages(self,path):return [{'id':7,'name':'x','browser_download_url':'https://github.com/a/x'}]
-            def request(self,*args,**kw):return (200,b'evidence') if kw.get('auth',True) else (403,b'')
+            def request(self,*args,**kw):return 200,b'evidence'
+            def verify_private(self,url):raise a.PrivacyCheckError({'status':403})
         with self.assertRaises(ValueError):a.store_asset(Client(),{'id':1},'x',b'evidence')
     def test_archive_pin_fallback_requires_exact_bytes(self):
         expected=a.PINS[10724340100]
