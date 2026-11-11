@@ -1,3 +1,4 @@
+import {verifyCordis} from './cordis_acceptance.mjs';
 import {verifyCaptureLimit} from './bounded_screenshot.mjs';
 import {verifyCaseBriefs} from './case_briefs_acceptance.mjs';
 import {verifyMonitorReview} from './monitor_review_acceptance.mjs';
@@ -23,6 +24,14 @@ const check = (name, condition, detail = "") => { report.checks.push({name,ok:Bo
 async function overflow(page, label) {
   const value = await page.evaluate(() => ({viewport:innerWidth,document:document.documentElement.scrollWidth,body:document.body.scrollWidth}));
   check(`${label}: no page-level horizontal overflow`,value.document<=value.viewport+2 && value.body<=value.viewport+2,JSON.stringify(value));
+}
+async function verifyPrimaryNavigation(page, label) {
+  const items = await page.locator('.primary-nav a').evaluateAll(links => links.map(link => {
+    const bounds = link.getBoundingClientRect(), style = getComputedStyle(link);
+    return { href: link.getAttribute('href'), width: bounds.width, height: bounds.height, left: bounds.left, right: bounds.right, viewport: innerWidth, visible: style.visibility !== 'hidden' && style.display !== 'none' };
+  }));
+  check(`${label}: all primary navigation destinations remain visible`, items.length === 10 && items.every(item => item.visible && item.width > 0 && item.height > 0));
+  check(`${label}: primary navigation fits viewport without clipping`, items.every(item => item.left >= -1 && item.right <= item.viewport + 1), JSON.stringify(items));
 }
 async function ready(page) {
   await page.locator('body[data-ui-version="2026-09-22-workbench-01"]').waitFor();
@@ -195,7 +204,9 @@ async function run(label,type,options) {
     page.on("pageerror",e=>errors.push(String(e)));page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
     const response=await page.goto(base,{waitUntil:"networkidle",timeout:30000});
     check(`${label}: page HTTP success`,response?.ok());await ready(page);await exactAssets(page,label);
+    await verifyPrimaryNavigation(page,label);
     await verifyEntryRoutes(page,label);
+    await verifyCordis(browser,options,base,label,out,check);
     for(const route of ["overview","signals","companies","research","markets","coverage","guide"]) {
       await go(page,`#${route}`);await page.locator(`#${route}-view`).waitFor();await overflow(page,`${label}/${route}`);
       await captureRoute(page,label,route);
