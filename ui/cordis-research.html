@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:,">
+  <title>CORDIS research review · Atlantic Signal</title>
+  <link rel="stylesheet" href="cordis-research.css">
+  <script defer src="cordis-research.js"></script>
+</head>
+<body>
+  <main id="main-content">
+    <header>
+      <nav aria-label="Research navigation"><a href="index.html#overview">← Back to Atlantic Signal</a></nav>
+      <p class="eyebrow">Atlantic Signal · Research snapshot · 9 November 2026</p>
+      <h1>European research projects with Canadian participants</h1>
+      <p>Explore the published, sanitized CORDIS snapshot below. It is separate from CanadaBuys notices and the review queue. This is a fixed research snapshot, not a live feed. No file is uploaded and no original source is contacted by this page.</p>
+    </header>
+
+    <aside class="notice" aria-labelledby="boundary-heading">
+      <h2 id="boundary-heading">Research only. No qualified leads.</h2>
+      <p>Consortium co-participation does not establish a direct bilateral partnership, Canadian expansion, first entry, current hiring or an open commercial requirement.</p>
+      <p>EU-27 participant location is not ultimate ownership. PRC is a source activity code, not a verified corporate identity. Civilian scope remains unverified after conservative text screening.</p>
+      <p>Project dates, content updates and snapshot clocks are not first-publication or first-discovery dates. No records are eligible for scoring.</p>
+    </aside>
+
+    <section class="loader" aria-labelledby="file-heading">
+      <h2 id="file-heading">Published research snapshot</h2>
+      <p>Calculated as of <strong>9 November 2026</strong>, using the source file last modified <strong>8 October 2026</strong> and acquired <strong>9 November 2026</strong>. Deployment time does not refresh these source clocks.</p>
+      <button id="reload-published" type="button">Reload published snapshot</button>
+      <details><summary>Review a different local file</summary>
+      <p id="file-help">Choose the schema-v1 JSON produced by the CORDIS research builder, not the source ZIP. Contacts, addresses, VAT identifiers, geolocation and project objectives are not accepted. Maximum 32 MiB. Validation checks structure and consistency, not source authenticity.</p>
+      <label for="research-file">Local research JSON</label>
+      <input id="research-file" type="file" accept=".json,application/json" aria-describedby="file-help">
+      </details>
+      <button id="clear-file" type="button" disabled>Clear review</button>
+      <p id="load-status" role="status" aria-live="polite">Loading the published snapshot. Counts are unavailable until validation succeeds, not zero.</p>
+      <noscript><p>Enable JavaScript to validate and review the published research snapshot. No counts are shown without validation.</p></noscript>
+    </section>
+
+    <section id="review" hidden aria-label="Validated research snapshot">
+      <div id="partial-warning" class="notice warning" hidden role="note"></div>
+      <h2>Snapshot coverage</h2>
+      <div id="summary" class="metrics"></div>
+      <p id="coverage"></p>
+      <p class="muted">Participation rows can repeat an organisation across projects. Distinct source identifiers are not a verified company count. All counts describe the loaded derivative, not all European or Canadian research.</p>
+
+      <details class="provenance" open>
+        <summary>Source, acquisition and file clocks</summary>
+        <dl id="clocks"></dl>
+        <p id="attribution" class="muted"></p>
+      </details>
+
+      <section aria-labelledby="projects-heading">
+        <h2 id="projects-heading">Included projects</h2>
+        <div class="filters">
+          <div><label for="search">Search project or participant</label><input id="search" type="search" maxlength="250" placeholder="Name, acronym or project ID"></div>
+          <div><label for="country">EU-27 participant location</label><select id="country"><option value="">All included EU-27 locations</option></select></div>
+        </div>
+        <p id="results-status" role="status" aria-live="polite"></p>
+        <div id="projects"></div>
+        <nav class="pagination" aria-label="Project pages">
+          <button id="previous-page" type="button">Previous</button>
+          <span id="page-status"></span>
+          <button id="next-page" type="button">Next</button>
+        </nav>
+      </section>
+    </section>
+    <footer>Research co-participation only. No outreach, prediction, qualification or CanadaBuys count changes are performed by this page. The original source was not rechecked for this release.</footer>
+  </main>
+</body>
+</html>

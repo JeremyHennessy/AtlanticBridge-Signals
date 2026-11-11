@@ -1,3 +1,4 @@
+import {verifyCordis} from './cordis_acceptance.mjs';
 import {verifyCaptureLimit} from './bounded_screenshot.mjs';
 import {verifyCaseBriefs} from './case_briefs_acceptance.mjs';
 import {verifyMonitorReview} from './monitor_review_acceptance.mjs';
@@ -196,6 +197,7 @@ async function run(label,type,options) {
     const response=await page.goto(base,{waitUntil:"networkidle",timeout:30000});
     check(`${label}: page HTTP success`,response?.ok());await ready(page);await exactAssets(page,label);
     await verifyEntryRoutes(page,label);
+    await verifyCordis(browser,options,base,label,out,check);
     for(const route of ["overview","signals","companies","research","markets","coverage","guide"]) {
       await go(page,`#${route}`);await page.locator(`#${route}-view`).waitFor();await overflow(page,`${label}/${route}`);
       await captureRoute(page,label,route);
