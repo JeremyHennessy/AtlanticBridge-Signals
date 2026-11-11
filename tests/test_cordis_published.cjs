@@ -179,3 +179,17 @@ test('dedicated hosted checks are invoked by the existing public UI acceptance e
   for (const text of ['exact deployed asset', 'acquisition and original file clocks preserved', 'clear hides old counts', 'reload resets filters', 'checksum mismatch', 'no original source or third-party request', 'return preserves unrelated app counts']) assert.ok(checks.includes(text));
   assert.doesNotMatch(checks, /127\.0\.0\.1|localhost|listen\(|source_url.*goto|\.launch\(/);
 });
+
+
+test('primary navigation wraps before the mobile breakpoint without hiding any destination', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../ui/styles.css'), 'utf8');
+  const baseRule = css.match(/\.primary-nav\{([^}]+)\}/)[1];
+  assert.match(baseRule, /display:flex;/);
+  assert.match(baseRule, /flex-wrap:wrap;/);
+  assert.match(baseRule, /gap:0 30px;/);
+  assert.match(css, /\.primary-nav\{gap:0 22px\}/);
+  assert.doesNotMatch(baseRule, /overflow|display:none|visibility:hidden/);
+  const index = fs.readFileSync(path.join(__dirname, '../ui/index.html'), 'utf8');
+  const nav = index.match(/<nav class="primary-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
+  assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map(match => match[1]), ['#overview', '#opportunities', '#signals', '#companies', '#research', 'cordis-research.html', '#markets', '#coverage', '#guide', '#companies?view=saved']);
+});
