@@ -1,0 +1,159 @@
+{
+  "id": "44927189625-1",
+  "finished_at": "2026-11-21T16:56:02.445498+00:00",
+  "sources": [
+    {
+      "id": "mistral-official-careers",
+      "source_url": "https://mistral.ai/careers/",
+      "status": "OBSERVED",
+      "records": 260,
+      "change_events": 1,
+      "raw_sha256": "8bc26d1db4948f362951adfbf750f881fd062b347162442282d38df8e191ac2f",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 7,
+      "scope_held_candidates": 7,
+      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE"
+    },
+    {
+      "id": "mistral-official-news",
+      "source_url": "https://mistral.ai/news/",
+      "status": "OBSERVED",
+      "records": 94,
+      "change_events": 0,
+      "raw_sha256": "22967eaf54a70d043ad2e214c82d319d46de805d9e619304252cf69a7c92cd16",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 0,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    },
+    {
+      "id": "montreal-international-news",
+      "source_url": "https://www.montrealinternational.com/en/news/",
+      "status": "OBSERVED",
+      "records": 12,
+      "change_events": 0,
+      "raw_sha256": "f0151a705178a0c9ae80e15e0d7307a6d6e2907f757c0856b86cef84725cbbc6",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 12,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    },
+    {
+      "id": "mistral-montreal-announcement",
+      "source_url": "https://www.montrealinternational.com/en/news/mistral-ai-selects-montreal-for-its-canadian-hub/",
+      "status": "OBSERVED",
+      "records": 1,
+      "change_events": 0,
+      "raw_sha256": "04cffd459e6c73b5fd824f2a29d1c72812f1ba30aa89f61f8ccd2d7fa805128e",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 1,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    },
+    {
+      "id": "gd-montreal-announcement",
+      "source_url": "https://www.montrealinternational.com/en/news/gd-selects-montreal-to-establish-its-global-artificial-intelligence-centre-of-excellence-at-mila/",
+      "status": "OBSERVED",
+      "records": 1,
+      "change_events": 0,
+      "raw_sha256": "500155ec360c9c6f1fa02e3d0ca5afbba40e28f411b7b20915e74f9b59086912",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 1,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    },
+    {
+      "id": "adyen-payments-membership",
+      "source_url": "https://www.payments.ca/payments-canada-welcomes-adyen-canada-ltd-its-newest-member",
+      "status": "OBSERVED",
+      "records": 1,
+      "change_events": 0,
+      "raw_sha256": "108a23b824bdbdc8f79f5e49ea4e1cd97b1b3003a462aa91180750b3618645e3",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 1,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    },
+    {
+      "id": "deepl-official-careers",
+      "source_url": "https://www.deepl.com/en/careers",
+      "status": "OBSERVED",
+      "records": 10,
+      "change_events": 0,
+      "raw_sha256": "2a1854c0160ca7ae9656300424aa0729789ea0ccd0bd6f82bd267d4a4282a315",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 0,
+      "scope_held_candidates": 0,
+      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE"
+    },
+    {
+      "id": "pleo-official-careers",
+      "source_url": "https://www.pleo.io/en/careers",
+      "status": "OBSERVED",
+      "records": 33,
+      "change_events": 2,
+      "raw_sha256": "008e90630f97bd34d7c81bf1727cb9cd517f5085e6a2c8952af8b59f56443b22",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 0,
+      "scope_held_candidates": 0,
+      "coverage": "CURRENT_PUBLISHED_BOARD_NOT_COMPANY_WIDE_ABSENCE"
+    },
+    {
+      "id": "ubisoft-sherbrooke-current",
+      "source_url": "https://www.ubisoft.com/en-us/company/careers/locations/sherbrooke",
+      "status": "OBSERVED",
+      "records": 1,
+      "change_events": 0,
+      "raw_sha256": "71e7a2cdbf46bcf3c27d88fb65fc7713b205dd994a7402018dfdb6b2b51b2276",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 1,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    },
+    {
+      "id": "accenture-stcatharines-current",
+      "source_url": "https://www.accenture.com/ca-en/careers/jobdetails?id=R00358752_en",
+      "status": "UNVERIFIED_SOURCE_FAILURE",
+      "records": null,
+      "change_events": null,
+      "enrollment_baseline": false,
+      "error_type": "ValueError"
+    },
+    {
+      "id": "sanofi-canada-current",
+      "source_url": "https://www.sanofi.com/en/canada/our-company",
+      "status": "OBSERVED",
+      "records": 1,
+      "change_events": 0,
+      "raw_sha256": "c4e077214a3bb192bc2278810efd04b8c053b1b0faf2aa564688f949138f1a67",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 1,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    },
+    {
+      "id": "cellcentric-supplier-current",
+      "source_url": "https://www.cellcentric.net/en-us/supplier",
+      "status": "OBSERVED",
+      "records": 1,
+      "change_events": 0,
+      "raw_sha256": "eb16589d4bc9f754fb07aabda63a044fd2f28412e95562a6ab0fb15ecb208010",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 1,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    },
+    {
+      "id": "roquette-locations-current",
+      "source_url": "https://www.roquette.com/locations",
+      "status": "OBSERVED",
+      "records": 1,
+      "change_events": 0,
+      "raw_sha256": "8c170ffce08b9798a2fa95964a85a73e5e3fb1bb1a361483d9fcc0da4419d85a",
+      "enrollment_baseline": false,
+      "canada_location_candidates": 1,
+      "scope_held_candidates": 0,
+      "coverage": "BOUNDED_PAGE_OR_FEED_WINDOW_NOT_ABSENCE_PROOF"
+    }
+  ]
+}
